@@ -318,7 +318,10 @@
         "mark.partner-bond",
         "icon.share",
         "icon.copy",
-        "icon.revoke"
+        "icon.revoke",
+        "state.invite-accepted",
+        "state.invite-expired",
+        "state.invite-revoked"
       ],
       "contract_path": "design/screens/SCR-09-invite-partner/screen.md",
       "preview_path": "design/screens/SCR-09-invite-partner/preview.webp",
@@ -326,7 +329,12 @@
       "visual_status": "candidate_for_approval",
       "candidate_revision": 2,
       "candidate_preview_path": "design/screens/SCR-09-invite-partner/candidates/rev-2/preview.webp",
-      "candidate_source_path": "design/screens/SCR-09-invite-partner/candidates/rev-2/source.png"
+      "candidate_source_path": "design/screens/SCR-09-invite-partner/candidates/rev-2/source.png",
+      "candidate_state_paths": {
+        "accepted": "design/screens/SCR-09-invite-partner/candidates/rev-2/states/accepted/preview.webp",
+        "expired": "design/screens/SCR-09-invite-partner/candidates/rev-2/states/expired/preview.webp",
+        "revoked": "design/screens/SCR-09-invite-partner/candidates/rev-2/states/revoked/preview.webp"
+      }
     },
     {
       "screen_id": "SCR-10",
@@ -353,7 +361,9 @@
         "mark.partner-bond",
         "icon.shared-space",
         "icon.private-space",
-        "icon.leave-right"
+        "icon.leave-right",
+        "state.invite-expired",
+        "state.auth-restored"
       ],
       "contract_path": "design/screens/SCR-10-invitation-received/screen.md",
       "preview_path": "design/screens/SCR-10-invitation-received/preview.webp",
@@ -361,7 +371,11 @@
       "visual_status": "candidate_for_approval",
       "candidate_revision": 2,
       "candidate_preview_path": "design/screens/SCR-10-invitation-received/candidates/rev-2/preview.webp",
-      "candidate_source_path": "design/screens/SCR-10-invitation-received/candidates/rev-2/source.png"
+      "candidate_source_path": "design/screens/SCR-10-invitation-received/candidates/rev-2/source.png",
+      "candidate_state_paths": {
+        "expired": "design/screens/SCR-10-invitation-received/candidates/rev-2/states/expired/preview.webp",
+        "auth_return": "design/screens/SCR-10-invitation-received/candidates/rev-2/states/auth-return/preview.webp"
+      }
     },
     {
       "screen_id": "SCR-11",

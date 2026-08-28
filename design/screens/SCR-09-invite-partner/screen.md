@@ -40,6 +40,13 @@ The revised primary surface removes the obsolete onboarding-step treatment and e
 - “Nothing begins until both of you agree” is the governing trust statement.
 - Candidate approval does not remove the need for accepted, expired, revoked and recovery variants.
 
+#### Lifecycle state candidates
+
+- [`Accepted`](candidates/rev-2/states/accepted/preview.webp) — records the human join, closes the invite securely and opens the first shared moment.
+- [`Expired`](candidates/rev-2/states/expired/preview.webp) — confirms that nobody joined and offers a newly generated private link.
+- [`Revoked`](candidates/rev-2/states/revoked/preview.webp) — confirms creator-initiated closure without blame or active partner styling.
+- Pending, Accepted, Expired and Revoked share one lifecycle axis; only Accepted uses Terracotta because only it represents active partner presence.
+
 ## 2. UI contract
 
 - Reference viewport: **390 × 844 logical pixels**; source preview is 853 × 1844 pixels.
@@ -55,13 +62,14 @@ The revised primary surface removes the obsolete onboarding-step treatment and e
 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
-| Default | TBD | Match approved hierarchy after behavior alignment | blocked |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
-| Offline | TBD | Show availability and queued-action behavior | blocked |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Pending | Server invite is Pending | Share/copy/revoke with lifecycle position | candidate rev-2 |
+| Accepted | Server invite is Accepted | Close link, show partner join and first shared moment | candidate rev-2 |
+| Expired | Server invite is Expired | No join implied; create a new private link | candidate rev-2 |
+| Revoked | Server invite is Revoked | Neutral closure; create a new private link | candidate rev-2 |
+| Loading | Resolve server current truth | Preserve lifecycle geometry without revealing stale state | blocked |
+| Share/error retry | Retain the current Invite and retry safely | Never create duplicate active links silently | blocked |
+| Offline | No state mutation without server confirmation | Explain availability and safe retry | blocked |
+| Authorization loss | Hide protected Dynamic context | Offer sign-in/session recovery | blocked |
 
 ## 4. Asset contract
 
@@ -71,6 +79,9 @@ The revised primary surface removes the obsolete onboarding-step treatment and e
 | `icon.share` | Primary native share action | `manifests/assets.json` | planned — SVG master required |
 | `icon.copy` | Copy private invite link/code | `manifests/assets.json` | planned — SVG master required |
 | `icon.revoke` | Revoke the current invite | `manifests/assets.json` | planned — SVG master required |
+| `state.invite-accepted` | Accepted lifecycle position and human join | `manifests/assets.json` | planned — SVG master required |
+| `state.invite-expired` | Expired lifecycle position | `manifests/assets.json` | planned — SVG master required |
+| `state.invite-revoked` | Revoked lifecycle position | `manifests/assets.json` | planned — SVG master required |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

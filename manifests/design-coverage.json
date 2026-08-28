@@ -94,12 +94,10 @@
         "SCR-09"
       ],
       "action": "add_state_family",
-      "candidate_status": "rev_2_pending_state_available_for_approval",
+      "candidate_status": "rev_2_pending_accepted_expired_revoked_available_for_approval",
       "missing": [
-        "accepted",
-        "expired",
-        "revoked",
         "share recovery",
+        "loading/offline/authorization-loss states",
         "product owner approval"
       ]
     },
@@ -115,11 +113,10 @@
         "SCR-11"
       ],
       "action": "merge_redesign",
-      "candidate_status": "rev_2_mobile_web_trust_available_for_approval",
+      "candidate_status": "rev_2_mobile_web_trust_expired_auth_return_available_for_approval",
       "missing": [
-        "auth return",
-        "expired/revoked/stale",
-        "session recovery",
+        "revoked/stale safe landing",
+        "loading/offline/authorization-loss states",
         "product owner approval"
       ]
     },

@@ -41,6 +41,12 @@ The revised mobile-Web trust surface makes the invitation legible before authent
 - Role choice, pause and leave rights remain with the invitee.
 - Candidate approval does not remove the need for auth-return, expired, revoked, stale and session-recovery variants.
 
+#### Recovery and safe-state candidates
+
+- [`Expired`](candidates/rev-2/states/expired/preview.webp) — hides inviter and Dynamic content, confirms that no membership exists and offers safe navigation.
+- [`Auth Return`](candidates/rev-2/states/auth-return/preview.webp) — preserves the invitation through magic-link authentication while keeping final Join review explicit.
+- These are mobile-Web states. They share product meaning with Android but preserve browser/session behavior.
+
 ## 2. UI contract
 
 - Reference viewport: **390 × 844 logical pixels**; source preview is 853 × 1844 pixels.
@@ -56,13 +62,14 @@ The revised mobile-Web trust surface makes the invitation legible before authent
 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
-| Default | TBD | Match approved hierarchy after behavior alignment | blocked |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
-| Offline | TBD | Show availability and queued-action behavior | blocked |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Default trust review | Pending invite resolved | Show inviter, intention, shared/private boundary and leave right | candidate rev-2 |
+| Auth return | Identity restored; Join not yet confirmed | Preserve invite context and return to explicit review | candidate rev-2 |
+| Expired | Invite is Expired | Hide protected context; confirm no membership | candidate rev-2 |
+| Revoked/stale | Invite unavailable or access relation changed | Neutral safe landing with no sensitive content | blocked |
+| Loading | Resolve token and current server truth | Stable privacy-safe loading surface | blocked |
+| Error and retry | Recover without dropping invite context | Explicit retry and retained safe context | blocked |
+| Offline | Cannot confirm current invite truth | Explain offline state; never infer validity | blocked |
+| Authorization loss/shared device | Session is absent, expired or wrong account | Hide protected content and offer safe account recovery | blocked |
 
 ## 4. Asset contract
 
@@ -72,6 +79,8 @@ The revised mobile-Web trust surface makes the invitation legible before authent
 | `icon.shared-space` | Identify information shared by the Dynamic | `manifests/assets.json` | planned — SVG master required |
 | `icon.private-space` | Identify information retained by the member | `manifests/assets.json` | planned — SVG master required |
 | `icon.leave-right` | Reinforce pause/leave agency | `manifests/assets.json` | planned — SVG master required |
+| `state.invite-expired` | Safe expired-link identity | `manifests/assets.json` | planned — SVG master required |
+| `state.auth-restored` | Identity restored while Join remains pending | `manifests/assets.json` | planned — SVG master required |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

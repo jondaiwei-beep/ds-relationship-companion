@@ -18,11 +18,13 @@
 - High-fidelity activation candidates completed for Goal, Minimal Setup mode/role, Minimal Setup structure/context and Starter Rhythm
 - High-fidelity connected-loop candidates completed for Invite Pending, mobile Web Join Trust, Complete → Waiting and Acknowledgement Composer
 - Candidate review board stored at `design/qa/reference/connected-loop-invite-response-board.jpg`
+- Invite/Join lifecycle candidates completed for creator Accepted/Expired/Revoked, invitee Expired safe landing and Auth Return
+- Invite lifecycle review board stored at `design/qa/reference/invite-lifecycle-rev2-board.jpg`
 
 ## Next alignment work
 
 1. Resolve the four open domain gaps in `product/domain/core-beta-state-contracts.md`, especially Block semantics and the Occurrence transition graph.
-2. Complete Invite accepted/expired/revoked and Web Join auth/recovery state variants.
+2. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
 3. Add Today prioritized-list, Attention primary queue and Daily Check-in designs.
 4. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
 5. Freeze remaining semantic tokens and create/register the first SVG master batch.

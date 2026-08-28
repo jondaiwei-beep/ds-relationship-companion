@@ -8,8 +8,8 @@ Status: **first reconciliation pass, 2026-08-28**. V5 Warm Authority remains loc
 | Goal selection | `REQ-ACT-001`, `FLOW-ACTIVATE-001` | missing | **new screen `SCR-31`** | Outcome-first design before role/configuration. |
 | Minimal setup | `REQ-ACT-002` | `SCR-07`, `SCR-08` | **rev-2 candidates complete** | Mode/role and structure/context primary candidates exist; still require state, Web adaptation and approval. |
 | Starter Rhythm | `REQ-ACT-003` | `SCR-12` | **rev-2 candidate complete** | 1 Ritual + 1 Expectation + 1 Check-in candidate exists; still requires replace/edit interaction states and approval. |
-| Invite creator | `REQ-INVITE-001` | `SCR-09` | **rev-2 Pending candidate complete** | Add accepted, expired, revoked and share/copy recovery variants; preserve Android/Web share differences. |
-| Web Join trust | `REQ-JOIN-001` | `SCR-10`, `SCR-11` | **rev-2 mobile-Web candidate complete** | Trust, shared/private boundary and leave right are represented; add auth-return and safe expired/revoked/stale states. |
+| Invite creator | `REQ-INVITE-001` | `SCR-09` | **rev-2 lifecycle candidates complete** | Pending, Accepted, Expired and Revoked are represented; add share/copy, loading, offline and authorization recovery. |
+| Web Join trust | `REQ-JOIN-001` | `SCR-10`, `SCR-11` | **rev-2 trust + Expired + Auth Return complete** | Add revoked/stale safe landing plus loading, offline and authorization-loss states. |
 | First shared interaction | `REQ-FIRST-001` | partial in `SCR-01/02` | add activation state | Small check-in or starter ritual; no empty success page. |
 | Receiving Today | `REQ-TODAY-001`, `FLOW-RECEIVE-001` | `SCR-01`, `SCR-19` | combine as one page family | Ritual-focus state plus prioritized 1–3 item list, partner context, recent response, check-in and later/optional. |
 | Direction-giving Attention | `REQ-ATTN-001`, `FLOW-ATTENTION-001` | missing | **new screen `SCR-32`** | Priority queue with meaningful inline responses; no Proposal inbox. |
@@ -35,7 +35,7 @@ Only four primary surfaces are currently justified: Goal (`SCR-31`), Attention (
 
 ## Visual production order
 
-1. First Connected Vertical Slice: primary candidates complete; finish Invite/Join lifecycle, recovery and approval states.
+1. First Connected Vertical Slice: primary and core Invite lifecycle candidates complete; finish cross-screen recovery and approval states.
 2. Daily Loop: Today list → Attention → Check-in.
 3. Reality Fit: adjustment → Needs Review → Pause/Resume → timezone/day boundary.
 4. Privacy/Async: Invite/auth failures → notification permissions → Leave/Block/stale states.
