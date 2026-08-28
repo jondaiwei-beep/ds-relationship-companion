@@ -1,0 +1,11 @@
+.DS_Store
+.idea/
+.vscode/
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+coverage/
+design/qa/visual-diff/tmp/
+

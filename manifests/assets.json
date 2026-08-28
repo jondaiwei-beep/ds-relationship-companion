@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "status": "initializing",
+  "assets": [],
+  "requiredFirstBatch": [
+    "mark.authority",
+    "mark.presence",
+    "mark.partner-bond",
+    "mark.guidance",
+    "emblem.ritual.evening",
+    "nav.today",
+    "nav.dynamic",
+    "nav.explore",
+    "nav.us",
+    "state.acknowledged",
+    "state.completed",
+    "state.locked"
+  ]
+}
+

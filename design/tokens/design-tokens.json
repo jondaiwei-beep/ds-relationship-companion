@@ -1,0 +1,34 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "name": "D/s Relationship Companion · Warm Authority",
+    "version": "0.1.0-pre-freeze",
+    "status": "draft",
+    "referenceViewport": { "width": 390, "height": 844, "unit": "dp" }
+  },
+  "color": {
+    "primitive": {
+      "bone": { "$type": "color", "$value": "#F4F1EB" },
+      "stone": { "$type": "color", "$value": "#E7E3DA" },
+      "warmGray": { "$type": "color", "$value": "#BAB6AC" },
+      "deepOlive": { "$type": "color", "$value": "#2F3A2E" },
+      "darkMoss": { "$type": "color", "$value": "#1E241F" },
+      "terracotta": { "$type": "color", "$value": "#B5533B" }
+    }
+  },
+  "space": {
+    "1": { "$type": "dimension", "$value": { "value": 4, "unit": "dp" } },
+    "2": { "$type": "dimension", "$value": { "value": 8, "unit": "dp" } },
+    "3": { "$type": "dimension", "$value": { "value": 12, "unit": "dp" } },
+    "4": { "$type": "dimension", "$value": { "value": 16, "unit": "dp" } },
+    "5": { "$type": "dimension", "$value": { "value": 20, "unit": "dp" } },
+    "6": { "$type": "dimension", "$value": { "value": 24, "unit": "dp" } },
+    "8": { "$type": "dimension", "$value": { "value": 32, "unit": "dp" } },
+    "10": { "$type": "dimension", "$value": { "value": 40, "unit": "dp" } },
+    "12": { "$type": "dimension", "$value": { "value": 48, "unit": "dp" } },
+    "16": { "$type": "dimension", "$value": { "value": 64, "unit": "dp" } },
+    "20": { "$type": "dimension", "$value": { "value": 80, "unit": "dp" } },
+    "24": { "$type": "dimension", "$value": { "value": 96, "unit": "dp" } }
+  }
+}
+
