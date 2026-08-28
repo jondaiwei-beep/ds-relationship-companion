@@ -40,3 +40,9 @@ Only four primary surfaces are currently justified: Goal (`SCR-31`), Attention (
 3. Reality Fit: adjustment → Needs Review → Pause/Resume → timezone/day boundary.
 4. Privacy/Async: Invite/auth failures → notification permissions → Leave/Block/stale states.
 5. Recent Us + D7 and global loading/empty/offline/recovery coverage.
+
+## Cross-source corrections
+
+- **Typography resolved for the GitHub handoff:** Notion 05 still names Rovel Display with Lora as a placeholder. The approved visual inventory and bundled implementation source use **Cormorant Garamond** for editorial/ritual display and **Inter** for operational UI. GitHub typography/tokens are canonical; the stale Notion wording must be retired during final migration.
+- **Figma/Library wording is obsolete:** historical Notion pages describe Figma and Library as design sources. The current product decision is GitHub-only; Figma must not be reintroduced as a dependency.
+- **Unreconciled HTML source:** Developer Handoff v2 mentions `ds_relationship_warm_authority_v51.html`. It is not present in this design repository and must be imported for comparison or explicitly deprecated before the final Claude Code handoff.

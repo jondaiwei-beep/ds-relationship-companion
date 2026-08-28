@@ -15,3 +15,9 @@ GitHub is becoming the sole implementation source. During migration, Notion rema
 | [Product & Design Alignment v1](https://app.notion.com/p/3caf73841f3d81d69a7cf2c9ffedfe7a) | `design/coverage/core-beta-coverage.md`, manifests | migrated and challenged |
 
 Old Notion pages remain research/decision archive and cannot override these CURRENT sources.
+
+## Migration corrections already applied
+
+- Figma and Library references are historical; GitHub is the sole current handoff source.
+- GitHub uses bundled Cormorant Garamond + Inter, superseding the stale Rovel/Lora placeholder wording in Notion 05.
+- `ds_relationship_warm_authority_v51.html` remains an unresolved external handoff source until it is imported and compared or explicitly deprecated.
