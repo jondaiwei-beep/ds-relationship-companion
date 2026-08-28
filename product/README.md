@@ -1,8 +1,18 @@
 # Product specification
 
-This directory will replace Notion as the canonical product source. Migration must preserve feature intent, role/permission semantics, consent and privacy invariants, platform scope, state transitions, and acceptance criteria.
+This directory is replacing Notion as the canonical product source. Migration must preserve feature intent, role/permission semantics, consent and privacy invariants, platform scope, state transitions, and acceptance criteria.
 
-## Structure
+## Current migrated entry points
+
+1. `00-overview.md`
+2. `requirements/core-beta.md`
+3. `flows/core-beta-flows.md`
+4. `domain/core-beta-state-contracts.md`
+5. `notion-source-map.md`
+
+`design/coverage/core-beta-coverage.md` records how these product contracts map to existing, redesigned, missing and future visual families.
+
+## Target structure
 
 - `00-overview.md`
 - `01-positioning.md`

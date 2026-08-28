@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-PAUSE-001`, `REQ-IDEMP-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-PAUSE-001`
+- Job to be done: Pause safely or return without backlog pressure.
+- Entry and preconditions: Either member opens Pause/Resume from Dynamic or a relevant context.
+- Roles and permissions: Either member can pause without approval; both retain exit/privacy rights.
+- Business logic and state transitions: Confirm Pause, show Paused state, then Resume same/lighter/adjust; do not generate paused-period backlog.
+- Acceptance criteria: Retry is idempotent and return never requires old completion.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

@@ -1,0 +1,399 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-08-28",
+  "product_spec": "CURRENT v2",
+  "visual_direction": "V5 Warm Authority / Quiet Authority",
+  "locked": true,
+  "allowed_design_actions": [
+    "retain",
+    "align",
+    "merge_redesign",
+    "replace",
+    "add_primary_screen",
+    "add_state_family",
+    "future_reference"
+  ],
+  "families": [
+    {
+      "id": "FAM-AUTH",
+      "name": "Private entry and auth",
+      "requirements": [
+        "REQ-AUTH-001",
+        "REQ-TRUST-001"
+      ],
+      "screens": [
+        "SCR-04",
+        "SCR-05",
+        "SCR-06"
+      ],
+      "action": "add_state_family",
+      "missing": [
+        "magic-link sent/callback",
+        "expired session",
+        "validation",
+        "recovery"
+      ]
+    },
+    {
+      "id": "FAM-GOAL",
+      "name": "Goal selection",
+      "requirements": [
+        "REQ-ACT-001"
+      ],
+      "screens": [
+        "SCR-31"
+      ],
+      "action": "add_primary_screen",
+      "missing": [
+        "approved primary preview"
+      ]
+    },
+    {
+      "id": "FAM-SETUP",
+      "name": "Minimal setup",
+      "requirements": [
+        "REQ-ACT-002"
+      ],
+      "screens": [
+        "SCR-07",
+        "SCR-08"
+      ],
+      "action": "merge_redesign",
+      "missing": [
+        "outcome-first sequence",
+        "boundaries lite",
+        "LDR/Together"
+      ]
+    },
+    {
+      "id": "FAM-STARTER",
+      "name": "Starter Rhythm",
+      "requirements": [
+        "REQ-ACT-003",
+        "REQ-FIRST-001"
+      ],
+      "screens": [
+        "SCR-12"
+      ],
+      "action": "replace",
+      "missing": [
+        "1 Ritual + 1 Expectation + 1 Check-in",
+        "editable start state"
+      ]
+    },
+    {
+      "id": "FAM-INVITE",
+      "name": "Invite creator",
+      "requirements": [
+        "REQ-INVITE-001"
+      ],
+      "screens": [
+        "SCR-09"
+      ],
+      "action": "add_state_family",
+      "missing": [
+        "pending",
+        "accepted",
+        "expired",
+        "revoked",
+        "share recovery"
+      ]
+    },
+    {
+      "id": "FAM-JOIN",
+      "name": "Web Join trust",
+      "requirements": [
+        "REQ-JOIN-001",
+        "REQ-AUTH-001"
+      ],
+      "screens": [
+        "SCR-10",
+        "SCR-11"
+      ],
+      "action": "merge_redesign",
+      "missing": [
+        "auth return",
+        "shared/private boundary",
+        "leave right",
+        "expired/revoked/stale"
+      ]
+    },
+    {
+      "id": "FAM-TODAY",
+      "name": "Receiving Today",
+      "requirements": [
+        "REQ-TODAY-001"
+      ],
+      "screens": [
+        "SCR-01",
+        "SCR-19"
+      ],
+      "action": "merge_redesign",
+      "missing": [
+        "prioritized list state",
+        "partner context",
+        "check-in",
+        "later/optional"
+      ]
+    },
+    {
+      "id": "FAM-ATTN",
+      "name": "Attention",
+      "requirements": [
+        "REQ-ATTN-001"
+      ],
+      "screens": [
+        "SCR-32"
+      ],
+      "action": "add_primary_screen",
+      "missing": [
+        "approved primary preview",
+        "inline response states"
+      ]
+    },
+    {
+      "id": "FAM-DETAIL",
+      "name": "Expectation and Ritual detail",
+      "requirements": [
+        "REQ-EXPECT-001",
+        "REQ-ADJUST-001",
+        "REQ-REVIEW-001"
+      ],
+      "screens": [
+        "SCR-14"
+      ],
+      "action": "add_state_family",
+      "missing": [
+        "Discuss",
+        "Request New Time",
+        "Can't Do",
+        "Needs Review",
+        "role variants"
+      ]
+    },
+    {
+      "id": "FAM-COMPLETE",
+      "name": "Complete and Waiting",
+      "requirements": [
+        "REQ-COMPLETE-001"
+      ],
+      "screens": [
+        "SCR-02"
+      ],
+      "action": "align",
+      "missing": [
+        "retry",
+        "note visibility",
+        "waiting current-state variants"
+      ]
+    },
+    {
+      "id": "FAM-ACK-COMPOSE",
+      "name": "Acknowledgement Composer",
+      "requirements": [
+        "REQ-ACK-001"
+      ],
+      "screens": [
+        "SCR-33"
+      ],
+      "action": "add_primary_screen",
+      "missing": [
+        "approved primary preview",
+        "Acknowledge/Praise/Comment/Review"
+      ]
+    },
+    {
+      "id": "FAM-ACK-RECEIVE",
+      "name": "Acknowledgement Received",
+      "requirements": [
+        "REQ-ACK-001"
+      ],
+      "screens": [
+        "SCR-03"
+      ],
+      "action": "align",
+      "missing": [
+        "system/human copy distinction"
+      ]
+    },
+    {
+      "id": "FAM-CHECKIN",
+      "name": "Daily Check-in",
+      "requirements": [
+        "REQ-CHECKIN-001",
+        "REQ-PRIVACY-001"
+      ],
+      "screens": [
+        "SCR-22"
+      ],
+      "action": "replace",
+      "missing": [
+        "mood",
+        "energy",
+        "need",
+        "private/shared",
+        "compact states"
+      ]
+    },
+    {
+      "id": "FAM-ADJUST",
+      "name": "Adjustment resolution",
+      "requirements": [
+        "REQ-ADJUST-001",
+        "REQ-REVIEW-001"
+      ],
+      "screens": [
+        "SCR-14",
+        "SCR-32"
+      ],
+      "action": "add_state_family",
+      "missing": [
+        "request",
+        "resolution",
+        "excuse",
+        "cancel",
+        "retry"
+      ]
+    },
+    {
+      "id": "FAM-DYNAMIC",
+      "name": "Dynamic",
+      "requirements": [
+        "REQ-EXPECT-001",
+        "REQ-PAUSE-001"
+      ],
+      "screens": [
+        "SCR-13"
+      ],
+      "action": "align",
+      "missing": [
+        "simplified Core Beta hierarchy"
+      ]
+    },
+    {
+      "id": "FAM-PAUSE",
+      "name": "Pause and Resume",
+      "requirements": [
+        "REQ-PAUSE-001"
+      ],
+      "screens": [
+        "SCR-24"
+      ],
+      "action": "add_state_family",
+      "missing": [
+        "confirmation",
+        "paused",
+        "same/lighter/adjust"
+      ]
+    },
+    {
+      "id": "FAM-US",
+      "name": "Us and D7",
+      "requirements": [
+        "REQ-HISTORY-001",
+        "REQ-WEEKLY-001"
+      ],
+      "screens": [
+        "SCR-17",
+        "SCR-23"
+      ],
+      "action": "merge_redesign",
+      "missing": [
+        "event-led Us",
+        "single Keep/Adjust/Pause card"
+      ]
+    },
+    {
+      "id": "FAM-NOTIFY",
+      "name": "Notifications and Quiet Hours",
+      "requirements": [
+        "REQ-NOTIFY-001"
+      ],
+      "screens": [
+        "SCR-25",
+        "SCR-29"
+      ],
+      "action": "align",
+      "missing": [
+        "neutral preview",
+        "permission",
+        "aggregation",
+        "platform variants"
+      ]
+    },
+    {
+      "id": "FAM-PRIVACY",
+      "name": "Privacy",
+      "requirements": [
+        "REQ-PRIVACY-001"
+      ],
+      "screens": [
+        "SCR-26"
+      ],
+      "action": "align",
+      "missing": [
+        "Core Beta basic visibility state",
+        "feature-gated P1 controls"
+      ]
+    },
+    {
+      "id": "FAM-TIME",
+      "name": "Timezone and Day Boundary",
+      "requirements": [
+        "REQ-TIME-001"
+      ],
+      "screens": [
+        "SCR-34"
+      ],
+      "action": "add_primary_screen",
+      "missing": [
+        "approved primary preview",
+        "DST/device-change states"
+      ]
+    },
+    {
+      "id": "FAM-EXIT",
+      "name": "Leave, Block and Ended",
+      "requirements": [
+        "REQ-LEAVE-001",
+        "REQ-BLOCK-001"
+      ],
+      "screens": [
+        "SCR-30"
+      ],
+      "action": "add_state_family",
+      "missing": [
+        "neutral entry",
+        "confirmation",
+        "left",
+        "blocked",
+        "ended",
+        "stale safe landing"
+      ]
+    },
+    {
+      "id": "FAM-RECOVERY",
+      "name": "Cross-screen recovery",
+      "requirements": [
+        "REQ-RECOVERY-001"
+      ],
+      "screens": [],
+      "action": "add_state_family",
+      "missing": [
+        "loading",
+        "empty",
+        "offline",
+        "error/retry",
+        "authorization loss",
+        "stale current-state"
+      ]
+    }
+  ],
+  "production_order": [
+    "first_connected_vertical_slice",
+    "daily_loop",
+    "reality_fit",
+    "privacy_async",
+    "recent_us_and_global_recovery"
+  ]
+}

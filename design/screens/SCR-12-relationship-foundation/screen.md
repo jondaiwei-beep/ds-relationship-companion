@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-ACT-003`, `REQ-FIRST-001`
+- Flow IDs: `FLOW-ACTIVATE-001`
+- Job to be done: Review and start a small relationship rhythm that feels acceptable.
+- Entry and preconditions: Minimal setup completed.
+- Roles and permissions: Creator/Solo chooses the starting rhythm; partner join does not silently approve future expectations.
+- Business logic and state transitions: Replace the pictured principles screen with 1 Ritual + 1 core Expectation + 1 Check-in; allow keep/replace/start.
+- Acceptance criteria: A user can start without blank-canvas work or complex governance.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -72,4 +72,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

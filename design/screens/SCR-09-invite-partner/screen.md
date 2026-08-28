@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-INVITE-001`, `REQ-IDEMP-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-ACTIVATE-001`
+- Job to be done: Share a private Web invite and understand its current lifecycle state.
+- Entry and preconditions: Couple-mode creator has a minimal Dynamic/Starter context.
+- Roles and permissions: Authorized inviter; invite token does not itself grant long-term access.
+- Business logic and state transitions: Create/share one invite and resolve Pending, Accepted, Expired or Revoked from server truth.
+- Acceptance criteria: Share/copy/retry is recoverable on Android/Web and stale links never enter the wrong Dynamic.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -72,4 +72,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android and Web comparison recorded
 
 Current result: **blocked_alignment_required**.
-

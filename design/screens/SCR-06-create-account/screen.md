@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-AUTH-001`, `REQ-TRUST-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-ACTIVATE-001`
+- Job to be done: Create an adult account with minimal trust and privacy friction.
+- Entry and preconditions: Signed-out user chooses Create Account.
+- Roles and permissions: New adult user; account creation grants no Dynamic membership or consent.
+- Business logic and state transitions: Confirm 18+/Terms/Privacy and enter the current authentication flow; preserve invite context when applicable.
+- Acceptance criteria: Validation and recovery are clear; no duplicate account/session action on retry.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -72,4 +72,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

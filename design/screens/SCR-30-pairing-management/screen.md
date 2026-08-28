@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-LEAVE-001`, `REQ-BLOCK-001`, `REQ-PRIVACY-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-EXIT-001`
+- Job to be done: Pause, leave or block with clear consequences and safe recovery.
+- Entry and preconditions: Authorized member opens Pairing Management.
+- Roles and permissions: Leave requires no approval; Block semantics remain blocked until `G-2` is decided.
+- Business logic and state transitions: Use neutral entry, explicit final confirmation and safe Left/Blocked/Ended/stale states; revoke future access/delivery server-side.
+- Acceptance criteria: No protected stale content, no partner-approval dependency and no accidental destructive action.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

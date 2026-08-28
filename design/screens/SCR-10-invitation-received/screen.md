@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-JOIN-001`, `REQ-AUTH-001`, `REQ-PRIVACY-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-ACTIVATE-001`
+- Job to be done: Understand who invited me, what I am joining and what remains mine.
+- Entry and preconditions: Invitee opens `/invite/{opaque_token}` on Web or Android.
+- Roles and permissions: Invitee; join is explicit, authenticated under the final trust decision, and never consent to future expectations.
+- Business logic and state transitions: Resolve invite, survive auth callback, show intention/shared-private/leave framing, then confirm or decline.
+- Acceptance criteria: Accepted/expired/revoked/stale states are explicit and no protected Dynamic data leaks.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android and Web comparison recorded
 
 Current result: **blocked_alignment_required**.
-

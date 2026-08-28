@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "generated_at": "2026-08-28",
   "product": "D/s Relationship Companion",
   "canonical_source": "GitHub",
@@ -12,9 +12,10 @@
   ],
   "developer_reading_order": [
     "manifests/screen-index.json",
+    "manifests/design-coverage.json",
     "target design/screens/SCR-*/screen.md",
-    "linked product requirements and flows",
-    "target design/screens/SCR-*/preview.webp",
+    "linked product requirements, flows and domain contracts",
+    "approved target preview and state/platform variants",
     "manifests/assets.json and registered SVG masters",
     "design tokens and component contracts",
     "implementation and QA evidence"
@@ -49,7 +50,8 @@
       ],
       "contract_path": "design/screens/SCR-00-selected-style-reference/screen.md",
       "preview_path": "design/screens/SCR-00-selected-style-reference/preview.webp",
-      "source_reference": "design/reference/webp/v1/00 Visual Baseline/00-selected-style-reference.webp"
+      "source_reference": "design/reference/webp/v1/00 Visual Baseline/00-selected-style-reference.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-01",
@@ -62,8 +64,14 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-TODAY-001",
+        "REQ-ACK-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-RECEIVE-001"
+      ],
       "asset_refs": [
         "mark.presence",
         "emblem.ritual.evening",
@@ -75,7 +83,8 @@
       ],
       "contract_path": "design/screens/SCR-01-today/screen.md",
       "preview_path": "design/screens/SCR-01-today/preview.webp",
-      "source_reference": "design/reference/webp/v1/00 Visual Baseline/01-today.webp"
+      "source_reference": "design/reference/webp/v1/00 Visual Baseline/01-today.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-02",
@@ -88,8 +97,14 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-COMPLETE-001",
+        "REQ-IDEMP-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-RECEIVE-001"
+      ],
       "asset_refs": [
         "state.completed",
         "nav.today",
@@ -99,7 +114,8 @@
       ],
       "contract_path": "design/screens/SCR-02-task-completion/screen.md",
       "preview_path": "design/screens/SCR-02-task-completion/preview.webp",
-      "source_reference": "design/reference/webp/v1/00 Visual Baseline/02-task-completion.webp"
+      "source_reference": "design/reference/webp/v1/00 Visual Baseline/02-task-completion.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-03",
@@ -112,8 +128,13 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-ACK-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-RECEIVE-001"
+      ],
       "asset_refs": [
         "mark.presence",
         "state.acknowledged",
@@ -124,7 +145,8 @@
       ],
       "contract_path": "design/screens/SCR-03-partner-acknowledgement/screen.md",
       "preview_path": "design/screens/SCR-03-partner-acknowledgement/preview.webp",
-      "source_reference": "design/reference/webp/v1/00 Visual Baseline/03-partner-acknowledgement.webp"
+      "source_reference": "design/reference/webp/v1/00 Visual Baseline/03-partner-acknowledgement.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-04",
@@ -137,7 +159,10 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
+      "requirement_refs": [
+        "REQ-TRUST-001",
+        "REQ-AUTH-001"
+      ],
       "flow_refs": [],
       "asset_refs": [
         "mark.authority",
@@ -145,7 +170,8 @@
       ],
       "contract_path": "design/screens/SCR-04-private-entrance/screen.md",
       "preview_path": "design/screens/SCR-04-private-entrance/preview.webp",
-      "source_reference": "design/reference/webp/v1/01 Access and Authentication/04-private-entrance.webp"
+      "source_reference": "design/reference/webp/v1/01 Access and Authentication/04-private-entrance.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-05",
@@ -158,15 +184,21 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-AUTH-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.authority",
         "state.locked"
       ],
       "contract_path": "design/screens/SCR-05-sign-in/screen.md",
       "preview_path": "design/screens/SCR-05-sign-in/preview.webp",
-      "source_reference": "design/reference/webp/v1/01 Access and Authentication/05-sign-in.webp"
+      "source_reference": "design/reference/webp/v1/01 Access and Authentication/05-sign-in.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-06",
@@ -179,14 +211,21 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-AUTH-001",
+        "REQ-TRUST-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.authority"
       ],
       "contract_path": "design/screens/SCR-06-create-account/screen.md",
       "preview_path": "design/screens/SCR-06-create-account/preview.webp",
-      "source_reference": "design/reference/webp/v1/01 Access and Authentication/06-create-account.webp"
+      "source_reference": "design/reference/webp/v1/01 Access and Authentication/06-create-account.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-07",
@@ -199,14 +238,20 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-ACT-002",
+        "REQ-PRIVACY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.guidance"
       ],
       "contract_path": "design/screens/SCR-07-role-orientation/screen.md",
       "preview_path": "design/screens/SCR-07-role-orientation/preview.webp",
-      "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/07-role-orientation.webp"
+      "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/07-role-orientation.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-08",
@@ -219,14 +264,20 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-ACT-002",
+        "REQ-PRIVACY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-08-relationship-structure/screen.md",
       "preview_path": "design/screens/SCR-08-relationship-structure/preview.webp",
-      "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/08-relationship-structure.webp"
+      "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/08-relationship-structure.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-09",
@@ -240,14 +291,21 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-INVITE-001",
+        "REQ-IDEMP-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-09-invite-partner/screen.md",
       "preview_path": "design/screens/SCR-09-invite-partner/preview.webp",
-      "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/09-invite-partner.webp"
+      "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/09-invite-partner.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-10",
@@ -261,14 +319,22 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-JOIN-001",
+        "REQ-AUTH-001",
+        "REQ-PRIVACY-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-10-invitation-received/screen.md",
       "preview_path": "design/screens/SCR-10-invitation-received/preview.webp",
-      "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/10-invitation-received.webp"
+      "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/10-invitation-received.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-11",
@@ -281,14 +347,20 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-JOIN-001",
+        "REQ-PRIVACY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-11-mutual-consent/screen.md",
       "preview_path": "design/screens/SCR-11-mutual-consent/preview.webp",
-      "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/11-mutual-consent.webp"
+      "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/11-mutual-consent.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-12",
@@ -301,14 +373,20 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-ACT-003",
+        "REQ-FIRST-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
       "asset_refs": [
         "emblem.ritual.evening"
       ],
       "contract_path": "design/screens/SCR-12-relationship-foundation/screen.md",
       "preview_path": "design/screens/SCR-12-relationship-foundation/preview.webp",
-      "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/12-relationship-foundation.webp"
+      "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/12-relationship-foundation.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-13",
@@ -321,8 +399,14 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-EXPECT-001",
+        "REQ-PAUSE-001",
+        "REQ-PRIVACY-001"
+      ],
+      "flow_refs": [
+        "FLOW-PAUSE-001"
+      ],
       "asset_refs": [
         "mark.presence",
         "nav.today",
@@ -332,7 +416,8 @@
       ],
       "contract_path": "design/screens/SCR-13-dynamic-overview/screen.md",
       "preview_path": "design/screens/SCR-13-dynamic-overview/preview.webp",
-      "source_reference": "design/reference/webp/v1/04 Core Relationship/13-dynamic-overview.webp"
+      "source_reference": "design/reference/webp/v1/04 Core Relationship/13-dynamic-overview.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-14",
@@ -345,14 +430,23 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-EXPECT-001",
+        "REQ-COMPLETE-001",
+        "REQ-ADJUST-001",
+        "REQ-REVIEW-001"
+      ],
+      "flow_refs": [
+        "FLOW-RECEIVE-001",
+        "FLOW-ADJUST-001"
+      ],
       "asset_refs": [
         "state.completed"
       ],
       "contract_path": "design/screens/SCR-14-task-detail/screen.md",
       "preview_path": "design/screens/SCR-14-task-detail/preview.webp",
-      "source_reference": "design/reference/webp/v1/04 Core Relationship/14-task-detail.webp"
+      "source_reference": "design/reference/webp/v1/04 Core Relationship/14-task-detail.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-15",
@@ -370,7 +464,8 @@
       "asset_refs": [],
       "contract_path": "design/screens/SCR-15-agreements/screen.md",
       "preview_path": "design/screens/SCR-15-agreements/preview.webp",
-      "source_reference": "design/reference/webp/v1/04 Core Relationship/15-agreements.webp"
+      "source_reference": "design/reference/webp/v1/04 Core Relationship/15-agreements.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-16",
@@ -388,7 +483,8 @@
       "asset_refs": [],
       "contract_path": "design/screens/SCR-16-reflections/screen.md",
       "preview_path": "design/screens/SCR-16-reflections/preview.webp",
-      "source_reference": "design/reference/webp/v1/05 Reflection Us Explore/16-reflections.webp"
+      "source_reference": "design/reference/webp/v1/05 Reflection Us Explore/16-reflections.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-17",
@@ -401,8 +497,13 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-HISTORY-001",
+        "REQ-WEEKLY-001"
+      ],
+      "flow_refs": [
+        "FLOW-WEEKLY-001"
+      ],
       "asset_refs": [
         "mark.partner-bond",
         "nav.today",
@@ -412,7 +513,8 @@
       ],
       "contract_path": "design/screens/SCR-17-us-relationship-profile/screen.md",
       "preview_path": "design/screens/SCR-17-us-relationship-profile/preview.webp",
-      "source_reference": "design/reference/webp/v1/05 Reflection Us Explore/17-us-relationship-profile.webp"
+      "source_reference": "design/reference/webp/v1/05 Reflection Us Explore/17-us-relationship-profile.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-18",
@@ -435,7 +537,8 @@
       ],
       "contract_path": "design/screens/SCR-18-explore/screen.md",
       "preview_path": "design/screens/SCR-18-explore/preview.webp",
-      "source_reference": "design/reference/webp/v1/05 Reflection Us Explore/18-explore.webp"
+      "source_reference": "design/reference/webp/v1/05 Reflection Us Explore/18-explore.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-19",
@@ -448,8 +551,13 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-TODAY-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-RECEIVE-001"
+      ],
       "asset_refs": [
         "nav.today",
         "nav.dynamic",
@@ -458,7 +566,8 @@
       ],
       "contract_path": "design/screens/SCR-19-task-list/screen.md",
       "preview_path": "design/screens/SCR-19-task-list/preview.webp",
-      "source_reference": "design/reference/webp/v1/06 Tasks and Agreement Review/19-task-list.webp"
+      "source_reference": "design/reference/webp/v1/06 Tasks and Agreement Review/19-task-list.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-20",
@@ -471,12 +580,15 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
+      "requirement_refs": [
+        "REQ-EXPECT-001"
+      ],
       "flow_refs": [],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-20-create-task/screen.md",
       "preview_path": "design/screens/SCR-20-create-task/preview.webp",
-      "source_reference": "design/reference/webp/v1/06 Tasks and Agreement Review/20-create-task.webp"
+      "source_reference": "design/reference/webp/v1/06 Tasks and Agreement Review/20-create-task.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-21",
@@ -494,7 +606,8 @@
       "asset_refs": [],
       "contract_path": "design/screens/SCR-21-agreement-change-review/screen.md",
       "preview_path": "design/screens/SCR-21-agreement-change-review/preview.webp",
-      "source_reference": "design/reference/webp/v1/06 Tasks and Agreement Review/21-agreement-change-review.webp"
+      "source_reference": "design/reference/webp/v1/06 Tasks and Agreement Review/21-agreement-change-review.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-22",
@@ -507,12 +620,19 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-CHECKIN-001",
+        "REQ-PRIVACY-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-RECEIVE-001"
+      ],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-22-write-reflection/screen.md",
       "preview_path": "design/screens/SCR-22-write-reflection/preview.webp",
-      "source_reference": "design/reference/webp/v1/07 Reflection Check-in and Consent/22-write-reflection.webp"
+      "source_reference": "design/reference/webp/v1/07 Reflection Check-in and Consent/22-write-reflection.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-23",
@@ -525,12 +645,18 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-WEEKLY-001",
+        "REQ-HISTORY-001"
+      ],
+      "flow_refs": [
+        "FLOW-WEEKLY-001"
+      ],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-23-weekly-check-in/screen.md",
       "preview_path": "design/screens/SCR-23-weekly-check-in/preview.webp",
-      "source_reference": "design/reference/webp/v1/07 Reflection Check-in and Consent/23-weekly-check-in.webp"
+      "source_reference": "design/reference/webp/v1/07 Reflection Check-in and Consent/23-weekly-check-in.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-24",
@@ -543,14 +669,21 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-PAUSE-001",
+        "REQ-IDEMP-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-PAUSE-001"
+      ],
       "asset_refs": [
         "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-24-pause-consent-check-in/screen.md",
       "preview_path": "design/screens/SCR-24-pause-consent-check-in/preview.webp",
-      "source_reference": "design/reference/webp/v1/07 Reflection Check-in and Consent/24-pause-consent-check-in.webp"
+      "source_reference": "design/reference/webp/v1/07 Reflection Check-in and Consent/24-pause-consent-check-in.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-25",
@@ -563,12 +696,16 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
+      "requirement_refs": [
+        "REQ-NOTIFY-001",
+        "REQ-RECOVERY-001"
+      ],
       "flow_refs": [],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-25-notifications/screen.md",
       "preview_path": "design/screens/SCR-25-notifications/preview.webp",
-      "source_reference": "design/reference/webp/v1/08 Notifications Privacy and Subscription/25-notifications.webp"
+      "source_reference": "design/reference/webp/v1/08 Notifications Privacy and Subscription/25-notifications.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-26",
@@ -581,12 +718,15 @@
       ],
       "disposition": "replace_or_merge",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
+      "requirement_refs": [
+        "REQ-PRIVACY-001"
+      ],
       "flow_refs": [],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-26-privacy-boundaries/screen.md",
       "preview_path": "design/screens/SCR-26-privacy-boundaries/preview.webp",
-      "source_reference": "design/reference/webp/v1/08 Notifications Privacy and Subscription/26-privacy-boundaries.webp"
+      "source_reference": "design/reference/webp/v1/08 Notifications Privacy and Subscription/26-privacy-boundaries.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-27",
@@ -604,7 +744,8 @@
       "asset_refs": [],
       "contract_path": "design/screens/SCR-27-subscription-upgrade/screen.md",
       "preview_path": "design/screens/SCR-27-subscription-upgrade/preview.webp",
-      "source_reference": "design/reference/webp/v1/08 Notifications Privacy and Subscription/27-subscription-upgrade.webp"
+      "source_reference": "design/reference/webp/v1/08 Notifications Privacy and Subscription/27-subscription-upgrade.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-28",
@@ -617,12 +758,17 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
+      "requirement_refs": [
+        "REQ-AUTH-001",
+        "REQ-TIME-001",
+        "REQ-PRIVACY-001"
+      ],
       "flow_refs": [],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-28-account-settings/screen.md",
       "preview_path": "design/screens/SCR-28-account-settings/preview.webp",
-      "source_reference": "design/reference/webp/v1/09 Account Notification and Pairing/28-account-settings.webp"
+      "source_reference": "design/reference/webp/v1/09 Account Notification and Pairing/28-account-settings.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-29",
@@ -635,12 +781,16 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
+      "requirement_refs": [
+        "REQ-NOTIFY-001",
+        "REQ-TIME-001"
+      ],
       "flow_refs": [],
       "asset_refs": [],
       "contract_path": "design/screens/SCR-29-notification-rhythm/screen.md",
       "preview_path": "design/screens/SCR-29-notification-rhythm/preview.webp",
-      "source_reference": "design/reference/webp/v1/09 Account Notification and Pairing/29-notification-rhythm.webp"
+      "source_reference": "design/reference/webp/v1/09 Account Notification and Pairing/29-notification-rhythm.webp",
+      "visual_status": "existing_reference"
     },
     {
       "screen_id": "SCR-30",
@@ -653,14 +803,129 @@
       ],
       "disposition": "retain_and_align",
       "build_gate": "blocked_alignment_required",
-      "requirement_refs": [],
-      "flow_refs": [],
+      "requirement_refs": [
+        "REQ-LEAVE-001",
+        "REQ-BLOCK-001",
+        "REQ-PRIVACY-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-EXIT-001"
+      ],
       "asset_refs": [
         "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-30-pairing-management/screen.md",
       "preview_path": "design/screens/SCR-30-pairing-management/preview.webp",
-      "source_reference": "design/reference/webp/v1/09 Account Notification and Pairing/30-pairing-management.webp"
+      "source_reference": "design/reference/webp/v1/09 Account Notification and Pairing/30-pairing-management.webp",
+      "visual_status": "existing_reference"
+    },
+    {
+      "screen_id": "SCR-31",
+      "name": "Goal Selection",
+      "slug": "goal-selection",
+      "revision": 1,
+      "release_tier": "Core Beta",
+      "platforms": [
+        "Android",
+        "Web"
+      ],
+      "disposition": "new_required",
+      "build_gate": "blocked_alignment_required",
+      "visual_status": "candidate_for_approval",
+      "requirement_refs": [
+        "REQ-ACT-001"
+      ],
+      "flow_refs": [
+        "FLOW-ACTIVATE-001"
+      ],
+      "asset_refs": [
+        "mark.guidance",
+        "mark.authority",
+        "motif.botanical.goal-branch"
+      ],
+      "contract_path": "design/screens/SCR-31-goal-selection/screen.md",
+      "preview_path": "design/screens/SCR-31-goal-selection/preview.webp",
+      "source_reference": "design/screens/SCR-31-goal-selection/source.png"
+    },
+    {
+      "screen_id": "SCR-32",
+      "name": "Attention",
+      "slug": "attention",
+      "revision": 0,
+      "release_tier": "Core Beta",
+      "platforms": [
+        "Android",
+        "Web"
+      ],
+      "disposition": "new_required",
+      "build_gate": "blocked_alignment_required",
+      "visual_status": "missing_required_design",
+      "requirement_refs": [
+        "REQ-ATTN-001",
+        "REQ-ACK-001",
+        "REQ-ADJUST-001",
+        "REQ-REVIEW-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ATTENTION-001",
+        "FLOW-ADJUST-001"
+      ],
+      "asset_refs": [],
+      "contract_path": "design/screens/SCR-32-attention/screen.md",
+      "preview_path": null,
+      "source_reference": null
+    },
+    {
+      "screen_id": "SCR-33",
+      "name": "Acknowledgement Composer",
+      "slug": "acknowledgement-composer",
+      "revision": 0,
+      "release_tier": "Core Beta",
+      "platforms": [
+        "Android",
+        "Web"
+      ],
+      "disposition": "new_required",
+      "build_gate": "blocked_alignment_required",
+      "visual_status": "missing_required_design",
+      "requirement_refs": [
+        "REQ-ACK-001",
+        "REQ-IDEMP-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [
+        "FLOW-ATTENTION-001"
+      ],
+      "asset_refs": [],
+      "contract_path": "design/screens/SCR-33-acknowledgement-composer/screen.md",
+      "preview_path": null,
+      "source_reference": null
+    },
+    {
+      "screen_id": "SCR-34",
+      "name": "Timezone and Day Boundary",
+      "slug": "timezone-day-boundary",
+      "revision": 0,
+      "release_tier": "Core Beta",
+      "platforms": [
+        "Android",
+        "Web"
+      ],
+      "disposition": "new_required",
+      "build_gate": "blocked_alignment_required",
+      "visual_status": "missing_required_design",
+      "requirement_refs": [
+        "REQ-TIME-001",
+        "REQ-RECOVERY-001"
+      ],
+      "flow_refs": [],
+      "asset_refs": [],
+      "contract_path": "design/screens/SCR-34-timezone-day-boundary/screen.md",
+      "preview_path": null,
+      "source_reference": null
     }
-  ]
+  ],
+  "coverage_manifest_path": "manifests/design-coverage.json"
 }

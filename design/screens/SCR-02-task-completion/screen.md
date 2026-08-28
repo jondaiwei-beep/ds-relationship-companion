@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-COMPLETE-001`, `REQ-IDEMP-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-RECEIVE-001`
+- Job to be done: Complete one active occurrence and understand that partner response is still pending.
+- Entry and preconditions: Authorized assignee opens an Active occurrence.
+- Roles and permissions: Only allowed actor completes; optional note visibility follows the product contract.
+- Business logic and state transitions: Explicit send creates one Completion and moves the occurrence to WaitingAck; retry cannot duplicate it.
+- Acceptance criteria: UI separates Completion from Acknowledgement and returns the latest server state after retry.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -77,4 +77,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

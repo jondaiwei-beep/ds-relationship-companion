@@ -5,13 +5,14 @@
 For any UI task, follow this exact sequence:
 
 1. Read `manifests/screen-index.json` and locate the requested Screen ID.
-2. Open the linked `design/screens/SCR-*/screen.md` contract.
-3. Read every linked product requirement and flow. An empty or `TBD` requirement reference is a blocker.
-4. View the co-located `preview.webp`; use it for hierarchy and visual comparison only.
-5. Resolve every asset ID through `manifests/assets.json`, then load its registered SVG master.
-6. Read global tokens and any linked component contracts.
-7. Implement only when the screen gate is `ready_for_build` and every required asset is available.
-8. Render and record QA evidence at the paths required by the screen contract.
+2. Read `manifests/design-coverage.json` to understand whether the surface is retained, redesigned, missing, state-only, or future scope.
+3. Open the linked `design/screens/SCR-*/screen.md` contract.
+4. Read every linked product requirement, flow and domain contract. An empty Core Beta requirement reference is a blocker.
+5. View the approved co-located preview and required state/platform variants; use them for hierarchy and visual comparison only. A null preview or `missing_required_design` status is a blocker.
+6. Resolve every asset ID through `manifests/assets.json`, then load its registered SVG master.
+7. Read global tokens and any linked component contracts.
+8. Implement only when the screen gate is `ready_for_build` and every required asset is available.
+9. Render and record QA evidence at the paths required by the screen contract.
 
 Do not search the repository for a visually similar page and assume it is the target. Screen IDs and manifest links are authoritative.
 

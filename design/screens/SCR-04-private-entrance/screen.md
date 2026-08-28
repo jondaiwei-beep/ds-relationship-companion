@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-TRUST-001`, `REQ-AUTH-001`
+- Flow IDs: None
+- Job to be done: Enter a private adult relationship space with clear trust framing.
+- Entry and preconditions: First open or signed-out launch.
+- Roles and permissions: Any adult user; no relationship content is exposed before authorization.
+- Business logic and state transitions: Continue to sign in or account creation; communicate private-by-design without fetish or consent claims.
+- Acceptance criteria: 18+/privacy expectations are clear and protected content remains unavailable.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

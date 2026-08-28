@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-PRIVACY-001`
+- Flow IDs: None
+- Job to be done: Understand and control what is private or shared.
+- Entry and preconditions: Member opens Privacy from Settings/Dynamic.
+- Roles and permissions: Each member controls own private data; a partner cannot expand it.
+- Business logic and state transitions: Simplify Core Beta to explicit Private/Shared basics; advanced presence/activity/App Lock are feature-gated P1.
+- Acceptance criteria: Visibility is understandable and server authorization enforces it.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

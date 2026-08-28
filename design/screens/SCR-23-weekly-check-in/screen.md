@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-WEEKLY-001`, `REQ-HISTORY-001`
+- Flow IDs: `FLOW-WEEKLY-001`
+- Job to be done: Reflect lightly on real connected moments and choose next-week direction.
+- Entry and preconditions: D7 card from Us after enough real events exist.
+- Roles and permissions: Both current members may view shared weekly facts; private content stays excluded.
+- Business logic and state transitions: Simplify to connected/acknowledged/highlight facts and Keep/Adjust/Pause; no comparative score or multi-step questionnaire.
+- Acceptance criteria: The action routes back to the next rhythm and only human/domain events support the summary.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

@@ -4,7 +4,13 @@ This directory is the fastest and safest entry point for UI implementation. Open
 
 ## Package contract
 
-Each `SCR-*` folder contains `screen.md` and `preview.webp`. The contract answers three implementation questions in one place:
+Each `SCR-*` folder starts with `screen.md`. An approved primary visual uses `preview.webp`; complex surfaces may also contain:
+
+- `states/` — loading, empty, error, offline, domain and confirmation variants
+- `platforms/android/` and `platforms/web/` — only when platform presentation differs
+- `assets.md` — screen-specific asset usage when the main contract would become noisy
+
+The contract answers three implementation questions in one place:
 
 1. What does this page do, and which approved product requirements control it?
 2. What must it look and behave like across states and platforms?

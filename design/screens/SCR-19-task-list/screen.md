@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-TODAY-001`, `REQ-RECOVERY-001`
+- Flow IDs: `FLOW-RECEIVE-001`
+- Job to be done: Scan today's prioritized items when more than one action exists.
+- Entry and preconditions: Receiving Today list state.
+- Roles and permissions: Receiving member sees authorized current-Dynamic and own items.
+- Business logic and state transitions: Merge into the Today family as its prioritized-list state, not a separate primary navigation tab.
+- Acceptance criteria: 1–3 important items remain clear before later/optional content.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -75,4 +75,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

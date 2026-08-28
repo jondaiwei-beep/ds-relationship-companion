@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-AUTH-001`, `REQ-TIME-001`, `REQ-PRIVACY-001`
+- Flow IDs: None
+- Job to be done: Manage account, privacy, time and enabled support settings.
+- Entry and preconditions: Authenticated member opens Settings from avatar.
+- Roles and permissions: Account owner controls own account/device preferences.
+- Business logic and state transitions: Add timezone/day-boundary entry; hide Subscription/App Lock when feature-gated; preserve sign out and privacy.
+- Acceptance criteria: Settings expose only current-release capabilities and no raw backend state names.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

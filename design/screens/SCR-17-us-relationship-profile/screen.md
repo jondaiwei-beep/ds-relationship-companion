@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-HISTORY-001`, `REQ-WEEKLY-001`
+- Flow IDs: `FLOW-WEEKLY-001`
+- Job to be done: See what recently happened between us and reach the light weekly reflection.
+- Entry and preconditions: Authorized member opens Us/Me.
+- Roles and permissions: Current Dynamic member; Solo uses Me; visibility follows each event.
+- Business logic and state transitions: Reframe around recent real RelationshipEvents plus one D7 card; remove complex relationship scoring/profile emphasis.
+- Acceptance criteria: System reminders do not count as connected moments and user can reach Keep/Adjust/Pause.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -77,4 +77,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

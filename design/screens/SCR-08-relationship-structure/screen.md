@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-ACT-002`, `REQ-PRIVACY-001`
+- Flow IDs: `FLOW-ACTIVATE-001`
+- Job to be done: Choose Couple/Solo and enough structure to prepare a Starter Rhythm.
+- Entry and preconditions: After Goal during minimal setup.
+- Roles and permissions: Creator or Solo member; private data remains private by default.
+- Business logic and state transitions: Collect Couple/Solo, structure, boundaries lite and optional LDR/Together without a long settings workflow.
+- Acceptance criteria: Setup stays short, preserves agency and leads directly to Starter Rhythm.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -72,4 +72,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-

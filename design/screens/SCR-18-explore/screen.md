@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: None — Public MVP reference
+- Flow IDs: None
+- Job to be done: Future Explore by desired feeling, outside Core Beta.
+- Entry and preconditions: Feature-gated after Core Beta evidence.
+- Roles and permissions: Future contract required.
+- Business logic and state transitions: Core Beta may use a restrained placeholder/starter suggestions but not this full content surface.
+- Acceptance criteria: No accidental Core Beta scope expansion.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -75,4 +75,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **future_reference**.
-

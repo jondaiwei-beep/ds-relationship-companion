@@ -15,15 +15,15 @@
 
 ## 1. Product contract
 
-- Requirement IDs: **TBD — pending Notion migration and reconciliation**
-- Flow IDs: **TBD — pending Notion migration and reconciliation**
-- Job to be done: **TBD**
-- Entry and preconditions: **TBD**
-- Roles and permissions: **TBD**
-- Business logic and state transitions: **TBD**
-- Acceptance criteria: **TBD**
+- Requirement IDs: `REQ-ACT-002`, `REQ-PRIVACY-001`
+- Flow IDs: `FLOW-ACTIVATE-001`
+- Job to be done: Choose a starting role preset as one part of minimal setup.
+- Entry and preconditions: After Goal; before Starter Rhythm.
+- Roles and permissions: Creator or Solo member; preset is editable and never removes agency.
+- Business logic and state transitions: This screen must be merged/resequenced so Goal precedes role and role remains a lightweight starting context.
+- Acceptance criteria: User understands the preset is not consent or permanent identity and can continue without a permission matrix.
 
-The preview does not authorize assumptions about behavior. This package stays blocked until these fields link to approved files under `product/`.
+Product references now point to the migrated CURRENT v2 contracts. This package remains blocked until its visual/state family is reconciled and approved; the preview does not authorize additional assumptions.
 
 ### Known alignment work
 
@@ -73,4 +73,3 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Android comparison recorded
 
 Current result: **blocked_alignment_required**.
-
