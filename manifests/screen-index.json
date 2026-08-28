@@ -229,7 +229,7 @@
     },
     {
       "screen_id": "SCR-07",
-      "name": "Role Orientation",
+      "name": "Minimal Setup — Mode and Starting Role",
       "slug": "role-orientation",
       "revision": 1,
       "release_tier": "Core Beta",
@@ -246,16 +246,20 @@
         "FLOW-ACTIVATE-001"
       ],
       "asset_refs": [
-        "mark.guidance"
+        "mark.guidance",
+        "mark.partner-bond"
       ],
       "contract_path": "design/screens/SCR-07-role-orientation/screen.md",
       "preview_path": "design/screens/SCR-07-role-orientation/preview.webp",
       "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/07-role-orientation.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-07-role-orientation/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-07-role-orientation/candidates/rev-2/source.png"
     },
     {
       "screen_id": "SCR-08",
-      "name": "Relationship Structure",
+      "name": "Minimal Setup — Structure and Context",
       "slug": "relationship-structure",
       "revision": 1,
       "release_tier": "Core Beta",
@@ -272,12 +276,17 @@
         "FLOW-ACTIVATE-001"
       ],
       "asset_refs": [
-        "mark.partner-bond"
+        "mark.partner-bond",
+        "icon.timezone",
+        "icon.boundaries"
       ],
       "contract_path": "design/screens/SCR-08-relationship-structure/screen.md",
       "preview_path": "design/screens/SCR-08-relationship-structure/preview.webp",
       "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/08-relationship-structure.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-08-relationship-structure/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-08-relationship-structure/candidates/rev-2/source.png"
     },
     {
       "screen_id": "SCR-09",
@@ -364,7 +373,7 @@
     },
     {
       "screen_id": "SCR-12",
-      "name": "Relationship Foundation",
+      "name": "Starter Rhythm",
       "slug": "relationship-foundation",
       "revision": 1,
       "release_tier": "Core Beta",
@@ -381,12 +390,17 @@
         "FLOW-ACTIVATE-001"
       ],
       "asset_refs": [
-        "emblem.ritual.evening"
+        "emblem.ritual.evening",
+        "mark.partner-bond",
+        "mark.check-in"
       ],
       "contract_path": "design/screens/SCR-12-relationship-foundation/screen.md",
       "preview_path": "design/screens/SCR-12-relationship-foundation/preview.webp",
       "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/12-relationship-foundation.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-12-relationship-foundation/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-12-relationship-foundation/candidates/rev-2/source.png"
     },
     {
       "screen_id": "SCR-13",

@@ -59,10 +59,11 @@
         "SCR-08"
       ],
       "action": "merge_redesign",
+      "candidate_status": "rev_2_available_for_approval",
       "missing": [
-        "outcome-first sequence",
-        "boundaries lite",
-        "LDR/Together"
+        "loading/error/recovery states",
+        "Web adaptation",
+        "product owner approval"
       ]
     },
     {
@@ -76,9 +77,11 @@
         "SCR-12"
       ],
       "action": "replace",
+      "candidate_status": "rev_2_available_for_approval",
       "missing": [
-        "1 Ritual + 1 Expectation + 1 Check-in",
-        "editable start state"
+        "replace/edit interaction states",
+        "loading/error/recovery states",
+        "product owner approval"
       ]
     },
     {

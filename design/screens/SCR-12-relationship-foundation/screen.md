@@ -1,4 +1,4 @@
-# SCR-12 — Relationship Foundation
+# SCR-12 — Starter Rhythm
 
 ## Metadata
 
@@ -6,11 +6,14 @@
 |---|---|
 | Screen ID | `SCR-12` |
 | Revision | `1` |
+| Candidate revision | `2 — approval pending` |
 | Release tier | Core Beta |
 | Platforms | Android |
 | Disposition | `replace_or_merge` |
 | Build gate | `blocked_alignment_required` |
-| Visual reference | [`preview.webp`](preview.webp) |
+| Released legacy reference | [`preview.webp`](preview.webp) |
+| Candidate preview | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
+| Candidate lossless source | [`candidates/rev-2/source.png`](candidates/rev-2/source.png) |
 | Preserved source | `03 Pairing Consent and Foundation/12-relationship-foundation.webp` |
 
 ## 1. Product contract
@@ -31,6 +34,10 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 ## 2. UI contract
 
+- Candidate revision 2 replaces principles/governance with a three-part editorial rhythm score: 1 Ritual + 1 Expectation + 1 Check-in.
+- Each item can be replaced without rebuilding the whole setup; a second Expectation remains optional.
+- The continuous numbered ledger makes the three items feel like one intentional rhythm, not a checklist or card dashboard.
+
 - Reference viewport: **390 × 844 logical pixels**; source preview is 853 × 1844 pixels.
 - Visual direction: **V5 Warm Authority / Quiet Authority**.
 - Palette, type, spacing and component values must resolve through `design/tokens/` and `design/system/`.
@@ -44,7 +51,7 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
-| Default | TBD | Match approved hierarchy after behavior alignment | blocked |
+| Default | Use candidate revision 2 after approval | Three-part starter rhythm | candidate |
 | Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
 | Empty | TBD | Explain next safe action without invented urgency | blocked |
 | Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
@@ -57,6 +64,8 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
 | `emblem.ritual.evening` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `mark.partner-bond` | Expectation relationship mark | `manifests/assets.json` | planned — SVG master required |
+| `mark.check-in` | Daily Check-in mark | `manifests/assets.json` | planned — SVG master required |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

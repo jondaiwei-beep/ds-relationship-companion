@@ -6,8 +6,8 @@ Status: **first reconciliation pass, 2026-08-28**. V5 Warm Authority remains loc
 |---|---|---|---|---|
 | Private entry / auth | `REQ-AUTH-001`, `REQ-TRUST-001` | `SCR-04–06` | retain and align | Magic-link sent/callback, expired session, validation and recovery states. |
 | Goal selection | `REQ-ACT-001`, `FLOW-ACTIVATE-001` | missing | **new screen `SCR-31`** | Outcome-first design before role/configuration. |
-| Minimal setup | `REQ-ACT-002` | `SCR-07`, `SCR-08` | merge/redesign | Goal must precede role; combine Couple/Solo, role preset, structure, boundaries lite and LDR/Together without dense configuration. |
-| Starter Rhythm | `REQ-ACT-003` | `SCR-12` | replace | 1 Ritual + 1 Expectation + 1 Check-in, editable and startable. |
+| Minimal setup | `REQ-ACT-002` | `SCR-07`, `SCR-08` | **rev-2 candidates complete** | Mode/role and structure/context primary candidates exist; still require state, Web adaptation and approval. |
+| Starter Rhythm | `REQ-ACT-003` | `SCR-12` | **rev-2 candidate complete** | 1 Ritual + 1 Expectation + 1 Check-in candidate exists; still requires replace/edit interaction states and approval. |
 | Invite creator | `REQ-INVITE-001` | `SCR-09` | retain + state family | Pending, accepted, expired, revoked, share/copy recovery; Android/Web share differences. |
 | Web Join trust | `REQ-JOIN-001` | `SCR-10`, `SCR-11` | merge/redesign | Inviter, intention, shared/private boundary, leave right, auth return and safe expired/revoked/stale states. |
 | First shared interaction | `REQ-FIRST-001` | partial in `SCR-01/02` | add activation state | Small check-in or starter ritual; no empty success page. |

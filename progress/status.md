@@ -15,6 +15,7 @@
 - Notion CURRENT v2 overview, Core Beta requirements, flow contracts and domain/state contracts migrated into GitHub
 - Core Beta product × design coverage matrix with four justified new primary surfaces
 - Requirement/flow references and product contracts backfilled across all existing Screen Packages
+- High-fidelity activation candidates completed for Goal, Minimal Setup mode/role, Minimal Setup structure/context and Starter Rhythm
 
 ## Next alignment work
 

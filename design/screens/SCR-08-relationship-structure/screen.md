@@ -1,4 +1,4 @@
-# SCR-08 — Relationship Structure
+# SCR-08 — Minimal Setup · Structure and Context
 
 ## Metadata
 
@@ -6,11 +6,14 @@
 |---|---|
 | Screen ID | `SCR-08` |
 | Revision | `1` |
+| Candidate revision | `2 — approval pending` |
 | Release tier | Core Beta |
 | Platforms | Android |
 | Disposition | `retain_and_align` |
 | Build gate | `blocked_alignment_required` |
-| Visual reference | [`preview.webp`](preview.webp) |
+| Released legacy reference | [`preview.webp`](preview.webp) |
+| Candidate preview | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
+| Candidate lossless source | [`candidates/rev-2/source.png`](candidates/rev-2/source.png) |
 | Preserved source | `02 Role and Pairing Setup/08-relationship-structure.webp` |
 
 ## 1. Product contract
@@ -31,6 +34,10 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 ## 2. UI contract
 
+- Candidate revision 2 makes Light / Steady / Defined a single open-arc control with Steady selected.
+- Long-distance/Together is a secondary context line; timezone and optional boundaries use quieter editorial rows.
+- The candidate intentionally avoids inventing unapproved boundary choices and avoids a settings-card stack.
+
 - Reference viewport: **390 × 844 logical pixels**; source preview is 853 × 1844 pixels.
 - Visual direction: **V5 Warm Authority / Quiet Authority**.
 - Palette, type, spacing and component values must resolve through `design/tokens/` and `design/system/`.
@@ -44,7 +51,7 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
-| Default | TBD | Match approved hierarchy after behavior alignment | blocked |
+| Default | Use candidate revision 2 after approval | Structure + context hierarchy | candidate |
 | Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
 | Empty | TBD | Explain next safe action without invented urgency | blocked |
 | Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
@@ -57,6 +64,8 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
 | `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `icon.timezone` | Detected timezone row | `manifests/assets.json` | planned — SVG master required |
+| `icon.boundaries` | Optional boundaries/preferences row | `manifests/assets.json` | planned — SVG master required |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

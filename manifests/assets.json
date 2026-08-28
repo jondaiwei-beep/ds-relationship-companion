@@ -12,7 +12,7 @@
   "assets": [
     {"id":"mark.authority","kind":"mark","source_path":"design/assets/svg/mark-authority.svg","status":"planned","used_by":["SCR-00","SCR-04","SCR-05","SCR-06","SCR-31"]},
     {"id":"mark.presence","kind":"mark","source_path":"design/assets/svg/mark-presence.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-03","SCR-13"]},
-    {"id":"mark.partner-bond","kind":"mark","source_path":"design/assets/svg/mark-partner-bond.svg","status":"planned","used_by":["SCR-00","SCR-08","SCR-09","SCR-10","SCR-11","SCR-17","SCR-24","SCR-30"]},
+    {"id":"mark.partner-bond","kind":"mark","source_path":"design/assets/svg/mark-partner-bond.svg","status":"planned","used_by":["SCR-00","SCR-07","SCR-08","SCR-09","SCR-10","SCR-11","SCR-12","SCR-17","SCR-24","SCR-30"]},
     {"id":"mark.guidance","kind":"mark","source_path":"design/assets/svg/mark-guidance.svg","status":"planned","used_by":["SCR-00","SCR-07","SCR-31","SCR-34"]},
     {"id":"emblem.ritual.evening","kind":"emblem","source_path":"design/assets/svg/emblem-ritual-evening.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-12"]},
     {"id":"nav.today","kind":"navigation_icon","source_path":"design/assets/svg/nav-today.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-02","SCR-03","SCR-13","SCR-17","SCR-18","SCR-19"]},
@@ -22,6 +22,9 @@
     {"id":"state.acknowledged","kind":"state_icon","source_path":"design/assets/svg/state-acknowledged.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-03"]},
     {"id":"state.completed","kind":"state_icon","source_path":"design/assets/svg/state-completed.svg","status":"planned","used_by":["SCR-00","SCR-02","SCR-14"]},
     {"id":"state.locked","kind":"state_icon","source_path":"design/assets/svg/state-locked.svg","status":"planned","used_by":["SCR-00","SCR-04","SCR-05"]},
-    {"id":"motif.botanical.goal-branch","kind":"decorative_motif","source_path":"design/assets/svg/motif-botanical-goal-branch.svg","status":"planned","used_by":["SCR-31"]}
+    {"id":"motif.botanical.goal-branch","kind":"decorative_motif","source_path":"design/assets/svg/motif-botanical-goal-branch.svg","status":"planned","used_by":["SCR-31"]},
+    {"id":"icon.timezone","kind":"functional_icon","source_path":"design/assets/svg/icon-timezone.svg","status":"planned","used_by":["SCR-08","SCR-28","SCR-34"]},
+    {"id":"icon.boundaries","kind":"functional_icon","source_path":"design/assets/svg/icon-boundaries.svg","status":"planned","used_by":["SCR-08","SCR-26"]},
+    {"id":"mark.check-in","kind":"mark","source_path":"design/assets/svg/mark-check-in.svg","status":"planned","used_by":["SCR-12","SCR-22"]}
   ]
 }
