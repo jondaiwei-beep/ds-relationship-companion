@@ -8,14 +8,14 @@ Status: **first reconciliation pass, 2026-08-28**. V5 Warm Authority remains loc
 | Goal selection | `REQ-ACT-001`, `FLOW-ACTIVATE-001` | missing | **new screen `SCR-31`** | Outcome-first design before role/configuration. |
 | Minimal setup | `REQ-ACT-002` | `SCR-07`, `SCR-08` | **rev-2 candidates complete** | Mode/role and structure/context primary candidates exist; still require state, Web adaptation and approval. |
 | Starter Rhythm | `REQ-ACT-003` | `SCR-12` | **rev-2 candidate complete** | 1 Ritual + 1 Expectation + 1 Check-in candidate exists; still requires replace/edit interaction states and approval. |
-| Invite creator | `REQ-INVITE-001` | `SCR-09` | retain + state family | Pending, accepted, expired, revoked, share/copy recovery; Android/Web share differences. |
-| Web Join trust | `REQ-JOIN-001` | `SCR-10`, `SCR-11` | merge/redesign | Inviter, intention, shared/private boundary, leave right, auth return and safe expired/revoked/stale states. |
+| Invite creator | `REQ-INVITE-001` | `SCR-09` | **rev-2 Pending candidate complete** | Add accepted, expired, revoked and share/copy recovery variants; preserve Android/Web share differences. |
+| Web Join trust | `REQ-JOIN-001` | `SCR-10`, `SCR-11` | **rev-2 mobile-Web candidate complete** | Trust, shared/private boundary and leave right are represented; add auth-return and safe expired/revoked/stale states. |
 | First shared interaction | `REQ-FIRST-001` | partial in `SCR-01/02` | add activation state | Small check-in or starter ritual; no empty success page. |
 | Receiving Today | `REQ-TODAY-001`, `FLOW-RECEIVE-001` | `SCR-01`, `SCR-19` | combine as one page family | Ritual-focus state plus prioritized 1–3 item list, partner context, recent response, check-in and later/optional. |
 | Direction-giving Attention | `REQ-ATTN-001`, `FLOW-ATTENTION-001` | missing | **new screen `SCR-32`** | Priority queue with meaningful inline responses; no Proposal inbox. |
 | Expectation / Ritual detail | `REQ-EXPECT-001`, `REQ-ADJUST-001` | `SCR-14` | retain and align | Complete, Discuss, Request New Time, Can't Do and role/state variants; remove Proof. |
-| Complete / Waiting | `REQ-COMPLETE-001` | `SCR-02` | retain and align | Completion note visibility, idempotent retry and explicit Waiting for Human Response. |
-| Acknowledgement composer | `REQ-ACK-001` | missing; `SCR-03` is received state | **new screen/overlay `SCR-33`** | Acknowledge/Praise/Comment/Review; human send is explicit; ≤2 taps for basic Ack. |
+| Complete / Waiting | `REQ-COMPLETE-001` | `SCR-02` | **rev-2 candidate complete** | Completion and Waiting are now explicit; add retry/current-state recovery and approve private-note visibility. |
+| Acknowledgement composer | `REQ-ACK-001` | `SCR-33` rev-1 candidate; `SCR-03` is received state | **new compact response overlay** | Four response modes and explicit human send are represented; add empty/retry/Web variants and approve. |
 | Acknowledgement received | `REQ-ACK-001` | `SCR-03` | retain | Distinguish partner-authored text from system labels. |
 | Daily Check-in | `REQ-CHECKIN-001` | `SCR-22` is advanced reflection | replace | Mood, energy, need, optional note, Private/Shared choice; remove essay-first hierarchy. |
 | Adjustment request / resolution | `REQ-ADJUST-001`, `REQ-REVIEW-001`, `FLOW-ADJUST-001` | partial `SCR-14`, `SCR-21` | add state families; do not restore Agreement flow | Request, partner resolution, Needs Review, Excuse/Cancel and error/retry variants. |
@@ -35,7 +35,7 @@ Only four primary surfaces are currently justified: Goal (`SCR-31`), Attention (
 
 ## Visual production order
 
-1. First Connected Vertical Slice: Goal → Minimal Setup → Starter Rhythm → Invite/Join → Complete/Waiting → Acknowledgement.
+1. First Connected Vertical Slice: primary candidates complete; finish Invite/Join lifecycle, recovery and approval states.
 2. Daily Loop: Today list → Attention → Check-in.
 3. Reality Fit: adjustment → Needs Review → Pause/Resume → timezone/day boundary.
 4. Privacy/Async: Invite/auth failures → notification permissions → Leave/Block/stale states.

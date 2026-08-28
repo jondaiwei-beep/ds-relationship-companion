@@ -94,12 +94,13 @@
         "SCR-09"
       ],
       "action": "add_state_family",
+      "candidate_status": "rev_2_pending_state_available_for_approval",
       "missing": [
-        "pending",
         "accepted",
         "expired",
         "revoked",
-        "share recovery"
+        "share recovery",
+        "product owner approval"
       ]
     },
     {
@@ -114,11 +115,12 @@
         "SCR-11"
       ],
       "action": "merge_redesign",
+      "candidate_status": "rev_2_mobile_web_trust_available_for_approval",
       "missing": [
         "auth return",
-        "shared/private boundary",
-        "leave right",
-        "expired/revoked/stale"
+        "expired/revoked/stale",
+        "session recovery",
+        "product owner approval"
       ]
     },
     {
@@ -184,10 +186,11 @@
         "SCR-02"
       ],
       "action": "align",
+      "candidate_status": "rev_2_complete_waiting_available_for_approval",
       "missing": [
         "retry",
-        "note visibility",
-        "waiting current-state variants"
+        "offline/current-state recovery",
+        "product approval for note visibility"
       ]
     },
     {
@@ -200,9 +203,12 @@
         "SCR-33"
       ],
       "action": "add_primary_screen",
+      "candidate_status": "rev_1_primary_available_for_approval",
       "missing": [
-        "approved primary preview",
-        "Acknowledge/Praise/Comment/Review"
+        "empty/validation/retry states",
+        "offline/current-state recovery",
+        "Web adaptation",
+        "product owner approval"
       ]
     },
     {

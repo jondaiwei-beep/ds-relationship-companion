@@ -88,7 +88,7 @@
     },
     {
       "screen_id": "SCR-02",
-      "name": "Task Completion",
+      "name": "Completion and Waiting for Human Response",
       "slug": "task-completion",
       "revision": 1,
       "release_tier": "Core Beta",
@@ -106,7 +106,10 @@
         "FLOW-RECEIVE-001"
       ],
       "asset_refs": [
+        "mark.presence",
+        "emblem.ritual.evening",
         "state.completed",
+        "state.waiting-response",
         "nav.today",
         "nav.dynamic",
         "nav.explore",
@@ -115,7 +118,10 @@
       "contract_path": "design/screens/SCR-02-task-completion/screen.md",
       "preview_path": "design/screens/SCR-02-task-completion/preview.webp",
       "source_reference": "design/reference/webp/v1/00 Visual Baseline/02-task-completion.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-02-task-completion/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-02-task-completion/candidates/rev-2/source.png"
     },
     {
       "screen_id": "SCR-03",
@@ -309,16 +315,22 @@
         "FLOW-ACTIVATE-001"
       ],
       "asset_refs": [
-        "mark.partner-bond"
+        "mark.partner-bond",
+        "icon.share",
+        "icon.copy",
+        "icon.revoke"
       ],
       "contract_path": "design/screens/SCR-09-invite-partner/screen.md",
       "preview_path": "design/screens/SCR-09-invite-partner/preview.webp",
       "source_reference": "design/reference/webp/v1/02 Role and Pairing Setup/09-invite-partner.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-09-invite-partner/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-09-invite-partner/candidates/rev-2/source.png"
     },
     {
       "screen_id": "SCR-10",
-      "name": "Invitation Received",
+      "name": "Web Join Trust",
       "slug": "invitation-received",
       "revision": 1,
       "release_tier": "Core Beta",
@@ -338,12 +350,18 @@
         "FLOW-ACTIVATE-001"
       ],
       "asset_refs": [
-        "mark.partner-bond"
+        "mark.partner-bond",
+        "icon.shared-space",
+        "icon.private-space",
+        "icon.leave-right"
       ],
       "contract_path": "design/screens/SCR-10-invitation-received/screen.md",
       "preview_path": "design/screens/SCR-10-invitation-received/preview.webp",
       "source_reference": "design/reference/webp/v1/03 Pairing Consent and Foundation/10-invitation-received.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-10-invitation-received/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-10-invitation-received/candidates/rev-2/source.png"
     },
     {
       "screen_id": "SCR-11",
@@ -903,7 +921,7 @@
       ],
       "disposition": "new_required",
       "build_gate": "blocked_alignment_required",
-      "visual_status": "missing_required_design",
+      "visual_status": "candidate_for_approval",
       "requirement_refs": [
         "REQ-ACK-001",
         "REQ-IDEMP-001",
@@ -912,10 +930,21 @@
       "flow_refs": [
         "FLOW-ATTENTION-001"
       ],
-      "asset_refs": [],
+      "asset_refs": [
+        "mark.presence",
+        "emblem.ritual.evening",
+        "state.acknowledged",
+        "response.acknowledge",
+        "response.praise",
+        "response.comment",
+        "response.review"
+      ],
       "contract_path": "design/screens/SCR-33-acknowledgement-composer/screen.md",
       "preview_path": null,
-      "source_reference": null
+      "source_reference": null,
+      "candidate_revision": 1,
+      "candidate_preview_path": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-1/preview.webp",
+      "candidate_source_path": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-1/source.png"
     },
     {
       "screen_id": "SCR-34",

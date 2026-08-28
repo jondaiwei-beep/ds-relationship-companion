@@ -1,4 +1,4 @@
-# SCR-02 — Task Completion
+# SCR-02 — Completion and Waiting for Human Response
 
 ## Metadata
 
@@ -11,6 +11,7 @@
 | Disposition | `retain_and_align` |
 | Build gate | `blocked_alignment_required` |
 | Visual reference | [`preview.webp`](preview.webp) |
+| Candidate revision | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
 | Preserved source | `00 Visual Baseline/02-task-completion.webp` |
 
 ## 1. Product contract
@@ -29,6 +30,15 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 - confirm completion note visibility
 - connect to waiting-for-human-response state
+
+### Candidate revision 2
+
+The revised state removes the misleading “Send for acknowledgement” action. Completion is recorded once, then the UI crosses a clear state bridge into `WaitingAck` while preserving the partner as a human responder rather than an automatic system event.
+
+- `Completed` and `Waiting for Morgan` are distinct states on one transition axis.
+- The private note is explicitly labelled `Only you`.
+- Returning to Today is the only primary action after a successful completion.
+- Candidate approval does not remove the need for retry, offline and current-server-state recovery variants.
 
 ## 2. UI contract
 
@@ -58,6 +68,9 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
 | `state.completed` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `state.waiting-response` | Distinguish waiting for a human response from completion | `manifests/assets.json` | planned — SVG master required |
+| `mark.presence` | Identify the expected human responder | `manifests/assets.json` | planned — SVG master required |
+| `emblem.ritual.evening` | Preserve the Evening Ritual identity | `manifests/assets.json` | planned — SVG master required |
 | `nav.today` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
 | `nav.dynamic` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
 | `nav.explore` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |

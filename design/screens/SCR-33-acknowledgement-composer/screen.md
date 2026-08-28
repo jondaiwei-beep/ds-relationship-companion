@@ -5,12 +5,13 @@
 | Field | Value |
 |---|---|
 | Screen ID | `SCR-33` |
-| Revision | `0 — design pending` |
+| Revision | `0 — candidate revision 1` |
 | Release tier | Core Beta |
 | Platforms | Android, Web |
 | Build gate | `blocked_alignment_required` |
-| Visual status | **missing required design** |
+| Visual status | **candidate for approval** |
 | Coverage | `manifests/design-coverage.json` |
+| Candidate preview | [`candidates/rev-1/preview.webp`](candidates/rev-1/preview.webp) |
 
 ## 1. Product contract
 
@@ -31,11 +32,20 @@ Use a focused bottom sheet or compact response surface rather than a full ceremo
 - Android and Web share meaning; Web presentation must respect browser navigation, direct URL and session behavior.
 - Required design output: `preview.webp`, then domain/recovery variants under `states/` and any true platform variants under `platforms/`.
 
+### Candidate revision 1
+
+The primary candidate uses an Attention detail as context and a compact response sheet as the action surface. Acknowledge, Praise, Comment and Review share one mode row; the member's words remain visually dominant and system suggestions remain subordinate until an explicit send.
+
+- Primary state represented: `Praise` selected with authored copy present.
+- Basic response remains achievable in two taps.
+- `Not now` preserves agency and exits without sending.
+- Candidate approval does not remove the need for empty, validation, retry, offline, stale-current-state, session-loss and Web variants.
+
 ## 3. Required state matrix
 
 | State | Status |
 |---|---|
-| Default | design missing |
+| Default | candidate available for approval |
 | Loading | design missing |
 | Empty/not applicable | design decision required |
 | Error/retry | design missing |
@@ -49,6 +59,11 @@ Use a focused bottom sheet or compact response surface rather than a full ceremo
 |---|---|---|---|
 | `state.acknowledged` | Required visual identity/state role | `manifests/assets.json` | planned |
 | `mark.presence` | Required visual identity/state role | `manifests/assets.json` | planned |
+| `emblem.ritual.evening` | Preserve the source ritual identity | `manifests/assets.json` | planned |
+| `response.acknowledge` | Acknowledge response mode | `manifests/assets.json` | planned |
+| `response.praise` | Praise response mode | `manifests/assets.json` | planned |
+| `response.comment` | Comment response mode | `manifests/assets.json` | planned |
+| `response.review` | Review response mode | `manifests/assets.json` | planned |
 
 ## 5. Build gate
 
@@ -61,4 +76,3 @@ Use a focused bottom sheet or compact response surface rather than a full ceremo
 - [ ] Gate changed to `ready_for_build`
 
 Current result: **missing design; do not implement**.
-

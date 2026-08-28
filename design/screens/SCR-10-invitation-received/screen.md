@@ -1,4 +1,4 @@
-# SCR-10 — Invitation Received
+# SCR-10 — Web Join Trust
 
 ## Metadata
 
@@ -11,6 +11,7 @@
 | Disposition | `retain_and_align` |
 | Build gate | `blocked_alignment_required` |
 | Visual reference | [`preview.webp`](preview.webp) |
+| Candidate revision | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
 | Preserved source | `03 Pairing Consent and Foundation/10-invitation-received.webp` |
 
 ## 1. Product contract
@@ -29,6 +30,16 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 - becomes Web Join trust screen
 - show shared intention, shared/private boundary, leave right
+
+### Candidate revision 2
+
+The revised mobile-Web trust surface makes the invitation legible before authentication or acceptance. It uses an asymmetric shared/private ledger rather than repeating the creator-side sealed-invitation structure.
+
+- Inviter identity and shared intention lead the page.
+- “Shared together” and “Stays yours” are intentionally separate information regions.
+- Joining is explicitly not consent to future expectations.
+- Role choice, pause and leave rights remain with the invitee.
+- Candidate approval does not remove the need for auth-return, expired, revoked, stale and session-recovery variants.
 
 ## 2. UI contract
 
@@ -58,6 +69,9 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
 | `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `icon.shared-space` | Identify information shared by the Dynamic | `manifests/assets.json` | planned — SVG master required |
+| `icon.private-space` | Identify information retained by the member | `manifests/assets.json` | planned — SVG master required |
+| `icon.leave-right` | Reinforce pause/leave agency | `manifests/assets.json` | planned — SVG master required |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

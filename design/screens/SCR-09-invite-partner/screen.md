@@ -11,6 +11,7 @@
 | Disposition | `retain_and_align` |
 | Build gate | `blocked_alignment_required` |
 | Visual reference | [`preview.webp`](preview.webp) |
+| Candidate revision | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
 | Preserved source | `02 Role and Pairing Setup/09-invite-partner.webp` |
 
 ## 1. Product contract
@@ -28,6 +29,16 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 ### Known alignment work
 
 - add pending, accepted, expired, revoked states
+
+### Candidate revision 2
+
+The revised primary surface removes the obsolete onboarding-step treatment and establishes Invite as a post-setup lifecycle. Its sealed-invitation structure gives the pending state clear relational presence without implying that the Dynamic has already begun.
+
+- Primary state represented: `Pending`.
+- Lifecycle is visible as `Pending / Accepted / Expired / Revoked` without turning those labels into simultaneous actions.
+- Share, copy and revoke are distinct operations; revocation remains a deliberate text action.
+- “Nothing begins until both of you agree” is the governing trust statement.
+- Candidate approval does not remove the need for accepted, expired, revoked and recovery variants.
 
 ## 2. UI contract
 
@@ -57,6 +68,9 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
 | `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `icon.share` | Primary native share action | `manifests/assets.json` | planned — SVG master required |
+| `icon.copy` | Copy private invite link/code | `manifests/assets.json` | planned — SVG master required |
+| `icon.revoke` | Revoke the current invite | `manifests/assets.json` | planned — SVG master required |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 
