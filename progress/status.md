@@ -9,6 +9,7 @@
 - Warm Authority primitive colors and spacing baseline
 - Bundled Cormorant Garamond and Inter font files with licenses
 - Flutter font declaration and local Web font CSS
+- Full-resolution GitHub-readable WebP mirror of all 31 design screens
 
 ## Next after GitHub authorization
 
@@ -19,4 +20,3 @@
 5. Freeze semantic color, typography, spacing, radius, stroke, texture, and motion tokens.
 6. Create and register the first SVG master batch.
 7. Complete a `ready_for_build` Today pilot package before importing or modifying Flutter UI code.
-
