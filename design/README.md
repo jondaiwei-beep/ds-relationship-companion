@@ -2,6 +2,15 @@
 
 The design source is composed of approved raster references, executable tokens, bundled fonts, master SVG assets, component contracts, screen specifications, and visual QA evidence. There is no Figma dependency.
 
+## Implementation entry point
+
+`design/screens/` is the developer-facing entry point. Every `SCR-*` folder contains:
+
+- `screen.md` — product links, UI contract, states, assets, acceptance and build gate
+- `preview.webp` — co-located visual reference for that exact revision
+
+The central `reference/webp/v1/` tree remains the preserved visual inventory. A co-located preview is the handoff copy, not a second independent source.
+
 ## Status of current references
 
 The 00–30 generated screens under `reference/raster/v1/` are retained as the current visual inventory. They are not all approved for implementation. The legacy manifest records known alignment gaps and build gates.

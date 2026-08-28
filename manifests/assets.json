@@ -1,20 +1,26 @@
 {
-  "schemaVersion": 1,
-  "status": "initializing",
-  "assets": [],
-  "requiredFirstBatch": [
-    "mark.authority",
-    "mark.presence",
-    "mark.partner-bond",
-    "mark.guidance",
-    "emblem.ritual.evening",
-    "nav.today",
-    "nav.dynamic",
-    "nav.explore",
-    "nav.us",
-    "state.acknowledged",
-    "state.completed",
-    "state.locked"
+  "schema_version": "1.0",
+  "generated_at": "2026-08-28",
+  "status": "svg_master_batch_pending",
+  "allowed_status_values": ["planned", "in_review", "approved", "deprecated"],
+  "rules": [
+    "Every vector used by a screen must have a stable Asset ID.",
+    "Only approved assets with an existing source_path may be used in a ready_for_build screen.",
+    "Do not trace or redraw vectors from raster previews during implementation.",
+    "Application code must reference the generated semantic asset layer, not raw SVG paths in screen code."
+  ],
+  "assets": [
+    {"id":"mark.authority","kind":"mark","source_path":"design/assets/svg/mark-authority.svg","status":"planned","used_by":["SCR-00","SCR-04","SCR-05","SCR-06"]},
+    {"id":"mark.presence","kind":"mark","source_path":"design/assets/svg/mark-presence.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-03","SCR-13"]},
+    {"id":"mark.partner-bond","kind":"mark","source_path":"design/assets/svg/mark-partner-bond.svg","status":"planned","used_by":["SCR-00","SCR-08","SCR-09","SCR-10","SCR-11","SCR-17","SCR-24","SCR-30"]},
+    {"id":"mark.guidance","kind":"mark","source_path":"design/assets/svg/mark-guidance.svg","status":"planned","used_by":["SCR-00","SCR-07"]},
+    {"id":"emblem.ritual.evening","kind":"emblem","source_path":"design/assets/svg/emblem-ritual-evening.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-12"]},
+    {"id":"nav.today","kind":"navigation_icon","source_path":"design/assets/svg/nav-today.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-02","SCR-03","SCR-13","SCR-17","SCR-18","SCR-19"]},
+    {"id":"nav.dynamic","kind":"navigation_icon","source_path":"design/assets/svg/nav-dynamic.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-02","SCR-03","SCR-13","SCR-17","SCR-18","SCR-19"]},
+    {"id":"nav.explore","kind":"navigation_icon","source_path":"design/assets/svg/nav-explore.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-02","SCR-03","SCR-13","SCR-17","SCR-18","SCR-19"]},
+    {"id":"nav.us","kind":"navigation_icon","source_path":"design/assets/svg/nav-us.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-02","SCR-03","SCR-13","SCR-17","SCR-18","SCR-19"]},
+    {"id":"state.acknowledged","kind":"state_icon","source_path":"design/assets/svg/state-acknowledged.svg","status":"planned","used_by":["SCR-00","SCR-01","SCR-03"]},
+    {"id":"state.completed","kind":"state_icon","source_path":"design/assets/svg/state-completed.svg","status":"planned","used_by":["SCR-00","SCR-02","SCR-14"]},
+    {"id":"state.locked","kind":"state_icon","source_path":"design/assets/svg/state-locked.svg","status":"planned","used_by":["SCR-00","SCR-04","SCR-05"]}
   ]
 }
-

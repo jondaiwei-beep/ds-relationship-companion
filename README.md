@@ -12,13 +12,21 @@ Private product, design, and implementation source of truth for the Android app 
 
 ## Reading order
 
-1. `product/README.md`
-2. `design/README.md`
-3. `design/system/`
-4. `design/tokens/design-tokens.json`
-5. `manifests/screens.legacy.v1.json`
-6. `CLAUDE.md` or `AGENTS.md`
-7. `progress/status.md`
+1. `CLAUDE.md` or `AGENTS.md`
+2. `manifests/screen-index.json`
+3. Target `design/screens/SCR-*/screen.md`
+4. Product references linked from that screen contract
+5. Target `preview.webp`
+6. `manifests/assets.json` and the linked SVG masters
+7. `design/tokens/design-tokens.json` and `design/system/`
+8. `progress/status.md`
 
 No implementation may infer missing behavior from a raster image. A screen must be marked `ready_for_build` in the active manifest before development begins.
 
+## Traceability rule
+
+Every buildable UI must form one unbroken chain:
+
+`Product requirement → Screen contract → Visual reference → Asset ID/SVG → Component/code → QA evidence`
+
+If any link is missing, the screen remains blocked.
