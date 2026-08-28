@@ -1,6 +1,6 @@
 # What implementation is waiting on
 
-Written by Claude Code after reading the repository on 2026-08-29.
+Written by Claude Code after reading the repository on 2026-08-29; reconciled with SVG Freeze v1 on 2026-08-28 UTC.
 This file states only what blocks writing Flutter code against this design system.
 It does not propose design decisions — those belong to the design owner.
 
@@ -13,41 +13,33 @@ It does not propose design decisions — those belong to the design owner.
 | Spacing | 4dp scale frozen in `design/tokens/design-tokens.json` | No — usable now |
 | Brand primitives | 6 colors frozen in `design/system/colors.md` | No — but see B-2 |
 | Semantic color tokens | Not defined | **Yes** |
-| SVG masters | 0 of 31 exist; all `planned` | **Yes** |
+| SVG masters | 33 of 33 native masters exist; all `approved` in SVG Freeze v1 | No — B-1 resolved |
 | Today prioritized-list state | Not designed | **Yes, for SCR-01** |
 | Textures | Directory empty | Partially |
 | Radius / control heights | Not specified | Partially |
 
 ---
 
-## B-1 · No SVG master exists (31 assets, all `planned`)
+## B-1 · Resolved by SVG Freeze v1
 
-`design/assets/svg/` contains only a README. Every entry in
-`manifests/assets.json` is `status: planned` with no `source_path` on disk.
+The original 31 requested masters now exist, plus two decorative motifs that
+were required by the approved compositions but absent from the original list:
+`motif.botanical.invite-branch` and `motif.botanical.note-sprig`.
 
-The repository's own rules forbid the workaround:
+- 33/33 SVG source files exist under `design/assets/svg/`.
+- 33/33 entries are `approved` in `manifests/assets.json`.
+- Stable `viewBox`, stroke, rendered sizes and semantic-color allowances are
+  frozen in `manifests/svg-freeze.v1.json`.
+- Source policy and Flutter/Web usage are frozen in
+  `design/assets/svg/SVG-FREEZE.md`.
+- All masters passed real parse/render validation with no embedded text,
+  raster, filters, external references or hard-coded colors.
+- QA evidence is stored in `design/qa/reference/svg-freeze-v1-board.png`,
+  `svg-freeze-v1-botanical-board.png` and `svg-freeze-v1-validation.json`.
 
-> Do not trace or redraw vectors from raster previews during implementation.
-
-That rule is correct and I am following it — a traced curve will not match the
-master, and the ritual emblem is the focal element of SCR-01 and SCR-04/05.
-
-**Smallest batch that unblocks the vertical slice** (Today → Complete →
-Waiting → Acknowledgement, plus the entrance):
-
-| Asset ID | Needed by |
-|---|---|
-| `emblem.ritual.evening` | SCR-01, SCR-02 |
-| `mark.presence` | SCR-01, SCR-02, SCR-03 |
-| `mark.authority` | SCR-04, SCR-05, SCR-06 |
-| `nav.today` `nav.dynamic` `nav.explore` `nav.us` | every tabbed screen |
-| `state.acknowledged` | SCR-01, SCR-03 |
-| `state.completed` | SCR-02 |
-| `state.waiting-response` | SCR-02, SCR-32 |
-
-For each: SVG source, `viewBox`, stroke width, which color token each stroke or
-fill resolves to, and the intended rendered sizes. Then flip `status` to
-`approved` in `manifests/assets.json`.
+Implementation must continue to reference semantic Asset IDs and must not copy
+path data into screens. B-1 no longer blocks the vertical slice; B-2, B-3 and
+the independent screen build gates remain unchanged.
 
 ---
 
