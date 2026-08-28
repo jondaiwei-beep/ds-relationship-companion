@@ -2,6 +2,8 @@
 
 Status: **first reconciliation pass, 2026-08-28**. V5 Warm Authority remains locked. “New” means a genuinely different primary question; “state family” means the same surface with different domain/platform state.
 
+Asset status: **SVG Freeze v1 complete**. All 33 registered brand, ritual, navigation, state, functional, response and botanical masters now resolve to native SVG source files. This removes the vector-asset blocker but does not override independent product/state/platform build gates.
+
 | Product family | Requirements / flow | Current design | Decision | Required visual work |
 |---|---|---|---|---|
 | Private entry / auth | `REQ-AUTH-001`, `REQ-TRUST-001` | `SCR-04–06` | retain and align | Magic-link sent/callback, expired session, validation and recovery states. |

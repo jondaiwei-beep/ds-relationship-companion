@@ -75,13 +75,14 @@ The revised primary surface removes the obsolete onboarding-step treatment and e
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `icon.share` | Primary native share action | `manifests/assets.json` | planned — SVG master required |
-| `icon.copy` | Copy private invite link/code | `manifests/assets.json` | planned — SVG master required |
-| `icon.revoke` | Revoke the current invite | `manifests/assets.json` | planned — SVG master required |
-| `state.invite-accepted` | Accepted lifecycle position and human join | `manifests/assets.json` | planned — SVG master required |
-| `state.invite-expired` | Expired lifecycle position | `manifests/assets.json` | planned — SVG master required |
-| `state.invite-revoked` | Revoked lifecycle position | `manifests/assets.json` | planned — SVG master required |
+| `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.share` | Primary native share action | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.copy` | Copy private invite link/code | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.revoke` | Revoke the current invite | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.invite-accepted` | Accepted lifecycle position and human join | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.invite-expired` | Expired lifecycle position | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.invite-revoked` | Revoked lifecycle position | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `motif.botanical.invite-branch` | Low-contrast editorial branch framing the invitation lifecycle | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

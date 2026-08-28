@@ -56,7 +56,7 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.authority` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `mark.authority` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

@@ -1,0 +1,188 @@
+{
+  "freeze_id": "SVG-FREEZE-V1",
+  "generated_at": "2026-08-28T23:49:18.548Z",
+  "result": "pass",
+  "asset_count": 33,
+  "checks": [
+    "source exists",
+    "SVG parses",
+    "viewBox",
+    "currentColor",
+    "no text",
+    "no raster",
+    "no filters",
+    "no external references",
+    "no hard-coded colors"
+  ],
+  "assets": [
+    {
+      "id": "mark.authority",
+      "source_path": "design/assets/svg/mark-authority.svg",
+      "status": "pass"
+    },
+    {
+      "id": "mark.presence",
+      "source_path": "design/assets/svg/mark-presence.svg",
+      "status": "pass"
+    },
+    {
+      "id": "mark.partner-bond",
+      "source_path": "design/assets/svg/mark-partner-bond.svg",
+      "status": "pass"
+    },
+    {
+      "id": "mark.guidance",
+      "source_path": "design/assets/svg/mark-guidance.svg",
+      "status": "pass"
+    },
+    {
+      "id": "emblem.ritual.evening",
+      "source_path": "design/assets/svg/emblem-ritual-evening.svg",
+      "status": "pass"
+    },
+    {
+      "id": "nav.today",
+      "source_path": "design/assets/svg/nav-today.svg",
+      "status": "pass"
+    },
+    {
+      "id": "nav.dynamic",
+      "source_path": "design/assets/svg/nav-dynamic.svg",
+      "status": "pass"
+    },
+    {
+      "id": "nav.explore",
+      "source_path": "design/assets/svg/nav-explore.svg",
+      "status": "pass"
+    },
+    {
+      "id": "nav.us",
+      "source_path": "design/assets/svg/nav-us.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.acknowledged",
+      "source_path": "design/assets/svg/state-acknowledged.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.completed",
+      "source_path": "design/assets/svg/state-completed.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.waiting-response",
+      "source_path": "design/assets/svg/state-waiting-response.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.invite-accepted",
+      "source_path": "design/assets/svg/state-invite-accepted.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.invite-expired",
+      "source_path": "design/assets/svg/state-invite-expired.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.invite-revoked",
+      "source_path": "design/assets/svg/state-invite-revoked.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.auth-restored",
+      "source_path": "design/assets/svg/state-auth-restored.svg",
+      "status": "pass"
+    },
+    {
+      "id": "state.locked",
+      "source_path": "design/assets/svg/state-locked.svg",
+      "status": "pass"
+    },
+    {
+      "id": "motif.botanical.goal-branch",
+      "source_path": "design/assets/svg/motif-botanical-goal-branch.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.timezone",
+      "source_path": "design/assets/svg/icon-timezone.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.boundaries",
+      "source_path": "design/assets/svg/icon-boundaries.svg",
+      "status": "pass"
+    },
+    {
+      "id": "mark.check-in",
+      "source_path": "design/assets/svg/mark-check-in.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.share",
+      "source_path": "design/assets/svg/icon-share.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.copy",
+      "source_path": "design/assets/svg/icon-copy.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.revoke",
+      "source_path": "design/assets/svg/icon-revoke.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.shared-space",
+      "source_path": "design/assets/svg/icon-shared-space.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.private-space",
+      "source_path": "design/assets/svg/icon-private-space.svg",
+      "status": "pass"
+    },
+    {
+      "id": "icon.leave-right",
+      "source_path": "design/assets/svg/icon-leave-right.svg",
+      "status": "pass"
+    },
+    {
+      "id": "response.acknowledge",
+      "source_path": "design/assets/svg/response-acknowledge.svg",
+      "status": "pass"
+    },
+    {
+      "id": "response.praise",
+      "source_path": "design/assets/svg/response-praise.svg",
+      "status": "pass"
+    },
+    {
+      "id": "response.comment",
+      "source_path": "design/assets/svg/response-comment.svg",
+      "status": "pass"
+    },
+    {
+      "id": "response.review",
+      "source_path": "design/assets/svg/response-review.svg",
+      "status": "pass"
+    },
+    {
+      "id": "motif.botanical.invite-branch",
+      "source_path": "design/assets/svg/motif-botanical-invite-branch.svg",
+      "status": "pass"
+    },
+    {
+      "id": "motif.botanical.note-sprig",
+      "source_path": "design/assets/svg/motif-botanical-note-sprig.svg",
+      "status": "pass"
+    }
+  ],
+  "boards": [
+    "design/qa/reference/svg-freeze-v1-board.png",
+    "design/qa/reference/svg-freeze-v1-botanical-board.png"
+  ]
+}

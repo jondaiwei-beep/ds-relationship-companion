@@ -63,9 +63,9 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `emblem.ritual.evening` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `mark.partner-bond` | Expectation relationship mark | `manifests/assets.json` | planned — SVG master required |
-| `mark.check-in` | Daily Check-in mark | `manifests/assets.json` | planned — SVG master required |
+| `emblem.ritual.evening` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `mark.partner-bond` | Expectation relationship mark | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `mark.check-in` | Daily Check-in mark | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

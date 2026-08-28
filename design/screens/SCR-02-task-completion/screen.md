@@ -67,14 +67,15 @@ The revised state removes the misleading “Send for acknowledgement” action. 
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `state.completed` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `state.waiting-response` | Distinguish waiting for a human response from completion | `manifests/assets.json` | planned — SVG master required |
-| `mark.presence` | Identify the expected human responder | `manifests/assets.json` | planned — SVG master required |
-| `emblem.ritual.evening` | Preserve the Evening Ritual identity | `manifests/assets.json` | planned — SVG master required |
-| `nav.today` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.dynamic` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.explore` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.us` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `state.completed` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.waiting-response` | Distinguish waiting for a human response from completion | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `mark.presence` | Identify the expected human responder | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `emblem.ritual.evening` | Preserve the Evening Ritual identity | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `motif.botanical.note-sprig` | Restrained decorative accent for the private note/response area | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.today` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.dynamic` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.explore` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.us` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

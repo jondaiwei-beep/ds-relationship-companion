@@ -57,13 +57,13 @@ The primary candidate uses an Attention detail as context and a compact response
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `state.acknowledged` | Required visual identity/state role | `manifests/assets.json` | planned |
-| `mark.presence` | Required visual identity/state role | `manifests/assets.json` | planned |
-| `emblem.ritual.evening` | Preserve the source ritual identity | `manifests/assets.json` | planned |
-| `response.acknowledge` | Acknowledge response mode | `manifests/assets.json` | planned |
-| `response.praise` | Praise response mode | `manifests/assets.json` | planned |
-| `response.comment` | Comment response mode | `manifests/assets.json` | planned |
-| `response.review` | Review response mode | `manifests/assets.json` | planned |
+| `state.acknowledged` | Required visual identity/state role | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `mark.presence` | Required visual identity/state role | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `emblem.ritual.evening` | Preserve the source ritual identity | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `response.acknowledge` | Acknowledge response mode | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `response.praise` | Praise response mode | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `response.comment` | Comment response mode | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `response.review` | Review response mode | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 ## 5. Build gate
 

@@ -47,7 +47,7 @@ A calm settings tool with a restrained circular time motif is appropriate, but a
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.guidance` | Required visual identity/state role | `manifests/assets.json` | planned |
+| `mark.guidance` | Required visual identity/state role | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 ## 5. Build gate
 

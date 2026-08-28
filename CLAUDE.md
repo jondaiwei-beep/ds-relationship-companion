@@ -9,10 +9,11 @@ For any UI task, follow this exact sequence:
 3. Open the linked `design/screens/SCR-*/screen.md` contract.
 4. Read every linked product requirement, flow and domain contract. An empty Core Beta requirement reference is a blocker.
 5. View the approved co-located preview and required state/platform variants; use them for hierarchy and visual comparison only. A null preview or `missing_required_design` status is a blocker.
-6. Resolve every asset ID through `manifests/assets.json`, then load its registered SVG master.
-7. Read global tokens and any linked component contracts.
-8. Implement only when the screen gate is `ready_for_build` and every required asset is available.
-9. Render and record QA evidence at the paths required by the screen contract.
+6. Read `manifests/svg-freeze.v1.json` and `design/assets/svg/SVG-FREEZE.md`.
+7. Resolve every asset ID through `manifests/assets.json`, then load its registered SVG master.
+8. Read global tokens and any linked component contracts.
+9. Implement only when the screen gate is `ready_for_build` and every required asset is available.
+10. Render and record QA evidence at the paths required by the screen contract.
 
 Do not search the repository for a visually similar page and assume it is the target. Screen IDs and manifest links are authoritative.
 
@@ -30,6 +31,7 @@ Do not search the repository for a visually similar page and assume it is the ta
 - Use `design/tokens/design-tokens.json`; do not scatter raw Hex values or arbitrary spacing.
 - Bundle and load the fonts in `design/assets/fonts/`.
 - Use registered SVG masters; do not trace or redraw icons from PNG files during implementation.
+- Apply SVG colors through semantic tokens and `currentColor`; do not add raw colors or duplicate path data in screen code.
 - Preserve hierarchy, whitespace, typography, partner presence, ritual marks, and restrained texture.
 - Minimum interaction target: 48 × 48 logical pixels.
 

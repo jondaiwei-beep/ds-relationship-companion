@@ -47,9 +47,9 @@ This is an operational authority surface, not the same centered ritual structure
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.presence` | Required visual identity/state role | `manifests/assets.json` | planned |
-| `state.acknowledged` | Required visual identity/state role | `manifests/assets.json` | planned |
-| `mark.guidance` | Required visual identity/state role | `manifests/assets.json` | planned |
+| `mark.presence` | Required visual identity/state role | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.acknowledged` | Required visual identity/state role | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `mark.guidance` | Required visual identity/state role | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 ## 5. Build gate
 

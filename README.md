@@ -17,9 +17,10 @@ Private product, design, and implementation source of truth for the Android app 
 3. Target `design/screens/SCR-*/screen.md`
 4. Product references linked from that screen contract
 5. Target `preview.webp`
-6. `manifests/assets.json` and the linked SVG masters
-7. `design/tokens/design-tokens.json` and `design/system/`
-8. `progress/status.md`
+6. `manifests/svg-freeze.v1.json` and `design/assets/svg/SVG-FREEZE.md`
+7. `manifests/assets.json` and the linked SVG masters
+8. `design/tokens/design-tokens.json` and `design/system/`
+9. `progress/status.md`
 
 No implementation may infer missing behavior from a raster image. A screen must be marked `ready_for_build` in the active manifest before development begins.
 

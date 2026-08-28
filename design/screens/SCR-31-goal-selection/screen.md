@@ -51,9 +51,9 @@ Use a lighter life-layer composition within Warm Authority. Five choices must fe
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.guidance` | Top-right guidance/emblem role | `manifests/assets.json` | planned |
-| `mark.authority` | Quiet authority identity | `manifests/assets.json` | planned |
-| `motif.botanical.goal-branch` | Low-contrast botanical decorative layer | `manifests/assets.json` | planned |
+| `mark.guidance` | Top-right guidance/emblem role | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `mark.authority` | Quiet authority identity | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `motif.botanical.goal-branch` | Low-contrast botanical decorative layer | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 ## 5. Build gate
 

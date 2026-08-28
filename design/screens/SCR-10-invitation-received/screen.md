@@ -75,12 +75,13 @@ The revised mobile-Web trust surface makes the invitation legible before authent
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `icon.shared-space` | Identify information shared by the Dynamic | `manifests/assets.json` | planned — SVG master required |
-| `icon.private-space` | Identify information retained by the member | `manifests/assets.json` | planned — SVG master required |
-| `icon.leave-right` | Reinforce pause/leave agency | `manifests/assets.json` | planned — SVG master required |
-| `state.invite-expired` | Safe expired-link identity | `manifests/assets.json` | planned — SVG master required |
-| `state.auth-restored` | Identity restored while Join remains pending | `manifests/assets.json` | planned — SVG master required |
+| `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.shared-space` | Identify information shared by the Dynamic | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.private-space` | Identify information retained by the member | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.leave-right` | Reinforce pause/leave agency | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.invite-expired` | Safe expired-link identity | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `state.auth-restored` | Identity restored while Join remains pending | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `motif.botanical.note-sprig` | Restrained trust-layer accent; decorative and non-interactive | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

@@ -57,11 +57,11 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | Asset ID | Purpose | Registry | Status |
 |---|---|---|---|
-| `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.today` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.dynamic` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.explore` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
-| `nav.us` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | planned — SVG master required |
+| `mark.partner-bond` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.today` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.dynamic` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.explore` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `nav.us` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

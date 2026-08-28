@@ -20,6 +20,8 @@
 - Candidate review board stored at `design/qa/reference/connected-loop-invite-response-board.jpg`
 - Invite/Join lifecycle candidates completed for creator Accepted/Expired/Revoked, invitee Expired safe landing and Auth Return
 - Invite lifecycle review board stored at `design/qa/reference/invite-lifecycle-rev2-board.jpg`
+- SVG Freeze v1 completed: 33 native masters (31 registered requirements plus 2 missing botanical motifs)
+- Semantic SVG registry, geometry/color contract, automated validation and two QA boards stored in GitHub-readable paths
 
 ## Next alignment work
 
@@ -27,5 +29,5 @@
 2. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
 3. Add Today prioritized-list, Attention primary queue and Daily Check-in designs.
 4. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
-5. Freeze remaining semantic tokens and create/register the first SVG master batch.
+5. Freeze the remaining non-SVG semantic tokens; SVG Freeze v1 is complete and must remain stable unless versioned.
 6. Change gates only after product, visual, asset and recovery contracts are all approved.
