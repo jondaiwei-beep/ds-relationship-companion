@@ -1,5 +1,22 @@
 # Claude Code implementation contract
 
+## Start here
+
+New session? Read `progress/STATE.md` first — where the project stands, what is
+verified, what is blocked, and what comes next.
+
+Three skills carry what earlier sessions learned:
+
+| Skill | Use it for |
+|---|---|
+| `ds-screen-build` | Building or revising any screen. The order that works. |
+| `ds-design-lookup` | Any question about the design system. Query the manifests rather than guessing. |
+| `ds-pitfalls` | Before debugging something that looks broken while the code looks right. |
+
+`docs/rebuild/how-we-built-scr01.md` is the long form: how the first screen was
+built, and the two ways the first attempts failed.
+
+
 ## Deterministic reading sequence
 
 For any UI task, follow this exact sequence:

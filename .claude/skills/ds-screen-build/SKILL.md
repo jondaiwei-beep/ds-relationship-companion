@@ -143,6 +143,56 @@ run and produces hundreds of lines of self-loading and no review.
 coordinate system, so once they diverge vertically its offsets accumulate error.
 Take the observations; check the measurements.
 
+## Wiring a screen to the server
+
+Three layers, and the boundary between them is the point:
+
+```
+widget        reports which action was chosen; knows nothing about the server
+application   knows how a command reaches the server; knows nothing about layout
+domain_client repositories, already written for every Core Beta surface
+```
+
+Changing copy or spacing must not be able to break a network call, and changing
+a request must not be able to break the design. `SCR-01` does this with
+`features/today/application/today_actions.dart` — copy its shape.
+
+**Idempotency keys are cached per (item, action) and cleared on success.** A
+retry after a network failure is the same attempt and cannot produce a second
+completion; a deliberate second action gets a new key. This is worth a test,
+and the test is worth verifying by removing the cache.
+
+**After a command, invalidate the read provider — never patch the list.**
+Business state has one authority and it is not the client.
+
+**Give every action the same shape and the same failure path.** A design where
+Complete succeeds cleanly and Can't Do fails obscurely makes adjustment feel
+like the lesser choice, and adjustment is a normal path.
+
+**Name the seams to screens that do not exist.** An optional callback left
+unsupplied is honest; a button wired to a placeholder is a lie that survives
+review.
+
+## Keeping a screen maintainable
+
+The owner's standard: simple, clean, well-componentised, no redundant code.
+
+- **One file per widget** under `features/<screen>/presentation/widgets/`. The
+  screen file holds composition only — `SCR-01` is 364 lines of arrangement
+  over twelve widget files.
+- **Extract a repeated frame.** Five recovery states each rebuilt the same
+  header-plus-list scaffold by hand before `RecoveryScaffold`; repetition is how
+  recovery copy drifts apart.
+- **Pass the model, not its parts.** A widget taking `index, asset, title, meta`
+  forces every call site to re-derive what the item already knows.
+- **Pure text mapping belongs in one file**, not as private helpers inside a
+  widget. See `today_meta.dart`.
+- **Layout constants shared by a screen's widgets go in their own file**, or a
+  widget moved out silently loses them.
+- Deviations from a frozen token stay inline **with the reason at the call
+  site**, and are proposed in `design/tokens/PROPOSED-B3.md`. A deviation that
+  appears on a second screen becomes a token.
+
 ## Definition of done
 
 - [ ] Gate was `ready_for_build` before starting
