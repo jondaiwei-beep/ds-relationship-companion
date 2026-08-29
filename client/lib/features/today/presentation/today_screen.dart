@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/shell/bottom_navigation.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../application/today_actions.dart';
-import 'widgets/bottom_navigation.dart';
+
 import 'widgets/compact_row.dart';
 import 'widgets/day_boundary.dart';
 import 'widgets/later_row.dart';
@@ -47,7 +48,7 @@ class TodayScreen extends ConsumerWidget {
   final VoidCallback? onSignIn;
 
   /// Supplied once the other three surfaces exist.
-  final void Function(int index)? onSelectTab;
+  final void Function(NavSurface surface)? onSelectTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,7 +81,10 @@ class TodayScreen extends ConsumerWidget {
                   data: (view) => _Loaded(view: view, dynamicId: dynamicId),
                 ),
               ),
-              TodayBottomNavigation(onSelect: onSelectTab),
+              DsBottomNavigation(
+                current: NavSurface.today,
+                onSelect: onSelectTab,
+              ),
             ],
           ),
         ),

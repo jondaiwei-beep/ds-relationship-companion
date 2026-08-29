@@ -112,11 +112,21 @@ GoRouter createRouter(Ref ref) {
         path: Routes.today,
         // Sign-in cannot know a dynamic id and every real screen needs one.
         // Until the resolver screen exists this is the one built surface.
-        builder: (_, _) => const TodayScreen(dynamicId: 'preview'),
+        builder: (context, _) => TodayScreen(
+          dynamicId: 'preview',
+          onSignIn: () => context.go(Routes.signIn),
+        ),
       ),
       GoRoute(
         path: Routes.dynamicToday,
-        builder: (_, s) => TodayScreen(dynamicId: s.pathParameters['id']!),
+        builder: (context, s) => TodayScreen(
+          dynamicId: s.pathParameters['id']!,
+          onSignIn: () => context.go(Routes.signIn),
+          // `onSelectTab` stays absent: three of the four destinations have
+          // no screen. A bar that routes to a placeholder is worse than one
+          // that does not respond — it teaches that the app is broken rather
+          // than unfinished.
+        ),
       ),
 
       // Named, not stubbed.
