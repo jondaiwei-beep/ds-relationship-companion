@@ -27,7 +27,8 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 | `client/lib/domain_client/` | 12 repositories, all Core Beta surfaces. |
 | `app/` | Frozen design system: 33 SVGs, B-2 tokens, B-4 grain, 8 type roles, 2 themes. 26 tests. |
 | `client/lib/features/today/` | `SCR-01`, built and wired. |
-| `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle. 93 client tests. |
+| `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle, shared form controls. 110 client tests. |
+| `client/lib/features/entrance/` | Auth command layer. The three screens it serves are still gated. |
 | Everything else | 34 screens, gates closed. |
 
 ## What is verified, and how
@@ -52,6 +53,14 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 **Approval** — nine of the eleven screens in the vertical slice are
 `candidate_for_approval`. The design exists; the gate needs the product and
 design owner. Never change a gate yourself.
+
+**The entrance names the product before anyone signs in** — `SCR-04` reads
+"D/s Relationship Companion" and "the dynamic you share" on a signed-out
+surface, while the package, launcher label and web title are all deliberately
+neutral "Companion". A borrowed phone learns what the product is before any
+authentication. Three options are laid out in
+`product/decisions/entrance-state-family.md`; this is a design-owner decision
+because it means changing approved copy.
 
 **Staging serves a stale build** — `ops/deploy-ds.sh` cloned the abandoned
 `JonDai/dsapp`. Fixed in the script, with a guard that repoints an existing

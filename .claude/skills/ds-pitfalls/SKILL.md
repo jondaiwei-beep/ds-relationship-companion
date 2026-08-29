@@ -52,6 +52,20 @@ needs `package:`. `check-screens.py` enforces both.
 **The general lesson: a foundation package that only its own tests consume is
 not proven.** The first real consumer is the test.
 
+## Codex hangs forever reading stdin
+
+`codex exec ... > out.txt &` in a background shell prints one line —
+`Reading additional input from stdin...` — and never returns. It is waiting on
+a stdin that will never close.
+
+```bash
+codex exec ... < /dev/null > out.txt 2>&1     # always redirect stdin
+```
+
+Earlier invocations in this repository worked by accident: they were written
+with a heredoc, which closes stdin on its own. The failure only appears once
+you stop using one.
+
 ## Codex loads a design plugin unless told not to
 
 **Cost: two runs, 728 lines of self-loading, zero output.**
