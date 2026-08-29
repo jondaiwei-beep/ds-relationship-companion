@@ -97,6 +97,18 @@ suggestion. A neutral identity is only neutral where all of those are.
 Notification payloads already carry locator data only (`REQ-NOTIFY-001`); the
 rest is unverified.
 
+**The acknowledgement composer pre-fills words the sender did not write.**
+`SCR-33` shows the text area already containing "I noticed your care and
+intention tonight." Being able to edit it is not the same as having chosen
+it — sending is normally read as accepting a default, which puts the system's
+wording into a partner's mouth and is what red line #2 exists to prevent.
+
+The screen's own contract already disagrees with the picture: it requires
+suggested language to be "visibly system-provided" and "visually subordinate
+until an explicit send". A suggestion offered as a chip the person taps to
+adopt satisfies both; prose sitting in the field does not. Design owner's
+call, because it means changing an approved composition.
+
 **Long-distance has nowhere to live.** `SCR-08` collects Long-distance /
 Together and the server has no column, field or parameter for it. Either the
 data model gains one or the design loses the control; a client cannot decide
