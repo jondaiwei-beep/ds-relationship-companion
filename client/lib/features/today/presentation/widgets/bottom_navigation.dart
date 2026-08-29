@@ -2,7 +2,25 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
 class TodayBottomNavigation extends StatelessWidget {
-  const TodayBottomNavigation({super.key});
+  const TodayBottomNavigation({super.key, this.onSelect, this.current = 0});
+
+  /// Supplied when the other three surfaces exist. Today is the only screen
+  /// with an open gate, so the remaining tabs are inert rather than wired to
+  /// placeholders.
+  final void Function(int index)? onSelect;
+
+  /// Which surface is showing. Today is the only open gate, so it is the
+  /// default.
+  final int current;
+
+  /// Exactly four, in this order. The set is fixed by the product: Attention
+  /// is reached from Today, not from here.
+  static const _tabs = <(DsAssetId, String)>[
+    (DsAssets.navToday, 'Today'),
+    (DsAssets.navDynamic, 'Dynamic'),
+    (DsAssets.navExplore, 'Explore'),
+    (DsAssets.navUs, 'Us'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +31,14 @@ class TodayBottomNavigation extends StatelessWidget {
         border: Border(top: BorderSide(color: DsColors.borderOnRitualHairline)),
       ),
       child: Row(
-        children: const [
-          _NavTab(asset: DsAssets.navToday, label: 'Today', active: true),
-          _NavTab(asset: DsAssets.navDynamic, label: 'Dynamic'),
-          _NavTab(asset: DsAssets.navExplore, label: 'Explore'),
-          _NavTab(asset: DsAssets.navUs, label: 'Us'),
+        children: [
+          for (final (index, (asset, label)) in _tabs.indexed)
+            _NavTab(
+              asset: asset,
+              label: label,
+              active: index == current,
+              onTap: onSelect == null ? null : () => onSelect!(index),
+            ),
         ],
       ),
     );
@@ -26,10 +47,13 @@ class TodayBottomNavigation extends StatelessWidget {
 
 class _NavTab extends StatelessWidget {
   const _NavTab({
+    this.onTap,
     required this.asset,
     required this.label,
     this.active = false,
   });
+
+  final VoidCallback? onTap;
 
   final DsAssetId asset;
   final String label;
@@ -42,7 +66,7 @@ class _NavTab extends StatelessWidget {
         : DsColors.textOnRitualMuted;
     return Expanded(
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

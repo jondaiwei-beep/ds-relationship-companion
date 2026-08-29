@@ -33,9 +33,21 @@ final todayProvider = FutureProvider.autoDispose.family<TodayView, String>((
 /// screen renders it and never re-sorts, re-ranks, or derives the relationship
 /// day from the device clock.
 class TodayScreen extends ConsumerWidget {
-  const TodayScreen({super.key, required this.dynamicId});
+  const TodayScreen({
+    super.key,
+    required this.dynamicId,
+    this.onSignIn,
+    this.onSelectTab,
+  });
 
   final String dynamicId;
+
+  /// Supplied once SCR-05 Sign In exists. Until then the recovery action is
+  /// visibly inert rather than routed somewhere wrong.
+  final VoidCallback? onSignIn;
+
+  /// Supplied once the other three surfaces exist.
+  final void Function(int index)? onSelectTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,14 +71,16 @@ class TodayScreen extends ConsumerWidget {
                   skipLoadingOnRefresh: true,
                   loading: () => const _Loading(),
                   error: (error, _) => switch (_classify(error)) {
-                    _Failure.authorizationLost => const _AuthorizationLost(),
+                    _Failure.authorizationLost => _AuthorizationLost(
+                      onSignIn: onSignIn,
+                    ),
                     _Failure.offline => _Offline(onRetry: reload),
                     _Failure.unknown => _Unavailable(onRetry: reload),
                   },
                   data: (view) => _Loaded(view: view, dynamicId: dynamicId),
                 ),
               ),
-              const TodayBottomNavigation(),
+              TodayBottomNavigation(onSelect: onSelectTab),
             ],
           ),
         ),
@@ -336,7 +350,10 @@ class _Unavailable extends StatelessWidget {
 /// Every piece of protected content is removed, and recovery is offered
 /// without implying the relationship itself has changed.
 class _AuthorizationLost extends StatelessWidget {
-  const _AuthorizationLost();
+  const _AuthorizationLost({this.onSignIn});
+
+  /// Supplied once SCR-05 exists.
+  final VoidCallback? onSignIn;
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +404,11 @@ class _AuthorizationLost extends StatelessWidget {
               const SizedBox(height: DsSpacing.space8),
               SecondaryButton(
                 label: 'Sign in again',
-                onTap: () {},
+                // Routes to SCR-05 Sign In, whose gate is still closed. Left
+                // deliberately inert rather than wired to a placeholder: a
+                // button that goes somewhere wrong is worse than one that
+                // visibly does nothing yet.
+                onTap: onSignIn ?? () {},
                 filled: true,
               ),
             ],
