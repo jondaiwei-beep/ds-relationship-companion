@@ -25,9 +25,52 @@ Private product, design, and implementation source of truth for the Android app 
 
 No implementation may infer missing behavior from a raster image. A screen must be marked `ready_for_build` in the active manifest before development begins.
 
-## Flutter foundation
+## Repository layout
 
-The gate-independent design-system package lives under `app/`. It already bundles the frozen fonts, eight type roles, B-2 tokens, all 33 semantic SVG assets, Ritual/Living themes and the deterministic B-4 ritual surface. It intentionally contains no product screen or navigation shell while screen gates remain blocked.
+| Directory | What it holds | Authority |
+|---|---|---|
+| `product/` | Requirements, flows, domain and state contracts | Product truth |
+| `design/` | Approved visual system: screens, tokens, SVG masters, fonts, textures | Visual truth |
+| `manifests/` | Machine-readable freezes, screen index, gates, traceability | Gate truth |
+| `app/` | Gate-independent Flutter design-system package | Foundation |
+| `client/` | Flutter application: routing, features, domain client, platform adapters | Implementation |
+| `backend/` | Kotlin/Spring modular monolith, Flyway migrations, jOOQ | Implementation |
+| `ops/` | Deployment and journey scripts | Operations |
+| `tool/` | Foundation generators, sync and drift validation | Tooling |
+| `docs/legacy/` | Pre-migration history. Not authoritative | Archive |
+
+### `app/` versus `client/`
+
+`app/` is the portable design-system package: frozen fonts, the eight type
+roles, B-2 tokens, all 33 semantic SVG assets, Ritual/Living themes and the
+deterministic B-4 ritual surface. It carries no product screen and no
+navigation shell, and it stays that way while screen gates remain blocked.
+
+`client/` is the running Flutter application that predates this design system.
+It is retained because it holds working product behavior — activation, the
+human response loop, adjustments, and their tests — that the frozen design has
+not yet been applied to. It still consumes its own pre-migration token layer.
+
+**These two are not yet joined, and joining them is a gated task.** `client/`
+screens migrate onto the `app/` foundation only as each Screen Package reaches
+`ready_for_build`. Until then, do not import `app/` from `client/`, and do not
+extend the pre-migration token layer in `client/lib/design_system/`.
+
+## Verification
+
+```bash
+# Foundation: generators, drift validation
+npm install && npm run foundation:check
+
+# Design-system package
+cd app && flutter pub get && flutter analyze && flutter test
+
+# Flutter application
+cd client && flutter pub get && flutter analyze && flutter test
+
+# Backend (requires JDK 21 and PostgreSQL on 5433)
+cd backend && ./gradlew test
+```
 
 ## Traceability rule
 

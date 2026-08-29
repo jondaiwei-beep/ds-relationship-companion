@@ -9,3 +9,26 @@ build/
 coverage/
 node_modules/
 design/qa/visual-diff/tmp/
+
+# Flutter / Dart
+app/.dart_tool/
+app/build/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+**/*.iml
+
+# Gradle / Kotlin backend
+backend/build/
+backend/.gradle/
+backend/bin/
+.gradle/
+
+# Local run artifacts
+*.log
+*.class
+
+# Flutter client
+client/.dart_tool/
+client/build/
+client/.flutter-plugins
+client/.flutter-plugins-dependencies

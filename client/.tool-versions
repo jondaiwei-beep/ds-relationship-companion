@@ -1,0 +1,5 @@
+# M0 frozen toolchain — see docs/adr/ADR-0001
+# Android builds REQUIRE JDK 21 (system default is x86_64 Java 22 — do not use).
+#   export JAVA_HOME=/opt/homebrew/opt/openjdk@21
+flutter 3.44.1
+java openjdk-21

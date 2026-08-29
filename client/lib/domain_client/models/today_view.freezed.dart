@@ -1,0 +1,889 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'today_view.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+// dart format off
+T _$identity<T>(T value) => value;
+
+/// @nodoc
+mixin _$TodayItem {
+
+ String get occurrenceId; String get title; String? get purpose; String get state; DateTime? get dueAt;/// Who set this. Direction comes from a person, not from the app.
+ String? get fromDisplayName;
+/// Create a copy of TodayItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TodayItemCopyWith<TodayItem> get copyWith => _$TodayItemCopyWithImpl<TodayItem>(this as TodayItem, _$identity);
+
+  /// Serializes this TodayItem to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,state,dueAt,fromDisplayName);
+
+@override
+String toString() {
+  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, state: $state, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TodayItemCopyWith<$Res>  {
+  factory $TodayItemCopyWith(TodayItem value, $Res Function(TodayItem) _then) = _$TodayItemCopyWithImpl;
+@useResult
+$Res call({
+ String occurrenceId, String title, String? purpose, String state, DateTime? dueAt, String? fromDisplayName
+});
+
+
+
+
+}
+/// @nodoc
+class _$TodayItemCopyWithImpl<$Res>
+    implements $TodayItemCopyWith<$Res> {
+  _$TodayItemCopyWithImpl(this._self, this._then);
+
+  final TodayItem _self;
+  final $Res Function(TodayItem) _then;
+
+/// Create a copy of TodayItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? state = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
+  return _then(_self.copyWith(
+occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,purpose: freezed == purpose ? _self.purpose : purpose // ignore: cast_nullable_to_non_nullable
+as String?,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as String,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TodayItem].
+extension TodayItemPatterns on TodayItem {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TodayItem value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TodayItem() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TodayItem value)  $default,){
+final _that = this;
+switch (_that) {
+case _TodayItem():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TodayItem value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TodayItem() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String state,  DateTime? dueAt,  String? fromDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TodayItem() when $default != null:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.state,_that.dueAt,_that.fromDisplayName);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String state,  DateTime? dueAt,  String? fromDisplayName)  $default,) {final _that = this;
+switch (_that) {
+case _TodayItem():
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.state,_that.dueAt,_that.fromDisplayName);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String? purpose,  String state,  DateTime? dueAt,  String? fromDisplayName)?  $default,) {final _that = this;
+switch (_that) {
+case _TodayItem() when $default != null:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.state,_that.dueAt,_that.fromDisplayName);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TodayItem implements TodayItem {
+  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, required this.state, this.dueAt, this.fromDisplayName});
+  factory _TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
+
+@override final  String occurrenceId;
+@override final  String title;
+@override final  String? purpose;
+@override final  String state;
+@override final  DateTime? dueAt;
+/// Who set this. Direction comes from a person, not from the app.
+@override final  String? fromDisplayName;
+
+/// Create a copy of TodayItem
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TodayItemCopyWith<_TodayItem> get copyWith => __$TodayItemCopyWithImpl<_TodayItem>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TodayItemToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,state,dueAt,fromDisplayName);
+
+@override
+String toString() {
+  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, state: $state, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TodayItemCopyWith<$Res> implements $TodayItemCopyWith<$Res> {
+  factory _$TodayItemCopyWith(_TodayItem value, $Res Function(_TodayItem) _then) = __$TodayItemCopyWithImpl;
+@override @useResult
+$Res call({
+ String occurrenceId, String title, String? purpose, String state, DateTime? dueAt, String? fromDisplayName
+});
+
+
+
+
+}
+/// @nodoc
+class __$TodayItemCopyWithImpl<$Res>
+    implements _$TodayItemCopyWith<$Res> {
+  __$TodayItemCopyWithImpl(this._self, this._then);
+
+  final _TodayItem _self;
+  final $Res Function(_TodayItem) _then;
+
+/// Create a copy of TodayItem
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? state = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
+  return _then(_TodayItem(
+occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,purpose: freezed == purpose ? _self.purpose : purpose // ignore: cast_nullable_to_non_nullable
+as String?,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
+as String,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$RecentResponse {
+
+ String get occurrenceId; String get title; String get type; String get text; DateTime get sentAt; String? get senderDisplayName;
+/// Create a copy of RecentResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RecentResponseCopyWith<RecentResponse> get copyWith => _$RecentResponseCopyWithImpl<RecentResponse>(this as RecentResponse, _$identity);
+
+  /// Serializes this RecentResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecentResponse&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.type, type) || other.type == type)&&(identical(other.text, text) || other.text == text)&&(identical(other.sentAt, sentAt) || other.sentAt == sentAt)&&(identical(other.senderDisplayName, senderDisplayName) || other.senderDisplayName == senderDisplayName));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,type,text,sentAt,senderDisplayName);
+
+@override
+String toString() {
+  return 'RecentResponse(occurrenceId: $occurrenceId, title: $title, type: $type, text: $text, sentAt: $sentAt, senderDisplayName: $senderDisplayName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RecentResponseCopyWith<$Res>  {
+  factory $RecentResponseCopyWith(RecentResponse value, $Res Function(RecentResponse) _then) = _$RecentResponseCopyWithImpl;
+@useResult
+$Res call({
+ String occurrenceId, String title, String type, String text, DateTime sentAt, String? senderDisplayName
+});
+
+
+
+
+}
+/// @nodoc
+class _$RecentResponseCopyWithImpl<$Res>
+    implements $RecentResponseCopyWith<$Res> {
+  _$RecentResponseCopyWithImpl(this._self, this._then);
+
+  final RecentResponse _self;
+  final $Res Function(RecentResponse) _then;
+
+/// Create a copy of RecentResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? type = null,Object? text = null,Object? sentAt = null,Object? senderDisplayName = freezed,}) {
+  return _then(_self.copyWith(
+occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,sentAt: null == sentAt ? _self.sentAt : sentAt // ignore: cast_nullable_to_non_nullable
+as DateTime,senderDisplayName: freezed == senderDisplayName ? _self.senderDisplayName : senderDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [RecentResponse].
+extension RecentResponsePatterns on RecentResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RecentResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RecentResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RecentResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _RecentResponse():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RecentResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _RecentResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String type,  String text,  DateTime sentAt,  String? senderDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RecentResponse() when $default != null:
+return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentAt,_that.senderDisplayName);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String type,  String text,  DateTime sentAt,  String? senderDisplayName)  $default,) {final _that = this;
+switch (_that) {
+case _RecentResponse():
+return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentAt,_that.senderDisplayName);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String type,  String text,  DateTime sentAt,  String? senderDisplayName)?  $default,) {final _that = this;
+switch (_that) {
+case _RecentResponse() when $default != null:
+return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentAt,_that.senderDisplayName);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _RecentResponse implements RecentResponse {
+  const _RecentResponse({required this.occurrenceId, required this.title, required this.type, required this.text, required this.sentAt, this.senderDisplayName});
+  factory _RecentResponse.fromJson(Map<String, dynamic> json) => _$RecentResponseFromJson(json);
+
+@override final  String occurrenceId;
+@override final  String title;
+@override final  String type;
+@override final  String text;
+@override final  DateTime sentAt;
+@override final  String? senderDisplayName;
+
+/// Create a copy of RecentResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$RecentResponseCopyWith<_RecentResponse> get copyWith => __$RecentResponseCopyWithImpl<_RecentResponse>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RecentResponseToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecentResponse&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.type, type) || other.type == type)&&(identical(other.text, text) || other.text == text)&&(identical(other.sentAt, sentAt) || other.sentAt == sentAt)&&(identical(other.senderDisplayName, senderDisplayName) || other.senderDisplayName == senderDisplayName));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,type,text,sentAt,senderDisplayName);
+
+@override
+String toString() {
+  return 'RecentResponse(occurrenceId: $occurrenceId, title: $title, type: $type, text: $text, sentAt: $sentAt, senderDisplayName: $senderDisplayName)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$RecentResponseCopyWith<$Res> implements $RecentResponseCopyWith<$Res> {
+  factory _$RecentResponseCopyWith(_RecentResponse value, $Res Function(_RecentResponse) _then) = __$RecentResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ String occurrenceId, String title, String type, String text, DateTime sentAt, String? senderDisplayName
+});
+
+
+
+
+}
+/// @nodoc
+class __$RecentResponseCopyWithImpl<$Res>
+    implements _$RecentResponseCopyWith<$Res> {
+  __$RecentResponseCopyWithImpl(this._self, this._then);
+
+  final _RecentResponse _self;
+  final $Res Function(_RecentResponse) _then;
+
+/// Create a copy of RecentResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? type = null,Object? text = null,Object? sentAt = null,Object? senderDisplayName = freezed,}) {
+  return _then(_RecentResponse(
+occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,sentAt: null == sentAt ? _self.sentAt : sentAt // ignore: cast_nullable_to_non_nullable
+as DateTime,senderDisplayName: freezed == senderDisplayName ? _self.senderDisplayName : senderDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TodayView {
+
+/// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
+ String get roleContext;/// How many things are waiting on my human response, stated by the
+/// server. Today shows the direction-giving face when this is non-zero.
+ int get needsMyResponseCount; List<TodayItem> get expectations; List<TodayItem> get awaitingResponse; RecentResponse? get recentResponse;
+/// Create a copy of TodayView
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>(this as TodayView, _$identity);
+
+  /// Serializes this TodayView to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&const DeepCollectionEquality().equals(other.expectations, expectations)&&const DeepCollectionEquality().equals(other.awaitingResponse, awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,const DeepCollectionEquality().hash(expectations),const DeepCollectionEquality().hash(awaitingResponse),recentResponse);
+
+@override
+String toString() {
+  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, expectations: $expectations, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TodayViewCopyWith<$Res>  {
+  factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
+@useResult
+$Res call({
+ String roleContext, int needsMyResponseCount, List<TodayItem> expectations, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+});
+
+
+$RecentResponseCopyWith<$Res>? get recentResponse;
+
+}
+/// @nodoc
+class _$TodayViewCopyWithImpl<$Res>
+    implements $TodayViewCopyWith<$Res> {
+  _$TodayViewCopyWithImpl(this._self, this._then);
+
+  final TodayView _self;
+  final $Res Function(TodayView) _then;
+
+/// Create a copy of TodayView
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? expectations = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+  return _then(_self.copyWith(
+roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
+as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
+as int,expectations: null == expectations ? _self.expectations : expectations // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,awaitingResponse: null == awaitingResponse ? _self.awaitingResponse : awaitingResponse // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,recentResponse: freezed == recentResponse ? _self.recentResponse : recentResponse // ignore: cast_nullable_to_non_nullable
+as RecentResponse?,
+  ));
+}
+/// Create a copy of TodayView
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RecentResponseCopyWith<$Res>? get recentResponse {
+    if (_self.recentResponse == null) {
+    return null;
+  }
+
+  return $RecentResponseCopyWith<$Res>(_self.recentResponse!, (value) {
+    return _then(_self.copyWith(recentResponse: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [TodayView].
+extension TodayViewPatterns on TodayView {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TodayView value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TodayView() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TodayView value)  $default,){
+final _that = this;
+switch (_that) {
+case _TodayView():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TodayView value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TodayView() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  List<TodayItem> expectations,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TodayView() when $default != null:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.expectations,_that.awaitingResponse,_that.recentResponse);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  List<TodayItem> expectations,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)  $default,) {final _that = this;
+switch (_that) {
+case _TodayView():
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.expectations,_that.awaitingResponse,_that.recentResponse);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  List<TodayItem> expectations,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,) {final _that = this;
+switch (_that) {
+case _TodayView() when $default != null:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.expectations,_that.awaitingResponse,_that.recentResponse);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TodayView implements TodayView {
+  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, final  List<TodayItem> expectations = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse}): _expectations = expectations,_awaitingResponse = awaitingResponse;
+  factory _TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
+
+/// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
+@override@JsonKey() final  String roleContext;
+/// How many things are waiting on my human response, stated by the
+/// server. Today shows the direction-giving face when this is non-zero.
+@override@JsonKey() final  int needsMyResponseCount;
+ final  List<TodayItem> _expectations;
+@override@JsonKey() List<TodayItem> get expectations {
+  if (_expectations is EqualUnmodifiableListView) return _expectations;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_expectations);
+}
+
+ final  List<TodayItem> _awaitingResponse;
+@override@JsonKey() List<TodayItem> get awaitingResponse {
+  if (_awaitingResponse is EqualUnmodifiableListView) return _awaitingResponse;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_awaitingResponse);
+}
+
+@override final  RecentResponse? recentResponse;
+
+/// Create a copy of TodayView
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TodayViewCopyWith<_TodayView> get copyWith => __$TodayViewCopyWithImpl<_TodayView>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TodayViewToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&const DeepCollectionEquality().equals(other._expectations, _expectations)&&const DeepCollectionEquality().equals(other._awaitingResponse, _awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,const DeepCollectionEquality().hash(_expectations),const DeepCollectionEquality().hash(_awaitingResponse),recentResponse);
+
+@override
+String toString() {
+  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, expectations: $expectations, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Res> {
+  factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
+@override @useResult
+$Res call({
+ String roleContext, int needsMyResponseCount, List<TodayItem> expectations, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+});
+
+
+@override $RecentResponseCopyWith<$Res>? get recentResponse;
+
+}
+/// @nodoc
+class __$TodayViewCopyWithImpl<$Res>
+    implements _$TodayViewCopyWith<$Res> {
+  __$TodayViewCopyWithImpl(this._self, this._then);
+
+  final _TodayView _self;
+  final $Res Function(_TodayView) _then;
+
+/// Create a copy of TodayView
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? expectations = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+  return _then(_TodayView(
+roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
+as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
+as int,expectations: null == expectations ? _self._expectations : expectations // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,awaitingResponse: null == awaitingResponse ? _self._awaitingResponse : awaitingResponse // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,recentResponse: freezed == recentResponse ? _self.recentResponse : recentResponse // ignore: cast_nullable_to_non_nullable
+as RecentResponse?,
+  ));
+}
+
+/// Create a copy of TodayView
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$RecentResponseCopyWith<$Res>? get recentResponse {
+    if (_self.recentResponse == null) {
+    return null;
+  }
+
+  return $RecentResponseCopyWith<$Res>(_self.recentResponse!, (value) {
+    return _then(_self.copyWith(recentResponse: value));
+  });
+}
+}
+
+// dart format on

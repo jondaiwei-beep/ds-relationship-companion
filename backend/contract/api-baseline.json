@@ -1,0 +1,87 @@
+{
+  "/v1/auth/logout": [
+    "POST"
+  ],
+  "/v1/auth/magic-links": [
+    "POST"
+  ],
+  "/v1/auth/magic-links/consume": [
+    "POST"
+  ],
+  "/v1/auth/refresh": [
+    "POST"
+  ],
+  "/v1/dynamics": [
+    "GET",
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}": [
+    "GET"
+  ],
+  "/v1/dynamics/{dynamicId}/attention": [
+    "GET"
+  ],
+  "/v1/dynamics/{dynamicId}/block": [
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/check-ins": [
+    "GET",
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/expectations": [
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/invites": [
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/leave": [
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/pause": [
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/resume": [
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/starter-rhythm": [
+    "GET",
+    "POST"
+  ],
+  "/v1/dynamics/{dynamicId}/today": [
+    "GET"
+  ],
+  "/v1/dynamics/{dynamicId}/us": [
+    "GET"
+  ],
+  "/v1/dynamics/{dynamicId}/weekly": [
+    "GET"
+  ],
+  "/v1/features": [
+    "GET"
+  ],
+  "/v1/invites/join": [
+    "POST"
+  ],
+  "/v1/invites/resolve": [
+    "POST"
+  ],
+  "/v1/me/notification-settings": [
+    "GET",
+    "POST"
+  ],
+  "/v1/occurrences/{occurrenceId}": [
+    "GET"
+  ],
+  "/v1/occurrences/{occurrenceId}/acknowledgements": [
+    "POST"
+  ],
+  "/v1/occurrences/{occurrenceId}/adjustments": [
+    "POST"
+  ],
+  "/v1/occurrences/{occurrenceId}/adjustments/resolve": [
+    "POST"
+  ],
+  "/v1/occurrences/{occurrenceId}/complete": [
+    "POST"
+  ]
+}

@@ -1,0 +1,36 @@
+spring:
+  application.name: dsapp-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/dsapp}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:}
+    hikari:
+      # Notion 04 §9: DB timestamps are UTC. Pin the connection so a host
+      # timezone change can never shift stored instants.
+      connection-init-sql: "SET TIME ZONE 'UTC'"
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+  jooq:
+    sql-dialect: POSTGRES
+
+server:
+  port: ${PORT:8082}     # ADR-0002 H-3: 8080=A-group, 8081=B-group, 8082=dsapp
+  forward-headers-strategy: framework
+
+management:
+  endpoints.web.exposure.include: health,info
+  endpoint.health.probes.enabled: true
+
+logging.level.com.dsapp: ${LOG_LEVEL:INFO}
+
+# Notion 06 §9: Core Beta must be able to kill these without a deploy.
+# Safety and access revocation are deliberately absent — a switch that can
+# disable a safety control is itself a safety defect.
+dsapp:
+  features:
+    web-push: ${FEATURE_WEB_PUSH:false}
+    weekly-reflection: ${FEATURE_WEEKLY_REFLECTION:true}
+    explore-placeholder: ${FEATURE_EXPLORE_PLACEHOLDER:true}
+    analytics-experiments: ${FEATURE_ANALYTICS_EXPERIMENTS:false}

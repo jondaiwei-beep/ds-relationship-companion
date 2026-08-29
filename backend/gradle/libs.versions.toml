@@ -1,0 +1,19 @@
+[versions]
+kotlin = "2.1.20"
+springBoot = "3.5.6"
+springDepMgmt = "1.1.7"
+flyway = "11.7.2"
+postgres = "42.7.5"
+springdoc = "2.8.6"
+
+[libraries]
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+springdoc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "springdoc" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dep-mgmt = { id = "io.spring.dependency-management", version.ref = "springDepMgmt" }
