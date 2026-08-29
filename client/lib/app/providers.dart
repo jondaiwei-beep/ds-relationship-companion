@@ -70,8 +70,6 @@ final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepository(ref.watch(apiClientProvider)),
 );
 
-/// Platform-specific: localStorage on Web (callback may open a new tab),
-/// in-memory on Android.
 final expectationRepositoryProvider = Provider<ExpectationRepository>(
   (ref) => ExpectationRepository(ref.watch(apiClientProvider)),
 );
@@ -84,25 +82,10 @@ final settingsRepositoryProvider = Provider<SettingsRepository>(
   (ref) => SettingsRepository(ref.watch(apiClientProvider)),
 );
 
+/// Platform-specific: localStorage on Web (the magic-link callback may open a
+/// new tab), in-memory on Android.
 final authFlowStoreProvider = Provider<AuthFlowStore>((ref) => AuthFlowStore());
 
-/// Whether a session is currently established.
-///
-/// The access token lives in memory only (Notion 04 §2), so on Web this is
-/// false after a refresh until the refresh cookie is exchanged.
-class AuthSession extends Notifier<bool> {
-  @override
-  bool build() => false;
-
-  void signedIn(String accessToken) {
-    ref.read(apiClientProvider).accessToken = accessToken;
-    state = true;
-  }
-
-  void signedOut() {
-    ref.read(apiClientProvider).accessToken = null;
-    state = false;
-  }
-}
-
-final authSessionProvider = NotifierProvider<AuthSession, bool>(AuthSession.new);
+// Who is signed in is owned by `sessionProvider` in
+// platform/session/session_controller.dart. It is the only writer of the
+// access token, so there is exactly one answer to that question.

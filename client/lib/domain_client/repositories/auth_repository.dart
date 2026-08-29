@@ -50,12 +50,35 @@ class AuthFlow {
 }
 
 class AuthResult {
-  AuthResult({required this.accessToken, this.continuationInviteState});
+  AuthResult({
+    required this.accessToken,
+    required this.accessTokenExpiresIn,
+    this.refreshToken,
+    this.continuationInviteState,
+  });
 
   final String accessToken;
 
+  /// How long the access token stays valid. The session refreshes ahead of
+  /// this rather than waiting for a 401, so a person mid-sentence is not
+  /// interrupted by an expiry the client could see coming.
+  final Duration accessTokenExpiresIn;
+
+  /// Android only. Web receives an httpOnly `__Host-refresh` cookie instead,
+  /// which JavaScript cannot read and therefore this client never sees.
+  final String? refreshToken;
+
   /// Where the user was heading before authenticating, resolved server-side.
   final String? continuationInviteState;
+
+  static AuthResult fromJson(Map<String, dynamic> r) => AuthResult(
+        accessToken: r['accessToken'] as String,
+        accessTokenExpiresIn:
+            Duration(seconds: (r['accessTokenExpiresInSeconds'] as num).toInt()),
+        refreshToken: r['refreshToken'] as String?,
+        continuationInviteState:
+            (r['continuation'] as Map<String, dynamic>?)?['state'] as String?,
+      );
 }
 
 /// Web gets a refresh cookie; Android gets the token in the body.
@@ -117,7 +140,7 @@ class AuthRepository {
         'ageConfirmed': ageConfirmed,
       },
     );
-    return AuthResult(accessToken: r['accessToken'] as String);
+    return AuthResult.fromJson(r);
   }
 
   Future<AuthResult> signInWithPassword({
@@ -133,7 +156,7 @@ class AuthRepository {
         'clientType': _clientType,
       },
     );
-    return AuthResult(accessToken: r['accessToken'] as String);
+    return AuthResult.fromJson(r);
   }
 
   /// End this session.
@@ -159,10 +182,20 @@ class AuthRepository {
         'clientType': clientType,
       },
     );
-    return AuthResult(
-      accessToken: r['accessToken'] as String,
-      continuationInviteState:
-          (r['continuation'] as Map<String, dynamic>?)?['state'] as String?,
+    return AuthResult.fromJson(r);
+  }
+
+  /// Exchange the refresh credential for a new access token.
+  ///
+  /// Android sends the stored refresh token; Web sends nothing and the
+  /// browser attaches the httpOnly cookie. A rejection here is not an error
+  /// to retry — it means the session is over.
+  Future<AuthResult> refresh({String? refreshToken}) async {
+    final r = await _api.post(
+      '/v1/auth/refresh',
+      authenticated: false,
+      body: refreshToken == null ? null : {'refreshToken': refreshToken},
     );
+    return AuthResult.fromJson(r);
   }
 }

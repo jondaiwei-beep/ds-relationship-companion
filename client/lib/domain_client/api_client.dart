@@ -1,5 +1,7 @@
 import 'dart:math';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 
 /// HTTP client for the dsapp backend.
 ///
@@ -19,8 +21,19 @@ class ApiClient {
   static final _rng = Random.secure();
 
   /// Access token lives in memory only — never on disk (Notion 04 §2).
+  ///
+  /// Written by `SessionController` and nothing else: two writers would mean
+  /// two answers to "who is signed in".
   String? _accessToken;
   set accessToken(String? t) => _accessToken = t;
+
+  /// Whether requests are currently authorized, for tests.
+  ///
+  /// Deliberately not a plain getter: production code that needs to know
+  /// whether someone is signed in must ask the session, which is the single
+  /// source of truth, rather than inferring it from transport state.
+  @visibleForTesting
+  String? get debugAccessToken => _accessToken;
 
   Options get _authed => Options(headers: _authHeaders());
 

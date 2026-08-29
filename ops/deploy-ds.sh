@@ -18,7 +18,7 @@
 set -uo pipefail
 
 APP_DIR="/opt/applications/dsapp"
-GIT_REPO="${DS_GIT_REPO:-git@github.com:JonDai/dsapp.git}"
+GIT_REPO="${DS_GIT_REPO:-git@github.com:jondaiwei-beep/ds-relationship-companion.git}"
 BRANCH="${DS_BRANCH:-main}"
 BUILD_DIR="$APP_DIR/build"
 JAR="$APP_DIR/dsapp.jar"
@@ -52,6 +52,15 @@ log "JDK: $JV"
 # ---- 1. Fetch source ----
 if [ -d "$BUILD_DIR/.git" ]; then
   cd "$BUILD_DIR"
+  # The repository moved once (JonDai/dsapp -> jondaiwei-beep/ds-relationship-companion)
+  # and nothing noticed: an existing checkout keeps its own origin, so `git fetch`
+  # went on succeeding against the abandoned repository and staging served a jar
+  # months behind the source. Reconcile the remote before trusting the fetch.
+  CURRENT_REMOTE=$(git remote get-url origin 2>/dev/null || echo "")
+  if [ "$CURRENT_REMOTE" != "$GIT_REPO" ]; then
+    log "origin was '$CURRENT_REMOTE', expected '$GIT_REPO' — repointing"
+    git remote set-url origin "$GIT_REPO" || { log "ERROR: could not repoint origin"; exit 1; }
+  fi
   git fetch origin || { log "ERROR: git fetch failed"; exit 1; }
   git reset --hard "origin/$BRANCH" || { log "ERROR: git reset origin/$BRANCH failed"; exit 1; }
   git clean -fd
