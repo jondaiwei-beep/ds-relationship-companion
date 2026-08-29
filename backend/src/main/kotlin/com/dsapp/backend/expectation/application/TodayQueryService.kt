@@ -1,10 +1,13 @@
 package com.dsapp.backend.expectation.application
 
 import com.dsapp.backend.dynamic.application.MembershipAuthorizer
+import com.dsapp.backend.shared.time.RelationshipDay
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.UUID
 
 /**
@@ -28,6 +31,14 @@ class TodayQueryService(
     private val dsl: DSLContext,
     private val authorizer: MembershipAuthorizer,
 ) {
+    companion object {
+        /** SCR-01 rev 2: at most three carry editorial/timeline emphasis. */
+        const val MAX_PRIORITY = 3
+
+        /** A relationship day holds at most ten actionable items. */
+        const val MAX_TOTAL = 10
+    }
+
     data class TodayItem(
         val occurrenceId: UUID,
         val title: String,
@@ -55,6 +66,24 @@ class TodayQueryService(
          */
         val roleContext: String,
         /**
+         * The relationship day this list belongs to, in the Dynamic's own
+         * reference timezone. SCR-01 rev 2 read model: the client renders the
+         * day the server states and never derives it from the device clock.
+         */
+        val relationshipDay: LocalDate,
+        /**
+         * When the server last confirmed this list. The offline state shows
+         * only the last confirmed list with this timestamp, and disables every
+         * mutation until confirmation returns.
+         */
+        val lastConfirmedAt: Instant,
+        /**
+         * Total actionable items for the day. SCR-01 rev 2 caps a day at ten;
+         * more than that is a read-model contract violation, not something the
+         * client silently truncates or paginates.
+         */
+        val totalCount: Int,
+        /**
          * How many things are waiting on MY human response right now.
          *
          * Today is one tab with two faces (Notion 02 §3): the receiving side
@@ -66,8 +95,18 @@ class TodayQueryService(
          * it.
          */
         val needsMyResponseCount: Int,
-        /** What still needs action from me. Capped: Today is not a backlog. */
-        val expectations: List<TodayItem>,
+        /**
+         * At most three, in server order. SCR-01 rev 2 gives the first
+         * editorial emphasis and the next two disciplined timeline rows; the
+         * client renders that order and never re-sorts.
+         */
+        val priorityItems: List<TodayItem>,
+        /**
+         * Everything else for the day, behind one count-bearing disclosure.
+         * These are not less real — they are less urgent, and the design keeps
+         * them from becoming a wall of equal cards.
+         */
+        val laterItems: List<TodayItem>,
         /** What I finished that a real person has not yet responded to. */
         val awaitingResponse: List<TodayItem>,
         /** The most recent human response — presence, even when apart. */
@@ -78,6 +117,20 @@ class TodayQueryService(
     fun forDynamic(actorUserId: UUID, dynamicId: UUID): Today {
         val ctx = authorizer.requireRead(
             authorizer.contextForDynamic(actorUserId, dynamicId),
+        )
+
+        // The relationship day comes from the Dynamic's own reference zone and
+        // boundary, never the server's or the device's clock — that is the
+        // classic wrong-day defect.
+        val tz = dsl.fetchOne(
+            "SELECT reference_timezone, day_boundary_minutes FROM dynamics WHERE id = {0}",
+            dynamicId,
+        )!!
+        val confirmedAt = Instant.now()
+        val relationshipDay = RelationshipDay.dayOf(
+            instant = confirmedAt,
+            zone = ZoneId.of(tz.get("reference_timezone", String::class.java)),
+            boundaryMinutes = tz.get("day_boundary_minutes", Int::class.java),
         )
 
         val rows = dsl.fetch(
@@ -105,9 +158,13 @@ class TodayQueryService(
             )
         }
 
-        // Notion 02 §3 asks for 1–3 important expectations, not everything.
-        // Today is a focus surface; a long list defeats the ten-second goal.
-        val needsAction = rows.filter { it.state != "WAITING_ACK" }.take(3)
+        // Notion 02 §3 asks for 1-3 important expectations first, and SCR-01
+        // rev 2 keeps the rest reachable behind one disclosure rather than
+        // discarding them. Taking only three server-side would have made the
+        // Later row impossible to populate.
+        val actionable = rows.filter { it.state != "WAITING_ACK" }
+        val priority = actionable.take(MAX_PRIORITY)
+        val later = actionable.drop(MAX_PRIORITY).take(MAX_TOTAL - MAX_PRIORITY)
         val waiting = rows.filter { it.state == "WAITING_ACK" }
 
         val recent = dsl.fetchOne(
@@ -152,8 +209,12 @@ class TodayQueryService(
 
         return Today(
             roleContext = ctx.role.name,
+            relationshipDay = relationshipDay,
+            lastConfirmedAt = confirmedAt,
+            totalCount = actionable.size,
             needsMyResponseCount = needsMyResponse,
-            expectations = needsAction,
+            priorityItems = priority,
+            laterItems = later,
             awaitingResponse = waiting,
             recentResponse = recent,
         )

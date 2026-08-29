@@ -65,17 +65,51 @@ class TodayIT {
         expectation("theirs", "ACTIVE", assignee = creator)
 
         val t = today.forDynamic(partner, dynamicId)
-        assertEquals(listOf("mine"), t.expectations.map { it.title })
+        assertEquals(listOf("mine"), t.priorityItems.map { it.title })
     }
 
     @Test
-    fun `Today caps at 3 expectations - it is a focus surface, not a backlog`() {
+    fun `Today shows three priorities and keeps the rest as Later`() {
         repeat(6) { expectation("item $it", "ACTIVE") }
 
         val t = today.forDynamic(partner, dynamicId)
-        // Notion 02 §3 asks for 1-3 important expectations. A long list defeats
-        // the "know what matters in ten seconds" goal.
-        assertEquals(3, t.expectations.size)
+        // Notion 02 §3 asks for 1-3 important expectations first; SCR-01 rev 2
+        // keeps the remainder reachable behind one disclosure instead of
+        // discarding it. Truncating server-side made the Later row impossible.
+        assertEquals(3, t.priorityItems.size)
+        assertEquals(3, t.laterItems.size)
+        assertEquals(6, t.totalCount)
+    }
+
+    @Test
+    fun `a relationship day holds at most ten actionable items`() {
+        repeat(14) { expectation("item $it", "ACTIVE") }
+
+        val t = today.forDynamic(partner, dynamicId)
+        // Beyond ten is a read-model contract violation. The server bounds it
+        // rather than letting the client invent pagination.
+        assertEquals(3, t.priorityItems.size)
+        assertEquals(7, t.laterItems.size)
+    }
+
+    @Test
+    fun `the relationship day comes from the Dynamic zone, not the server clock`() {
+        expectation("anything", "ACTIVE")
+
+        val t = today.forDynamic(partner, dynamicId)
+        // Whatever the JVM default zone is, the day must be resolved in the
+        // Dynamic's own reference timezone.
+        val expected = com.dsapp.backend.shared.time.RelationshipDay.dayOf(
+            instant = t.lastConfirmedAt,
+            zone = java.time.ZoneId.of(
+                dsl.fetchOne(
+                    "SELECT reference_timezone FROM dynamics WHERE id = {0}",
+                    dynamicId,
+                )!!.get("reference_timezone", String::class.java),
+            ),
+            boundaryMinutes = 0,
+        )
+        assertEquals(expected, t.relationshipDay)
     }
 
     @Test
@@ -84,7 +118,7 @@ class TodayIT {
         expectation("already done", "WAITING_ACK")
 
         val t = today.forDynamic(partner, dynamicId)
-        assertEquals(listOf("still to do"), t.expectations.map { it.title })
+        assertEquals(listOf("still to do"), t.priorityItems.map { it.title })
         assertEquals(listOf("already done"), t.awaitingResponse.map { it.title })
     }
 
@@ -94,7 +128,8 @@ class TodayIT {
         expectation("cancelled", "CANCELLED")
 
         val t = today.forDynamic(partner, dynamicId)
-        assertTrue(t.expectations.isEmpty())
+        assertTrue(t.priorityItems.isEmpty())
+        assertTrue(t.laterItems.isEmpty())
         assertTrue(t.awaitingResponse.isEmpty())
     }
 
@@ -102,7 +137,7 @@ class TodayIT {
     fun `an expectation carries who it came from - direction comes from a person`() {
         expectation("Prepare the evening space", "ACTIVE")
 
-        val item = today.forDynamic(partner, dynamicId).expectations.single()
+        val item = today.forDynamic(partner, dynamicId).priorityItems.single()
         assertEquals("Alex", item.fromDisplayName)
         assertEquals("A small act of care.", item.purpose)
     }
