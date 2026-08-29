@@ -246,7 +246,8 @@ abstract final class DsAssets {
     motifBotanicalNoteSprig,
   ];
 
-  static DsAssetId byId(String id) => all.singleWhere((asset) => asset.id == id);
+  static DsAssetId byId(String id) =>
+      all.singleWhere((asset) => asset.id == id);
 }
 
 abstract final class DsTextureAssets {

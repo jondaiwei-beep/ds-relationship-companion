@@ -67,7 +67,8 @@ const dart = `// GENERATED FROM manifests/assets.json AND manifests/svg-freeze.v
 `abstract final class DsAssets {\n` +
 `${constants.join('\n\n')}\n\n` +
 `  static const all = <DsAssetId>[\n${allNames}\n  ];\n\n` +
-`  static DsAssetId byId(String id) => all.singleWhere((asset) => asset.id == id);\n` +
+`  static DsAssetId byId(String id) =>\n` +
+`      all.singleWhere((asset) => asset.id == id);\n` +
 `}\n\n` +
 `abstract final class DsTextureAssets {\n` +
 `  static const ritualGrain = 'assets/textures/ritual-grain-128.png';\n` +

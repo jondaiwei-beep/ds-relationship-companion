@@ -138,6 +138,14 @@ abstract final class DsSpacing {
 }
 
 abstract final class DsShadows {
-  static const raised = BoxShadow(color: Color(0x52000000), offset: Offset(0.0, 8.0), blurRadius: 24.0, spreadRadius: 0.0);
-  static const modal = BoxShadow(color: Color(0x66000000), offset: Offset(0.0, -8.0), blurRadius: 32.0, spreadRadius: 0.0);
+  static const raised = BoxShadow(
+      color: Color(0x52000000),
+      offset: Offset(0.0, 8.0),
+      blurRadius: 24.0,
+      spreadRadius: 0.0);
+  static const modal = BoxShadow(
+      color: Color(0x66000000),
+      offset: Offset(0.0, -8.0),
+      blurRadius: 32.0,
+      spreadRadius: 0.0);
 }

@@ -70,7 +70,13 @@ const spaces = flat.filter((entry) => entry.path.startsWith('space.'));
 const shadows = flat.filter((entry) => entry.path.startsWith('shadow.'));
 
 function dartShadow(value) {
-  return `BoxShadow(color: ${dartColor(value.color)}, offset: Offset(${value.offsetX.value}.0, ${value.offsetY.value}.0), blurRadius: ${value.blur.value}.0, spreadRadius: ${value.spread.value}.0)`;
+  return [
+    'BoxShadow(',
+    `      color: ${dartColor(value.color)},`,
+    `      offset: Offset(${value.offsetX.value}.0, ${value.offsetY.value}.0),`,
+    `      blurRadius: ${value.blur.value}.0,`,
+    `      spreadRadius: ${value.spread.value}.0)`,
+  ].join('\n');
 }
 
 const dart = `// GENERATED FROM design/tokens/design-tokens.json. DO NOT EDIT BY HAND.\n` +

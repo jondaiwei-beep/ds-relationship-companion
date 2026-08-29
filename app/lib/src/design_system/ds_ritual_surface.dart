@@ -1,9 +1,8 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
-
 import 'package:ds_relationship_companion/src/design_system/ds_assets.dart';
 import 'package:ds_relationship_companion/src/design_system/generated/ds_design_tokens.g.dart';
+import 'package:flutter/material.dart';
 
 /// Deterministic B-4 ritual ground. Product content remains responsible for
 /// clipping and safe-area behavior.
@@ -80,7 +79,7 @@ class _GrainPainter extends CustomPainter {
     if (texture == null) return;
     final paint = Paint()
       ..blendMode = BlendMode.softLight
-      ..color = DsPrimitiveColors.bone.withOpacity(DsOpacity.grain);
+      ..color = DsPrimitiveColors.bone.withValues(alpha: DsOpacity.grain);
     final tileWidth = texture.width.toDouble();
     final tileHeight = texture.height.toDouble();
     for (double x = 0; x < size.width; x += tileWidth) {

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:ds_relationship_companion/src/design_system/ds_assets.dart';
 import 'package:ds_relationship_companion/src/design_system/generated/ds_design_tokens.g.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DsSvg extends StatelessWidget {
   const DsSvg({

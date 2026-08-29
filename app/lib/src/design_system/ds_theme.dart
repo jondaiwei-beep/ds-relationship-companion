@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:ds_relationship_companion/src/design_system/ds_typography.dart';
 import 'package:ds_relationship_companion/src/design_system/generated/ds_design_tokens.g.dart';
+import 'package:flutter/material.dart';
 
 abstract final class DsTheme {
   static ThemeData ritual() => _base(
