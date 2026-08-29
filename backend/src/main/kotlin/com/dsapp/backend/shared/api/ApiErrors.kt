@@ -1,5 +1,6 @@
 package com.dsapp.backend.shared.api
 
+import com.dsapp.backend.dynamic.application.InviteAlreadyPending
 import com.dsapp.backend.dynamic.application.InviteNotJoinable
 import com.dsapp.backend.dynamic.application.DynamicNotPausable
 import com.dsapp.backend.dynamic.domain.AuthorizationException
@@ -66,6 +67,13 @@ class ApiErrorHandler {
     @ExceptionHandler(NoOpenAdjustment::class)
     fun onNoOpenAdjustment(e: NoOpenAdjustment): ResponseEntity<ApiError> =
         ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("NO_OPEN_ADJUSTMENT"))
+
+    @ExceptionHandler(InviteAlreadyPending::class)
+    fun onInvitePending(e: InviteAlreadyPending): ResponseEntity<ApiError> =
+        // A live invitation already exists. The Creator revokes it to make a
+        // new one; the partial unique index would otherwise surface this as a
+        // 500, and the screen contract requires retry to be recoverable.
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("INVITE_ALREADY_PENDING"))
 
     @ExceptionHandler(InviteNotJoinable::class)
     fun onInvite(e: InviteNotJoinable): ResponseEntity<ApiError> =

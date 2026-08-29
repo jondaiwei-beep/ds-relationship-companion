@@ -52,6 +52,36 @@ needs `package:`. `check-screens.py` enforces both.
 **The general lesson: a foundation package that only its own tests consume is
 not proven.** The first real consumer is the test.
 
+## A test that passes with the fix removed is not a test
+
+Three separate versions of this went wrong in one sitting, so check the check:
+
+**MockMvc does not perform a servlet ERROR dispatch.** A validation bug that
+turns 400 into 401 in a real container is invisible to `@AutoConfigureMockMvc`
+— it renders the 400 directly. The first `RequestValidationIT` passed with the
+fix removed. Use `webEnvironment = RANDOM_PORT` for anything about what the
+container does with a *failed* request.
+
+**Gradle caches a green test run.** `./gradlew test --tests X` after editing
+only main sources may print `BUILD SUCCESSFUL in 1s` and run nothing. Check
+the timestamp on `build/test-results/test/TEST-*.xml`, or that the failure
+count actually changed. `--rerun-tasks` is not always enough.
+
+**Verify against the fix that matters.** I injected a defect into
+`SecurityConfig`, saw the tests still pass, and nearly concluded they were
+weak — the truth was that the `SecurityConfig` change was doing nothing and
+the exception handler was the whole fix. Removing *that* failed four of five.
+If injecting a defect changes nothing, the first hypothesis is that the code
+you removed was not load-bearing.
+
+## Unit tests bypass controller validation
+
+`AuthService.register(email = " a@b.com ")` in a `@SpringBootTest` reaches the
+service with the spaces intact. Over HTTP, `@field:Email` rejects it at the
+controller and the service never runs. A bug "proved" by calling the service
+directly may be unreachable in production — and a rule proved that way may not
+be enforced where you think it is.
+
 ## Codex hangs forever reading stdin
 
 `codex exec ... > out.txt &` in a background shell prints one line —

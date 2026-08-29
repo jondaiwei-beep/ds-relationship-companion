@@ -1,5 +1,6 @@
 package com.dsapp.backend.dynamic
 
+import com.dsapp.backend.dynamic.application.InviteAlreadyPending
 import com.dsapp.backend.dynamic.application.InviteNotJoinable
 import com.dsapp.backend.dynamic.application.InviteService
 import com.dsapp.backend.dynamic.domain.RoleContext
@@ -12,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -131,5 +133,31 @@ class InviteServiceIT {
         invites.create(creator, dynamicId, RoleContext.PARTNER)
         // The partial unique index is the enforcement, not application logic.
         assertFailsWith<Exception> { invites.create(creator, dynamicId, RoleContext.PARTNER) }
+    }
+
+    @Test
+    fun `a second invitation while one is live explains itself`() {
+        invites.create(creator, dynamicId, RoleContext.PARTNER)
+
+        // The partial unique index allows one PENDING invite per dynamic. Left
+        // to the database this surfaced as a 500 — the screen contract says
+        // retry must be recoverable, and a stack trace is not recoverable.
+        val e = assertFailsWith<InviteAlreadyPending> {
+            invites.create(creator, dynamicId, RoleContext.PARTNER)
+        }
+        assertNotNull(e.inviteId)
+    }
+
+    @Test
+    fun `revoking frees the dynamic for a new invitation`() {
+        val first = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        dsl.query(
+            "UPDATE invites SET state='REVOKED', revoked_at=now() WHERE id={0}",
+            first.inviteId,
+        ).execute()
+
+        // The Creator can always issue another once the live one is closed.
+        val second = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        assertNotEquals(first.inviteId, second.inviteId)
     }
 }

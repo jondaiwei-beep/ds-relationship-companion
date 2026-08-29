@@ -24,6 +24,16 @@ class InviteCreateFailed extends InviteCreated {
   final String message;
 }
 
+/// A live invitation already exists for this Dynamic.
+///
+/// Not a failure of the Creator's action: two taps, or reopening the screen
+/// after the link was already made, both land here. The token is shown once
+/// and only its hash is stored, so the existing link cannot be produced
+/// again — the way forward is to revoke it and issue another.
+class InviteAlreadyExists extends InviteCreated {
+  const InviteAlreadyExists();
+}
+
 /// The result of accepting an invitation.
 sealed class JoinOutcome {
   const JoinOutcome();
@@ -93,6 +103,11 @@ class InviteActions {
       _createKeys.remove(dynamicId);
       return InviteLinkReady('${webBaseUrl()}/invite/$token');
     } on DioException catch (e) {
+      if (_code(e) == 'INVITE_ALREADY_PENDING') {
+        // Terminal for this attempt, and not retryable: the key goes.
+        _createKeys.remove(dynamicId);
+        return const InviteAlreadyExists();
+      }
       // The key is deliberately kept: the next attempt is the same attempt.
       return InviteCreateFailed(
         _isOffline(e)
@@ -142,6 +157,11 @@ class InviteActions {
       }
       return const JoinFailed("We couldn't complete that just now. Try again.");
     }
+  }
+
+  static String? _code(DioException e) {
+    final data = e.response?.data;
+    return data is Map ? data['code'] as String? : null;
   }
 
   static bool _isOffline(DioException e) => switch (e.type) {

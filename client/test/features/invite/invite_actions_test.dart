@@ -71,6 +71,21 @@ void main() {
       );
     });
 
+    test('a link that already exists is not a failure', () async {
+      // Two taps, or reopening the screen. The server refuses because one
+      // live invitation per Dynamic is the rule, not because anything broke.
+      invites.failure = DioException(
+        requestOptions: RequestOptions(path: '/'),
+        response: Response(
+          requestOptions: RequestOptions(path: '/'),
+          statusCode: 409,
+          data: {'code': 'INVITE_ALREADY_PENDING'},
+        ),
+      );
+
+      expect(await actions().create('dyn-1'), isA<InviteAlreadyExists>());
+    });
+
     test('offline says so', () async {
       invites.failure = transport(DioExceptionType.connectionError);
 

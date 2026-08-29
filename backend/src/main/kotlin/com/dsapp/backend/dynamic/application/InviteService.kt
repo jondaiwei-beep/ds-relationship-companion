@@ -59,7 +59,23 @@ class InviteService(
         val expiresAt = Instant.now().plusSeconds(TTL_DAYS * 86_400)
 
         // The partial unique index allows only ONE pending invite per dynamic,
-        // so a double-tap cannot create a second live token.
+        // so a double-tap cannot create a second live token. Ask first, so a
+        // Creator who taps again gets an explanation rather than a 500 — the
+        // screen contract requires retry to be recoverable, and a stack trace
+        // is not.
+        //
+        // The token is returned exactly once and only its hash is stored, so
+        // the existing invitation cannot be handed back here. The Creator
+        // revokes it and issues a new one, which is also the honest model: a
+        // link they can no longer see is a link they can no longer share.
+        val pending = dsl.fetchOne(
+            "SELECT id FROM invites WHERE dynamic_id = {0} AND state = 'PENDING'",
+            dynamicId,
+        )
+        if (pending != null) {
+            throw InviteAlreadyPending(pending.get("id", UUID::class.java))
+        }
+
         dsl.query(
             """
             INSERT INTO invites (id, dynamic_id, inviter_user_id, intended_role_context,
@@ -161,3 +177,12 @@ class InviteService(
 }
 
 class InviteNotJoinable(val state: String) : RuntimeException("Invite is $state")
+
+/**
+ * A Dynamic may have only one live invitation at a time.
+ *
+ * Not an error in the Creator's behaviour: two taps, or a screen reopened
+ * after the link was already made, both land here. The screen says a link
+ * already exists and offers to revoke it.
+ */
+class InviteAlreadyPending(val inviteId: UUID) : RuntimeException("Invite already pending")
