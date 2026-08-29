@@ -1,0 +1,22 @@
+{
+  "freeze_id": "TEXTURE-FREEZE-B4-V1",
+  "result": "pass",
+  "asset": "design/assets/textures/ritual-grain-128.png",
+  "dimensions": {
+    "width": 128,
+    "height": 128
+  },
+  "algorithm": "seeded xorshift32 triangular monochrome noise",
+  "seed": "0x44535243",
+  "application": {
+    "opacity": 0.035,
+    "blend_mode": "softLight",
+    "repeat": true
+  },
+  "channel_statistics": {
+    "min": 80,
+    "max": 175,
+    "mean": 128.19
+  },
+  "sha256": "7558b993710b096546e0fee1fc8cbe9af0fc1a13a43ac40d154f53108e40ae68"
+}

@@ -7,5 +7,5 @@ build/
 .flutter-plugins-dependencies
 .packages
 coverage/
+node_modules/
 design/qa/visual-diff/tmp/
-

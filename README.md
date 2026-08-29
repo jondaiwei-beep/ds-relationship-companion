@@ -25,6 +25,10 @@ Private product, design, and implementation source of truth for the Android app 
 
 No implementation may infer missing behavior from a raster image. A screen must be marked `ready_for_build` in the active manifest before development begins.
 
+## Flutter foundation
+
+The gate-independent design-system package lives under `app/`. It already bundles the frozen fonts, eight type roles, B-2 tokens, all 33 semantic SVG assets, Ritual/Living themes and the deterministic B-4 ritual surface. It intentionally contains no product screen or navigation shell while screen gates remain blocked.
+
 ## Traceability rule
 
 Every buildable UI must form one unbroken chain:

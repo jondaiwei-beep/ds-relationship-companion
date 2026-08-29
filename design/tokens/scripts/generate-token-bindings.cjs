@@ -6,6 +6,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '../../..');
 const sourcePath = path.join(root, 'design/tokens/design-tokens.json');
 const outputDir = path.join(root, 'design/tokens/generated');
+const appOutputPath = path.join(root, 'app/lib/src/design_system/generated/ds_design_tokens.g.dart');
 const tokens = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
 function get(pathValue) {
@@ -65,6 +66,12 @@ const borders = flat.filter((entry) => entry.path.startsWith('borderWidth.'));
 const controls = flat.filter((entry) => entry.path.startsWith('size.control.'));
 const layout = flat.filter((entry) => entry.path.startsWith('size.layout.') || entry.path === 'size.touchTarget');
 const opacity = flat.filter((entry) => entry.path.startsWith('opacity.'));
+const spaces = flat.filter((entry) => entry.path.startsWith('space.'));
+const shadows = flat.filter((entry) => entry.path.startsWith('shadow.'));
+
+function dartShadow(value) {
+  return `BoxShadow(color: ${dartColor(value.color)}, offset: Offset(${value.offsetX.value}.0, ${value.offsetY.value}.0), blurRadius: ${value.blur.value}.0, spreadRadius: ${value.spread.value}.0)`;
+}
 
 const dart = `// GENERATED FROM design/tokens/design-tokens.json. DO NOT EDIT BY HAND.\n` +
 `// Freeze: ${tokens.meta.freezeId} · ${tokens.meta.version}\n\n` +
@@ -75,17 +82,27 @@ const dart = `// GENERATED FROM design/tokens/design-tokens.json. DO NOT EDIT BY
 `${dartClass('DsBorderWidths', borders, (value) => `${value.value}`, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n\n` +
 `${dartClass('DsControlSizes', controls, (value) => `${value.value}.0`)}\n\n` +
 `${dartClass('DsLayoutSizes', layout, (value) => `${value.value}.0`, (entry) => camel(entry.path.replace(/^size\.(layout\.)?/, '')))}\n\n` +
-`${dartClass('DsOpacity', opacity, (value) => `${value}`, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n`;
+`${dartClass('DsOpacity', opacity, (value) => `${value}`, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n\n` +
+`${dartClass('DsSpacing', spaces, (value) => `${value.value}.0`, (entry) => `space${entry.path.split('.')[1]}`)}\n\n` +
+`${dartClass('DsShadows', shadows, dartShadow, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n`;
+
+const appDart = dart;
 
 const cssEntries = flat.filter((entry) =>
   entry.path.startsWith('color.') ||
+  entry.path.startsWith('space.') ||
   entry.path.startsWith('radius.') ||
   entry.path.startsWith('borderWidth.') ||
   entry.path.startsWith('size.') ||
-  entry.path.startsWith('opacity.')
+  entry.path.startsWith('opacity.') ||
+  entry.path.startsWith('shadow.')
 );
 const cssValue = (entry) => {
   if (entry.type === 'dimension') return `${entry.value.value}${entry.value.unit === 'dp' ? 'px' : entry.value.unit}`;
+  if (entry.type === 'shadow') {
+    const value = entry.value;
+    return `${value.offsetX.value}px ${value.offsetY.value}px ${value.blur.value}px ${value.spread.value}px ${value.color}`;
+  }
   return `${entry.value}`;
 };
 const css = `/* GENERATED FROM design/tokens/design-tokens.json. DO NOT EDIT BY HAND. */\n` +
@@ -96,4 +113,6 @@ cssEntries.map((entry) => `  --ds-${kebab(entry.path)}: ${cssValue(entry)};`).jo
 fs.mkdirSync(outputDir, { recursive: true });
 fs.writeFileSync(path.join(outputDir, 'ds_design_tokens.dart'), dart);
 fs.writeFileSync(path.join(outputDir, 'ds-design-tokens.css'), css);
-process.stdout.write(`Generated ${primitive.length + semantic.length} color tokens and ${radii.length + borders.length + controls.length + layout.length + opacity.length} geometry/opacity tokens.\n`);
+fs.mkdirSync(path.dirname(appOutputPath), { recursive: true });
+fs.writeFileSync(appOutputPath, appDart);
+process.stdout.write(`Generated ${primitive.length + semantic.length} colors, ${spaces.length} spacing, ${radii.length + borders.length + controls.length + layout.length + opacity.length} geometry/opacity and ${shadows.length} shadow tokens.\n`);

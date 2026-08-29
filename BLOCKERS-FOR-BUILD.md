@@ -15,7 +15,7 @@ It does not propose design decisions — those belong to the design owner.
 | Semantic color tokens | Frozen in `TOKEN-FREEZE-B2-V1` with Flutter/Web bindings | No — B-2 resolved |
 | SVG masters | 33 of 33 native masters exist; all `approved` in SVG Freeze v1 | No — B-1 resolved |
 | Today prioritized-list/state family | Rev-2 candidate designed and QA-rendered | **Approval still blocks SCR-01** |
-| Textures | Directory empty | Partially |
+| Textures | Deterministic B-4 grain frozen and wired into Flutter | No — usable now |
 | Radius / control heights | Frozen in `TOKEN-FREEZE-B2-V1` | No — usable now |
 
 ---
@@ -83,27 +83,31 @@ product/design owner approves Revision 2 plus copy and Web/platform behavior.
 
 ---
 
-## B-4 · Remaining texture gap
+## B-4 · Resolved by Texture Freeze B-4 v1
 
-- **Textures**: `design/assets/textures/` is empty. The previews show a fine
-  grain over the dark ground. If that is intentional, the implementation needs
-  to know whether it is a tiling asset or a shader, plus opacity and blend mode.
-  If it is only PNG compression, say so and I will render flat.
+The dark references intentionally use fine film grain; it is not PNG compression.
+The implementation contract is deterministic and directly consumable:
 
-B-2 resolves the earlier geometry and light-mode questions: 48dp is the minimum
-target, 56dp is the standard button, 64dp is the ritual CTA, and Core Beta uses
-semantic Ritual/Living contexts rather than a user-toggleable two-theme system.
+- canonical 128 × 128 repeating tile at `design/assets/textures/ritual-grain-128.png`;
+- seeded generator and SHA-256 validation evidence committed with the asset;
+- `softLight` blend at frozen `opacity.grain = 0.035` on Ritual Canvas only;
+- runtime randomness and one-off screen textures are prohibited;
+- Flutter consumption is implemented by `DsRitualSurface` in the foundation package.
+
+Canonical manifest: `manifests/texture-freeze.b4.v1.json`. B-4 no longer blocks
+visual implementation; independent screen product/state/platform gates remain.
 
 ---
 
-## What is being built in the meantime
+## Foundation available to implementation
 
-Work that does not depend on the above, and will not be thrown away:
+The portable package under `app/` now provides work that does not depend on a
+screen gate and will not be thrown away:
 
-1. Bundling Cormorant Garamond (400/500/600) and Inter (400/500/600/700).
-2. Rewriting the Flutter type scale to the 8 roles in `typography.md`.
-3. Adding `flutter_svg` so approved masters can be consumed as files.
-4. Wiring the generated B-2 Flutter binding into the token layer without
-   duplicating raw values.
+1. Bundled Cormorant Garamond (400/500/600) and Inter (400/500/600/700).
+2. The frozen 8-role Flutter type scale from `typography.md`.
+3. `flutter_svg` plus a generated semantic Asset ID registry for all 33 masters.
+4. Generated B-2 Flutter tokens, spacing, Ritual/Living themes and B-4 surface.
+5. Reproducible asset sync and validation scripts under `tool/`.
 
 No screen will be marked done against a `blocked_alignment_required` package.

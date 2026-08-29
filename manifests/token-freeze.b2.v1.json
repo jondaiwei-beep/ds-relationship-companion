@@ -8,7 +8,8 @@
   "rules": "design/tokens/B2-FREEZE.md",
   "generated_bindings": [
     "design/tokens/generated/ds_design_tokens.dart",
-    "design/tokens/generated/ds-design-tokens.css"
+    "design/tokens/generated/ds-design-tokens.css",
+    "app/lib/src/design_system/generated/ds_design_tokens.g.dart"
   ],
   "qa_board": "design/qa/reference/token-freeze-b2-v1-board.png",
   "validation_report": "design/qa/reference/token-freeze-b2-v1-validation.json",
@@ -16,6 +17,7 @@
   "frozen_scope": {
     "primitive_colors": 10,
     "semantic_color_groups": 9,
+    "spacing_steps": 12,
     "radii": 7,
     "border_widths": 3,
     "control_sizes": 12,
@@ -25,7 +27,6 @@
   },
   "build_gate_effect": "none; screen product/state/platform/visual gates remain independent",
   "open_followups": [
-    "B-3 Today prioritized-list design and cross-screen states",
-    "B-4 deterministic grain/texture implementation"
+    "B-3 Today prioritized-list owner approval and cross-screen states"
   ]
 }

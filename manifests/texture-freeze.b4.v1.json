@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "freeze_id": "TEXTURE-FREEZE-B4-V1",
+  "generated_at": "2026-08-29",
+  "status": "frozen",
+  "visual_direction": "V5 Warm Authority / Quiet Authority",
+  "asset": "design/assets/textures/ritual-grain-128.png",
+  "rules_document": "design/assets/textures/B4-FREEZE.md",
+  "generator": "design/assets/textures/scripts/generate-ritual-grain.cjs",
+  "validation_report": "design/qa/reference/texture-freeze-b4-v1-validation.json",
+  "render_contract": {
+    "width_px": 128,
+    "height_px": 128,
+    "repeat": true,
+    "blend_mode": "softLight",
+    "opacity_token": "opacity.grain",
+    "scope": "Ritual Canvas only",
+    "runtime_randomness": false
+  },
+  "build_gate_effect": "B-4 foundation resolved; screen gates remain independent"
+}

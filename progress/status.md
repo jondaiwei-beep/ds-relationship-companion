@@ -26,6 +26,9 @@
 - Generated Flutter and Web token bindings plus contrast/geometry QA stored in GitHub-readable paths
 - Today B-3 Revision 2 completed as a review candidate: default 1–3 priority hierarchy, 8–10 item expansion contract, preserved ritual focus and complete privacy/recovery/role state family
 - Today B-3 lossless sources, 390 × 844 previews, deterministic renderer, machine-readable behavior contract and combined QA board stored in GitHub-readable paths
+- B-4 Texture Freeze completed: deterministic 128 × 128 ritual grain, seeded generator, application contract and SHA-256 validation evidence
+- Portable Flutter foundation package completed under `app/`: bundled fonts, eight type roles, generated B-2 tokens, semantic 33-SVG registry, Ritual/Living themes and B-4 ritual surface
+- Reproducible foundation sync/validation scripts completed under `tool/`; product screens remain excluded until their gates open
 
 ## Next alignment work
 
@@ -33,5 +36,5 @@
 2. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
 3. Approve Today Revision 2, then add Attention primary queue and Daily Check-in designs.
 4. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
-5. Build the deterministic grain/texture deliverable under B-4; semantic color and geometry tokens are frozen in B-2 v1.
-6. Change gates only after product, visual, asset and recovery contracts are all approved.
+5. Integrate the foundation package into the runnable Android/Web shell when its repository boundary is confirmed.
+6. Change screen gates only after product, visual, asset and recovery contracts are all approved.

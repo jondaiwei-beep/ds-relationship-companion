@@ -23,6 +23,8 @@ V5 Warm Authority combines a near-black ritual canvas with Bone/Stone typography
 
 The calibrated Ritual Canvas is `#080B07` through `color.semantic.canvas.ritual`. Semantic color, surface, state, radius and control geometry are frozen in `design/tokens/B2-FREEZE.md`; implementation must consume the generated platform bindings rather than copying these values into screens.
 
+The restrained dark-ground grain is frozen separately in `design/assets/textures/B4-FREEZE.md`. It is a deterministic repeating asset consumed through the Flutter foundation package, never runtime-random noise.
+
 ## Reference coordinate system
 
 Generated raster files are 853 × 1844 pixels. Implement them against a normalized 390 × 844 logical-pixel mobile frame. Raster coordinates must not be copied as absolute application coordinates.

@@ -38,6 +38,17 @@ Do not search the repository for a visually similar page and assume it is the ta
 - Preserve hierarchy, whitespace, typography, partner presence, ritual marks, and restrained texture.
 - Minimum interaction target: 48 × 48 logical pixels.
 
+## Foundation package
+
+`app/` is a portable Flutter design-system package, not a product-screen shell.
+Before adding UI, run the repository-root generators and validator documented in
+`app/README.md`. Import `package:ds_relationship_companion/ds_design_system.dart`
+and consume `DsTheme`, `DsTextStyles`, generated B-2 tokens, `DsAssets`/`DsSvg`
+and `DsRitualSurface`; do not create parallel theme, font, SVG or texture layers.
+
+The foundation package does not bypass a Screen Package gate. Do not add
+`lib/main.dart` or product navigation until the target screen is `ready_for_build`.
+
 ## Verification
 
 For every screen, render the reference viewport, store the result under `design/qa/implementation/`, compare it with the approved reference, and record remaining differences. Geometry should normally remain within 1–2 logical pixels. Texture/grain regions may use a controlled comparison mask; typography, layout, copy, SVG geometry, and state visibility may not.
