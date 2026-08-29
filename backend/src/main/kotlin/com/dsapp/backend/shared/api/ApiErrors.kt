@@ -10,6 +10,8 @@ import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
 import com.dsapp.backend.shared.idempotency.IdempotencyKeyReusedException
 import com.dsapp.backend.shared.idempotency.MissingIdempotencyKeyException
 import org.springframework.http.HttpStatus
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.http.ResponseEntity
 import com.dsapp.backend.identity.application.NotificationSettingsService
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -20,6 +22,28 @@ data class ApiError(val code: String, val detail: String? = null)
 
 @RestControllerAdvice
 class ApiErrorHandler {
+
+    /**
+     * A request that did not satisfy its own contract.
+     *
+     * Answered as 400 with the offending field, never 401. A client that sees
+     * 401 concludes the session ended and clears it — so without this a
+     * mistyped email would sign someone out instead of asking them to fix it.
+     *
+     * The field name is safe to return: it names an input the caller just
+     * sent, not anything about an account.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun onInvalidBody(e: MethodArgumentNotValidException): ResponseEntity<ApiError> {
+        val field = e.bindingResult.fieldErrors.firstOrNull()?.field
+        return ResponseEntity.badRequest()
+            .body(ApiError("INVALID_REQUEST", field))
+    }
+
+    /** A body that could not be parsed at all — same reasoning as above. */
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun onUnreadableBody(e: HttpMessageNotReadableException): ResponseEntity<ApiError> =
+        ResponseEntity.badRequest().body(ApiError("INVALID_REQUEST"))
 
     @ExceptionHandler(AuthorizationException::class)
     fun onAuthorization(e: AuthorizationException): ResponseEntity<ApiError> =

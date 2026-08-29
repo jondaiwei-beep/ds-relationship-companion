@@ -32,12 +32,13 @@ void main() {
 
   AuthActions actions() => container.read(authActionsProvider);
 
-  DioException serverError(String code, {int status = 400}) => DioException(
+  DioException serverError(String code, {int status = 400, String? detail}) =>
+      DioException(
         requestOptions: RequestOptions(path: '/'),
         response: Response(
           requestOptions: RequestOptions(path: '/'),
           statusCode: status,
-          data: {'code': code},
+          data: {'code': code, 'detail': detail},
         ),
       );
 
@@ -127,6 +128,39 @@ void main() {
       final message = (outcome as AuthUncertain).message;
       expect(message, contains('signing in'));
       expect(message, contains("couldn't confirm"));
+    });
+  });
+
+  group('a rejected request', () {
+    test('points at the field the server named', () async {
+      auth.failure = serverError('INVALID_REQUEST', detail: 'email');
+
+      final outcome = await actions().signIn(email: 'bad', password: 'x');
+
+      expect((outcome as AuthFailed).field, AuthField.email);
+      expect(outcome.message, 'Enter a valid email address.');
+    });
+
+    test('does not read as a lost session', () async {
+      // The server used to answer 401 for a malformed body, which this
+      // client reads as authorization loss. A mistyped address would have
+      // signed someone out instead of asking them to fix it.
+      auth.failure = serverError('INVALID_REQUEST', detail: 'email');
+
+      final outcome = await actions()
+          .register(email: 'bad', password: 'x' * 10, ageConfirmed: true);
+
+      expect(outcome, isA<AuthFailed>());
+      expect((outcome as AuthFailed).message, isNot(contains('sign')));
+    });
+
+    test('an unnamed field still says something useful', () async {
+      auth.failure = serverError('INVALID_REQUEST');
+
+      final outcome = await actions().signIn(email: '', password: '');
+
+      expect((outcome as AuthFailed).field, isNull);
+      expect(outcome.message, 'Check the details and try again.');
     });
   });
 

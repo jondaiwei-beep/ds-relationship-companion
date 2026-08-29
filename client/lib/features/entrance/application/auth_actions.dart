@@ -188,6 +188,10 @@ class AuthActions {
       return const AuthUncertain("We couldn't confirm the sign-in. Try again.");
     }
     return switch (_code(e)) {
+      'INVALID_REQUEST' => AuthFailed(
+          _invalidRequestMessage(_detail(e)),
+          field: _fieldNamed(_detail(e)),
+        ),
       // Never distinguishes a wrong password from an unknown address: that
       // difference tells an attacker which emails have accounts here, and on
       // this product an account is itself sensitive.
@@ -213,6 +217,12 @@ class AuthActions {
       );
     }
     return switch (_code(e)) {
+      // The request did not satisfy its own contract — a malformed address,
+      // an empty field. The server names the offending input.
+      'INVALID_REQUEST' => AuthFailed(
+          _invalidRequestMessage(_detail(e)),
+          field: _fieldNamed(_detail(e)),
+        ),
       'AGE_NOT_CONFIRMED' => const AuthFailed(
           'Confirm that you are 18 or older to create an account.',
           field: AuthField.ageConfirmation,
@@ -233,6 +243,26 @@ class AuthActions {
     final data = e.response?.data;
     return data is Map ? data['code'] as String? : null;
   }
+
+  /// Which input the server rejected, when it says.
+  static String? _detail(DioException e) {
+    final data = e.response?.data;
+    return data is Map ? data['detail'] as String? : null;
+  }
+
+  static AuthField? _fieldNamed(String? detail) => switch (detail) {
+        'email' => AuthField.email,
+        'password' => AuthField.password,
+        _ => null,
+      };
+
+  /// Restates a rejected field in the same words the form already uses, so a
+  /// server rejection and a client one do not read as different problems.
+  static String _invalidRequestMessage(String? detail) => switch (detail) {
+        'email' => 'Enter a valid email address.',
+        'password' => 'Enter your password.',
+        _ => 'Check the details and try again.',
+      };
 
   static bool _isOffline(DioException e) => switch (e.type) {
         DioExceptionType.connectionError ||
