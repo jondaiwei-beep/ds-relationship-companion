@@ -52,6 +52,36 @@ needs `package:`. `check-screens.py` enforces both.
 **The general lesson: a foundation package that only its own tests consume is
 not proven.** The first real consumer is the test.
 
+## sharp ignores FONTCONFIG_FILE, and renders the wrong font silently
+
+The design renderers set `FONTCONFIG_FILE` to a config written into
+`os.tmpdir()`. **sharp bundles its own fontconfig and does not honour that
+variable on macOS.** Every family falls back to a system sans, nothing errors,
+and the render looks fine — it is simply in the wrong typeface.
+
+`render-today-b3.cjs` had stopped reproducing its own committed output this
+way, and nobody noticed because you have to look at the letterforms.
+
+```js
+require('design/qa/scripts/fonts.cjs').install();   // BEFORE require('sharp')
+const sharp = require('sharp');
+await fonts.assertDisplayFaceResolves(sharp);       // then prove it took
+```
+
+`fonts.cjs` installs the bundled faces into the user font directory, where
+fontconfig actually looks, and renders one glyph twice to prove the display
+face resolved. **Any new renderer must call both.** A render in the wrong
+typeface is worse than a failed render.
+
+Two related habits:
+
+- **Re-running a renderer overwrites committed previews.** If you run one to
+  diagnose something, `git status` afterwards and restore what you did not
+  mean to change. Verify with a pixel diff, not by eye.
+- **`fc-match` is not evidence about sharp.** Fontconfig on the command line
+  resolved Cormorant correctly the whole time this was broken; the two use
+  different fontconfig builds.
+
 ## A test that passes with the fix removed is not a test
 
 Three separate versions of this went wrong in one sitting, so check the check:
