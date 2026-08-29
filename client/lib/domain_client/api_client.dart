@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 
+import 'credentials_io.dart'
+    if (dart.library.js_interop) 'credentials_web.dart';
+
 /// HTTP client for the dsapp backend.
 ///
 /// Every mutation carries an `Idempotency-Key` so a retry — a flaky mobile
@@ -15,6 +18,16 @@ class ApiClient {
       ..connectTimeout = const Duration(seconds: 10)
       ..receiveTimeout = const Duration(seconds: 15)
       ..headers['Content-Type'] = 'application/json';
+
+    // Browsers omit cookies from cross-origin requests unless asked, and the
+    // Web app and the API are separate hosts. Without this the refresh cookie
+    // is never set, never sent and never cleared: sign-in appears to work,
+    // then every reload signs the person back out.
+    //
+    // "Same-site" for SameSite=Strict and "same-origin" for fetch credentials
+    // are different rules; sibling subdomains satisfy the first, not the
+    // second.
+    configureCredentials(_dio);
   }
 
   final Dio _dio;
@@ -48,14 +61,40 @@ class ApiClient {
   }
 
   Future<Map<String, dynamic>> get(String path) async {
+    _requireSession(path);
     final r = await _dio.get<Map<String, dynamic>>(path, options: _authed);
     return r.data ?? const {};
   }
 
   /// GET an endpoint that returns a JSON array rather than an object.
   Future<List<dynamic>> getList(String path) async {
+    _requireSession(path);
     final r = await _dio.get<List<dynamic>>(path, options: _authed);
     return r.data ?? const [];
+  }
+
+  /// Refuse to send an authenticated request with no session.
+  ///
+  /// Without this the client quietly drops the `Authorization` header and
+  /// sends anyway. The server rejects it, so nothing leaks — but the request
+  /// still went out, carrying a path that names a Dynamic, and the failure
+  /// surfaces as a generic error rather than as authorization loss.
+  ///
+  /// The router keeps the one built screen from reaching here. That is a
+  /// widget-level guard, and there are thirty-four screens to come plus
+  /// providers, lifecycle callbacks and retries that never touch a widget.
+  /// The transport is the layer that can actually hold this line.
+  void _requireSession(String path) {
+    if (_accessToken != null) return;
+    throw DioException(
+      requestOptions: RequestOptions(path: path),
+      type: DioExceptionType.cancel,
+      error: 'No session: refusing to send an authenticated request.',
+      response: Response<void>(
+        requestOptions: RequestOptions(path: path),
+        statusCode: 401,
+      ),
+    );
   }
 
   /// POST a command. [idempotencyKey] must be stable across retries of the
@@ -65,12 +104,15 @@ class ApiClient {
     Object? body,
     String? idempotencyKey,
     bool authenticated = true,
+    Map<String, String> headers = const {},
   }) async {
+    if (authenticated) _requireSession(path);
     final token = _accessToken;
     final options = Options(
       headers: {
         if (authenticated && token != null) 'Authorization': 'Bearer $token',
         'Idempotency-Key': ?idempotencyKey,
+        ...headers,
       },
     );
     final r = await _dio.post<Map<String, dynamic>>(path, data: body, options: options);

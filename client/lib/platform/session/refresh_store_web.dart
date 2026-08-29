@@ -11,8 +11,10 @@ class RefreshStoreImpl implements RefreshStore {
   @override
   Future<String?> read() async => null;
 
+  /// True because there is nothing to do and nothing failed: the browser is
+  /// already holding the credential in a cookie this code cannot touch.
   @override
-  Future<void> write(String token) async {}
+  Future<bool> write(String token) async => true;
 
   @override
   Future<void> clear() async {}

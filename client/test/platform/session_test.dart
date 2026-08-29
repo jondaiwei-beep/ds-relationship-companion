@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
+import 'package:dsapp/platform/session/csrf.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
 import 'package:dsapp/platform/session/session.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
@@ -13,17 +17,20 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   late _FakeAuth auth;
   late _MemoryStore store;
+  late _FakeCsrf csrf;
   late ApiClient api;
   late ProviderContainer container;
 
   setUp(() {
     auth = _FakeAuth();
     store = _MemoryStore();
+    csrf = _FakeCsrf();
     api = ApiClient(baseUrl: 'http://test');
     container = ProviderContainer(
       overrides: [
         authRepositoryProvider.overrideWithValue(auth),
         refreshStoreProvider.overrideWithValue(store),
+        csrfTokensProvider.overrideWithValue(csrf),
         apiClientProvider.overrideWithValue(api),
       ],
     );
@@ -65,7 +72,7 @@ void main() {
 
     test('a rejected credential resolves to signed out and clears it', () async {
       await store.write('stale');
-      auth.refreshFails = true;
+      auth.refreshRejected = true;
 
       await controller().restore();
 
@@ -77,9 +84,25 @@ void main() {
       );
     });
 
+    test('being offline does not destroy a credential that may be good',
+        () async {
+      await store.write('maybe-fine');
+      auth.refreshUnreachable = true;
+
+      await controller().restore();
+
+      expect(session(), isA<SignedOut>());
+      expect(
+        await store.read(),
+        'maybe-fine',
+        reason: 'deleting it because the wifi was down would sign someone out '
+            'permanently for a temporary problem',
+      );
+    });
+
     test('a failed restore carries no reason: nobody asked for anything', () async {
       await store.write('stale');
-      auth.refreshFails = true;
+      auth.refreshRejected = true;
 
       await controller().restore();
 
@@ -143,6 +166,110 @@ void main() {
     });
   });
 
+  group('sign out is a safety control', () {
+    test('denies locally before waiting on the network', () async {
+      await controller().adopt(_result('token-1'));
+      final gate = Completer<void>();
+      auth.logoutGate = gate;
+
+      final signingOut = controller().signOut();
+      await pumpEventQueue();
+
+      // The server has not answered yet, and must not need to.
+      expect(
+        session(),
+        isA<SignedOut>(),
+        reason: 'awaiting logout first would keep protected content on screen '
+            'for the whole connect timeout of a device being handed back',
+      );
+      expect(api.debugAccessToken, isNull);
+
+      gate.complete();
+      await signingOut;
+    });
+  });
+
+  group('races', () {
+    test('a refresh in flight cannot resurrect a session after sign-out',
+        () async {
+      await controller().adopt(_result('token-1'));
+      final gate = Completer<AuthResult>();
+      auth.refreshGate = gate;
+
+      final refreshing = controller().debugRefreshNow();
+      await pumpEventQueue();
+      await controller().signOut();
+
+      // The refresh the server was already processing now comes back.
+      gate.complete(_result('too-late'));
+      await refreshing;
+
+      expect(
+        session(),
+        isA<SignedOut>(),
+        reason: 'cancelling a timer does nothing to a request already sent',
+      );
+      expect(api.debugAccessToken, isNull);
+    });
+
+    test('concurrent refreshes are coalesced into one exchange', () async {
+      // The server keeps one ACTIVE refresh token per session, so a second
+      // concurrent exchange is guaranteed to lose — and would read its own
+      // rejection as the session expiring.
+      await store.write('r1');
+      final gate = Completer<AuthResult>();
+      auth.refreshGate = gate;
+
+      final a = controller().restore();
+      final b = controller().debugRefreshNow();
+      await pumpEventQueue();
+
+      gate.complete(_result('shared'));
+      await Future.wait([a, b]);
+
+      expect(auth.refreshCalls, 1);
+    });
+  });
+
+  group('rotation', () {
+    test('a rotated token that cannot be saved ends the session', () async {
+      // The server has rotated: only the new token works now. Carrying on
+      // would look healthy until the next refresh presented the dead one.
+      await controller().adopt(_result('token-1'));
+      store.writable = false;
+
+      await controller().adopt(_result('token-2', refresh: 'rotated'));
+
+      expect(session(), isA<SignedOut>());
+      expect((session() as SignedOut).reason, SignedOutReason.expired);
+    });
+  });
+
+  group('CSRF', () {
+    test('the token accompanies a refresh when the platform has one', () async {
+      // The server rejects a Web refresh that arrives without this header, so
+      // omitting it does not merely weaken a defence — it makes session
+      // restore fail with 401 on every Web launch.
+      csrf.token = 'csrf-abc';
+      await store.write('stored');
+
+      await controller().restore();
+
+      expect(auth.lastCsrfToken, 'csrf-abc');
+    });
+
+    test('nothing is invented when the platform has no token', () async {
+      // Android sends the refresh token in the body; there is no ambient
+      // credential to defend and the server does not check.
+      csrf.token = null;
+      await store.write('stored');
+
+      await controller().restore();
+
+      expect(auth.lastCsrfToken, isNull);
+    });
+  });
+
   group('the refresh schedule', () {
     test('fires ahead of expiry, not at it', () {
       expect(
@@ -189,19 +316,50 @@ AuthResult _result(String access, {String? refresh = 'refresh-1'}) => AuthResult
 class _FakeAuth implements AuthRepository {
   int refreshCalls = 0;
   String? lastRefreshToken;
-  bool refreshFails = false;
+  String? lastCsrfToken;
+  /// The server answered and refused: a 401, as it does for a dead credential.
+  bool refreshRejected = false;
+
+  /// The server never answered: offline, DNS, timeout.
+  bool refreshUnreachable = false;
+
   bool logoutFails = false;
 
+  /// Held open to keep a call in flight while the test does something else.
+  Completer<AuthResult>? refreshGate;
+  Completer<void>? logoutGate;
+
   @override
-  Future<AuthResult> refresh({String? refreshToken}) async {
+  Future<AuthResult> refresh({String? refreshToken, String? csrfToken}) async {
     refreshCalls++;
     lastRefreshToken = refreshToken;
-    if (refreshFails) throw StateError('rejected');
+    lastCsrfToken = csrfToken;
+    if (refreshRejected) {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/v1/auth/refresh'),
+        response: Response<void>(
+          requestOptions: RequestOptions(path: '/v1/auth/refresh'),
+          statusCode: 401,
+        ),
+      );
+    }
+    final gate = refreshGate;
+    if (gate != null) {
+      refreshGate = null;
+      return gate.future;
+    }
+    if (refreshUnreachable) {
+      throw DioException.connectionError(
+        requestOptions: RequestOptions(path: '/v1/auth/refresh'),
+        reason: 'offline',
+      );
+    }
     return _result('refreshed-access');
   }
 
   @override
   Future<void> logout() async {
+    await logoutGate?.future;
     if (logoutFails) throw StateError('offline');
   }
 
@@ -210,14 +368,28 @@ class _FakeAuth implements AuthRepository {
       throw UnimplementedError('${invocation.memberName} not used by this test');
 }
 
+class _FakeCsrf implements CsrfTokens {
+  String? token;
+
+  @override
+  String? read() => token;
+}
+
 class _MemoryStore implements RefreshStore {
   String? _token;
 
   @override
   Future<String?> read() async => _token;
 
+  /// Set false to simulate a Keystore that will not accept a write.
+  bool writable = true;
+
   @override
-  Future<void> write(String token) async => _token = token;
+  Future<bool> write(String token) async {
+    if (!writable) return false;
+    _token = token;
+    return true;
+  }
 
   @override
   Future<void> clear() async => _token = null;

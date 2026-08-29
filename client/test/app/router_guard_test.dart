@@ -234,6 +234,50 @@ void main() {
     });
   });
 
+  group('returnTo is untrusted input', () {
+    // It survives a Web reload, so it is whatever is in the address bar.
+    Future<String> land(WidgetTester tester, String returnTo) async {
+      await container.read(sessionProvider.notifier).adopt(
+            AuthResult(
+              accessToken: 'a',
+              accessTokenExpiresIn: const Duration(minutes: 15),
+            ),
+          );
+      final h = await pump(
+        tester,
+        at: '${Routes.signIn}?returnTo=${Uri.encodeComponent(returnTo)}',
+      );
+      return h.location;
+    }
+
+    testWidgets('an absolute URL does not become an open redirect',
+        (tester) async {
+      expect(await land(tester, 'https://example.com/phish'), Routes.today);
+    });
+
+    testWidgets('a protocol-relative URL is refused too', (tester) async {
+      expect(await land(tester, '//example.com/phish'), Routes.today);
+    });
+
+    testWidgets('bouncing back to the entrance would loop', (tester) async {
+      expect(await land(tester, Routes.signIn), Routes.today);
+    });
+
+    testWidgets('bouncing back to the waiting room would loop',
+        (tester) async {
+      expect(await land(tester, Routes.holding), Routes.today);
+    });
+
+    testWidgets('an encoded path survives one decode, not two', (tester) async {
+      // `Uri.queryParameters` already decodes. Decoding again would turn
+      // `%252F` into a path separator that was never in the destination.
+      expect(
+        await land(tester, '/dynamics/a%2Fb/today'),
+        '/dynamics/a%2Fb/today',
+      );
+    });
+  });
+
   group('the public list', () {
     test('is exactly the entrance, the callback and an invitation', () {
       expect(Routes.isPublic('/sign-in'), isTrue);
@@ -277,7 +321,7 @@ TodayView _view() => todayFixture();
 
 class _FakeAuth implements AuthRepository {
   @override
-  Future<AuthResult> refresh({String? refreshToken}) async =>
+  Future<AuthResult> refresh({String? refreshToken, String? csrfToken}) async =>
       throw StateError('no session');
 
   @override
@@ -294,8 +338,15 @@ class _MemoryStore implements RefreshStore {
   @override
   Future<String?> read() async => _token;
 
+  /// Set false to simulate a Keystore that will not accept a write.
+  bool writable = true;
+
   @override
-  Future<void> write(String token) async => _token = token;
+  Future<bool> write(String token) async {
+    if (!writable) return false;
+    _token = token;
+    return true;
+  }
 
   @override
   Future<void> clear() async => _token = null;

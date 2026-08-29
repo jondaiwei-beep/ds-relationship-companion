@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:convert';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
+import '../../platform/session/csrf.dart';
 import '../api_client.dart';
 
 /// One passwordless sign-in attempt.
@@ -187,14 +188,20 @@ class AuthRepository {
 
   /// Exchange the refresh credential for a new access token.
   ///
-  /// Android sends the stored refresh token; Web sends nothing and the
-  /// browser attaches the httpOnly cookie. A rejection here is not an error
-  /// to retry — it means the session is over.
-  Future<AuthResult> refresh({String? refreshToken}) async {
+  /// Android sends the stored refresh token in the body. Web sends no body:
+  /// the browser attaches the httpOnly `__Host-refresh` cookie on its own,
+  /// and the client proves the request came from this origin's code by
+  /// echoing the readable CSRF cookie in a header. The server rejects a Web
+  /// refresh without it, so this is not optional hardening — omitting it
+  /// makes Web session restore fail with 401 every time.
+  ///
+  /// A rejection here is not an error to retry: it means the session is over.
+  Future<AuthResult> refresh({String? refreshToken, String? csrfToken}) async {
     final r = await _api.post(
       '/v1/auth/refresh',
       authenticated: false,
       body: refreshToken == null ? null : {'refreshToken': refreshToken},
+      headers: {csrfHeaderName: ?csrfToken},
     );
     return AuthResult.fromJson(r);
   }

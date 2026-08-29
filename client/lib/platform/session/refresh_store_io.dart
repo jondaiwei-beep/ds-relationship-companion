@@ -32,12 +32,12 @@ class RefreshStoreImpl implements RefreshStore {
   }
 
   @override
-  Future<void> write(String token) async {
+  Future<bool> write(String token) async {
     try {
       await _storage.write(key: _key, value: token);
+      return true;
     } catch (_) {
-      // Losing persistence costs a sign-in next launch. Failing the sign-in
-      // that just succeeded would cost the session the person is in.
+      return false;
     }
   }
 

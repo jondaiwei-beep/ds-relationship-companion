@@ -17,7 +17,15 @@ import 'refresh_store_io.dart'
 /// The access token is never stored by either — it lives in memory only.
 abstract interface class RefreshStore {
   Future<String?> read();
-  Future<void> write(String token);
+
+  /// Returns whether the token was actually persisted.
+  ///
+  /// Not `void`: the server rotates refresh tokens, so after a successful
+  /// exchange the old one is dead. A write that silently failed would leave
+  /// the session looking healthy until the next refresh presented a token the
+  /// server no longer accepts. The caller has to be able to tell.
+  Future<bool> write(String token);
+
   Future<void> clear();
 
   factory RefreshStore() = RefreshStoreImpl;

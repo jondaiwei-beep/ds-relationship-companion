@@ -27,7 +27,7 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 | `client/lib/domain_client/` | 12 repositories, all Core Beta surfaces. |
 | `app/` | Frozen design system: 33 SVGs, B-2 tokens, B-4 grain, 8 type roles, 2 themes. 26 tests. |
 | `client/lib/features/today/` | `SCR-01`, built and wired. |
-| `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle. 70 client tests. |
+| `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle. 93 client tests. |
 | Everything else | 34 screens, gates closed. |
 
 ## What is verified, and how
@@ -59,6 +59,14 @@ checkout's remote, but **the server has not been redeployed yet**: as of
 2026-08-29 `/v1/auth/register` answers 401 there while the current source
 marks it `permitAll`. Password registration does not exist on the deployed
 build. Redeploy before any real-device acceptance.
+
+**Web needs one origin** — the API sets `__Host-refresh-csrf`, and the
+`__Host-` prefix forbids a `Domain` attribute, so script on a sibling
+subdomain can never read it. The server rejects a Web refresh without that
+header, so cross-origin Web sign-in works and **reload signs the person out**.
+Serving the Web app and the API from one origin fixes this and the
+cross-origin cookie problem together; the alternative is a server change.
+Owner decision. See `progress/session-review-followups.md`.
 
 **FCM credentials** — Android Push, owner-supplied.
 

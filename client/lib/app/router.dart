@@ -79,10 +79,7 @@ GoRouter createRouter(Ref ref) {
 
       // Leaving the holding route: go where the person was actually heading.
       if (location == Routes.holding) {
-        final returnTo = state.uri.queryParameters['returnTo'];
-        final destination = (returnTo != null && returnTo.isNotEmpty)
-            ? Uri.decodeComponent(returnTo)
-            : Routes.today;
+        final destination = _destinationFrom(state);
         return session.isAuthenticated
             ? destination
             : '${Routes.signIn}?returnTo=${Uri.encodeComponent(destination)}';
@@ -98,10 +95,7 @@ GoRouter createRouter(Ref ref) {
       }
 
       if (session.isAuthenticated && location == Routes.signIn) {
-        final returnTo = state.uri.queryParameters['returnTo'];
-        return (returnTo != null && returnTo.isNotEmpty)
-            ? Uri.decodeComponent(returnTo)
-            : Routes.today;
+        return _destinationFrom(state);
       }
 
       return null;
@@ -157,6 +151,31 @@ GoRouter createRouter(Ref ref) {
       ),
     ],
   );
+}
+
+/// Where a redirect should land after the session resolves.
+///
+/// `Uri.queryParameters` already percent-decodes, so decoding again would
+/// corrupt any destination containing an encoded `/`, `&`, `#` or `%`.
+///
+/// The value is also untrusted — it survives a Web reload, so anyone can put
+/// anything in the address bar. Only a path within this app is honoured;
+/// anything else falls back to Today rather than becoming an open redirect or
+/// a router error.
+String _destinationFrom(GoRouterState state) {
+  final returnTo = state.uri.queryParameters['returnTo'];
+  if (returnTo == null || returnTo.isEmpty) return Routes.today;
+
+  // A local path, not `//host` (protocol-relative) and not `scheme://host`.
+  if (!returnTo.startsWith('/') || returnTo.startsWith('//')) {
+    return Routes.today;
+  }
+  // Never bounce back to the waiting room or the entrance: both would loop.
+  final path = Uri.tryParse(returnTo)?.path;
+  if (path == null || path == Routes.holding || path == Routes.signIn) {
+    return Routes.today;
+  }
+  return returnTo;
 }
 
 /// Bridges the session to `GoRouter`, which predates Riverpod's listeners and
