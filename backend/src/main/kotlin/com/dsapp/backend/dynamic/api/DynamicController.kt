@@ -14,6 +14,7 @@ import com.dsapp.backend.shared.idempotency.RequestHasher
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Pattern
 import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -30,12 +31,39 @@ import java.time.Instant
 import java.util.UUID
 
 data class CreateDynamicRequest(
+    @field:Pattern(regexp = "SOLO|COUPLE", message = "mode")
     val mode: String = "COUPLE",
-    @field:NotBlank val desiredOutcome: String,
-    @field:NotBlank val structureLevel: String,
+
+    /**
+     * Checked here because it decides behaviour, not just what is stored.
+     *
+     * `StarterRhythmService` parses this back into [DesiredOutcome] and falls
+     * back to CLOSER when it cannot — so an unrecognised value did not fail,
+     * it quietly gave someone the wrong starter rhythm. Lowercase did the same
+     * thing. The column has no CHECK, so the boundary is the only place this
+     * can be caught.
+     */
+    @field:Pattern(
+        regexp = "CLOSER|STRUCTURE|SERVICE|ACCOUNTABILITY|EXPLORE",
+        message = "desiredOutcome",
+    )
+    val desiredOutcome: String,
+
+    /** Light / Steady / Defined, per the approved SCR-08 candidate. */
+    @field:Pattern(regexp = "LIGHT|STEADY|DEFINED", message = "structureLevel")
+    val structureLevel: String,
+
     @field:NotBlank val referenceTimezone: String,
     val dayBoundaryMinutes: Int = 0,
-    /** Optional self-description. Grants nothing (Notion 03 §2). */
+
+    /**
+     * Optional self-description. Grants nothing (Notion 03 §2), and a couple
+     * that does not want to name it must never be blocked — hence nullable.
+     */
+    @field:Pattern(
+        regexp = "DOMINANT|SUBMISSIVE|SWITCH|CUSTOM",
+        message = "rolePreset",
+    )
     val rolePreset: String? = null,
 )
 
