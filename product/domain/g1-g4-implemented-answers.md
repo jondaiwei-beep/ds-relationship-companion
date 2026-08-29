@@ -9,8 +9,8 @@ Nothing here is a new product decision. It is a readout of running code, with th
 source cited so any line can be checked. Where an answer looks wrong, the fix is a
 product decision and the code should change to match — not the reverse.
 
-Status: **awaiting product owner approval.** Until then the gaps stay open in
-`core-beta-state-contracts.md`.
+Status: **adopted.** These are now the product contract; `core-beta-state-contracts.md`
+carries the decisions and this file keeps the reasoning and source locations.
 
 ---
 
@@ -126,11 +126,15 @@ that signing in is not joining and that opening an invitation never joins by its
 
 ---
 
-## If these are approved
+## Three positions worth revisiting
 
-Replace the "Open specification gaps" section of `core-beta-state-contracts.md`
-with the resolutions above, and the four gaps stop blocking implementation of
-adjustment, pause/resume and leave/block.
+Adopted, but each one had the code decide something a person could reasonably
+decide differently. Recorded so they are re-opened deliberately, not by accident:
 
-If any answer is wrong, say which one and what it should be. The code changes to
-match the decision.
+1. **`NEEDS_REVIEW → REVIEWED`** lets the direction-giving side close an overdue
+   item the receiving side never completed. It stops old items hanging forever,
+   but it is the one edge that resolves something on another person's behalf.
+2. **The G-1 delivery promise is weaker than the Notion wording.** Product copy
+   must not claim zero future delivery.
+3. **Block seals history from both sides.** If the person who blocked should keep
+   their own copy, the code changes to match.

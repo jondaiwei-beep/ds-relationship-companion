@@ -29,12 +29,13 @@
 - B-4 Texture Freeze completed: deterministic 128 × 128 ritual grain, seeded generator, application contract and SHA-256 validation evidence
 - Portable Flutter foundation package completed under `app/`: bundled fonts, eight type roles, generated B-2 tokens, semantic 33-SVG registry, Ritual/Living themes and B-4 ritual surface
 - Reproducible foundation sync/validation scripts completed under `tool/`; product screens remain excluded until their gates open
+- Implementation merged into this repository: `client/` Flutter application, `backend/` Kotlin modular monolith, `ops/` scripts
+- G-1 to G-4 domain decisions adopted into the product contract from their tested backend implementations
 
 ## Next alignment work
 
-1. Resolve the four open domain gaps in `product/domain/core-beta-state-contracts.md`, especially Block semantics and the Occurrence transition graph.
-2. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
-3. Approve Today Revision 2, then add Attention primary queue and Daily Check-in designs.
-4. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
-5. Integrate the foundation package into the runnable Android/Web shell when its repository boundary is confirmed.
-6. Change screen gates only after product, visual, asset and recovery contracts are all approved.
+1. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
+2. Approve Today Revision 2, then add Attention primary queue and Daily Check-in designs.
+3. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
+4. Integrate the foundation package into the runnable Android/Web shell when its repository boundary is confirmed.
+5. Change screen gates only after product, visual, asset and recovery contracts are all approved.

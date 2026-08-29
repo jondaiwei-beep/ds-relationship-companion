@@ -36,11 +36,75 @@ Status: migrated from Notion CURRENT v2. UI labels may differ; state meaning may
 
 Timestamps use UTC; schedules retain IANA timezone + local wall-clock + relationship-day boundary. Client mutations use an idempotency key and return current resource/version. Stale deep links must resolve server current truth.
 
-## Open specification gaps — development blockers
+## Resolved specification decisions
 
-1. `G-3` — complete legal Occurrence side-path transition graph and terminal states.
-2. `G-1` — replace physically impossible “future delivery = 0” language with a precise cutoff for newly initiated provider calls after the membership transaction.
-3. `G-2` — decide Block directionality, Dynamic termination, historical visibility and rejoin policy.
-4. `G-4` — confirm whether an authenticated identity is mandatory to accept an invite; an invite token alone currently does not grant membership.
+The four gaps previously listed here as development blockers are resolved. Each
+was already implemented and tested in `backend/`; the reasoning and the exact
+source locations are in
+[`g1-g4-implemented-answers.md`](g1-g4-implemented-answers.md).
+
+### G-1 · Delivery cut-off after Leave/Block
+
+"Future delivery = 0" is not physically achievable once bytes are with a
+provider. The binding contract is:
+
+> After the Leave/Block transaction commits, the system initiates **no new**
+> relationship-delivery provider calls for that Dynamic. Every intent not
+> already handed off is cancelled. A call initiated before the cut-off may still
+> arrive and cannot be recalled.
+
+Enforced by a per-Dynamic advisory lock held exclusively by Leave/Block and
+shared by the dispatcher around its final authorization check, which closes the
+check-then-send race. Product copy must not promise more than this.
+
+### G-2 · Block semantics
+
+A Block is recorded directionally and takes effect as a **mutual separation**:
+it ends the Dynamic, seals shared history from both people, prevents rejoin, and
+**never discloses who blocked whom**. A one-way block would create a
+surveillance asymmetry; naming the blocker hands an unsafe person a fact to react
+to.
+
+### G-3 · Occurrence transition graph
+
+| From | May go to |
+|---|---|
+| `SCHEDULED` | `ACTIVE`, `NEEDS_REVIEW`, `CANCELLED` |
+| `ACTIVE` | `WAITING_ACK`, `NEEDS_REVIEW`, `NEED_TO_DISCUSS`, `RESCHEDULE_REQUESTED`, `EXCUSE_REQUESTED`, `CANCELLED` |
+| `NEED_TO_DISCUSS` / `RESCHEDULE_REQUESTED` / `EXCUSE_REQUESTED` | `ACTIVE`, `EXCUSED`, `CANCELLED` |
+| `NEEDS_REVIEW` | `WAITING_ACK`, `ACTIVE`, `EXCUSED`, `REVIEWED`, `CANCELLED` |
+| `WAITING_ACK` | `ACKNOWLEDGED` — and nothing else |
+
+Terminal states: `ACKNOWLEDGED`, `REVIEWED`, `EXCUSED`, `CANCELLED`.
+
+Three edges are refused because each would let the system assert something that
+did not happen:
+
+- `NEED_TO_DISCUSS → WAITING_ACK` would manufacture a Completion. A resolved
+  discussion returns to `ACTIVE`; the person then completes for real.
+- `NEEDS_REVIEW → ACKNOWLEDGED` would do the same for a late item.
+- `WAITING_ACK → REVIEWED` would let "reviewed" masquerade as "a person
+  responded to you".
+
+No path is a miss, a failure, or a punishment. Past due leads to `NEEDS_REVIEW`
+and nowhere worse.
+
+**UI requirement.** Reschedule stores the original occurrence as `CANCELLED`
+because no `RESCHEDULED` state exists. Any surface showing it must render
+"Rescheduled to …" from the adjustment resolution, never "Cancelled" — which
+would read as a failure the person caused.
+
+### G-4 · Authentication and invites
+
+An authenticated identity is **mandatory** to accept an invite. The split is:
+
+| Endpoint | Auth | Effect |
+|---|---|---|
+| `POST /v1/invites/resolve` | anonymous | Previews inviter name, state, intended role. Grants nothing. |
+| `POST /v1/invites/join` | authenticated | Creates the Membership. |
+
+An invite token identifies a context so someone can see who is inviting them
+before deciding. A token alone never grants membership, signing in is not
+joining, and opening an invitation never joins by itself.
 
 Source: [Domain Model v2](https://app.notion.com/p/3c8f73841f3d81edbbb7e6e47183b32c), [Developer Handoff v2](https://app.notion.com/p/3c8f73841f3d81f4ae0ac63bb8767993).
