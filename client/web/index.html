@@ -18,18 +18,24 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <!-- Without this the browser lays the app out at a ~980px default width and
+       every mobile screen renders past the viewport edge. -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <!-- Neutral by design: this string appears in browser UI and link previews,
+       and must never disclose what the product is. -->
+  <meta name="description" content="Companion">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="dsapp">
+  <meta name="apple-mobile-web-app-title" content="Companion">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>dsapp</title>
+  <title>Companion</title>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>

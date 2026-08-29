@@ -40,6 +40,12 @@ copy(
 );
 
 const toneNames = ['primary', 'muted', 'authority', 'relationship', 'decorative'];
+// Assets live inside this package, so every path needs the package prefix.
+// A bare 'assets/...' path resolves against the HOST application, which 404s
+// in any app that depends on the design system — the same failure mode as an
+// unqualified font family.
+const PKG = 'packages/ds_relationship_companion';
+
 const constants = [];
 for (const asset of svgAssets) {
   const frozen = frozenById.get(asset.id);
@@ -48,7 +54,7 @@ for (const asset of svgAssets) {
   constants.push(
     `  static const ${camel(asset.id)} = DsAssetId._(\n` +
     `    '${asset.id}',\n` +
-    `    'assets/svg/${path.basename(asset.source_path)}',\n` +
+    `    '${PKG}/assets/svg/${path.basename(asset.source_path)}',\n` +
     `    {${tones}},\n` +
     `  );`,
   );
@@ -71,7 +77,7 @@ const dart = `// GENERATED FROM manifests/assets.json AND manifests/svg-freeze.v
 `      all.singleWhere((asset) => asset.id == id);\n` +
 `}\n\n` +
 `abstract final class DsTextureAssets {\n` +
-`  static const ritualGrain = 'assets/textures/ritual-grain-128.png';\n` +
+`  static const ritualGrain =\n      '${PKG}/assets/textures/ritual-grain-128.png';\n` +
 `}\n`;
 
 const output = path.join(root, 'app/lib/src/design_system/ds_assets.dart');

@@ -79,13 +79,21 @@ function dartShadow(value) {
   ].join('\n');
 }
 
+// Border widths must be Dart doubles: 1 emits as int, which cannot be passed
+// where Flutter expects a double, so a whole-number token would be unusable
+// while a fractional one worked. Every dimension token is a double.
+const dartDouble = (value) => {
+  const n = typeof value === 'object' ? value.value : value;
+  return Number.isInteger(n) ? `${n}.0` : `${n}`;
+};
+
 const dart = `// GENERATED FROM design/tokens/design-tokens.json. DO NOT EDIT BY HAND.\n` +
 `// Freeze: ${tokens.meta.freezeId} · ${tokens.meta.version}\n\n` +
 `import 'package:flutter/material.dart';\n\n` +
 `${dartClass('DsPrimitiveColors', primitive, dartColor)}\n\n` +
 `${dartClass('DsColors', semantic, dartColor)}\n\n` +
 `${dartClass('DsRadii', radii, (value) => `${value.value}.0`, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n\n` +
-`${dartClass('DsBorderWidths', borders, (value) => `${value.value}`, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n\n` +
+`${dartClass('DsBorderWidths', borders, dartDouble, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n\n` +
 `${dartClass('DsControlSizes', controls, (value) => `${value.value}.0`)}\n\n` +
 `${dartClass('DsLayoutSizes', layout, (value) => `${value.value}.0`, (entry) => camel(entry.path.replace(/^size\.(layout\.)?/, '')))}\n\n` +
 `${dartClass('DsOpacity', opacity, (value) => `${value}`, (entry) => camel(entry.path.split('.').slice(1).join('.')))}\n\n` +

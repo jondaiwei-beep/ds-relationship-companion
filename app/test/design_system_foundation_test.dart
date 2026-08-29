@@ -31,7 +31,13 @@ void main() {
     test('every registered SVG master exists on disk', () {
       final missing = <String>[];
       for (final asset in DsAssets.all) {
-        final file = File('${appDir.path}/${asset.path}');
+        // The registry path is package-qualified for runtime resolution;
+        // on disk it lives at the package root.
+        final rel = asset.path.replaceFirst(
+          'packages/ds_relationship_companion/',
+          '',
+        );
+        final file = File('${appDir.path}/$rel');
         if (!file.existsSync()) missing.add('${asset.id} -> ${asset.path}');
       }
       expect(missing, isEmpty, reason: 'registered masters must be bundled');
@@ -60,10 +66,12 @@ void main() {
       // Android and Flutter Web both resolve through the same asset manifest,
       // so a path outside the declared directories loads on neither.
       for (final asset in DsAssets.all) {
-        expect(asset.path, startsWith('assets/svg/'),
+        expect(asset.path,
+            startsWith('packages/ds_relationship_companion/assets/svg/'),
             reason: '${asset.id} is outside the declared asset directory');
       }
-      expect(DsTextureAssets.ritualGrain, startsWith('assets/textures/'));
+      expect(DsTextureAssets.ritualGrain,
+          startsWith('packages/ds_relationship_companion/assets/textures/'));
     });
   });
 
@@ -262,7 +270,11 @@ void main() {
 
   group('B-4 ritual texture', () {
     test('the deterministic grain asset exists and is a PNG', () {
-      final file = File('${appDir.path}/${DsTextureAssets.ritualGrain}');
+      final file = File('${appDir.path}/'
+          '${DsTextureAssets.ritualGrain.replaceFirst(
+        'packages/ds_relationship_companion/',
+        '',
+      )}');
       expect(file.existsSync(), isTrue);
       final sig = file.openSync().readSync(8);
       expect(sig.sublist(0, 4), <int>[0x89, 0x50, 0x4E, 0x47]);
@@ -331,17 +343,31 @@ void main() {
       // Unit checks above prove the files are on disk; this proves they are
       // reachable through the AssetManifest that both Android and Flutter Web
       // resolve against. A path declared but not bundled fails only here.
+      // Paths are package-qualified so a consuming app resolves them. Inside
+      // this package's own test bundle the asset is registered unqualified,
+      // so both spellings are accepted here; what matters is that the bytes
+      // are reachable.
+      Future<ByteData> load(String path) async {
+        try {
+          return await rootBundle.load(path);
+        } catch (_) {
+          return rootBundle.load(
+            path.replaceFirst('packages/ds_relationship_companion/', ''),
+          );
+        }
+      }
+
       final failures = <String>[];
       for (final asset in DsAssets.all) {
         try {
-          final data = await rootBundle.load(asset.path);
+          final data = await load(asset.path);
           if (data.lengthInBytes == 0) failures.add('${asset.id}: empty');
         } catch (error) {
           failures.add('${asset.id}: $error');
         }
       }
       try {
-        final texture = await rootBundle.load(DsTextureAssets.ritualGrain);
+        final texture = await load(DsTextureAssets.ritualGrain);
         if (texture.lengthInBytes == 0) failures.add('ritualGrain: empty');
       } catch (error) {
         failures.add('ritualGrain: $error');

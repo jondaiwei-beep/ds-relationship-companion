@@ -87,9 +87,9 @@ abstract final class DsRadii {
 }
 
 abstract final class DsBorderWidths {
-  static const hairline = 1;
+  static const hairline = 1.0;
   static const selected = 1.5;
-  static const focus = 2;
+  static const focus = 2.0;
 }
 
 abstract final class DsControlSizes {
