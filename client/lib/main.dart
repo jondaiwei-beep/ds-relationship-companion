@@ -35,7 +35,12 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
     // Restore before the first frame that could show protected content. Until
     // this resolves the session is `SessionUnknown` and the router's guard
     // holds the door rather than guessing.
-    ref.read(sessionProvider.notifier).restore();
+    final session = ref.read(sessionProvider.notifier);
+    // A device picked up hours later still says Authenticated while its
+    // access token has quietly expired; the scheduled refresh does not fire
+    // while the process is suspended.
+    session.watchLifecycle();
+    session.restore();
   }
 
   @override

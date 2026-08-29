@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
@@ -50,8 +51,44 @@ class SessionController extends Notifier<Session> {
 
   @override
   Session build() {
-    ref.onDispose(() => _refreshTimer?.cancel());
+    // One rejected request ends the session everywhere. Without this each
+    // screen discovers the dead token separately, shows its own recovery
+    // state, and `Session` goes on claiming Authenticated behind them.
+    _api.interceptAuthenticationLoss(_onAuthenticationLost);
+
+    ref.onDispose(() {
+      _refreshTimer?.cancel();
+      _lifecycle?.dispose();
+    });
     return const SessionUnknown();
+  }
+
+  AppLifecycleListener? _lifecycle;
+
+  /// Watch for the app coming back after a long sleep.
+  ///
+  /// A scheduled refresh does not fire while the process is suspended, so a
+  /// device picked up hours later still says `Authenticated` while its access
+  /// token has expired — and the first protected request races the refresh
+  /// that has not happened yet. Called once, from the app entry point.
+  void watchLifecycle() {
+    _lifecycle?.dispose();
+    _lifecycle = AppLifecycleListener(onResume: _onResume);
+  }
+
+  Future<void> _onResume() async {
+    // Only when a session is meant to exist. Resuming on the entrance must
+    // not start asking the server about a credential nobody has.
+    if (state is! Authenticated) return;
+    await _refreshNow();
+  }
+
+  void _onAuthenticationLost() {
+    // The server rejected a token we believed in. Do not refresh first: the
+    // refresh path has its own 401 handling, and calling it from here would
+    // recurse. Just end it.
+    if (state is! Authenticated) return;
+    _endSession(SignedOutReason.expired).ignore();
   }
 
   AuthRepository get _auth => ref.read(authRepositoryProvider);

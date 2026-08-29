@@ -97,11 +97,6 @@ suggestion. A neutral identity is only neutral where all of those are.
 Notification payloads already carry locator data only (`REQ-NOTIFY-001`); the
 rest is unverified.
 
-**"Access is protected" is an unverified claim.** It replaced a worse line,
-but it still promises something the implementation has to earn. Revisit when
-the session and privacy model is settled, and if it cannot be substantiated,
-state the actual mechanism instead.
-
 **Long-distance has nowhere to live.** `SCR-08` collects Long-distance /
 Together and the server has no column, field or parameter for it. Either the
 data model gains one or the design loses the control; a client cannot decide

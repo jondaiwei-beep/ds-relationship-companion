@@ -270,6 +270,32 @@ void main() {
     });
   });
 
+  group('a rejected token ends the session', () {
+    test('a 401 on an authenticated request signs the person out', () async {
+      // Otherwise each screen discovers the dead token separately, shows its
+      // own recovery state, and Session goes on claiming Authenticated
+      // behind them.
+      await controller().adopt(_result('token-1'));
+      expect(session(), isA<Authenticated>());
+
+      api.debugSimulateAuthenticationLoss();
+
+      expect(session(), isA<SignedOut>());
+      expect((session() as SignedOut).reason, SignedOutReason.expired);
+      expect(api.debugAccessToken, isNull);
+    });
+
+    test('it does nothing when no session was open', () async {
+      await controller().restore();
+      expect(session(), isA<SignedOut>());
+
+      api.debugSimulateAuthenticationLoss();
+
+      // Still signed out, and with no reason invented for it.
+      expect((session() as SignedOut).reason, isNull);
+    });
+  });
+
   group('the refresh schedule', () {
     test('fires ahead of expiry, not at it', () {
       expect(

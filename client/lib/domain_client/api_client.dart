@@ -31,6 +31,19 @@ class ApiClient {
   }
 
   final Dio _dio;
+
+  /// Called when the server says this token is dead.
+  ///
+  /// On a protected endpoint a 401 has exactly one meaning: the security
+  /// filter rejected the bearer token. Authorization failures answer 404 by
+  /// design — revealing "this exists but is not yours" would leak
+  /// relationship structure — so there is no "you may not read *this*" case
+  /// to confuse it with.
+  ///
+  /// Wired to the session by `SessionController`, so one rejected request
+  /// ends the session everywhere instead of each screen discovering it
+  /// separately.
+  void Function()? onAuthenticationLost;
   static final _rng = Random.secure();
 
   /// Access token lives in memory only — never on disk (Notion 04 §2).
@@ -39,6 +52,29 @@ class ApiClient {
   /// two answers to "who is signed in".
   String? _accessToken;
   set accessToken(String? t) => _accessToken = t;
+
+  /// Installs the 401 handler. Called once, by the session.
+  void interceptAuthenticationLoss(void Function() onLost) {
+    onAuthenticationLost = onLost;
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) {
+          final status = error.response?.statusCode;
+          // Only for requests that carried a token. A 401 from `/sign-in` is
+          // a wrong password, not a lost session, and ending the session
+          // there would clear the very thing the person is trying to create.
+          final wasAuthenticated =
+              error.requestOptions.headers.containsKey('Authorization');
+          if (status == 401 && wasAuthenticated) onAuthenticationLost?.call();
+          handler.next(error);
+        },
+      ),
+    );
+  }
+
+  /// Fires the authentication-lost path without a real 401, for tests.
+  @visibleForTesting
+  void debugSimulateAuthenticationLoss() => onAuthenticationLost?.call();
 
   /// Whether requests are currently authorized, for tests.
   ///

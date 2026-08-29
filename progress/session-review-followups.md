@@ -41,28 +41,8 @@ logout reliable. Deferred until that is settled.
 
 ## Deferred deliberately
 
-### No 401 handler ends the session
-
-A revoked access token currently surfaces as an error on whichever screen
-asked. The screen classifies 401/403 as authorization loss and shows the
-designed state, so nothing leaks — but `Session` still says `Authenticated`,
-and another screen would try again.
-
-A Dio interceptor that ends the session on 401 is the fix. Not done yet
-because it needs to distinguish "this token is dead" from "you may not read
-*this*" — a 403 on someone else's Dynamic must not sign you out. That
-distinction needs the server's error codes, which are worth reading properly
-rather than guessing at.
-
-### App resume is not a session transition
-
-After a long Android suspension the access token may have expired while the
-timer never fired. `Session` still says `Authenticated` and the first
-protected request races the refresh.
-
-Needs an `AppLifecycleListener` that revalidates on resume. Small, but it
-belongs with the 401 handler above — both are "the session is not what we
-think" and should share one path.
+Both of the items that were here are now done — see the table below. What
+remains deferred is the Web origin decision above, which is not a client fix.
 
 ## Fixed in 2050c1d..HEAD
 
@@ -76,6 +56,18 @@ think" and should share one path.
 | 6 | A rotated token that failed to persist left the session poisoned |
 | 7 | Offline was treated as credential rejection, deleting a good token |
 | 10 | `returnTo` was double-decoded and unvalidated |
+| — | **A 401 now ends the session.** The worry that stopped this was
+  distinguishing "this token is dead" from "you may not read *this*". Reading
+  the server settles it: authorization failures answer **404**, deliberately,
+  so a non-member cannot tell an existing Dynamic from an absent one. On a
+  protected endpoint a 401 has one meaning. The interceptor also ignores
+  requests that carried no token, so a wrong password does not clear a
+  session. |
+| — | **App resume revalidates.** A scheduled refresh does not fire while the
+  process is suspended, so a device picked up hours later claimed
+  `Authenticated` with an expired token and raced its own refresh.
+  `AppLifecycleListener` now refreshes on resume, and only when a session is
+  meant to exist. |
 
 Findings 11 (async work outliving disposal) and 12 (access token in public
 state) are noted and judged low-value for now: both providers are

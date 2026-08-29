@@ -20,7 +20,7 @@ Written 2026-08-29。Owner 授权自行决策:「文案这些细节可以在后�
 | SCR-04 字标 | D/s Relationship Companion | **Companion** | 与 `applicationId`、图标名、Web title 一致。这三处已经是 `Companion` |
 | SCR-04 主标题 | A private space for the dynamic you share. | **A private space, on your terms.** | 保留 Cormorant 那一行的分量与节奏。「on your terms」既恢复了主动权与克制的力量感,又比我原本的「for the two of you」更少泄露品类 —— 后者仍然指明这是一个双人产品 |
 | SCR-04 副标题 | Private. Guided. Devoted. | **Private. Considered. Yours.** | 「Devoted」是这个圈层的标记词。三段式与字距排版保留 |
-| SCR-04 页脚 | Your space stays between you. | **Access is protected.** | 原文既暴露关系语境,又是产品**无法保证**的绝对隐私承诺 |
+| SCR-04 页脚 | Your space stays between you. | **(删除)** | 原文既暴露关系语境,又是产品**无法保证**的绝对隐私承诺。我一度想改成「Access is protected」,但那仍然是在承诺一个结果 —— 最终由事实性的信任脚注取代 |
 | SCR-04 主按钮 | Enter privately | **Continue** | 按钮无法保证设备、浏览器、通知、网络或旁观者层面的私密 |
 | SCR-05 页脚 | Private by design. | **Private by design.** | 不变 —— 这句说的是产品的设计取向,不是承诺,也不暴露类别 |
 | SCR-06 眉标 | Create your space | **Create an account** | 「your space」可能被理解为「注册即创建了一个共享空间」 |
@@ -63,11 +63,24 @@ Codex 指出它仍然点明这是一个「私密双人产品」,而且我的版�
 但可以**放在主操作之后、并保持视觉安静** —— 而不是像我原先设想的那样
 紧跟在锁形图标下面成为一个显眼的收尾。**采纳,写进状态族的排版要求。**
 
-**3.「Access is protected」仍然是一个安全断言。** Codex 说得对:
-它比「Your space stays between you」好,但仍然在承诺一件需要被实现支撑的事。
-更安全的说法是直接命名真实的保护措施,或者干脆只留「Continue」。
-**暂时保留**,但标注为待验证 —— 等会话与隐私模型定稿后回来确认这句话为真,
-否则就换成对具体机制的陈述。
+**3.「Access is protected」已改。** Codex 说得对:它比
+「Your space stays between you」好,但仍然是在承诺一个**结果**,
+而结果需要实现来兑现。
+
+已核实当前实现真正做到的三件事:
+访问令牌只存在于内存、刷新令牌进 Keystore、服务端在每次敏感读取时校验成员关系。
+三者都为真,但都不是「访问受到保护」这种笼统说法能担保的。
+
+**实际结果:rev-2 渲染稿里根本没有这句话。** 我核对了渲染器输出的每一个字符串,
+「Access is protected」从未被画出去 —— 状态族在实现时就已经用那条
+事实性的信任脚注取代了它:
+
+> For adults 18+. Use of this service is subject to our Terms.
+> See how we handle data in our Privacy Policy.
+> **Accounts are private by default.**
+
+最后一句是可核查的陈述,不是承诺:新账号在没有配置的情况下确实不共享任何东西。
+所以这一条**不需要修**,需要修的是我在 `STATE.md` 里把它记成了未决阻塞项。
 
 ## 一条延伸到设计之外的规则(Codex 提出)
 

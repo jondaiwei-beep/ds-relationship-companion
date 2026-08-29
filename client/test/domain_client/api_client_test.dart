@@ -57,6 +57,56 @@ void main() {
     });
   });
 
+  group('the 401 interceptor', () {
+    test('fires when an authenticated request is rejected', () async {
+      var lost = 0;
+      api.interceptAuthenticationLoss(() => lost++);
+      api.accessToken = 'dead';
+      adapter.status = 401;
+
+      await expectLater(
+        api.get('/v1/dynamics/abc/today'),
+        throwsA(isA<DioException>()),
+      );
+
+      expect(lost, 1);
+    });
+
+    test('does not fire for a wrong password', () async {
+      // Sign-in carries no token. A 401 there means the credentials were
+      // wrong, and ending the session would clear the very thing the person
+      // is trying to create.
+      var lost = 0;
+      api.interceptAuthenticationLoss(() => lost++);
+      adapter.status = 401;
+
+      await expectLater(
+        api.post('/v1/auth/sign-in', authenticated: false, body: {}),
+        throwsA(isA<DioException>()),
+      );
+
+      expect(lost, 0);
+    });
+
+    test('does not fire on a 404, which is how "not yours" is answered',
+        () async {
+      // Authorization failures answer 404 by design, so that a non-member
+      // cannot tell an existing Dynamic from an absent one. That must not be
+      // read as a dead token.
+      var lost = 0;
+      api.interceptAuthenticationLoss(() => lost++);
+      api.accessToken = 'good';
+      adapter.status = 404;
+
+      await expectLater(
+        api.get('/v1/dynamics/someone-elses/today'),
+        throwsA(isA<DioException>()),
+      );
+
+      expect(lost, 0);
+    });
+  });
+
   test('with a session, requests are sent and carry the token', () async {
     api.accessToken = 'tok';
 
@@ -70,12 +120,13 @@ void main() {
 class _RecordingAdapter implements HttpClientAdapter {
   final sent = <String>[];
   Map<String, dynamic>? lastHeaders;
+  int status = 200;
 
   @override
   Future<ResponseBody> fetch(RequestOptions options, _, _) async {
     sent.add(options.path);
     lastHeaders = options.headers;
-    return ResponseBody.fromString('{}', 200, headers: {
+    return ResponseBody.fromString('{}', status, headers: {
       Headers.contentTypeHeader: [Headers.jsonContentType],
     });
   }
