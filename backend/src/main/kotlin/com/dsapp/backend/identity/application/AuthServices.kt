@@ -369,11 +369,16 @@ class AuthService(
         }
         requireUsablePassword(password)
 
+        // The unique index normalises with lower(btrim(email)), so anything
+        // less here lets " a@b.com " past the duplicate check and into an
+        // index violation — a 500 where the product means COULD_NOT_REGISTER.
+        val normalized = tokens.normalizeEmail(email)
+
         return dsl.transactionResult { configuration ->
             val tx = DSL.using(configuration)
             val existing = tx.fetchOne(
-                "select id, password_hash from users where lower(email) = lower(?)",
-                email,
+                "select id, password_hash from users where lower(btrim(email)) = ?",
+                normalized,
             )
             if (existing != null) {
                 // Never disclose whether an address is registered — that
@@ -391,7 +396,8 @@ class AuthService(
                 )
                 values (?, ?, ?, ?, 'UTC', 'NEUTRAL', clock_timestamp())
                 """.trimIndent(),
-                userId, email, defaultDisplayName(email), passwordEncoder.encode(password),
+                userId, normalized, defaultDisplayName(normalized),
+                passwordEncoder.encode(password),
             ).execute()
 
             createSession(tx, userId, clientType, inviteId = null)
@@ -405,9 +411,11 @@ class AuthService(
         clientType: ClientType,
     ): SessionGrant = dsl.transactionResult { configuration ->
         val tx = DSL.using(configuration)
+        // A leading space is what a phone keyboard or a paste produces. It
+        // must not read as a different person.
         val row = tx.fetchOne(
-            "select id, password_hash from users where lower(email) = lower(?)",
-            email,
+            "select id, password_hash from users where lower(btrim(email)) = ?",
+            tokens.normalizeEmail(email),
         )
         val hash = row?.get("password_hash", String::class.java)
 

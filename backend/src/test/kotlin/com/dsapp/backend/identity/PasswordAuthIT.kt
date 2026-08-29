@@ -184,4 +184,42 @@ class PasswordAuthIT {
             auth.signIn(e, "anything at all", ClientType.ANDROID)
         }
     }
+
+    @Test
+    fun `a stray space does not create a second account for the same person`() {
+        val e = email()
+        auth.register(
+            email = e, password = "a quiet evening",
+            clientType = ClientType.ANDROID, ageConfirmed = true,
+        )
+
+        // The unique index normalises with lower(btrim(email)). A duplicate
+        // check that only lowercases lets this through, and the insert then
+        // fails on the index — a 500 where the product means to say
+        // COULD_NOT_REGISTER.
+        val failure = assertFailsWith<ApiException> {
+            auth.register(
+                email = " $e ", password = "a quiet evening",
+                clientType = ClientType.ANDROID, ageConfirmed = true,
+            )
+        }
+        assertEquals("COULD_NOT_REGISTER", failure.code)
+    }
+
+    @Test
+    fun `a stray space does not lock someone out of their own account`() {
+        val e = email()
+        auth.register(
+            email = e, password = "a quiet evening",
+            clientType = ClientType.ANDROID, ageConfirmed = true,
+        )
+
+        // A leading space is what a phone keyboard or a paste produces. It
+        // must not read as a different person.
+        val grant = auth.signIn(
+            email = " $e", password = "a quiet evening",
+            clientType = ClientType.ANDROID,
+        )
+        assertNotNull(grant.userId)
+    }
 }
