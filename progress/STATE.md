@@ -42,6 +42,11 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
   the test fails.
 - **19 behavioural invariants** hold as tests, restored from
   `product/ui-invariants.md` after the pre-redesign UI was deleted.
+- **The whole two-person loop closes, against a real server.** Register →
+  Dynamic → invite → anonymous resolve → partner registers → joins →
+  expectation appears on their Today → they complete → it reaches Attention →
+  a human acknowledges → the response comes back. Run it with
+  `lib/qa_walking_skeleton.dart`; every step prints its own verdict.
 - **An Android package was accepted by the owner** on device: 18MB arm64, neutral
   identity (`app.companion.two`, label `Companion`), all assets bundled.
 - **The auth guard holds in a real browser**, not only in tests: a deep link to
@@ -93,11 +98,10 @@ The plan is `progress/MASTER-PLAN.md`; decisions are in `product/decisions/`.
    eleven components have a reuse count of one; promoting them now would be
    guessing at an API from a single example.
 3. **SCR-04/05/06** — entrance, sign in, create account. The guard already
-   routes to `/sign-in`; nothing is reachable until that screen exists. Their
-   state family and copy are now specified in
-   `product/decisions/entrance-state-family.md` and wait on one owner
-   decision: whether the signed-out surface may keep naming the product.
-   The command layer and shared controls behind them are built and tested.
+   routes to `/sign-in`; nothing is reachable until that screen exists. State
+   family in `product/decisions/entrance-state-family.md`, copy decided in
+   `product/decisions/d8-entrance-copy.md`. Command layer and shared controls
+   built and tested. **Only the gate is outstanding.**
 4. **SCR-09/10** — invite and web join. The most mature designs after
    `SCR-01`: all four invite lifecycle states are approved rev-2 candidates.
    Loading, retry and offline are still unspecified. Command layer built.

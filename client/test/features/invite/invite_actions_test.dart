@@ -148,6 +148,20 @@ void main() {
       expect(invites.joinKeys.toSet(), hasLength(1));
     });
 
+    test('a retry after a SUCCESSFUL join replays too', () async {
+      // The case that matters most and the one I originally missed: the
+      // response was lost, not the request. The person HAS joined. A fresh
+      // key would find the invite ACCEPTED and answer 409 — telling them
+      // their invitation is dead at the moment it actually worked.
+      //
+      // Caught by walking the loop against a real server; the timeout-only
+      // test below passed throughout.
+      await actions().join('tok');
+      await actions().join('tok');
+
+      expect(invites.joinKeys.toSet(), hasLength(1));
+    });
+
     test('a new invitation is a new attempt', () async {
       await actions().join('tok-a');
       await actions().join('tok-b');

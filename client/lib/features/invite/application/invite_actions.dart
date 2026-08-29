@@ -80,7 +80,7 @@ class InviteActions {
   /// the same Dynamic and no way to tell which one they sent.
   final Map<String, String> _createKeys = {};
 
-  /// One key per invitation token, for the same reason and a worse failure.
+  /// One key per invitation token, held for the life of this object.
   ///
   /// The server's join is a guarded update: it only flips an invite that is
   /// still `PENDING`. So a join that succeeded but whose response was lost
@@ -88,7 +88,9 @@ class InviteActions {
   /// `INVITE_ACCEPTED` — which reads exactly like a revoked link. The person
   /// has in fact joined, and would be told to ask for a new invitation.
   ///
-  /// With the key held, the server replays the original 201 instead.
+  /// Held, the server replays the original 201 instead. Unlike the create
+  /// key, this one is **not cleared on success**: success is precisely the
+  /// case a retry has to survive.
   final Map<String, String> _joinKeys = {};
 
   Future<InviteCreated> create(String dynamicId) async {
@@ -135,7 +137,14 @@ class InviteActions {
       final membershipId = await _ref
           .read(inviteRepositoryProvider)
           .join(token, idempotencyKey: key);
-      _joinKeys.remove(token);
+      // The key is deliberately KEPT on success. Success is exactly when a
+      // lost response leaves the caller retrying, and the server's join only
+      // flips a PENDING invite — a fresh key would find it ACCEPTED and
+      // answer 409, telling someone who has joined that their invitation is
+      // dead. Held, the server replays the original 201.
+      //
+      // Nothing accumulates: a token is used once, and the map dies with the
+      // provider.
       return Joined(membershipId);
     } on DioException catch (e) {
       if (_isOffline(e)) {
