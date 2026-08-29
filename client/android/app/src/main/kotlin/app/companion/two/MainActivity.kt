@@ -1,4 +1,4 @@
-package com.dsapp.dsapp
+package app.companion.two
 
 import io.flutter.embedding.android.FlutterActivity
 
