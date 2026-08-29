@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../support/today_fixtures.dart';
+import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 
 /// The invariants SCR-01 must hold, restored from `product/ui-invariants.md`
 /// after the pre-redesign UI was deleted.
@@ -220,6 +220,74 @@ void main() {
           reason: 'adjustment is a normal path: "$word"',
         );
       }
+    });
+  });
+
+  group('recovery states protect the person', () {
+    Future<void> pumpState(WidgetTester tester, TodayFixtureState state) async {
+      await tester.binding.setSurfaceSize(const Size(390, 844));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            todayRepositoryProvider.overrideWithValue(
+              FixtureTodayRepository(null, state) as TodayRepository,
+            ),
+          ],
+          child: MaterialApp(
+            theme: DsTheme.ritual(),
+            home: const TodayScreen(dynamicId: 'd1'),
+          ),
+        ),
+      );
+      // A rejected Future reaches the provider on the next microtask drain,
+      // so a single pump still shows the loading state.
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('no partner is named until access is confirmed', (
+      tester,
+    ) async {
+      // The header once hardcoded a name, so every recovery state claimed a
+      // partner was present while the server was still being consulted.
+      for (final state in [
+        TodayFixtureState.loading,
+        TodayFixtureState.offline,
+        TodayFixtureState.authorizationLost,
+        TodayFixtureState.unavailable,
+      ]) {
+        await pumpState(tester, state);
+        expect(
+          allText(tester).contains('is present'),
+          isFalse,
+          reason: '\$state must not imply partner presence',
+        );
+      }
+    });
+
+    testWidgets('offline withdraws every action and dates what it shows', (
+      tester,
+    ) async {
+      await pumpState(tester, TodayFixtureState.offline);
+      expect(find.textContaining('OFFLINE'), findsOneWidget);
+      expect(find.textContaining('Read-only'), findsOneWidget);
+      // Cached content is never presented as current.
+      expect(
+        find.textContaining('never treated as a new state'),
+        findsOneWidget,
+      );
+      expect(find.text('Complete'), findsNothing);
+    });
+
+    testWidgets('authorization loss removes all protected content', (
+      tester,
+    ) async {
+      await pumpState(tester, TodayFixtureState.authorizationLost);
+      expect(find.textContaining('PRIVATE SESSION ENDED'), findsOneWidget);
+      // No item, no partner, no response may survive.
+      expect(allText(tester).contains('Morgan'), isFalse);
+      expect(allText(tester).contains('Prepare the bedroom'), isFalse);
+      expect(allText(tester).contains('I noticed your care'), isFalse);
     });
   });
 

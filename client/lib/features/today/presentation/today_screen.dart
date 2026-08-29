@@ -50,6 +50,12 @@ class TodayScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: today.when(
+                  // An AsyncValue can be loading *and* carry the error from a
+                  // previous attempt. Without this the screen shows a spinner
+                  // forever after a failed refresh instead of saying what went
+                  // wrong.
+                  skipLoadingOnReload: true,
+                  skipLoadingOnRefresh: true,
                   loading: () => const _Loading(),
                   error: (error, _) => switch (_classify(error)) {
                     _Failure.authorizationLost => const _AuthorizationLost(),

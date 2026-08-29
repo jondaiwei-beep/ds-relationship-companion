@@ -15,6 +15,11 @@ class TodayHeader extends StatelessWidget {
   /// Replaces the presence line while the server is still being consulted.
   final String? context_;
 
+  /// A named context wins over presence: while access is unconfirmed the
+  /// header must say so rather than imply a partner is there.
+  String get _label =>
+      context_ ?? (partnerName == null ? 'Private' : '$partnerName is present');
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,28 +37,36 @@ class TodayHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: DsSpacing.space4),
-          // Presence is a mark plus neutral copy. Terracotta carries the mark;
-          // the label stays Stone because it sits below the Terracotta text
-          // size floor. A long display name shrinks the label rather than
-          // pushing the row past the viewport.
+          // Presence is a mark plus neutral copy. Terracotta carries the mark
+          // only when a partner is actually present; the label stays Stone
+          // because it sits below the Terracotta text size floor. A long
+          // display name shrinks the label rather than pushing the row past
+          // the viewport.
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const DsSvg(
+                DsSvg(
                   asset: DsAssets.markPresence,
-                  tone: DsAssetTone.relationship,
+                  // mark.presence licenses primary and relationship only.
+                  // Relationship — the Terracotta — is reserved for a partner
+                  // who is actually there.
+                  tone: partnerName == null
+                      ? DsAssetTone.primary
+                      : DsAssetTone.relationship,
                   width: 22,
                   height: 22,
                 ),
                 const SizedBox(width: DsSpacing.space2),
                 Flexible(
                   child: Text(
-                    'Morgan is present',
+                    _label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(
-                      color: DsColors.textOnRitualSecondary,
+                      color: partnerName == null
+                          ? DsColors.textOnRitualMuted
+                          : DsColors.textOnRitualSecondary,
                     ),
                   ),
                 ),

@@ -35,9 +35,17 @@ void main() {
       // SCREAMING_SNAKE_CASE — verified against the running backend on
       // 2026-08-27. The Kotlin enum name is the wire format.
       const serverStates = [
-        'SCHEDULED', 'ACTIVE', 'WAITING_ACK', 'ACKNOWLEDGED',
-        'NEEDS_REVIEW', 'REVIEWED', 'NEED_TO_DISCUSS',
-        'RESCHEDULE_REQUESTED', 'EXCUSE_REQUESTED', 'EXCUSED', 'CANCELLED',
+        'SCHEDULED',
+        'ACTIVE',
+        'WAITING_ACK',
+        'ACKNOWLEDGED',
+        'NEEDS_REVIEW',
+        'REVIEWED',
+        'NEED_TO_DISCUSS',
+        'RESCHEDULE_REQUESTED',
+        'EXCUSE_REQUESTED',
+        'EXCUSED',
+        'CANCELLED',
       ];
 
       for (final s in serverStates) {

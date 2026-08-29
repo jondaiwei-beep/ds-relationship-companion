@@ -13,7 +13,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('parses a real /v1/invites/resolve NOT_FOUND response', () {
     // Captured live from http://localhost:8082 on 2026-08-27.
-    const raw = '{"state":"NOT_FOUND","inviteId":null,"dynamicId":null,'
+    const raw =
+        '{"state":"NOT_FOUND","inviteId":null,"dynamicId":null,'
         '"intendedRoleContext":null,"inviterDisplayName":null}';
 
     final v = InviteView.fromJson(jsonDecode(raw) as Map<String, dynamic>);
@@ -22,7 +23,8 @@ void main() {
   });
 
   test('parses a pending invite with the inviter name shown pre-auth', () {
-    const raw = '{"state":"PENDING","inviteId":"11111111-1111-1111-1111-111111111111",'
+    const raw =
+        '{"state":"PENDING","inviteId":"11111111-1111-1111-1111-111111111111",'
         '"dynamicId":"22222222-2222-2222-2222-222222222222",'
         '"intendedRoleContext":"PARTNER","inviterDisplayName":"Alex"}';
 
@@ -32,19 +34,25 @@ void main() {
   });
 
   test('parses an occurrence in WAITING_ACK with no acknowledgement yet', () {
-    const raw = '{"id":"33333333-3333-3333-3333-333333333333",'
+    const raw =
+        '{"id":"33333333-3333-3333-3333-333333333333",'
         '"title":"Prepare the evening space","purpose":"A small act of care.",'
         '"state":"WAITING_ACK","dueAt":null,"completedAt":"2026-08-27T19:42:00Z",'
         '"acknowledgement":null,"allowedActions":[]}';
 
     final v = OccurrenceView.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     expect(v.state, OccurrenceState.waitingAck);
-    expect(v.acknowledgement, isNull, reason: 'completion is not acknowledgement');
+    expect(
+      v.acknowledgement,
+      isNull,
+      reason: 'completion is not acknowledgement',
+    );
     expect(v.completedAt, isNotNull);
   });
 
   test('parses an acknowledged occurrence carrying the human response', () {
-    const raw = '{"id":"33333333-3333-3333-3333-333333333333",'
+    const raw =
+        '{"id":"33333333-3333-3333-3333-333333333333",'
         '"title":"Prepare the evening space","purpose":null,'
         '"state":"ACKNOWLEDGED","dueAt":null,"completedAt":"2026-08-27T19:42:00Z",'
         '"acknowledgement":{"type":"PRAISE","text":"I noticed the care you put into this.",'
@@ -59,7 +67,8 @@ void main() {
 
   test('parses a real /v1/dynamics/{id}/today response', () {
     // Captured live from https://ds-api.beforeweplay.com on 2026-08-27.
-    const raw = '{"priorityItems":['
+    const raw =
+        '{"priorityItems":['
         '{"occurrenceId":"0656bbd4-c2e8-4f2e-8342-3193679587ca",'
         '"title":"Evening check-in message","purpose":"A few words before the day closes.",'
         '"state":"ACTIVE","dueAt":null,"fromDisplayName":"alex"}],'
@@ -79,7 +88,8 @@ void main() {
 
   test('parses a real /v1/dynamics/{id}/attention response', () {
     // Captured live from https://ds-api.beforeweplay.com on 2026-08-27.
-    const raw = '{"items":['
+    const raw =
+        '{"items":['
         '{"occurrenceId":"13461cca-8959-438e-b9a3-2ec44c430fd1",'
         '"title":"Prepare the evening space","state":"WAITING_ACK",'
         '"actorDisplayName":"jamie","occurredAt":"2026-08-27T04:11:11.847456Z","priority":2},'
@@ -97,13 +107,17 @@ void main() {
   });
 
   test('parses allowedActions offering adjustment beside completion', () {
-    const raw = '{"id":"33333333-3333-3333-3333-333333333333","title":"t",'
+    const raw =
+        '{"id":"33333333-3333-3333-3333-333333333333","title":"t",'
         '"purpose":null,"state":"ACTIVE","dueAt":null,"completedAt":null,'
         '"acknowledgement":null,'
         '"allowedActions":["complete","discuss","reschedule","cant_do"]}';
 
     final v = OccurrenceView.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     // Adjustment is a normal path, never hidden behind completion (red line #3).
-    expect(v.allowedActions, containsAll(['complete', 'discuss', 'reschedule', 'cant_do']));
+    expect(
+      v.allowedActions,
+      containsAll(['complete', 'discuss', 'reschedule', 'cant_do']),
+    );
   });
 }
