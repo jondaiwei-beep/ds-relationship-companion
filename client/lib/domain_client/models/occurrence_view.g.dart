@@ -41,6 +41,7 @@ _OccurrenceView _$OccurrenceViewFromJson(Map<String, dynamic> json) =>
               json['acknowledgement'] as Map<String, dynamic>,
             ),
       partnerDisplayName: json['partnerDisplayName'] as String?,
+      privateNote: json['privateNote'] as String?,
       allowedActions:
           (json['allowedActions'] as List<dynamic>?)
               ?.map((e) => e as String)
@@ -58,6 +59,7 @@ Map<String, dynamic> _$OccurrenceViewToJson(_OccurrenceView instance) =>
       'completedAt': instance.completedAt?.toIso8601String(),
       'acknowledgement': instance.acknowledgement,
       'partnerDisplayName': instance.partnerDisplayName,
+      'privateNote': instance.privateNote,
       'allowedActions': instance.allowedActions,
     };
 

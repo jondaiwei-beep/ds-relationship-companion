@@ -289,7 +289,12 @@ mixin _$OccurrenceView {
 
  String get id; String get title; String? get purpose; OccurrenceState get state; DateTime? get dueAt; DateTime? get completedAt; AcknowledgementView? get acknowledgement;/// The other person, by name. Screens in the loop address a human being
 /// rather than a workflow role.
- String? get partnerDisplayName;/// Server-computed UX hint. Never treated as authorization.
+ String? get partnerDisplayName;/// What this person wrote for themselves when completing.
+///
+/// The server returns it only to its author — null for the partner, and
+/// null when nothing was written. A screen may show it back to the person
+/// who wrote it; nothing may put it anywhere the other person can see.
+ String? get privateNote;/// Server-computed UX hint. Never treated as authorization.
  List<String> get allowedActions;
 /// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
@@ -303,16 +308,16 @@ $OccurrenceViewCopyWith<OccurrenceView> get copyWith => _$OccurrenceViewCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.acknowledgement, acknowledgement) || other.acknowledgement == acknowledgement)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName)&&const DeepCollectionEquality().equals(other.allowedActions, allowedActions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.acknowledgement, acknowledgement) || other.acknowledgement == acknowledgement)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName)&&(identical(other.privateNote, privateNote) || other.privateNote == privateNote)&&const DeepCollectionEquality().equals(other.allowedActions, allowedActions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,purpose,state,dueAt,completedAt,acknowledgement,partnerDisplayName,const DeepCollectionEquality().hash(allowedActions));
+int get hashCode => Object.hash(runtimeType,id,title,purpose,state,dueAt,completedAt,acknowledgement,partnerDisplayName,privateNote,const DeepCollectionEquality().hash(allowedActions));
 
 @override
 String toString() {
-  return 'OccurrenceView(id: $id, title: $title, purpose: $purpose, state: $state, dueAt: $dueAt, completedAt: $completedAt, acknowledgement: $acknowledgement, partnerDisplayName: $partnerDisplayName, allowedActions: $allowedActions)';
+  return 'OccurrenceView(id: $id, title: $title, purpose: $purpose, state: $state, dueAt: $dueAt, completedAt: $completedAt, acknowledgement: $acknowledgement, partnerDisplayName: $partnerDisplayName, privateNote: $privateNote, allowedActions: $allowedActions)';
 }
 
 
@@ -323,7 +328,7 @@ abstract mixin class $OccurrenceViewCopyWith<$Res>  {
   factory $OccurrenceViewCopyWith(OccurrenceView value, $Res Function(OccurrenceView) _then) = _$OccurrenceViewCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String? purpose, OccurrenceState state, DateTime? dueAt, DateTime? completedAt, AcknowledgementView? acknowledgement, String? partnerDisplayName, List<String> allowedActions
+ String id, String title, String? purpose, OccurrenceState state, DateTime? dueAt, DateTime? completedAt, AcknowledgementView? acknowledgement, String? partnerDisplayName, String? privateNote, List<String> allowedActions
 });
 
 
@@ -340,7 +345,7 @@ class _$OccurrenceViewCopyWithImpl<$Res>
 
 /// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? purpose = freezed,Object? state = null,Object? dueAt = freezed,Object? completedAt = freezed,Object? acknowledgement = freezed,Object? partnerDisplayName = freezed,Object? allowedActions = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? purpose = freezed,Object? state = null,Object? dueAt = freezed,Object? completedAt = freezed,Object? acknowledgement = freezed,Object? partnerDisplayName = freezed,Object? privateNote = freezed,Object? allowedActions = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -350,6 +355,7 @@ as OccurrenceState,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast
 as DateTime?,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,acknowledgement: freezed == acknowledgement ? _self.acknowledgement : acknowledgement // ignore: cast_nullable_to_non_nullable
 as AcknowledgementView?,partnerDisplayName: freezed == partnerDisplayName ? _self.partnerDisplayName : partnerDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,privateNote: freezed == privateNote ? _self.privateNote : privateNote // ignore: cast_nullable_to_non_nullable
 as String?,allowedActions: null == allowedActions ? _self.allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
@@ -448,10 +454,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String? purpose,  OccurrenceState state,  DateTime? dueAt,  DateTime? completedAt,  AcknowledgementView? acknowledgement,  String? partnerDisplayName,  List<String> allowedActions)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String? purpose,  OccurrenceState state,  DateTime? dueAt,  DateTime? completedAt,  AcknowledgementView? acknowledgement,  String? partnerDisplayName,  String? privateNote,  List<String> allowedActions)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OccurrenceView() when $default != null:
-return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that.completedAt,_that.acknowledgement,_that.partnerDisplayName,_that.allowedActions);case _:
+return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that.completedAt,_that.acknowledgement,_that.partnerDisplayName,_that.privateNote,_that.allowedActions);case _:
   return orElse();
 
 }
@@ -469,10 +475,10 @@ return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String? purpose,  OccurrenceState state,  DateTime? dueAt,  DateTime? completedAt,  AcknowledgementView? acknowledgement,  String? partnerDisplayName,  List<String> allowedActions)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String? purpose,  OccurrenceState state,  DateTime? dueAt,  DateTime? completedAt,  AcknowledgementView? acknowledgement,  String? partnerDisplayName,  String? privateNote,  List<String> allowedActions)  $default,) {final _that = this;
 switch (_that) {
 case _OccurrenceView():
-return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that.completedAt,_that.acknowledgement,_that.partnerDisplayName,_that.allowedActions);case _:
+return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that.completedAt,_that.acknowledgement,_that.partnerDisplayName,_that.privateNote,_that.allowedActions);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -489,10 +495,10 @@ return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String? purpose,  OccurrenceState state,  DateTime? dueAt,  DateTime? completedAt,  AcknowledgementView? acknowledgement,  String? partnerDisplayName,  List<String> allowedActions)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String? purpose,  OccurrenceState state,  DateTime? dueAt,  DateTime? completedAt,  AcknowledgementView? acknowledgement,  String? partnerDisplayName,  String? privateNote,  List<String> allowedActions)?  $default,) {final _that = this;
 switch (_that) {
 case _OccurrenceView() when $default != null:
-return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that.completedAt,_that.acknowledgement,_that.partnerDisplayName,_that.allowedActions);case _:
+return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that.completedAt,_that.acknowledgement,_that.partnerDisplayName,_that.privateNote,_that.allowedActions);case _:
   return null;
 
 }
@@ -504,7 +510,7 @@ return $default(_that.id,_that.title,_that.purpose,_that.state,_that.dueAt,_that
 @JsonSerializable()
 
 class _OccurrenceView implements OccurrenceView {
-  const _OccurrenceView({required this.id, required this.title, this.purpose, required this.state, this.dueAt, this.completedAt, this.acknowledgement, this.partnerDisplayName, final  List<String> allowedActions = const <String>[]}): _allowedActions = allowedActions;
+  const _OccurrenceView({required this.id, required this.title, this.purpose, required this.state, this.dueAt, this.completedAt, this.acknowledgement, this.partnerDisplayName, this.privateNote, final  List<String> allowedActions = const <String>[]}): _allowedActions = allowedActions;
   factory _OccurrenceView.fromJson(Map<String, dynamic> json) => _$OccurrenceViewFromJson(json);
 
 @override final  String id;
@@ -517,6 +523,12 @@ class _OccurrenceView implements OccurrenceView {
 /// The other person, by name. Screens in the loop address a human being
 /// rather than a workflow role.
 @override final  String? partnerDisplayName;
+/// What this person wrote for themselves when completing.
+///
+/// The server returns it only to its author — null for the partner, and
+/// null when nothing was written. A screen may show it back to the person
+/// who wrote it; nothing may put it anywhere the other person can see.
+@override final  String? privateNote;
 /// Server-computed UX hint. Never treated as authorization.
  final  List<String> _allowedActions;
 /// Server-computed UX hint. Never treated as authorization.
@@ -540,16 +552,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.acknowledgement, acknowledgement) || other.acknowledgement == acknowledgement)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName)&&const DeepCollectionEquality().equals(other._allowedActions, _allowedActions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.completedAt, completedAt) || other.completedAt == completedAt)&&(identical(other.acknowledgement, acknowledgement) || other.acknowledgement == acknowledgement)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName)&&(identical(other.privateNote, privateNote) || other.privateNote == privateNote)&&const DeepCollectionEquality().equals(other._allowedActions, _allowedActions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,purpose,state,dueAt,completedAt,acknowledgement,partnerDisplayName,const DeepCollectionEquality().hash(_allowedActions));
+int get hashCode => Object.hash(runtimeType,id,title,purpose,state,dueAt,completedAt,acknowledgement,partnerDisplayName,privateNote,const DeepCollectionEquality().hash(_allowedActions));
 
 @override
 String toString() {
-  return 'OccurrenceView(id: $id, title: $title, purpose: $purpose, state: $state, dueAt: $dueAt, completedAt: $completedAt, acknowledgement: $acknowledgement, partnerDisplayName: $partnerDisplayName, allowedActions: $allowedActions)';
+  return 'OccurrenceView(id: $id, title: $title, purpose: $purpose, state: $state, dueAt: $dueAt, completedAt: $completedAt, acknowledgement: $acknowledgement, partnerDisplayName: $partnerDisplayName, privateNote: $privateNote, allowedActions: $allowedActions)';
 }
 
 
@@ -560,7 +572,7 @@ abstract mixin class _$OccurrenceViewCopyWith<$Res> implements $OccurrenceViewCo
   factory _$OccurrenceViewCopyWith(_OccurrenceView value, $Res Function(_OccurrenceView) _then) = __$OccurrenceViewCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String? purpose, OccurrenceState state, DateTime? dueAt, DateTime? completedAt, AcknowledgementView? acknowledgement, String? partnerDisplayName, List<String> allowedActions
+ String id, String title, String? purpose, OccurrenceState state, DateTime? dueAt, DateTime? completedAt, AcknowledgementView? acknowledgement, String? partnerDisplayName, String? privateNote, List<String> allowedActions
 });
 
 
@@ -577,7 +589,7 @@ class __$OccurrenceViewCopyWithImpl<$Res>
 
 /// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? purpose = freezed,Object? state = null,Object? dueAt = freezed,Object? completedAt = freezed,Object? acknowledgement = freezed,Object? partnerDisplayName = freezed,Object? allowedActions = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? purpose = freezed,Object? state = null,Object? dueAt = freezed,Object? completedAt = freezed,Object? acknowledgement = freezed,Object? partnerDisplayName = freezed,Object? privateNote = freezed,Object? allowedActions = null,}) {
   return _then(_OccurrenceView(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -587,6 +599,7 @@ as OccurrenceState,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast
 as DateTime?,completedAt: freezed == completedAt ? _self.completedAt : completedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,acknowledgement: freezed == acknowledgement ? _self.acknowledgement : acknowledgement // ignore: cast_nullable_to_non_nullable
 as AcknowledgementView?,partnerDisplayName: freezed == partnerDisplayName ? _self.partnerDisplayName : partnerDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,privateNote: freezed == privateNote ? _self.privateNote : privateNote // ignore: cast_nullable_to_non_nullable
 as String?,allowedActions: null == allowedActions ? _self._allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));

@@ -35,6 +35,13 @@ abstract class OccurrenceView with _$OccurrenceView {
     /// The other person, by name. Screens in the loop address a human being
     /// rather than a workflow role.
     String? partnerDisplayName,
+
+    /// What this person wrote for themselves when completing.
+    ///
+    /// The server returns it only to its author — null for the partner, and
+    /// null when nothing was written. A screen may show it back to the person
+    /// who wrote it; nothing may put it anywhere the other person can see.
+    String? privateNote,
     /// Server-computed UX hint. Never treated as authorization.
     @Default(<String>[]) List<String> allowedActions,
   }) = _OccurrenceView;

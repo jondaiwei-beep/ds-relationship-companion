@@ -43,6 +43,15 @@ class OccurrenceQueryService(
          * name is what makes an open loop about this pair.
          */
         val partnerDisplayName: String?,
+        /**
+         * What the person who completed this wrote for themselves.
+         *
+         * Null for everyone else — including their partner — and null when
+         * nothing was written. It was previously stored and never read back
+         * at all, so a private note could be written and then never seen
+         * again, by anyone.
+         */
+        val privateNote: String?,
         /** UX convenience only — the command endpoint still authorizes. */
         val allowedActions: List<String>,
     )
@@ -57,6 +66,10 @@ class OccurrenceQueryService(
             """
             SELECT o.id, o.state, o.due_at, d.title, d.purpose,
                    c.completed_at,
+                   -- Only to the person who wrote it. The design labels this
+                   -- "PRIVATE NOTE · ONLY YOU", and the filter is here rather
+                   -- than in the caller so no future reader can forget it.
+                   CASE WHEN c.actor_user_id = {1} THEN c.note END AS private_note,
                    a.type AS ack_type, a.text AS ack_text, a.sent_at AS ack_sent_at,
                    au.display_name AS ack_sender,
                    (SELECT u.display_name
@@ -87,6 +100,7 @@ class OccurrenceQueryService(
             dueAt = r.get("due_at", Instant::class.java),
             completedAt = r.get("completed_at", Instant::class.java),
             partnerDisplayName = r.get("partner_name", String::class.java),
+            privateNote = r.get("private_note", String::class.java),
             acknowledgement = ackSentAt?.let {
                 AcknowledgementView(
                     type = r.get("ack_type", String::class.java),

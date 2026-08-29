@@ -6,6 +6,7 @@ import com.dsapp.backend.expectation.application.OccurrenceNotCompletable
 import com.dsapp.backend.response.application.AcknowledgementType
 import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
 import com.dsapp.backend.response.application.SendAcknowledgementService
+import com.dsapp.backend.expectation.application.OccurrenceQueryService
 import com.dsapp.backend.identity.domain.ApiException
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.util.UUID
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.test.assertFailsWith
 
@@ -30,6 +32,7 @@ class HumanResponseLoopIT {
     @Autowired lateinit var dsl: DSLContext
     @Autowired lateinit var complete: CompleteOccurrenceService
     @Autowired lateinit var acknowledge: SendAcknowledgementService
+    @Autowired lateinit var occurrences: OccurrenceQueryService
 
     private lateinit var creator: UUID
     private lateinit var partner: UUID
@@ -240,5 +243,35 @@ class HumanResponseLoopIT {
             acknowledge.send(creator, occurrenceId, AcknowledgementType.REVIEW, "", idem(creator))
         }
         assertEquals(0, ackCount())
+    }
+
+    @Test
+    fun `a private note comes back to the person who wrote it`() {
+        // The design labels this "PRIVATE NOTE · ONLY YOU", which implies you
+        // can read it. It was stored and never selected by any query, so a
+        // person could write something private and never see it again.
+        complete.complete(partner, occurrenceId, "I felt calm and focused.", idem(partner))
+
+        val mine = occurrences.get(partner, occurrenceId)
+
+        assertEquals("I felt calm and focused.", mine.privateNote)
+    }
+
+    @Test
+    fun `a private note never reaches the partner`() {
+        // The other half, and the more important one. "Only you" has to be
+        // true of the person it is not for.
+        complete.complete(partner, occurrenceId, "I felt calm and focused.", idem(partner))
+
+        val theirs = occurrences.get(creator, occurrenceId)
+
+        assertNull(theirs.privateNote)
+    }
+
+    @Test
+    fun `completing without a note leaves nothing to read`() {
+        complete.complete(partner, occurrenceId, null, idem(partner))
+
+        assertNull(occurrences.get(partner, occurrenceId).privateNote)
     }
 }
