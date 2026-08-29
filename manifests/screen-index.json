@@ -61,13 +61,13 @@
       "screen_id": "SCR-01",
       "name": "Today — Ritual Focus",
       "slug": "today",
-      "revision": 1,
+      "revision": 2,
       "release_tier": "Core Beta",
       "platforms": [
         "Android"
       ],
       "disposition": "retain_and_align",
-      "build_gate": "blocked_alignment_required",
+      "build_gate": "ready_for_build",
       "requirement_refs": [
         "REQ-TODAY-001",
         "REQ-ACK-001",
@@ -92,7 +92,7 @@
       "contract_path": "design/screens/SCR-01-today/screen.md",
       "preview_path": "design/screens/SCR-01-today/preview.webp",
       "source_reference": "design/reference/webp/v1/00 Visual Baseline/01-today.webp",
-      "visual_status": "candidate_for_approval",
+      "visual_status": "approved",
       "candidate_revision": 2,
       "candidate_preview_path": "design/screens/SCR-01-today/candidates/rev-2/preview.webp",
       "candidate_source_path": "design/screens/SCR-01-today/candidates/rev-2/source.png",

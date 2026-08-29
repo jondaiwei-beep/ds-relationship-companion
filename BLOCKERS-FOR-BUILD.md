@@ -14,7 +14,7 @@ It does not propose design decisions — those belong to the design owner.
 | Brand/support primitives | 10 colors frozen in `design/system/colors.md` | No — usable now |
 | Semantic color tokens | Frozen in `TOKEN-FREEZE-B2-V1` with Flutter/Web bindings | No — B-2 resolved |
 | SVG masters | 33 of 33 native masters exist; all `approved` in SVG Freeze v1 | No — B-1 resolved |
-| Today prioritized-list/state family | Rev-2 candidate designed and QA-rendered | **Approval still blocks SCR-01** |
+| Today prioritized-list/state family | Revision 2 approved; SCR-01 gate open | No — B-3 resolved |
 | G-1 to G-4 domain gaps | Adopted into the product contract | No — resolved |
 | Textures | Deterministic B-4 grain frozen and wired into Flutter | No — usable now |
 | Radius / control heights | Frozen in `TOKEN-FREEZE-B2-V1` | No — usable now |

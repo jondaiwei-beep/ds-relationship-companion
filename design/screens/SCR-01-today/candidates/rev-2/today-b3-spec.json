@@ -2,10 +2,14 @@
   "schema_version": "1.0",
   "candidate_id": "SCR-01-REV-2-B3",
   "generated_at": "2026-08-29",
-  "status": "candidate_for_approval",
+  "status": "approved",
   "screen_id": "SCR-01",
   "visual_direction": "V5 Warm Authority / Quiet Authority",
-  "reference_viewport": { "width": 390, "height": 844, "unit": "dp" },
+  "reference_viewport": {
+    "width": 390,
+    "height": 844,
+    "unit": "dp"
+  },
   "preserved_state": {
     "name": "ritual_focus",
     "reference": "design/screens/SCR-01-today/preview.webp",
@@ -26,17 +30,37 @@
     ]
   },
   "priority_contract": {
-    "visible_priority_count": { "min": 1, "max": 3 },
-    "later_count": { "min": 0, "max": 7 },
-    "supported_total_count": { "min": 0, "max": 10 },
+    "visible_priority_count": {
+      "min": 1,
+      "max": 3
+    },
+    "later_count": {
+      "min": 0,
+      "max": 7
+    },
+    "supported_total_count": {
+      "min": 0,
+      "max": 10
+    },
     "default_behavior": "Render at most three priority items. Later/optional items remain behind one count-bearing disclosure row.",
     "expanded_behavior": "Expand Later inline in server order. The body scrolls; page header and bottom navigation remain stable. Show all remaining items up to the ten-item daily limit and preserve state/action availability per item.",
     "collapse_behavior": "Return to the same scroll anchor and keep the first three priorities unchanged.",
     "overflow_behavior": "More than ten items is a server/read-model contract violation; do not silently truncate or create client-side pagination."
   },
   "item_contract": {
-    "required_visible_fields": ["kind", "title", "source/context", "time or relationship-day context", "current state"],
-    "actions": ["Complete", "Need to Discuss", "Request New Time", "Can't Do"],
+    "required_visible_fields": [
+      "kind",
+      "title",
+      "source/context",
+      "time or relationship-day context",
+      "current state"
+    ],
+    "actions": [
+      "Complete",
+      "Need to Discuss",
+      "Request New Time",
+      "Can't Do"
+    ],
     "action_rule": "The server supplies allowed actions. Basic understanding and these four paths must not require opening a detail page.",
     "action_geometry": "Complete uses the frozen 56dp standard control height. Discuss, Request New Time and Can't Do retain separate 48dp minimum touch targets even when presented as quiet text actions. Compact priority and Later rows bind to the frozen 72dp operational-row contract.",
     "visual_rule": "The first priority receives editorial emphasis; items two and three use disciplined timeline rows. Later items use compact rows and never become a wall of equal cards."
@@ -85,7 +109,16 @@
   },
   "role_and_agency": {
     "layout_changes_by_role": false,
-    "rights_never_removed": ["Complete", "Need to Discuss", "Request New Time", "Can't Do", "Pause", "Leave", "Block", "own private-data control"],
+    "rights_never_removed": [
+      "Complete",
+      "Need to Discuss",
+      "Request New Time",
+      "Can't Do",
+      "Pause",
+      "Leave",
+      "Block",
+      "own private-data control"
+    ],
     "attention_boundary": "Human work created by the viewer for the partner belongs in Attention. Today remains the viewer's receiving/action surface regardless of role label."
   },
   "assets": [
@@ -102,5 +135,7 @@
     "nav.us"
   ],
   "token_freeze": "TOKEN-FREEZE-B2-V1",
-  "build_gate_effect": "none until candidate approval, copy/platform confirmation and remaining product gates are resolved"
+  "build_gate_effect": "none until candidate approval, copy/platform confirmation and remaining product gates are resolved",
+  "approved_at": "2026-08-29",
+  "approved_by": "product owner"
 }

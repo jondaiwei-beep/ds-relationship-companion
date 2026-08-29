@@ -5,12 +5,12 @@
 | Field | Value |
 |---|---|
 | Screen ID | `SCR-01` |
-| Revision | `2` candidate |
+| Revision | `2` |
 | Release tier | Core Beta |
 | Platforms | Android |
 | Disposition | `retain_and_align` |
-| Build gate | `blocked_alignment_required` |
-| Visual reference | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) — prioritized-list candidate |
+| Build gate | `ready_for_build` |
+| Visual reference | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) — Revision 2, approved |
 | Preserved source | `00 Visual Baseline/01-today.webp` |
 
 ## 1. Product contract
