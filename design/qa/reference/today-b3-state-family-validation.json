@@ -1,0 +1,73 @@
+{
+  "candidate_id": "SCR-01-REV-2-B3",
+  "generated_at": "2026-08-29T00:26:59.411Z",
+  "result": "pass",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "source_scale": 3,
+  "states": [
+    {
+      "key": "default",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/source.png"
+    },
+    {
+      "key": "expanded",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/expanded/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/expanded/source.png"
+    },
+    {
+      "key": "loading",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/loading/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/loading/source.png"
+    },
+    {
+      "key": "empty",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/empty/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/empty/source.png"
+    },
+    {
+      "key": "error-retry",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/error-retry/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/error-retry/source.png"
+    },
+    {
+      "key": "offline",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/offline/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/offline/source.png"
+    },
+    {
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/authorization-loss/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/authorization-loss/source.png"
+    },
+    {
+      "key": "role-variant",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/role-variant/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/role-variant/source.png"
+    },
+    {
+      "key": "solo",
+      "preview": "design/screens/SCR-01-today/candidates/rev-2/states/solo/preview.webp",
+      "source": "design/screens/SCR-01-today/candidates/rev-2/states/solo/source.png"
+    }
+  ],
+  "preserved_reference": "design/screens/SCR-01-today/preview.webp",
+  "board": "design/qa/reference/today-b3-state-family-board.png",
+  "tokens": "TOKEN-FREEZE-B2-V1",
+  "semantic_asset_ids": [
+    "mark.presence",
+    "mark.authority",
+    "mark.check-in",
+    "emblem.ritual.evening",
+    "icon.private-space",
+    "state.acknowledged",
+    "state.locked",
+    "nav.today",
+    "nav.dynamic",
+    "nav.explore",
+    "nav.us"
+  ]
+}

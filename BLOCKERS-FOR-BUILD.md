@@ -1,6 +1,6 @@
 # What implementation is waiting on
 
-Written by Claude Code after reading the repository on 2026-08-29; reconciled with SVG Freeze v1 and Token Freeze B-2 v1 on 2026-08-29 UTC.
+Written by Claude Code after reading the repository on 2026-08-29; reconciled with SVG Freeze v1, Token Freeze B-2 v1 and the Today B-3 Revision 2 candidate on 2026-08-29 UTC.
 This file states only what blocks writing Flutter code against this design system.
 It does not propose design decisions — those belong to the design owner.
 
@@ -14,7 +14,7 @@ It does not propose design decisions — those belong to the design owner.
 | Brand/support primitives | 10 colors frozen in `design/system/colors.md` | No — usable now |
 | Semantic color tokens | Frozen in `TOKEN-FREEZE-B2-V1` with Flutter/Web bindings | No — B-2 resolved |
 | SVG masters | 33 of 33 native masters exist; all `approved` in SVG Freeze v1 | No — B-1 resolved |
-| Today prioritized-list state | Not designed | **Yes, for SCR-01** |
+| Today prioritized-list/state family | Rev-2 candidate designed and QA-rendered | **Approval still blocks SCR-01** |
 | Textures | Directory empty | Partially |
 | Radius / control heights | Frozen in `TOKEN-FREEZE-B2-V1` | No — usable now |
 
@@ -64,21 +64,22 @@ screen-level B-3/state/product/platform gates remain unchanged.
 
 ---
 
-## B-3 · Today has no prioritized-list state
+## B-3 · Visual production complete; owner approval pending
 
-`design/screens/SCR-01-today/screen.md` already records this under **Known
-alignment work**: *add receiving-side prioritized list state / preserve this as
-ritual-focus state*. `progress/status.md` lists it as next-alignment item 3.
+Revision 2 now defines Today without discarding the approved ritual-focus visual:
 
-Flagging it here only to record the implementation consequence: the approved
-`preview.webp` is a single-item ritual-focus screen. A real day carries 8–10
-items, and the 34/42 Cormorant headline in that composition has no defined
-behavior for the second through tenth item. Building the dense list from
-inference would invent hierarchy the design has not approved.
+- default Today exposes 1–3 priorities, with full agency actions on the first;
+- `Later / Optional` expands inline to a server-ordered total of 8–10 items;
+- partner presence, recent human response, ritual and check-in are integrated;
+- loading, empty, error/retry, offline/read-only, authorization-loss,
+  role-neutral and solo/private states have lossless source plus 390 × 844 preview;
+- server current truth, cache, privacy and invariant rights are explicit in the
+  machine-readable contract.
 
-Also undefined for SCR-01 and every other screen: all seven rows of the state
-matrix (default / loading / empty / error / offline / authorization loss /
-role variant) are `TBD — blocked`.
+Canonical files: `design/screens/SCR-01-today/candidates/rev-2/` and
+`design/qa/reference/today-b3-state-family-board.png`. Visual QA passed for
+candidate review. SCR-01 remains `blocked_alignment_required` until the
+product/design owner approves Revision 2 plus copy and Web/platform behavior.
 
 ---
 

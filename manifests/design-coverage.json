@@ -131,11 +131,11 @@
         "SCR-19"
       ],
       "action": "merge_redesign",
+      "candidate_status": "rev_2_prioritized_list_and_recovery_family_available_for_approval",
       "missing": [
-        "prioritized list state",
-        "partner context",
-        "check-in",
-        "later/optional"
+        "product and copy approval",
+        "Web adaptation",
+        "implementation comparison"
       ]
     },
     {

@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "candidate_id": "SCR-01-REV-2-B3",
+  "generated_at": "2026-08-29",
+  "status": "candidate_for_approval",
+  "screen_id": "SCR-01",
+  "visual_direction": "V5 Warm Authority / Quiet Authority",
+  "reference_viewport": { "width": 390, "height": 844, "unit": "dp" },
+  "preserved_state": {
+    "name": "ritual_focus",
+    "reference": "design/screens/SCR-01-today/preview.webp",
+    "rule": "The original centered Evening Ritual composition remains a dedicated focus state entered from the prioritized Today list. It is not the default list layout."
+  },
+  "read_model": {
+    "authority": "server",
+    "rule": "The client renders the server-composed order and never derives missed, needs-review, acknowledgement or relationship-day state from the device clock or cache.",
+    "fields": [
+      "server_version",
+      "relationship_day",
+      "partner_context",
+      "priority_items",
+      "later_items",
+      "recent_human_response",
+      "last_confirmed_at",
+      "available_actions"
+    ]
+  },
+  "priority_contract": {
+    "visible_priority_count": { "min": 1, "max": 3 },
+    "later_count": { "min": 0, "max": 7 },
+    "supported_total_count": { "min": 0, "max": 10 },
+    "default_behavior": "Render at most three priority items. Later/optional items remain behind one count-bearing disclosure row.",
+    "expanded_behavior": "Expand Later inline in server order. The body scrolls; page header and bottom navigation remain stable. Show all remaining items up to the ten-item daily limit and preserve state/action availability per item.",
+    "collapse_behavior": "Return to the same scroll anchor and keep the first three priorities unchanged.",
+    "overflow_behavior": "More than ten items is a server/read-model contract violation; do not silently truncate or create client-side pagination."
+  },
+  "item_contract": {
+    "required_visible_fields": ["kind", "title", "source/context", "time or relationship-day context", "current state"],
+    "actions": ["Complete", "Need to Discuss", "Request New Time", "Can't Do"],
+    "action_rule": "The server supplies allowed actions. Basic understanding and these four paths must not require opening a detail page.",
+    "visual_rule": "The first priority receives editorial emphasis; items two and three use disciplined timeline rows. Later items use compact rows and never become a wall of equal cards."
+  },
+  "states": {
+    "default": {
+      "preview": "preview.webp",
+      "meaning": "Server-confirmed Today with three visible priorities and five collapsed later items."
+    },
+    "expanded": {
+      "preview": "states/expanded/preview.webp",
+      "meaning": "Eight-item example with all five later items expanded inline."
+    },
+    "loading": {
+      "preview": "states/loading/preview.webp",
+      "meaning": "Resolve authorization, membership and current Today read model without revealing stale partner content."
+    },
+    "empty": {
+      "preview": "states/empty/preview.webp",
+      "meaning": "Server confirms no actionable priority or later item for the relationship day; optional check-in remains non-urgent."
+    },
+    "error_retry": {
+      "preview": "states/error-retry/preview.webp",
+      "meaning": "Current truth cannot be loaded and no safe confirmed cache is available. Hide sensitive content and offer explicit retry."
+    },
+    "offline": {
+      "preview": "states/offline/preview.webp",
+      "meaning": "Show only the last confirmed cached list with timestamp. All mutations are disabled until server confirmation returns."
+    },
+    "authorization_loss": {
+      "preview": "states/authorization-loss/preview.webp",
+      "meaning": "Remove all partner and Dynamic content, clear the protected view and offer sign-in recovery."
+    },
+    "role_variant": {
+      "preview": "states/role-variant/preview.webp",
+      "meaning": "Dominant, submissive, Switch and custom contexts keep identical hierarchy and agency controls; only approved personal-title/context copy may vary."
+    },
+    "solo": {
+      "preview": "states/solo/preview.webp",
+      "meaning": "Solo Dynamic uses the same Today grammar, replaces partner presence with explicit private context and contains no human-response module."
+    },
+    "stale_refresh": {
+      "preview": null,
+      "meaning": "After a stale version or stale mutation response, replace the list with server current truth and announce that Today changed; never preserve a locally inferred state."
+    }
+  },
+  "role_and_agency": {
+    "layout_changes_by_role": false,
+    "rights_never_removed": ["Complete", "Need to Discuss", "Request New Time", "Can't Do", "Pause", "Leave", "Block", "own private-data control"],
+    "attention_boundary": "Human work created by the viewer for the partner belongs in Attention. Today remains the viewer's receiving/action surface regardless of role label."
+  },
+  "assets": [
+    "mark.presence",
+    "mark.authority",
+    "mark.check-in",
+    "emblem.ritual.evening",
+    "icon.private-space",
+    "state.acknowledged",
+    "state.locked",
+    "nav.today",
+    "nav.dynamic",
+    "nav.explore",
+    "nav.us"
+  ],
+  "token_freeze": "TOKEN-FREEZE-B2-V1",
+  "build_gate_effect": "none until candidate approval, copy/platform confirmation and remaining product gates are resolved"
+}

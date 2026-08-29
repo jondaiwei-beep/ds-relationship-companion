@@ -78,17 +78,35 @@
       ],
       "asset_refs": [
         "mark.presence",
+        "mark.authority",
+        "mark.check-in",
         "emblem.ritual.evening",
+        "icon.private-space",
         "nav.today",
         "nav.dynamic",
         "nav.explore",
         "nav.us",
-        "state.acknowledged"
+        "state.acknowledged",
+        "state.locked"
       ],
       "contract_path": "design/screens/SCR-01-today/screen.md",
       "preview_path": "design/screens/SCR-01-today/preview.webp",
       "source_reference": "design/reference/webp/v1/00 Visual Baseline/01-today.webp",
-      "visual_status": "existing_reference"
+      "visual_status": "candidate_for_approval",
+      "candidate_revision": 2,
+      "candidate_preview_path": "design/screens/SCR-01-today/candidates/rev-2/preview.webp",
+      "candidate_source_path": "design/screens/SCR-01-today/candidates/rev-2/source.png",
+      "candidate_spec_path": "design/screens/SCR-01-today/candidates/rev-2/today-b3-spec.json",
+      "candidate_state_paths": {
+        "expanded": "design/screens/SCR-01-today/candidates/rev-2/states/expanded/preview.webp",
+        "loading": "design/screens/SCR-01-today/candidates/rev-2/states/loading/preview.webp",
+        "empty": "design/screens/SCR-01-today/candidates/rev-2/states/empty/preview.webp",
+        "error_retry": "design/screens/SCR-01-today/candidates/rev-2/states/error-retry/preview.webp",
+        "offline": "design/screens/SCR-01-today/candidates/rev-2/states/offline/preview.webp",
+        "authorization_loss": "design/screens/SCR-01-today/candidates/rev-2/states/authorization-loss/preview.webp",
+        "role_variant": "design/screens/SCR-01-today/candidates/rev-2/states/role-variant/preview.webp",
+        "solo": "design/screens/SCR-01-today/candidates/rev-2/states/solo/preview.webp"
+      }
     },
     {
       "screen_id": "SCR-02",

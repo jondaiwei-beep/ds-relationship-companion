@@ -15,7 +15,7 @@ Token status: **B-2 Token Freeze v1 complete**. Ritual/Living canvases, surfaces
 | Invite creator | `REQ-INVITE-001` | `SCR-09` | **rev-2 lifecycle candidates complete** | Pending, Accepted, Expired and Revoked are represented; add share/copy, loading, offline and authorization recovery. |
 | Web Join trust | `REQ-JOIN-001` | `SCR-10`, `SCR-11` | **rev-2 trust + Expired + Auth Return complete** | Add revoked/stale safe landing plus loading, offline and authorization-loss states. |
 | First shared interaction | `REQ-FIRST-001` | partial in `SCR-01/02` | add activation state | Small check-in or starter ritual; no empty success page. |
-| Receiving Today | `REQ-TODAY-001`, `FLOW-RECEIVE-001` | `SCR-01`, `SCR-19` | combine as one page family | Ritual-focus state plus prioritized 1–3 item list, partner context, recent response, check-in and later/optional. |
+| Receiving Today | `REQ-TODAY-001`, `FLOW-RECEIVE-001` | `SCR-01` rev-2 candidate; preserved ritual focus; `SCR-19` evidence | **rev-2 state family complete** | Prioritized 1–3 list, inline 8–10 expansion, partner/solo context, recent response, check-in, Later and all required recovery/role states exist; approve copy/product/Web behavior. |
 | Direction-giving Attention | `REQ-ATTN-001`, `FLOW-ATTENTION-001` | missing | **new screen `SCR-32`** | Priority queue with meaningful inline responses; no Proposal inbox. |
 | Expectation / Ritual detail | `REQ-EXPECT-001`, `REQ-ADJUST-001` | `SCR-14` | retain and align | Complete, Discuss, Request New Time, Can't Do and role/state variants; remove Proof. |
 | Complete / Waiting | `REQ-COMPLETE-001` | `SCR-02` | **rev-2 candidate complete** | Completion and Waiting are now explicit; add retry/current-state recovery and approve private-note visibility. |

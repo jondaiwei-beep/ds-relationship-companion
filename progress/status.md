@@ -24,12 +24,14 @@
 - Semantic SVG registry, geometry/color contract, automated validation and two QA boards stored in GitHub-readable paths
 - B-2 Token Freeze v1 completed: semantic canvases/surfaces/text/borders/states, radii, control heights, opacity and shadow rules
 - Generated Flutter and Web token bindings plus contrast/geometry QA stored in GitHub-readable paths
+- Today B-3 Revision 2 completed as a review candidate: default 1–3 priority hierarchy, 8–10 item expansion contract, preserved ritual focus and complete privacy/recovery/role state family
+- Today B-3 lossless sources, 390 × 844 previews, deterministic renderer, machine-readable behavior contract and combined QA board stored in GitHub-readable paths
 
 ## Next alignment work
 
 1. Resolve the four open domain gaps in `product/domain/core-beta-state-contracts.md`, especially Block semantics and the Occurrence transition graph.
 2. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
-3. Add Today prioritized-list, Attention primary queue and Daily Check-in designs.
+3. Approve Today Revision 2, then add Attention primary queue and Daily Check-in designs.
 4. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
 5. Build the deterministic grain/texture deliverable under B-4; semantic color and geometry tokens are frozen in B-2 v1.
 6. Change gates only after product, visual, asset and recovery contracts are all approved.
