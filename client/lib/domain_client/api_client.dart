@@ -43,7 +43,12 @@ class ApiClient {
   /// Wired to the session by `SessionController`, so one rejected request
   /// ends the session everywhere instead of each screen discovering it
   /// separately.
-  void Function()? onAuthenticationLost;
+  ///
+  /// Carries the token that was rejected. A request sent before a refresh can
+  /// land after it, so "a 401 happened" is not the same as "the current
+  /// session is dead" — without the token, a stale rejection would sign out
+  /// somebody whose session had just been renewed.
+  void Function(String rejectedToken)? onAuthenticationLost;
   static final _rng = Random.secure();
 
   /// Access token lives in memory only — never on disk (Notion 04 §2).
@@ -54,7 +59,7 @@ class ApiClient {
   set accessToken(String? t) => _accessToken = t;
 
   /// Installs the 401 handler. Called once, by the session.
-  void interceptAuthenticationLoss(void Function() onLost) {
+  void interceptAuthenticationLoss(void Function(String rejectedToken) onLost) {
     onAuthenticationLost = onLost;
     _dio.interceptors.add(
       InterceptorsWrapper(
@@ -63,9 +68,10 @@ class ApiClient {
           // Only for requests that carried a token. A 401 from `/sign-in` is
           // a wrong password, not a lost session, and ending the session
           // there would clear the very thing the person is trying to create.
-          final wasAuthenticated =
-              error.requestOptions.headers.containsKey('Authorization');
-          if (status == 401 && wasAuthenticated) onAuthenticationLost?.call();
+          final sent = error.requestOptions.headers['Authorization'] as String?;
+          if (status == 401 && sent != null) {
+            onAuthenticationLost?.call(sent.replaceFirst('Bearer ', ''));
+          }
           handler.next(error);
         },
       ),
@@ -74,7 +80,8 @@ class ApiClient {
 
   /// Fires the authentication-lost path without a real 401, for tests.
   @visibleForTesting
-  void debugSimulateAuthenticationLoss() => onAuthenticationLost?.call();
+  void debugSimulateAuthenticationLoss([String? token]) =>
+      onAuthenticationLost?.call(token ?? _accessToken ?? '');
 
   /// Whether requests are currently authorized, for tests.
   ///

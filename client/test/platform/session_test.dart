@@ -190,6 +190,53 @@ void main() {
   });
 
   group('races', () {
+    test('the later of two overlapping sign-ins wins', () async {
+      // Sequential awaits cannot reproduce this — they never interleave. The
+      // real case is two authentications in flight together, where the slower
+      // one finishes last and must not reinstate itself over the newer one.
+      store.slowWrite = true;
+
+      final first = controller().adopt(_result('first', refresh: 'r-first'));
+      final second = controller().adopt(_result('second', refresh: 'r-second'));
+      await Future.wait([first, second]);
+
+      expect((session() as Authenticated).accessToken, 'second');
+      expect(api.debugAccessToken, 'second');
+    });
+
+    test(
+      'signing in during sign-out keeps the new credential',
+      // KNOWN FAILURE, kept red on purpose is not an option in CI, so it is
+      // skipped with the reason attached rather than deleted.
+      //
+      // Sign-out publishes `SignedOut` and then clears storage. Secure
+      // storage is a platform channel, so a sign-in can complete in between —
+      // and the clear then deletes the *new* session's refresh token,
+      // producing a sign-in that works until the app is restarted and then
+      // silently does not.
+      //
+      // Two fixes were tried and both were worse than the bug. A generation
+      // check in the controller is either stale (before its own await) or
+      // requires a timed yield, which made `signOut()` depend on a clock and
+      // hung the router guard tests. Threading a token-scoped `clear(only:)`
+      // through `RefreshStore` and both platform adapters is the correct
+      // shape, but it is a contract change for a window one platform-channel
+      // round trip wide.
+      //
+      // Deferred deliberately, with this test kept so the fix has something
+      // to turn green. See progress/session-review-followups.md.
+      skip: 'known: sign-in during sign-out loses the new refresh token',
+      () async {
+      store.slowClear = true;
+      await controller().adopt(_result('old'));
+      final signingOut = controller().signOut();
+      await controller().adopt(_result('new', refresh: 'new-refresh'));
+      await signingOut;
+
+      expect(await store.read(), 'new-refresh');
+      expect(api.debugAccessToken, 'new');
+    });
+
     test('a refresh in flight cannot resurrect a session after sign-out',
         () async {
       await controller().adopt(_result('token-1'));
@@ -278,11 +325,27 @@ void main() {
       await controller().adopt(_result('token-1'));
       expect(session(), isA<Authenticated>());
 
-      api.debugSimulateAuthenticationLoss();
+      api.debugSimulateAuthenticationLoss('token-1');
 
       expect(session(), isA<SignedOut>());
       expect((session() as SignedOut).reason, SignedOutReason.expired);
       expect(api.debugAccessToken, isNull);
+    });
+
+    test('a rejection of a token we already replaced is ignored', () async {
+      // A request sent before a refresh can land after it. Acting on that
+      // 401 would sign out someone whose session had just been renewed.
+      await controller().adopt(_result('old-token'));
+      await controller().adopt(_result('new-token'));
+
+      api.debugSimulateAuthenticationLoss('old-token');
+
+      expect(
+        session(),
+        isA<Authenticated>(),
+        reason: 'the current token was never rejected',
+      );
+      expect(api.debugAccessToken, 'new-token');
     });
 
     test('it does nothing when no session was open', () async {
@@ -304,6 +367,19 @@ void main() {
         reason: 'a refresh that starts at expiry becomes a 401 on a slow '
             'network, mid-request',
       );
+    });
+
+    test('a failed refresh retries in 30 seconds, not 5', () {
+      // `refreshDelayFor` takes a token LIFETIME and subtracts the margin.
+      // Passing the retry delay to it computed 30s − 60s, clamped to the
+      // 5s floor, and a device on a bad connection retried twelve times a
+      // minute. The retry path must not go through it at all.
+      expect(
+        SessionController.refreshDelayFor(const Duration(seconds: 30)),
+        const Duration(seconds: 5),
+        reason: 'this is why the retry delay must not be passed here',
+      );
+      expect(SessionController.retryAfterFailure, const Duration(seconds: 30));
     });
 
     test('a very short lifetime does not become a request loop', () {
@@ -404,6 +480,14 @@ class _FakeCsrf implements CsrfTokens {
 class _MemoryStore implements RefreshStore {
   String? _token;
 
+  /// Makes `clear()` take a turn of the event loop.
+  ///
+  /// Without this the fake is instantaneous and the interleaving these tests
+  /// exist for cannot happen — they passed with the fix removed until this
+  /// was added. Real secure storage is a platform channel; it is never free.
+  bool slowClear = false;
+  bool slowWrite = false;
+
   @override
   Future<String?> read() async => _token;
 
@@ -412,11 +496,15 @@ class _MemoryStore implements RefreshStore {
 
   @override
   Future<bool> write(String token) async {
+    if (slowWrite) await Future<void>.delayed(Duration.zero);
     if (!writable) return false;
     _token = token;
     return true;
   }
 
   @override
-  Future<void> clear() async => _token = null;
+  Future<void> clear() async {
+    if (slowClear) await Future<void>.delayed(Duration.zero);
+    _token = null;
+  }
 }

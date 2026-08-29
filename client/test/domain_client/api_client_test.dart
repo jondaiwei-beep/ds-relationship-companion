@@ -58,9 +58,9 @@ void main() {
   });
 
   group('the 401 interceptor', () {
-    test('fires when an authenticated request is rejected', () async {
-      var lost = 0;
-      api.interceptAuthenticationLoss(() => lost++);
+    test('fires with the token that was actually rejected', () async {
+      String? rejected;
+      api.interceptAuthenticationLoss((t) => rejected = t);
       api.accessToken = 'dead';
       adapter.status = 401;
 
@@ -69,7 +69,13 @@ void main() {
         throwsA(isA<DioException>()),
       );
 
-      expect(lost, 1);
+      expect(
+        rejected,
+        'dead',
+        reason: 'the session compares it against the token it currently '
+            'holds, so a request sent before a refresh cannot end the '
+            'session that replaced it',
+      );
     });
 
     test('does not fire for a wrong password', () async {
@@ -77,7 +83,7 @@ void main() {
       // wrong, and ending the session would clear the very thing the person
       // is trying to create.
       var lost = 0;
-      api.interceptAuthenticationLoss(() => lost++);
+      api.interceptAuthenticationLoss((_) => lost++);
       adapter.status = 401;
 
       await expectLater(
@@ -94,7 +100,7 @@ void main() {
       // cannot tell an existing Dynamic from an absent one. That must not be
       // read as a dead token.
       var lost = 0;
-      api.interceptAuthenticationLoss(() => lost++);
+      api.interceptAuthenticationLoss((_) => lost++);
       api.accessToken = 'good';
       adapter.status = 404;
 

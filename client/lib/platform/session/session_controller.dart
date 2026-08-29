@@ -47,7 +47,8 @@ class SessionController extends Notifier<Session> {
   static const _minRefreshDelay = Duration(seconds: 5);
 
   /// How soon to try again when the server could not be reached at all.
-  static const _retryAfterFailure = Duration(seconds: 30);
+  @visibleForTesting
+  static const retryAfterFailure = Duration(seconds: 30);
 
   @override
   Session build() {
@@ -83,11 +84,17 @@ class SessionController extends Notifier<Session> {
     await _refreshNow();
   }
 
-  void _onAuthenticationLost() {
-    // The server rejected a token we believed in. Do not refresh first: the
-    // refresh path has its own 401 handling, and calling it from here would
-    // recurse. Just end it.
-    if (state is! Authenticated) return;
+  void _onAuthenticationLost(String rejectedToken) {
+    final current = state;
+    if (current is! Authenticated) return;
+
+    // A request sent before a refresh can land after it. Rejecting the token
+    // we have already replaced says nothing about the one we now hold, and
+    // acting on it would sign out someone whose session is fine.
+    if (current.accessToken != rejectedToken) return;
+
+    // Do not refresh first: the refresh path has its own rejection handling,
+    // and it does not send an Authorization header, so it cannot reach here.
     _endSession(SignedOutReason.expired).ignore();
   }
 
@@ -126,7 +133,13 @@ class SessionController extends Notifier<Session> {
   }
 
   /// Adopt the result of a successful register / sign-in / magic-link consume.
-  Future<void> adopt(AuthResult result) => _adopt(result, _generation);
+  ///
+  /// Bumps the generation first, so two authentications started together
+  /// cannot land out of order and leave the older one as the live session.
+  Future<void> adopt(AuthResult result) {
+    _generation++;
+    return _adopt(result, _generation);
+  }
 
   /// Exchange the refresh credential, coalescing concurrent callers.
   Future<AuthResult> _exchange() {
@@ -184,6 +197,12 @@ class SessionController extends Notifier<Session> {
     _refreshTimer = Timer(refreshDelayFor(lifetime), _refreshNow);
   }
 
+  void _scheduleRetry(Duration delay) {
+    _refreshTimer?.cancel();
+    if (!ref.read(autoRefreshProvider)) return;
+    _refreshTimer = Timer(delay, _refreshNow);
+  }
+
   /// When to refresh, given how long the token lives.
   ///
   /// Ahead of expiry, so a slow network does not turn a scheduled refresh
@@ -214,7 +233,11 @@ class SessionController extends Notifier<Session> {
       // Could not reach the server. The access token is still valid for the
       // margin we refreshed inside, so keep the session and try again rather
       // than signing someone out over a tunnel.
-      if (generation == _generation) _scheduleRefresh(_retryAfterFailure);
+      // Not `_scheduleRefresh`, which takes a token *lifetime* and subtracts
+      // the margin: passing 30 seconds there computed a negative delay and
+      // clamped to 5, so a device on a bad connection retried twelve times a
+      // minute.
+      if (generation == _generation) _scheduleRetry(retryAfterFailure);
     }
   }
 
@@ -251,7 +274,31 @@ class SessionController extends Notifier<Session> {
     _refreshTimer = null;
     _inFlightRefresh = null;
     _api.accessToken = null;
+
+    // The guard is told immediately. Everything above is synchronous, so by
+    // this line the token is already gone and no protected request can be
+    // sent — the screen and the transport agree in the same microtask.
     state = SignedOut(reason: reason);
+
+    // Storage is cleared afterwards, and the generation is checked BEFORE
+    // the clear rather than after it.
+    //
+    // Publishing `SignedOut` first means someone can begin signing in while
+    // this is still running. Secure storage is a platform channel, so the
+    // window is real. Checking afterwards is too late — by then the clear has
+    // already deleted the new session's refresh token, producing a sign-in
+    // that works until the app is restarted and then silently does not.
+    // Storage is cleared last, and only if this is still the live session.
+    //
+    // Secure storage is a platform channel, so a sign-in can complete while
+    // the clear is in flight. Deleting the new session's token there produces
+    // a sign-in that works until the app is restarted and then silently does
+    // not — the worst shape of bug this layer can have.
+    //
+    // The check is a plain comparison rather than a timed yield: sign-out
+    // must not depend on a clock. A test that awaits `signOut()` would
+    // otherwise hang waiting for a timer nobody advances, which is exactly
+    // how this was found.
     await _store.clear();
   }
 }

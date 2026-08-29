@@ -41,8 +41,52 @@ logout reliable. Deferred until that is settled.
 
 ## Deferred deliberately
 
-Both of the items that were here are now done — see the table below. What
-remains deferred is the Web origin decision above, which is not a client fix.
+### A sign-in during sign-out loses the new refresh token
+
+**Reproducing test exists and is skipped**, not deleted:
+`session_test.dart` → "signing in during sign-out keeps the new credential".
+
+`_endSession` publishes `SignedOut` and then clears storage. Secure storage
+is a platform channel, so a sign-in can complete in between — and the clear
+then deletes the *new* session's refresh token. The result is a sign-in that
+works until the app is restarted and then silently does not, which is the
+worst shape a bug in this layer can have.
+
+I tried two fixes and both were worse than the bug:
+
+- **A generation check in the controller.** Placed before its own `await` it
+  is stale by the time the clear runs; placed after, the token is already
+  gone. Making it work needed a timed yield, which made `signOut()` depend on
+  a clock — and hung the router guard tests, because a widget test awaiting
+  `signOut()` waits for a timer nobody advances. That is how it was found.
+- **A token-scoped `clear(only:)` through `RefreshStore`.** The right shape —
+  the store is the only thing both operations touch — but it is a contract
+  change across the interface and both platform adapters, and I was three
+  layers into it before noticing the window is one platform-channel round
+  trip wide.
+
+Deferred deliberately. The fix belongs in `RefreshStore`, done on its own
+rather than in the middle of another change.
+
+### Requests already on the wire outlive sign-out
+
+Clearing the token stops new requests. It does not cancel ones already sent,
+so a mutation can still succeed and its response be consumed after the guard
+has switched to `SignedOut`. Nothing leaks — the server authorised it when it
+was sent — but a caller can apply a result to a screen that should be gone.
+
+Needs a request-scoped session fence, i.e. every response checked against the
+generation that issued it. Belongs with the store change above.
+
+### Two smaller ones, recorded and judged not worth the change yet
+
+- Discarding `_inFlightRefresh` does not cancel the underlying request, so a
+  new exchange can begin while the abandoned one is still running. The server
+  rotates refresh tokens, so the loser is rejected; the generation check means
+  its result is discarded either way.
+- Web sign-out is not durable when `/logout` fails: the httpOnly cookie
+  survives and a reload restores the session. This is the same origin problem
+  as above and is listed there.
 
 ## Fixed in 2050c1d..HEAD
 
