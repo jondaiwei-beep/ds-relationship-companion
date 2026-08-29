@@ -47,14 +47,32 @@ data class CompleteRequest(val note: String? = null)
 data class CompleteResponse(val completionId: UUID, val state: String)
 
 /**
- * An acknowledgement REQUIRES text written by the human sender.
+ * A human response to a completion.
  *
- * Red line #1/#2: the system may suggest wording in the UI, but the API will
- * not accept an empty body — nothing may be auto-generated on the user's behalf.
+ * `ACKNOWLEDGE` and `PRAISE` may carry no words. `REQ-ACK-001` requires basic
+ * acknowledgement to be **at most two taps**, and the schema has always said
+ * the same: `CHECK (type IN ('ACKNOWLEDGE','PRAISE') OR text is non-empty)`.
+ * `@NotBlank` here contradicted both, so the two-tap path was impossible —
+ * a person could only acknowledge by typing something.
+ *
+ * The comment it replaces argued that requiring text protects red lines #1
+ * and #2. It does not. Text proves only that *something* was in the field,
+ * not that a human wrote it or meant to send it. Those red lines are held by
+ * different things, and they are all present:
+ *
+ * - the send is an explicit human action, never background or automatic;
+ * - `sender_user_id` is the authenticated caller, so an acknowledgement is
+ *   always attributable to a person;
+ * - the server stores exactly the type and text it was given and never
+ *   invents wording for an empty one.
+ *
+ * What the UI must not do is pre-fill authored prose and let Send be read as
+ * agreement to it. A suggestion has to be adopted deliberately.
  */
 data class AcknowledgeRequest(
     val type: AcknowledgementType = AcknowledgementType.ACKNOWLEDGE,
-    @field:NotBlank val text: String,
+    /** Required for `COMMENT` and `REVIEW`; optional for the other two. */
+    val text: String = "",
 )
 
 data class AcknowledgeResponse(val acknowledgementId: UUID, val state: String)

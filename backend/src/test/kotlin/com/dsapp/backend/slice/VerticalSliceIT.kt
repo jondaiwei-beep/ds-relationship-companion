@@ -137,8 +137,17 @@ class VerticalSliceIT {
     }
 
     @Test
-    fun `an acknowledgement with empty text is rejected`() {
-        // Red line #1/#2: only an explicit human Send creates an Acknowledgement.
+    fun `a wordless acknowledgement is a human response, a wordless comment is not`() {
+        // This test used to assert that ANY empty acknowledgement was
+        // rejected, citing red lines #1 and #2. That reasoning does not hold:
+        // requiring text proves only that something was in the field, not
+        // that a human wrote it or meant to send it. What protects those
+        // lines is that a person pressed Send and that `sender_user_id` is
+        // the authenticated caller — both unchanged.
+        //
+        // Meanwhile it made REQ-ACK-001 impossible: "basic acknowledgement is
+        // at most two taps". The schema had said so all along —
+        // CHECK (type IN ('ACKNOWLEDGE','PRAISE') OR text is non-empty).
         val creator = user("Alex")
         val partner = user("Jamie")
         val dyn = mvc.perform(
@@ -179,24 +188,29 @@ class VerticalSliceIT {
                 .contentType(MediaType.APPLICATION_JSON).content("""{"note":"Done."}"""),
         ).andExpect(status().isCreated)
 
-        // Whitespace-only is not a human response.
+        // A comment is words by definition, so an empty one is refused —
+        // and refused with a named reason rather than a constraint violation.
         mvc.perform(
             post("/v1/occurrences/$occurrenceId/acknowledgements").with(asUser(creator))
                 .header("Idempotency-Key", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON).content("""{"type":"PRAISE","text":"  "}"""),
+                .contentType(MediaType.APPLICATION_JSON).content("""{"type":"COMMENT","text":"  "}"""),
         ).andExpect(status().isBadRequest)
+            .andExpect(jsonPath("$.code").value("TEXT_REQUIRED"))
 
-        // Neither is the empty string.
-        mvc.perform(
-            post("/v1/occurrences/$occurrenceId/acknowledgements").with(asUser(creator))
-                .header("Idempotency-Key", UUID.randomUUID().toString())
-                .contentType(MediaType.APPLICATION_JSON).content("""{"type":"PRAISE","text":""}"""),
-        ).andExpect(status().isBadRequest)
-
-        // Still waiting: no phantom acknowledgement landed.
+        // Nothing landed, and the occurrence did not advance.
         mvc.perform(get("/v1/occurrences/$occurrenceId").with(asUser(partner)))
             .andExpect(jsonPath("$.state").value("WAITING_ACK"))
             .andExpect(jsonPath("$.acknowledgement").doesNotExist())
+
+        // Praise with no words is the two-tap path, and it works.
+        mvc.perform(
+            post("/v1/occurrences/$occurrenceId/acknowledgements").with(asUser(creator))
+                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON).content("""{"type":"PRAISE"}"""),
+        ).andExpect(status().isCreated)
+
+        mvc.perform(get("/v1/occurrences/$occurrenceId").with(asUser(partner)))
+            .andExpect(jsonPath("$.state").value("ACKNOWLEDGED"))
     }
 
     @Test

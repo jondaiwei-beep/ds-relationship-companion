@@ -6,6 +6,7 @@ import com.dsapp.backend.expectation.application.OccurrenceNotCompletable
 import com.dsapp.backend.response.application.AcknowledgementType
 import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
 import com.dsapp.backend.response.application.SendAcknowledgementService
+import com.dsapp.backend.identity.domain.ApiException
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.util.UUID
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlin.test.assertFailsWith
 
 /**
@@ -176,5 +178,67 @@ class HumanResponseLoopIT {
             "SELECT event_type FROM outbox_records WHERE aggregate_id = {0} ORDER BY created_at", occurrenceId,
         ).map { it.get("event_type", String::class.java) }
         assertEquals(listOf("completion_submitted", "acknowledgement_sent"), outbox)
+    }
+
+    @Test
+    fun `acknowledging takes no words at all`() {
+        // REQ-ACK-001: "basic acknowledgement is at most two taps". The API
+        // required non-blank text, so the two-tap path was impossible — a
+        // person could only acknowledge by typing something.
+        complete.complete(partner, occurrenceId, null, idem(partner))
+
+        acknowledge.send(creator, occurrenceId, AcknowledgementType.ACKNOWLEDGE, "", idem(creator))
+
+        assertEquals("ACKNOWLEDGED", state())
+        assertEquals(1, ackCount())
+    }
+
+    @Test
+    fun `praise takes no words either`() {
+        complete.complete(partner, occurrenceId, null, idem(partner))
+
+        acknowledge.send(creator, occurrenceId, AcknowledgementType.PRAISE, "", idem(creator))
+
+        assertEquals(1, ackCount())
+    }
+
+    @Test
+    fun `an empty acknowledgement stores no invented wording`() {
+        // Red line #2: the system never speaks in the partner's voice. An
+        // acknowledgement with no words must stay wordless in the database,
+        // so nothing downstream can render it as something the sender said.
+        complete.complete(partner, occurrenceId, null, idem(partner))
+        acknowledge.send(creator, occurrenceId, AcknowledgementType.ACKNOWLEDGE, "", idem(creator))
+
+        val text = dsl.fetchOne(
+            "SELECT text FROM acknowledgements WHERE occurrence_id = {0}", occurrenceId,
+        )!!.get("text", String::class.java)
+
+        assertTrue(text.isNullOrBlank(), "stored text was: $text")
+    }
+
+    @Test
+    fun `a comment without words is refused before it reaches the database`() {
+        // The schema enforces this too, but reaching it is a constraint
+        // violation and a 500 where the caller should get a 400.
+        complete.complete(partner, occurrenceId, null, idem(partner))
+
+        val failure = assertFailsWith<ApiException> {
+            acknowledge.send(creator, occurrenceId, AcknowledgementType.COMMENT, "   ", idem(creator))
+        }
+
+        assertEquals("TEXT_REQUIRED", failure.code)
+        assertEquals(0, ackCount())
+        assertEquals("WAITING_ACK", state(), "the occurrence must not advance")
+    }
+
+    @Test
+    fun `a review without words is refused too`() {
+        complete.complete(partner, occurrenceId, null, idem(partner))
+
+        assertFailsWith<ApiException> {
+            acknowledge.send(creator, occurrenceId, AcknowledgementType.REVIEW, "", idem(creator))
+        }
+        assertEquals(0, ackCount())
     }
 }

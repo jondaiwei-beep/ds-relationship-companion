@@ -222,13 +222,17 @@ class _RunnerState extends ConsumerState<_Runner> {
 
       // The central red line: only this explicit human send creates an
       // acknowledgement. Completion did not, and could not.
+      //
+      // Sent with no words, which is the path REQ-ACK-001 requires — "basic
+      // acknowledgement is at most two taps" — and which the API made
+      // impossible until today. What makes this a human response is the send,
+      // not the presence of text.
       await creator.read(occurrenceRepositoryProvider).acknowledge(
             target,
             type: 'ACKNOWLEDGE',
-            text: 'Thank you.',
             idempotencyKey: ApiClient.newIdempotencyKey(),
           );
-      _log('a human — not the system — acknowledges it');
+      _log('a human acknowledges it — in two taps, no words');
 
       final after = await partner.read(todayRepositoryProvider).forDynamic(dynamicId);
       _log('the response comes back to them',

@@ -6,6 +6,8 @@ import com.dsapp.backend.timeline.application.RelationshipEventWriter
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import com.dsapp.backend.identity.domain.ApiException
+import org.springframework.http.HttpStatus
 import java.util.UUID
 
 enum class AcknowledgementType { ACKNOWLEDGE, PRAISE, COMMENT, REVIEW }
@@ -36,6 +38,16 @@ class SendAcknowledgementService(
         text: String,
         idempotencyId: UUID,
     ): UUID {
+        // `ACKNOWLEDGE` and `PRAISE` are the two-tap path and may carry no
+        // words; `COMMENT` and `REVIEW` are words by definition. The database
+        // enforces this too, but reaching it means a constraint violation and
+        // a 500 where the caller should get a 400 naming the field.
+        if (type == AcknowledgementType.COMMENT || type == AcknowledgementType.REVIEW) {
+            if (text.isBlank()) {
+                throw ApiException(HttpStatus.BAD_REQUEST, "TEXT_REQUIRED")
+            }
+        }
+
         val ctx = authorizer.requireMutate(
             authorizer.contextForOccurrence(actorUserId, occurrenceId),
             RoleContext.CREATOR,
