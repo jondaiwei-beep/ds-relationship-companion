@@ -27,8 +27,9 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 | `client/lib/domain_client/` | 12 repositories, all Core Beta surfaces. |
 | `app/` | Frozen design system: 33 SVGs, B-2 tokens, B-4 grain, 8 type roles, 2 themes. 26 tests. |
 | `client/lib/features/today/` | `SCR-01`, built and wired. |
-| `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle, shared form controls. 110 client tests. |
+| `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle, shared form controls. 119 client tests. |
 | `client/lib/features/entrance/` | Auth command layer. The three screens it serves are still gated. |
+| `client/lib/features/invite/` | Invite command layer. `SCR-09`/`SCR-10` gated; their lifecycle states are designed. |
 | Everything else | 34 screens, gates closed. |
 
 ## What is verified, and how
@@ -93,7 +94,13 @@ The plan is `progress/MASTER-PLAN.md`; decisions are in `product/decisions/`.
    guessing at an API from a single example.
 3. **SCR-04/05/06** — entrance, sign in, create account. The guard already
    routes to `/sign-in`; nothing is reachable until that screen exists. Their
-   state families need designing first.
+   state family and copy are now specified in
+   `product/decisions/entrance-state-family.md` and wait on one owner
+   decision: whether the signed-out surface may keep naming the product.
+   The command layer and shared controls behind them are built and tested.
+4. **SCR-09/10** — invite and web join. The most mature designs after
+   `SCR-01`: all four invite lifecycle states are approved rev-2 candidates.
+   Loading, retry and offline are still unspecified. Command layer built.
 
 Build order and its reasoning: `product/decisions/d2-build-order.md`. Note
 that activation is split around consent — role, structure and rhythm come
