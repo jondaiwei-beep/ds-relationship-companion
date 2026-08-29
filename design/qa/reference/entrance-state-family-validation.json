@@ -1,0 +1,108 @@
+{
+  "candidate_id": "ENTRANCE-REV-2",
+  "generated_at": "2026-08-29T14:39:25.799Z",
+  "result": "pass",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "source_scale": 3,
+  "copy_decision": "product/decisions/d8-entrance-copy.md",
+  "state_family": "product/decisions/entrance-state-family.md",
+  "tokens": "TOKEN-FREEZE-B2-V1",
+  "svg_freeze": "SVG-FREEZE-V1",
+  "states": [
+    {
+      "screen": "SCR-04",
+      "key": "default",
+      "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/preview.webp"
+    },
+    {
+      "screen": "SCR-04",
+      "key": "opening",
+      "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/states/opening/preview.webp"
+    },
+    {
+      "screen": "SCR-04",
+      "key": "offline",
+      "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "default",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "busy",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/busy/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "error",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "field-error",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/field-error/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "link-mode",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/link-mode/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "link-sent",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/link-sent/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "offline",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-05",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-05-sign-in/candidates/rev-2/states/authorization-loss/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "default",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "ready",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/ready/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "busy",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/busy/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "age-error",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/age-error/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "password-error",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/password-error/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "uncertain",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/uncertain/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "offline",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/offline/preview.webp"
+    }
+  ],
+  "board": "design/qa/reference/entrance-state-family-board.png",
+  "build_gate": "unchanged — these are candidates, not approvals"
+}
