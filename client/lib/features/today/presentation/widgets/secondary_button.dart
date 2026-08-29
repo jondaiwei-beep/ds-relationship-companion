@@ -1,0 +1,50 @@
+import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:flutter/material.dart';
+
+class SecondaryButton extends StatelessWidget {
+  const SecondaryButton({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.filled = false,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+  final bool filled;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: DsControlSizes.button,
+      width: double.infinity,
+      child: Material(
+        color: filled
+            ? DsColors.actionPrimaryBackground
+            : DsPrimitiveColors.transparent,
+        borderRadius: BorderRadius.circular(DsRadii.control),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(DsRadii.control),
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              border: filled
+                  ? null
+                  : Border.all(color: DsColors.actionSecondaryBorder),
+              borderRadius: BorderRadius.circular(DsRadii.control),
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              label,
+              style: DsTextStyles.labelAction.copyWith(
+                color: filled
+                    ? DsColors.actionPrimaryForeground
+                    : DsColors.textOnRitualPrimary,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
