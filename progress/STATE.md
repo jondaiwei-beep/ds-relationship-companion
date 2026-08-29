@@ -42,11 +42,12 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
   the test fails.
 - **19 behavioural invariants** hold as tests, restored from
   `product/ui-invariants.md` after the pre-redesign UI was deleted.
-- **The whole two-person loop closes, against a real server.** Register →
-  Dynamic → invite → anonymous resolve → partner registers → joins →
-  expectation appears on their Today → they complete → it reaches Attention →
-  a human acknowledges → the response comes back. Run it with
-  `lib/qa_walking_skeleton.dart`; every step prints its own verdict.
+- **Both loops close, against a real server.** Register → Dynamic → invite →
+  anonymous resolve → partner registers → joins → expectation appears on their
+  Today → they complete → it reaches Attention → a human acknowledges → the
+  response comes back. Then the adjustment path: Can't Do → reaches the
+  partner → excused, not marked missed. 21 steps, run them with
+  `lib/qa_walking_skeleton.dart`; each prints its own verdict.
 - **An Android package was accepted by the owner** on device: 18MB arm64, neutral
   identity (`app.companion.two`, label `Companion`), all assets bundled.
 - **The auth guard holds in a real browser**, not only in tests: a deep link to
@@ -82,6 +83,19 @@ header, so cross-origin Web sign-in works and **reload signs the person out**.
 Serving the Web app and the API from one origin fixes this and the
 cross-origin cookie problem together; the alternative is a server change.
 Owner decision. See `progress/session-review-followups.md`.
+
+**Neutrality has to hold outside the app too.** The signed-out surface no
+longer names the product, but the same rule applies to every system surface:
+no remembered email, partner or account name, avatar, notification preview or
+sensitive image on a lock screen, in the recent-apps list, or in an autofill
+suggestion. A neutral identity is only neutral where all of those are.
+Notification payloads already carry locator data only (`REQ-NOTIFY-001`); the
+rest is unverified.
+
+**"Access is protected" is an unverified claim.** It replaced a worse line,
+but it still promises something the implementation has to earn. Revisit when
+the session and privacy model is settled, and if it cannot be substantiated,
+state the actual mechanism instead.
 
 **FCM credentials** — Android Push, owner-supplied.
 

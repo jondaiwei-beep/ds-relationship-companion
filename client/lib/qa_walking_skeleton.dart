@@ -28,6 +28,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/providers.dart';
 import 'domain_client/api_client.dart';
+import 'domain_client/repositories/adjustment_repository.dart';
 import 'features/entrance/application/auth_actions.dart';
 import 'features/invite/application/invite_actions.dart';
 import 'platform/session/session.dart';
@@ -218,6 +219,52 @@ class _RunnerState extends ConsumerState<_Runner> {
           ok: after.recentResponse != null);
 
       _log('the loop is closed');
+
+      // ---- adjustment: the other normal path ----
+      //
+      // Not an error branch. "Adjustment is a normal path, not a failure" is
+      // a product red line, and a skeleton that only walks the happy path
+      // would let the two drift apart until a screen makes it obvious.
+      final second = await creator.read(expectationRepositoryProvider).create(
+            dynamicId,
+            title: 'A walk after dinner',
+            assigneeUserId: partnerId,
+            idempotencyKey: ApiClient.newIdempotencyKey(),
+          );
+      _log('a second expectation is set', detail: second);
+
+      final laterToday =
+          await partner.read(todayRepositoryProvider).forDynamic(dynamicId);
+      final adjustable = laterToday.priorityItems
+          .where((i) => i.occurrenceId != target)
+          .map((i) => i.occurrenceId)
+          .firstOrNull;
+      if (adjustable == null) {
+        return _log('the second expectation is actionable', ok: false);
+      }
+
+      await partner.read(adjustmentRepositoryProvider).request(
+            adjustable,
+            type: AdjustmentType.cantDo,
+            note: 'Not tonight.',
+            idempotencyKey: ApiClient.newIdempotencyKey(),
+          );
+      _log("they say they can't do it");
+
+      final needing =
+          await creator.read(attentionRepositoryProvider).forDynamic(dynamicId);
+      _log('it reaches the other person as something to answer',
+          detail: '${needing.items.length} item(s)',
+          ok: needing.items.isNotEmpty);
+
+      await creator.read(adjustmentRepositoryProvider).resolve(
+            adjustable,
+            resolution: AdjustmentResolution.excuse,
+            idempotencyKey: ApiClient.newIdempotencyKey(),
+          );
+      _log('the partner answers — excused, not marked missed');
+
+      _log('adjustment closes too');
     } catch (e) {
       _log('failed', detail: e.toString(), ok: false);
     } finally {
