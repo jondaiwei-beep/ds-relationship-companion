@@ -1,0 +1,283 @@
+import 'package:dsapp/app/providers.dart';
+import 'package:dsapp/domain_client/models/today_view.dart';
+import 'package:dsapp/domain_client/repositories/today_repository.dart';
+import 'package:dsapp/features/today/presentation/today_screen.dart';
+import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import '../support/today_fixtures.dart';
+
+/// The invariants SCR-01 must hold, restored from `product/ui-invariants.md`
+/// after the pre-redesign UI was deleted.
+///
+/// These are product red lines in executable form, not styling preferences.
+/// A screen that renders correctly and drops one of them has regressed the
+/// product, not just its coverage.
+void main() {
+  Future<void> pump(WidgetTester tester, TodayView view) async {
+    await tester.binding.setSurfaceSize(const Size(390, 844));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          todayRepositoryProvider.overrideWithValue(
+            FixtureTodayRepository(view) as TodayRepository,
+          ),
+        ],
+        child: MaterialApp(
+          theme: DsTheme.ritual(),
+          home: const TodayScreen(dynamicId: 'd1'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  String allText(WidgetTester tester) => tester
+      .widgetList<Text>(find.byType(Text))
+      .map((t) => t.data ?? '')
+      .join(' | ');
+
+  group('the system never speaks for a person', () {
+    testWidgets('no honorific is ever put in the partner\'s mouth', (
+      tester,
+    ) async {
+      await pump(tester, todayFixture());
+      // Hardcoding "Sir" would make the app speak as the Dominant.
+      for (final word in [
+        'Sir',
+        'Master',
+        'Mistress',
+        'good girl',
+        'good boy',
+      ]) {
+        expect(
+          allText(tester).toLowerCase().contains(word.toLowerCase()),
+          isFalse,
+          reason: 'the system must not speak in the partner\'s voice: $word',
+        );
+      }
+    });
+
+    testWidgets('a response is shown verbatim and attributed', (tester) async {
+      await pump(tester, todayFixture());
+      expect(find.textContaining('I noticed your care.'), findsOneWidget);
+      expect(find.textContaining('MORGAN RESPONDED'), findsOneWidget);
+    });
+
+    testWidgets('no response means nothing warm is fabricated', (tester) async {
+      await pump(tester, todayFixture(response: null));
+      for (final phrase in [
+        'Well done',
+        'Great job',
+        'Proud of you',
+        'Nice work',
+      ]) {
+        expect(
+          allText(tester).contains(phrase),
+          isFalse,
+          reason: 'the gap where a response would be must stay empty',
+        );
+      }
+    });
+  });
+
+  group('direction comes from a person', () {
+    testWidgets('an expectation shows who set it', (tester) async {
+      await pump(tester, todayFixture());
+      expect(find.textContaining('From Morgan'), findsWidgets);
+    });
+
+    testWidgets('partner presence is named, not implied', (tester) async {
+      await pump(tester, todayFixture());
+      expect(find.textContaining('Morgan is present'), findsOneWidget);
+    });
+  });
+
+  group('completion is not acknowledgement', () {
+    testWidgets('a completed item reads as waiting, never as answered', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(
+              occurrenceId: 'o1',
+              title: 'Done thing',
+              state: 'WAITING_ACK',
+            ),
+          ],
+          response: null,
+        ),
+      );
+
+      expect(find.textContaining('Waiting for a reply'), findsOneWidget);
+      expect(allText(tester).contains('Acknowledged'), isFalse);
+    });
+  });
+
+  group('copy protects the person', () {
+    testWidgets('backend state names never leak', (tester) async {
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(occurrenceId: 'o1', title: 'x', state: 'NEED_TO_DISCUSS'),
+          ],
+        ),
+      );
+      expect(find.textContaining('Being discussed'), findsOneWidget);
+      for (final raw in [
+        'NEED_TO_DISCUSS',
+        'WAITING_ACK',
+        'NEEDS_REVIEW',
+        'EXCUSE_REQUESTED',
+      ]) {
+        expect(allText(tester).contains(raw), isFalse, reason: raw);
+      }
+    });
+
+    testWidgets('a day is not a work queue', (tester) async {
+      await pump(tester, todayFixture());
+      // A miss is not disobedience, and lateness is not the frame here.
+      for (final word in ['overdue', 'late', 'missed', 'backlog', 'task']) {
+        expect(
+          allText(tester).toLowerCase().contains(word),
+          isFalse,
+          reason: 'this is a person\'s day, not a queue: "$word"',
+        );
+      }
+    });
+
+    testWidgets('no gamification vocabulary', (tester) async {
+      await pump(tester, todayFixture());
+      for (final word in [
+        'points',
+        'streak',
+        'score',
+        'trophy',
+        'badge',
+        'level',
+      ]) {
+        expect(
+          allText(tester).toLowerCase().contains(word),
+          isFalse,
+          reason: word,
+        );
+      }
+    });
+
+    testWidgets('an empty day is stated plainly, not padded', (tester) async {
+      await pump(
+        tester,
+        todayFixture(priority: const [], later: const [], response: null),
+      );
+      expect(find.text('Nothing is expected of you today.'), findsOneWidget);
+      // No invented urgency, and the optional check-in stays optional.
+      expect(allText(tester).toLowerCase().contains('should'), isFalse);
+      expect(allText(tester).toLowerCase().contains('must'), isFalse);
+    });
+  });
+
+  group('agency is structural', () {
+    testWidgets('all three adjustments are offered beside completion', (
+      tester,
+    ) async {
+      await pump(tester, todayFixture());
+      expect(find.text('Complete'), findsOneWidget);
+      expect(find.text('Discuss'), findsOneWidget);
+      expect(find.text('New time'), findsOneWidget);
+      expect(find.text("Can't do"), findsOneWidget);
+    });
+
+    testWidgets('adjustment actions keep their own touch targets', (
+      tester,
+    ) async {
+      await pump(tester, todayFixture());
+      for (final label in ['Discuss', 'New time', "Can't do"]) {
+        final box = tester.getSize(
+          find
+              .ancestor(of: find.text(label), matching: find.byType(SizedBox))
+              .first,
+        );
+        expect(
+          box.height,
+          greaterThanOrEqualTo(48),
+          reason: '$label must remain reachable',
+        );
+      }
+    });
+
+    testWidgets('no adjustment is framed as a failure', (tester) async {
+      await pump(tester, todayFixture());
+      for (final word in ['failed', 'failure', 'excuse', 'sorry', 'penalty']) {
+        expect(
+          allText(tester).toLowerCase().contains(word),
+          isFalse,
+          reason: 'adjustment is a normal path: "$word"',
+        );
+      }
+    });
+  });
+
+  group('server truth', () {
+    testWidgets('items render in server order, never re-sorted', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(occurrenceId: 'z', title: 'Zulu first', state: 'ACTIVE'),
+            TodayItem(
+              occurrenceId: 'a',
+              title: 'Alpha second',
+              state: 'ACTIVE',
+            ),
+          ],
+          later: const [],
+          response: null,
+        ),
+      );
+
+      final zulu = tester.getTopLeft(find.textContaining('Zulu first')).dy;
+      final alpha = tester.getTopLeft(find.textContaining('Alpha second')).dy;
+      expect(
+        zulu,
+        lessThan(alpha),
+        reason: 'the server composes the order; the client renders it',
+      );
+    });
+
+    testWidgets('the relationship day comes from the server', (tester) async {
+      await pump(tester, todayFixture());
+      // A ListView builds lazily, so reach it the way a person would.
+      await tester.scrollUntilVisible(
+        find.textContaining('Relationship day'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.textContaining('Relationship day'), findsOneWidget);
+    });
+
+    testWidgets('later items stay behind one count-bearing disclosure', (
+      tester,
+    ) async {
+      await pump(tester, todayFixture());
+      await tester.scrollUntilVisible(
+        find.text('Show'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('5'), findsOneWidget);
+      expect(find.textContaining("Read Morgan's note"), findsNothing);
+
+      await tester.tap(find.text('Show'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining("Read Morgan's note"), findsOneWidget);
+    });
+  });
+}

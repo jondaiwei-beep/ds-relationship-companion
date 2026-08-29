@@ -94,7 +94,13 @@ def check_no_backend_states_in_copy():
             # an equality or a switch case.
             for m in re.finditer(rf"['\"]([^'\"]*\b{state}\b[^'\"]*)['\"]", src):
                 before = src[max(0, m.start() - 30):m.start()]
-                if re.search(r"(==|case|=>\s*$|state\s*[:=])\s*$", before):
+                after = src[m.end():m.end() + 6]
+                # Comparing against a state is fine. So is a switch arm that
+                # maps it to human copy — that is the rule being satisfied,
+                # not broken.
+                if re.search(r"(==|case|state\s*[:=])\s*$", before):
+                    continue
+                if re.match(r"\s*(=>|:)", after):
                     continue
                 line = src[: m.start()].count("\n") + 1
                 fail("backend state rendered as copy", f"{path}:{line}", state)
