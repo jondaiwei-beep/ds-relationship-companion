@@ -66,6 +66,13 @@ class TodayScreen extends StatelessWidget {
 
 const _inset = EdgeInsets.symmetric(horizontal: DsSpacing.space5);
 
+/// Supporting copy on this screen: item metadata and the quiet adjustment
+/// actions. The frozen 14px secondary role reads too heavy against the 28px
+/// headline, so these step down one level while staying well above the
+/// minimum legible size.
+const _supportSize = 12.0;
+const _supportHeight = 17 / 12;
+
 class _Header extends StatelessWidget {
   const _Header();
 
@@ -127,7 +134,7 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: _inset.add(const EdgeInsets.only(bottom: DsSpacing.space6)),
+      padding: _inset.add(const EdgeInsets.only(bottom: DsSpacing.space4)),
       child: Text(
         text,
         style: DsTextStyles.labelRitual.copyWith(
@@ -158,7 +165,7 @@ class _PrimaryExpectation extends StatelessWidget {
                 padding: const EdgeInsets.only(
                   left: DsSpacing.space5,
                   right: DsSpacing.space5,
-                  bottom: DsSpacing.space4,
+                  bottom: DsSpacing.space2,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,16 +204,18 @@ class _PrimaryExpectation extends StatelessWidget {
                         height: 31 / 28,
                       ),
                     ),
-                    const SizedBox(height: DsSpacing.space6),
+                    const SizedBox(height: DsSpacing.space4),
                     Text(
                       'From Morgan · due 9:00 PM',
                       style: DsTextStyles.bodySecondary.copyWith(
                         color: DsColors.textOnRitualMuted,
+                        fontSize: _supportSize,
+                        height: _supportHeight,
                       ),
                     ),
-                    const SizedBox(height: DsSpacing.space5),
+                    const SizedBox(height: DsSpacing.space3),
                     const _CompleteButton(),
-                    const SizedBox(height: DsSpacing.space4),
+                    const SizedBox(height: DsSpacing.space3),
                     const _AdjustmentActions(),
                   ],
                 ),
@@ -281,6 +290,8 @@ class _AdjustmentActions extends StatelessWidget {
                     overflow: TextOverflow.fade,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualPrimary,
+                      fontSize: _supportSize,
+                      height: _supportHeight,
                     ),
                   ),
                 ),
@@ -350,12 +361,15 @@ class _CompactRow extends StatelessWidget {
                       fontSize: 17,
                     ),
                   ),
+                  const SizedBox(height: DsSpacing.space1),
                   Text(
                     meta,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualMuted,
+                      fontSize: _supportSize,
+                      height: _supportHeight,
                     ),
                   ),
                 ],
@@ -412,7 +426,7 @@ class _PartnerResponse extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: DsSpacing.space4),
+          const SizedBox(height: DsSpacing.space3),
           Padding(
             padding: const EdgeInsets.only(left: DsSpacing.space10),
             child: Text(
