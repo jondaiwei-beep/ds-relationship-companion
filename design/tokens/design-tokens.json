@@ -2,9 +2,13 @@
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "meta": {
     "name": "D/s Relationship Companion · Warm Authority",
-    "version": "0.1.0-pre-freeze",
-    "status": "draft",
-    "referenceViewport": { "width": 390, "height": 844, "unit": "dp" }
+    "version": "1.0.0-b2-freeze",
+    "status": "frozen",
+    "freezeId": "TOKEN-FREEZE-B2-V1",
+    "generatedAt": "2026-08-29",
+    "referenceViewport": { "width": 390, "height": 844, "unit": "dp" },
+    "implementationTheme": "ritual-dark",
+    "livingLightStatus": "semantic foundation frozen; no screen build gate implied"
   },
   "color": {
     "primitive": {
@@ -13,7 +17,106 @@
       "warmGray": { "$type": "color", "$value": "#BAB6AC" },
       "deepOlive": { "$type": "color", "$value": "#2F3A2E" },
       "darkMoss": { "$type": "color", "$value": "#1E241F" },
-      "terracotta": { "$type": "color", "$value": "#B5533B" }
+      "terracotta": { "$type": "color", "$value": "#B5533B" },
+      "ritualBlack": { "$type": "color", "$value": "#080B07" },
+      "oliveMist": { "$type": "color", "$value": "#666D63" },
+      "black": { "$type": "color", "$value": "#000000" },
+      "transparent": { "$type": "color", "$value": "#00000000" }
+    },
+    "semantic": {
+      "canvas": {
+        "ritual": { "$type": "color", "$value": "{color.primitive.ritualBlack}" },
+        "living": { "$type": "color", "$value": "{color.primitive.bone}" },
+        "scrim": { "$type": "color", "$value": "#000000B8" }
+      },
+      "surface": {
+        "ritual": {
+          "base": { "$type": "color", "$value": "{color.primitive.ritualBlack}" },
+          "raised": { "$type": "color", "$value": "{color.primitive.darkMoss}" },
+          "action": { "$type": "color", "$value": "{color.primitive.deepOlive}" },
+          "disabled": { "$type": "color", "$value": "{color.primitive.darkMoss}" }
+        },
+        "living": {
+          "base": { "$type": "color", "$value": "{color.primitive.bone}" },
+          "raised": { "$type": "color", "$value": "{color.primitive.stone}" },
+          "action": { "$type": "color", "$value": "{color.primitive.deepOlive}" }
+        }
+      },
+      "text": {
+        "onRitual": {
+          "primary": { "$type": "color", "$value": "{color.primitive.bone}" },
+          "secondary": { "$type": "color", "$value": "{color.primitive.stone}" },
+          "muted": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+          "relationshipLarge": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+        },
+        "onLiving": {
+          "primary": { "$type": "color", "$value": "{color.primitive.darkMoss}" },
+          "secondary": { "$type": "color", "$value": "{color.primitive.deepOlive}" },
+          "muted": { "$type": "color", "$value": "{color.primitive.oliveMist}" }
+        },
+        "inverse": { "$type": "color", "$value": "{color.primitive.bone}" },
+        "disabled": { "$type": "color", "$value": "{color.primitive.warmGray}" }
+      },
+      "border": {
+        "onRitual": {
+          "hairline": { "$type": "color", "$value": "{color.primitive.deepOlive}" },
+          "strong": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+          "relationship": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+        },
+        "onLiving": {
+          "hairline": { "$type": "color", "$value": "{color.primitive.stone}" },
+          "strong": { "$type": "color", "$value": "{color.primitive.deepOlive}" }
+        },
+        "focus": { "$type": "color", "$value": "{color.primitive.bone}" },
+        "focusRelationship": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+      },
+      "action": {
+        "primary": {
+          "background": { "$type": "color", "$value": "{color.primitive.deepOlive}" },
+          "foreground": { "$type": "color", "$value": "{color.primitive.bone}" },
+          "pressedBackground": { "$type": "color", "$value": "{color.primitive.darkMoss}" },
+          "disabledBackground": { "$type": "color", "$value": "{color.primitive.darkMoss}" },
+          "disabledForeground": { "$type": "color", "$value": "{color.primitive.warmGray}" }
+        },
+        "secondary": {
+          "background": { "$type": "color", "$value": "{color.primitive.transparent}" },
+          "foreground": { "$type": "color", "$value": "{color.primitive.stone}" },
+          "border": { "$type": "color", "$value": "{color.primitive.deepOlive}" }
+        },
+        "destructiveFinal": {
+          "background": { "$type": "color", "$value": "{color.primitive.transparent}" },
+          "foreground": { "$type": "color", "$value": "{color.primitive.stone}" },
+          "border": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+        }
+      },
+      "relationship": {
+        "presence": { "$type": "color", "$value": "{color.primitive.terracotta}" },
+        "acknowledgement": { "$type": "color", "$value": "{color.primitive.terracotta}" },
+        "selected": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+      },
+      "state": {
+        "completed": { "$type": "color", "$value": "{color.primitive.bone}" },
+        "waiting": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+        "activePartner": { "$type": "color", "$value": "{color.primitive.terracotta}" },
+        "acknowledged": { "$type": "color", "$value": "{color.primitive.terracotta}" },
+        "needsReview": { "$type": "color", "$value": "{color.primitive.stone}" },
+        "paused": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+        "expired": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+        "revoked": { "$type": "color", "$value": "{color.primitive.stone}" },
+        "error": { "$type": "color", "$value": "{color.primitive.stone}" },
+        "destructiveFinal": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+      },
+      "icon": {
+        "primary": { "$type": "color", "$value": "{color.primitive.bone}" },
+        "muted": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+        "authority": { "$type": "color", "$value": "{color.primitive.deepOlive}" },
+        "relationship": { "$type": "color", "$value": "{color.primitive.terracotta}" }
+      },
+      "decorative": {
+        "botanical": { "$type": "color", "$value": "{color.primitive.warmGray}" },
+        "ritualLine": { "$type": "color", "$value": "{color.primitive.deepOlive}" },
+        "ritualGlow": { "$type": "color", "$value": "{color.primitive.stone}" }
+      }
     }
   },
   "space": {
@@ -29,6 +132,70 @@
     "16": { "$type": "dimension", "$value": { "value": 64, "unit": "dp" } },
     "20": { "$type": "dimension", "$value": { "value": 80, "unit": "dp" } },
     "24": { "$type": "dimension", "$value": { "value": 96, "unit": "dp" } }
+  },
+  "radius": {
+    "none": { "$type": "dimension", "$value": { "value": 0, "unit": "dp" } },
+    "small": { "$type": "dimension", "$value": { "value": 4, "unit": "dp" } },
+    "medium": { "$type": "dimension", "$value": { "value": 8, "unit": "dp" } },
+    "control": { "$type": "dimension", "$value": { "value": 10, "unit": "dp" } },
+    "card": { "$type": "dimension", "$value": { "value": 12, "unit": "dp" } },
+    "sheet": { "$type": "dimension", "$value": { "value": 16, "unit": "dp" } },
+    "capsule": { "$type": "dimension", "$value": { "value": 999, "unit": "dp" } }
+  },
+  "borderWidth": {
+    "hairline": { "$type": "dimension", "$value": { "value": 1, "unit": "dp" } },
+    "selected": { "$type": "dimension", "$value": { "value": 1.5, "unit": "dp" } },
+    "focus": { "$type": "dimension", "$value": { "value": 2, "unit": "dp" } }
+  },
+  "size": {
+    "touchTarget": { "$type": "dimension", "$value": { "value": 48, "unit": "dp" } },
+    "control": {
+      "iconButton": { "$type": "dimension", "$value": { "value": 48, "unit": "dp" } },
+      "button": { "$type": "dimension", "$value": { "value": 56, "unit": "dp" } },
+      "buttonRitual": { "$type": "dimension", "$value": { "value": 64, "unit": "dp" } },
+      "textField": { "$type": "dimension", "$value": { "value": 56, "unit": "dp" } },
+      "textAreaMin": { "$type": "dimension", "$value": { "value": 144, "unit": "dp" } },
+      "selectionRow": { "$type": "dimension", "$value": { "value": 64, "unit": "dp" } },
+      "listRow": { "$type": "dimension", "$value": { "value": 72, "unit": "dp" } },
+      "modeTab": { "$type": "dimension", "$value": { "value": 48, "unit": "dp" } },
+      "chipVisual": { "$type": "dimension", "$value": { "value": 40, "unit": "dp" } },
+      "bottomNavigation": { "$type": "dimension", "$value": { "value": 80, "unit": "dp" } },
+      "switchWidth": { "$type": "dimension", "$value": { "value": 52, "unit": "dp" } },
+      "switchHeight": { "$type": "dimension", "$value": { "value": 32, "unit": "dp" } }
+    },
+    "layout": {
+      "mobileInset": { "$type": "dimension", "$value": { "value": 20, "unit": "dp" } },
+      "webContentMax": { "$type": "dimension", "$value": { "value": 560, "unit": "px" } }
+    }
+  },
+  "opacity": {
+    "disabled": { "$type": "number", "$value": 0.48 },
+    "secondary": { "$type": "number", "$value": 0.72 },
+    "botanical": { "$type": "number", "$value": 0.18 },
+    "grain": { "$type": "number", "$value": 0.035 },
+    "vignetteEdge": { "$type": "number", "$value": 0.18 },
+    "pressedOverlay": { "$type": "number", "$value": 0.08 }
+  },
+  "shadow": {
+    "raised": {
+      "$type": "shadow",
+      "$value": {
+        "color": "#00000052",
+        "offsetX": { "value": 0, "unit": "dp" },
+        "offsetY": { "value": 8, "unit": "dp" },
+        "blur": { "value": 24, "unit": "dp" },
+        "spread": { "value": 0, "unit": "dp" }
+      }
+    },
+    "modal": {
+      "$type": "shadow",
+      "$value": {
+        "color": "#00000066",
+        "offsetX": { "value": 0, "unit": "dp" },
+        "offsetY": { "value": -8, "unit": "dp" },
+        "blur": { "value": 32, "unit": "dp" },
+        "spread": { "value": 0, "unit": "dp" }
+      }
+    }
   }
 }
-

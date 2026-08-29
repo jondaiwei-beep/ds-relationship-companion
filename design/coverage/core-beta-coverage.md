@@ -4,6 +4,8 @@ Status: **first reconciliation pass, 2026-08-28**. V5 Warm Authority remains loc
 
 Asset status: **SVG Freeze v1 complete**. All 33 registered brand, ritual, navigation, state, functional, response and botanical masters now resolve to native SVG source files. This removes the vector-asset blocker but does not override independent product/state/platform build gates.
 
+Token status: **B-2 Token Freeze v1 complete**. Ritual/Living canvases, surfaces, text, borders, state colors, radii and control heights now resolve through generated Flutter/Web bindings. This removes semantic-token ambiguity but does not approve missing states or open screen build gates.
+
 | Product family | Requirements / flow | Current design | Decision | Required visual work |
 |---|---|---|---|---|
 | Private entry / auth | `REQ-AUTH-001`, `REQ-TRUST-001` | `SCR-04–06` | retain and align | Magic-link sent/callback, expired session, validation and recovery states. |

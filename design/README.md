@@ -21,6 +21,8 @@ For repository and AI-tool access, full-resolution 853 × 1844 WebP references a
 
 V5 Warm Authority combines a near-black ritual canvas with Bone/Stone typography, Deep Olive and Dark Moss structure, and disciplined Terracotta warmth. It must feel private, editorial, human, and quietly authoritative—never generic dark UI, fetish theatre, or decorative AI excess.
 
+The calibrated Ritual Canvas is `#080B07` through `color.semantic.canvas.ritual`. Semantic color, surface, state, radius and control geometry are frozen in `design/tokens/B2-FREEZE.md`; implementation must consume the generated platform bindings rather than copying these values into screens.
+
 ## Reference coordinate system
 
 Generated raster files are 853 × 1844 pixels. Implement them against a normalized 390 × 844 logical-pixel mobile frame. Raster coordinates must not be copied as absolute application coordinates.

@@ -1,0 +1,70 @@
+{
+  "freeze_id": "TOKEN-FREEZE-B2-V1",
+  "generated_at": "2026-08-29T00:09:49.192Z",
+  "result": "pass",
+  "source": "design/tokens/design-tokens.json",
+  "required_contrast_pairs": [
+    {
+      "foreground": "color.semantic.text.onRitual.primary",
+      "background": "color.semantic.canvas.ritual",
+      "ratio": 17.55,
+      "threshold": 4.5,
+      "status": "pass"
+    },
+    {
+      "foreground": "color.semantic.text.onRitual.secondary",
+      "background": "color.semantic.canvas.ritual",
+      "ratio": 15.45,
+      "threshold": 4.5,
+      "status": "pass"
+    },
+    {
+      "foreground": "color.semantic.text.onRitual.muted",
+      "background": "color.semantic.canvas.ritual",
+      "ratio": 9.78,
+      "threshold": 4.5,
+      "status": "pass"
+    },
+    {
+      "foreground": "color.semantic.action.primary.foreground",
+      "background": "color.semantic.action.primary.background",
+      "ratio": 10.55,
+      "threshold": 4.5,
+      "status": "pass"
+    },
+    {
+      "foreground": "color.semantic.text.onLiving.primary",
+      "background": "color.semantic.canvas.living",
+      "ratio": 14.03,
+      "threshold": 4.5,
+      "status": "pass"
+    },
+    {
+      "foreground": "color.semantic.text.onLiving.muted",
+      "background": "color.semantic.canvas.living",
+      "ratio": 4.74,
+      "threshold": 4.5,
+      "status": "pass"
+    }
+  ],
+  "restricted_pair": {
+    "foreground": "color.semantic.text.onRitual.relationshipLarge",
+    "background": "color.semantic.canvas.ritual",
+    "ratio": 4.02,
+    "status": "restricted",
+    "rule": "large text >=24sp regular or >=19sp bold, icon, line or mark only; not normal body text"
+  },
+  "geometry_checks": {
+    "touch_target_dp": 48,
+    "standard_button_dp": 56,
+    "ritual_button_dp": 64,
+    "control_radius_dp": 10,
+    "card_radius_dp": 12,
+    "sheet_radius_dp": 16
+  },
+  "generated_bindings": [
+    "design/tokens/generated/ds_design_tokens.dart",
+    "design/tokens/generated/ds-design-tokens.css"
+  ],
+  "qa_board": "design/qa/reference/token-freeze-b2-v1-board.png"
+}

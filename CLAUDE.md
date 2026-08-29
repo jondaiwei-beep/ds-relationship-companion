@@ -11,9 +11,10 @@ For any UI task, follow this exact sequence:
 5. View the approved co-located preview and required state/platform variants; use them for hierarchy and visual comparison only. A null preview or `missing_required_design` status is a blocker.
 6. Read `manifests/svg-freeze.v1.json` and `design/assets/svg/SVG-FREEZE.md`.
 7. Resolve every asset ID through `manifests/assets.json`, then load its registered SVG master.
-8. Read global tokens and any linked component contracts.
-9. Implement only when the screen gate is `ready_for_build` and every required asset is available.
-10. Render and record QA evidence at the paths required by the screen contract.
+8. Read `manifests/token-freeze.b2.v1.json`, `design/tokens/B2-FREEZE.md` and the generated Flutter/Web token binding for the target platform.
+9. Read linked component contracts.
+10. Implement only when the screen gate is `ready_for_build` and every required asset is available.
+11. Render and record QA evidence at the paths required by the screen contract.
 
 Do not search the repository for a visually similar page and assume it is the target. Screen IDs and manifest links are authoritative.
 
@@ -29,6 +30,8 @@ Do not search the repository for a visually similar page and assume it is the ta
 
 - Reference mobile viewport: 390 × 844 logical pixels.
 - Use `design/tokens/design-tokens.json`; do not scatter raw Hex values or arbitrary spacing.
+- Ritual Canvas is `color.semantic.canvas.ritual` (`#080B07` through the token layer), not pure black or Material dark defaults.
+- 48dp is the minimum target; standard buttons are 56dp and ritual/hero CTAs are 64dp.
 - Bundle and load the fonts in `design/assets/fonts/`.
 - Use registered SVG masters; do not trace or redraw icons from PNG files during implementation.
 - Apply SVG colors through semantic tokens and `currentColor`; do not add raw colors or duplicate path data in screen code.

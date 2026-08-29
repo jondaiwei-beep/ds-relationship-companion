@@ -1,6 +1,6 @@
 # What implementation is waiting on
 
-Written by Claude Code after reading the repository on 2026-08-29; reconciled with SVG Freeze v1 on 2026-08-28 UTC.
+Written by Claude Code after reading the repository on 2026-08-29; reconciled with SVG Freeze v1 and Token Freeze B-2 v1 on 2026-08-29 UTC.
 This file states only what blocks writing Flutter code against this design system.
 It does not propose design decisions — those belong to the design owner.
 
@@ -11,12 +11,12 @@ It does not propose design decisions — those belong to the design owner.
 | Fonts | Cormorant Garamond + Inter committed with OFL licenses | No — usable now |
 | Type scale | 8 roles frozen in `design/system/typography.md` | No — usable now |
 | Spacing | 4dp scale frozen in `design/tokens/design-tokens.json` | No — usable now |
-| Brand primitives | 6 colors frozen in `design/system/colors.md` | No — but see B-2 |
-| Semantic color tokens | Not defined | **Yes** |
+| Brand/support primitives | 10 colors frozen in `design/system/colors.md` | No — usable now |
+| Semantic color tokens | Frozen in `TOKEN-FREEZE-B2-V1` with Flutter/Web bindings | No — B-2 resolved |
 | SVG masters | 33 of 33 native masters exist; all `approved` in SVG Freeze v1 | No — B-1 resolved |
 | Today prioritized-list state | Not designed | **Yes, for SCR-01** |
 | Textures | Directory empty | Partially |
-| Radius / control heights | Not specified | Partially |
+| Radius / control heights | Frozen in `TOKEN-FREEZE-B2-V1` | No — usable now |
 
 ---
 
@@ -43,37 +43,24 @@ the independent screen build gates remain unchanged.
 
 ---
 
-## B-2 · Semantic color tokens are not frozen
+## B-2 · Resolved by Token Freeze B-2 v1
 
-`design/system/colors.md` states:
+The semantic layer is frozen and directly consumable:
 
-> The near-black ritual canvas and secondary semantic colors remain calibration
-> candidates until extracted and approved against the selected reference.
+- Ritual Canvas is `#080B07` through `color.semantic.canvas.ritual`.
+- Ritual raised/action surfaces resolve to Dark Moss and Deep Olive; the Living
+  foundation resolves to Bone and Stone.
+- Text, border, action, relationship, state, icon and decorative semantic groups
+  are present in `design/tokens/design-tokens.json`.
+- Radius, 1/1.5/2dp borders and 48/56/64dp control contracts are frozen.
+- Flutter and Web bindings are generated under `design/tokens/generated/`.
+- Six required normal-text contrast pairs pass WCAG AA. Terracotta's 4.02:1
+  pair is explicitly restricted to large text, icons, marks and lines.
+- QA evidence and a reproducible validator are stored under `design/qa/`.
 
-and also:
-
-> Application code must consume semantic tokens, not these primitive values directly.
-
-Both rules are right, but together they currently block all UI work: the
-semantic layer that code is required to consume does not exist yet, and the
-dark canvas that every approved screen is built on has no committed value.
-
-`design/tokens/design-tokens.json` is `0.1.0-pre-freeze` and carries only the 6
-primitives plus spacing — no semantic color group, no typography, no radius.
-
-**Needed, as semantic tokens in `design-tokens.json`:**
-
-- `canvas.ritual` — the near-black ground used by SCR-01/04/05 (reads as a
-  green-biased near-black in the previews; exact value required)
-- `canvas.raised` / `surface.*` — elevated surfaces
-- `text.primary` / `text.secondary` / `text.muted`
-- `border.hairline` / `border.strong`
-- `action.primary.bg` / `action.primary.fg` — the deep-olive button
-- `response.partner` — the terracotta used for human acknowledgement text
-- `state.*` — needs-review and other status colors
-
-The Terracotta rule in `colors.md` (relational emphasis, never a generic
-warning) is understood and will be enforced in the token names.
+Canonical manifest: `manifests/token-freeze.b2.v1.json`. Canonical rules:
+`design/tokens/B2-FREEZE.md`. B-2 no longer blocks implementation setup, but
+screen-level B-3/state/product/platform gates remain unchanged.
 
 ---
 
@@ -95,19 +82,16 @@ role variant) are `TBD — blocked`.
 
 ---
 
-## B-4 · Smaller gaps
+## B-4 · Remaining texture gap
 
-- **Radius and control heights** are not in `design/system/spacing.md`.
-  The pre-migration `CLAUDE.md` recorded card radius 10 and primary CTA 48dp —
-  confirm whether those still hold under this system.
 - **Textures**: `design/assets/textures/` is empty. The previews show a fine
   grain over the dark ground. If that is intentional, the implementation needs
   to know whether it is a tiling asset or a shader, plus opacity and blend mode.
   If it is only PNG compression, say so and I will render flat.
-- **Light mode**: the pre-migration principle was *Light Life, Dark Structure* —
-  a light living layer with dark authority/response moments. Every approved
-  preview is dark. Confirm whether light surfaces still exist in the system, as
-  this determines whether the token layer needs two themes or one.
+
+B-2 resolves the earlier geometry and light-mode questions: 48dp is the minimum
+target, 56dp is the standard button, 64dp is the ritual CTA, and Core Beta uses
+semantic Ritual/Living contexts rather than a user-toggleable two-theme system.
 
 ---
 
@@ -118,7 +102,7 @@ Work that does not depend on the above, and will not be thrown away:
 1. Bundling Cormorant Garamond (400/500/600) and Inter (400/500/600/700).
 2. Rewriting the Flutter type scale to the 8 roles in `typography.md`.
 3. Adding `flutter_svg` so approved masters can be consumed as files.
-4. Building the token layer's shape, with color values left as named holes to
-   be filled the moment B-2 is frozen.
+4. Wiring the generated B-2 Flutter binding into the token layer without
+   duplicating raw values.
 
 No screen will be marked done against a `blocked_alignment_required` package.

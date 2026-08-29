@@ -19,7 +19,9 @@
     "manifests/svg-freeze.v1.json",
     "manifests/assets.json and registered SVG masters",
     "design/assets/svg/SVG-FREEZE.md",
-    "design tokens and component contracts",
+    "manifests/token-freeze.b2.v1.json",
+    "design/tokens/B2-FREEZE.md and generated platform bindings",
+    "component contracts",
     "implementation and QA evidence"
   ],
   "screens": [

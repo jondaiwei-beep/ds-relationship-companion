@@ -19,8 +19,9 @@ Private product, design, and implementation source of truth for the Android app 
 5. Target `preview.webp`
 6. `manifests/svg-freeze.v1.json` and `design/assets/svg/SVG-FREEZE.md`
 7. `manifests/assets.json` and the linked SVG masters
-8. `design/tokens/design-tokens.json` and `design/system/`
-9. `progress/status.md`
+8. `manifests/token-freeze.b2.v1.json`, `design/tokens/B2-FREEZE.md` and generated bindings
+9. `design/tokens/design-tokens.json` and `design/system/`
+10. `progress/status.md`
 
 No implementation may infer missing behavior from a raster image. A screen must be marked `ready_for_build` in the active manifest before development begins.
 

@@ -22,6 +22,8 @@
 - Invite lifecycle review board stored at `design/qa/reference/invite-lifecycle-rev2-board.jpg`
 - SVG Freeze v1 completed: 33 native masters (31 registered requirements plus 2 missing botanical motifs)
 - Semantic SVG registry, geometry/color contract, automated validation and two QA boards stored in GitHub-readable paths
+- B-2 Token Freeze v1 completed: semantic canvases/surfaces/text/borders/states, radii, control heights, opacity and shadow rules
+- Generated Flutter and Web token bindings plus contrast/geometry QA stored in GitHub-readable paths
 
 ## Next alignment work
 
@@ -29,5 +31,5 @@
 2. Complete Invite share retry plus Web Join revoked/stale, loading, offline and authorization-loss variants.
 3. Add Today prioritized-list, Attention primary queue and Daily Check-in designs.
 4. Add state/platform variants for adjustment, pause/resume, timezone, notifications and leave/block.
-5. Freeze the remaining non-SVG semantic tokens; SVG Freeze v1 is complete and must remain stable unless versioned.
+5. Build the deterministic grain/texture deliverable under B-4; semantic color and geometry tokens are frozen in B-2 v1.
 6. Change gates only after product, visual, asset and recovery contracts are all approved.
