@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
@@ -130,6 +131,54 @@ class AuthActions {
       return _isOffline(e) ? const AuthFailed(_offline) : const AuthLinkSent();
     } catch (_) {
       return const AuthLinkSent();
+    }
+  }
+
+  /// Complete a magic-link sign-in from the callback URL.
+  ///
+  /// The verifier never left this device, so a link forwarded to someone else
+  /// — or intercepted — cannot authenticate in a browser that did not start
+  /// the flow. If the flow is unknown here, that is exactly what happened,
+  /// and it is refused without a request.
+  Future<AuthOutcome> completeSignInLink({
+    required String token,
+    required String flowId,
+  }) async {
+    final store = _ref.read(authFlowStoreProvider);
+    final flow = await store.load(flowId);
+    if (flow == null) {
+      return const AuthFailed(
+        'Open the link on the device where you asked for it, or request a '
+        'new one.',
+      );
+    }
+
+    try {
+      final result = await _ref.read(authRepositoryProvider).consume(
+            token: token,
+            flow: flow,
+            clientType: kIsWeb ? 'WEB' : 'ANDROID',
+          );
+      // Cleared on success so the verifier does not linger. A failure keeps
+      // it: the same link may still be retried on a flaky network.
+      await store.clear(flowId);
+      await _ref.read(sessionProvider.notifier).adopt(result);
+      return const AuthSucceeded();
+    } on DioException catch (e) {
+      if (_isOffline(e)) return const AuthFailed(_offline);
+      if (_isUncertain(e)) {
+        return const AuthUncertain(
+          "We couldn't confirm the sign-in. Try the link again.",
+        );
+      }
+      return switch (_code(e)) {
+        'INVALID_OR_EXPIRED_MAGIC_LINK' => const AuthFailed(
+            'That link can no longer be used. Request a new one.',
+          ),
+        _ => const AuthFailed("We couldn't sign you in right now. Try again."),
+      };
+    } catch (_) {
+      return const AuthFailed(_generic);
     }
   }
 

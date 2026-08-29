@@ -130,6 +130,70 @@ void main() {
     });
   });
 
+  group('completing a sign-in link', () {
+    test('a link opened on a device that did not ask for it is refused',
+        () async {
+      // The verifier never leaves the device that started the flow, so an
+      // unknown flow here means the link was forwarded or intercepted.
+      final outcome = await actions()
+          .completeSignInLink(token: 'tok', flowId: 'never-started');
+
+      expect(outcome, isA<AuthFailed>());
+      expect(
+        auth.consumeCalls,
+        0,
+        reason: 'no request should go out for a flow this device never began',
+      );
+    });
+
+    test('a link from this device opens the session', () async {
+      final flow = AuthFlow.start();
+      await container.read(authFlowStoreProvider).save(flow);
+
+      final outcome = await actions()
+          .completeSignInLink(token: 'tok', flowId: flow.flowId);
+
+      expect(outcome, isA<AuthSucceeded>());
+      expect(container.read(sessionProvider), isA<Authenticated>());
+    });
+
+    test('the verifier is cleared once it has been used', () async {
+      final flow = AuthFlow.start();
+      final store = container.read(authFlowStoreProvider);
+      await store.save(flow);
+
+      await actions().completeSignInLink(token: 'tok', flowId: flow.flowId);
+
+      expect(await store.load(flow.flowId), isNull);
+    });
+
+    test('a failure keeps the verifier, because a retry may still work',
+        () async {
+      final flow = AuthFlow.start();
+      final store = container.read(authFlowStoreProvider);
+      await store.save(flow);
+      auth.failure = DioException.connectionError(
+        requestOptions: RequestOptions(path: '/'),
+        reason: 'offline',
+      );
+
+      await actions().completeSignInLink(token: 'tok', flowId: flow.flowId);
+
+      expect(await store.load(flow.flowId), isNotNull);
+    });
+
+    test('an expired link says so and points at a new one', () async {
+      final flow = AuthFlow.start();
+      await container.read(authFlowStoreProvider).save(flow);
+      auth.failure = serverError('INVALID_OR_EXPIRED_MAGIC_LINK');
+
+      final outcome = await actions()
+          .completeSignInLink(token: 'tok', flowId: flow.flowId);
+
+      expect((outcome as AuthFailed).message, contains('Request a new one'));
+    });
+  });
+
   group('the email sign-in link', () {
     test('answers the same whether or not the address has an account',
         () async {
@@ -158,6 +222,7 @@ void main() {
 
 class _FakeAuth implements AuthRepository {
   int registerCalls = 0;
+  int consumeCalls = 0;
   Object? failure;
 
   AuthResult _ok() => AuthResult(
@@ -181,6 +246,17 @@ class _FakeAuth implements AuthRepository {
     required String email,
     required String password,
   }) async {
+    if (failure != null) throw failure!;
+    return _ok();
+  }
+
+  @override
+  Future<AuthResult> consume({
+    required String token,
+    required AuthFlow flow,
+    required String clientType,
+  }) async {
+    consumeCalls++;
     if (failure != null) throw failure!;
     return _ok();
   }
