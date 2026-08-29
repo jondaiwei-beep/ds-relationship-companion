@@ -30,6 +30,7 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 | `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle, shared form controls. 119 client tests. |
 | `client/lib/features/entrance/` | Auth command layer. The three screens it serves are still gated. |
 | `client/lib/features/invite/` | Invite command layer. `SCR-09`/`SCR-10` gated; their lifecycle states are designed. |
+| `client/lib/features/activation/` | Activation command layer. `SCR-31/07/08/12` gated; state family specified. |
 | Everything else | 34 screens, gates closed. |
 
 ## What is verified, and how
@@ -46,8 +47,12 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
   anonymous resolve → partner registers → joins → expectation appears on their
   Today → they complete → it reaches Attention → a human acknowledges → the
   response comes back. Then the adjustment path: Can't Do → reaches the
-  partner → excused, not marked missed. 21 steps, run them with
+  partner → excused, not marked missed. 22 steps, run them with
   `lib/qa_walking_skeleton.dart`; each prints its own verdict.
+- **The chosen outcome really does change the starter rhythm.** Activation
+  with `ACCOUNTABILITY` proposes "Name one thing you are avoiding", not the
+  Closer content — verified in the skeleton, and the reason the enum is now
+  validated at the API boundary.
 - **An Android package was accepted by the owner** on device: 18MB arm64, neutral
   identity (`app.companion.two`, label `Companion`), all assets bundled.
 - **The auth guard holds in a real browser**, not only in tests: a deep link to
@@ -96,6 +101,14 @@ rest is unverified.
 but it still promises something the implementation has to earn. Revisit when
 the session and privacy model is settled, and if it cannot be substantiated,
 state the actual mechanism instead.
+
+**Long-distance has nowhere to live.** `SCR-08` collects Long-distance /
+Together and the server has no column, field or parameter for it. Either the
+data model gains one or the design loses the control; a client cannot decide
+that. Five smaller activation gaps are listed in
+`product/decisions/activation-state-family.md`, including that starting a
+rhythm requires an `assigneeUserId` that none of the four designs offers a
+way to choose.
 
 **FCM credentials** — Android Push, owner-supplied.
 
