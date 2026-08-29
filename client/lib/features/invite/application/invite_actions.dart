@@ -70,6 +70,17 @@ class InviteActions {
   /// the same Dynamic and no way to tell which one they sent.
   final Map<String, String> _createKeys = {};
 
+  /// One key per invitation token, for the same reason and a worse failure.
+  ///
+  /// The server's join is a guarded update: it only flips an invite that is
+  /// still `PENDING`. So a join that succeeded but whose response was lost
+  /// finds the invite already `ACCEPTED` on retry and answers 409
+  /// `INVITE_ACCEPTED` — which reads exactly like a revoked link. The person
+  /// has in fact joined, and would be told to ask for a new invitation.
+  ///
+  /// With the key held, the server replays the original 201 instead.
+  final Map<String, String> _joinKeys = {};
+
   Future<InviteCreated> create(String dynamicId) async {
     final key = _createKeys.putIfAbsent(
       dynamicId,
@@ -103,10 +114,13 @@ class InviteActions {
   /// Separate from [resolve] by design — this is the explicit human act, and
   /// nothing else in the flow may perform it.
   Future<JoinOutcome> join(String token) async {
+    final key = _joinKeys.putIfAbsent(token, ApiClient.newIdempotencyKey);
+
     try {
       final membershipId = await _ref
           .read(inviteRepositoryProvider)
-          .join(token, idempotencyKey: ApiClient.newIdempotencyKey());
+          .join(token, idempotencyKey: key);
+      _joinKeys.remove(token);
       return Joined(membershipId);
     } on DioException catch (e) {
       if (_isOffline(e)) {
@@ -118,6 +132,10 @@ class InviteActions {
       // 409/410 mean the invitation itself is finished, not that the request
       // failed. Retrying will never help, so it is not offered.
       if (status == 409 || status == 410 || status == 404) {
+        // Terminal: the invitation itself is finished. Retrying can never
+        // help, so no retry is offered. The key goes with it — a new
+        // invitation is a new attempt.
+        _joinKeys.remove(token);
         return const JoinRefused(
           'This invitation can no longer be used. Ask for a new one.',
         );

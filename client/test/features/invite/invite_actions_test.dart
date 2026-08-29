@@ -117,6 +117,29 @@ void main() {
       }
     });
 
+    test('a retry after a lost response replays, it does not re-join',
+        () async {
+      // The server's join is a guarded update: it only flips an invite still
+      // PENDING. A join that succeeded but whose response was lost would, on
+      // a fresh key, come back 409 INVITE_ACCEPTED — which reads exactly like
+      // a revoked link, telling someone who HAS joined to ask for a new
+      // invitation. Holding the key makes the server replay the 201.
+      invites.failure = transport(DioExceptionType.receiveTimeout);
+      await actions().join('tok');
+
+      invites.failure = null;
+      await actions().join('tok');
+
+      expect(invites.joinKeys.toSet(), hasLength(1));
+    });
+
+    test('a new invitation is a new attempt', () async {
+      await actions().join('tok-a');
+      await actions().join('tok-b');
+
+      expect(invites.joinKeys.toSet(), hasLength(2));
+    });
+
     test('a server error is failed, and may be retried', () async {
       invites.failure = status(500);
 
@@ -127,6 +150,7 @@ void main() {
 
 class _FakeInvites implements InviteRepository {
   final keysUsed = <String>[];
+  final joinKeys = <String>[];
   int joinCalls = 0;
   Object? failure;
   InviteState state = InviteState.pending;
@@ -147,6 +171,7 @@ class _FakeInvites implements InviteRepository {
   @override
   Future<String> join(String token, {required String idempotencyKey}) async {
     joinCalls++;
+    joinKeys.add(idempotencyKey);
     if (failure != null) throw failure!;
     return 'membership-1';
   }
