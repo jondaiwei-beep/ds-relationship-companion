@@ -42,7 +42,25 @@ abstract class TodayView with _$TodayView {
     /// How many things are waiting on my human response, stated by the
     /// server. Today shows the direction-giving face when this is non-zero.
     @Default(0) int needsMyResponseCount,
-    @Default(<TodayItem>[]) List<TodayItem> expectations,
+
+    /// The relationship day this list belongs to, resolved by the server in
+    /// the Dynamic's own timezone. The client never derives it from the
+    /// device clock.
+    DateTime? relationshipDay,
+
+    /// When the server last confirmed this list. Offline shows the last
+    /// confirmed list with this timestamp rather than implying it is current.
+    DateTime? lastConfirmedAt,
+
+    /// Total actionable items for the day, stated by the server.
+    @Default(0) int totalCount,
+
+    /// At most three, in server order: the first carries editorial emphasis,
+    /// the next two are timeline rows. Never re-sorted on the client.
+    @Default(<TodayItem>[]) List<TodayItem> priorityItems,
+
+    /// Everything else for the day, behind one count-bearing disclosure.
+    @Default(<TodayItem>[]) List<TodayItem> laterItems,
     @Default(<TodayItem>[]) List<TodayItem> awaitingResponse,
     RecentResponse? recentResponse,
   }) = _TodayView;

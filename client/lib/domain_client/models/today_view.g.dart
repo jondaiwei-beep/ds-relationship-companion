@@ -48,8 +48,20 @@ Map<String, dynamic> _$RecentResponseToJson(_RecentResponse instance) =>
 _TodayView _$TodayViewFromJson(Map<String, dynamic> json) => _TodayView(
   roleContext: json['roleContext'] as String? ?? 'PARTNER',
   needsMyResponseCount: (json['needsMyResponseCount'] as num?)?.toInt() ?? 0,
-  expectations:
-      (json['expectations'] as List<dynamic>?)
+  relationshipDay: json['relationshipDay'] == null
+      ? null
+      : DateTime.parse(json['relationshipDay'] as String),
+  lastConfirmedAt: json['lastConfirmedAt'] == null
+      ? null
+      : DateTime.parse(json['lastConfirmedAt'] as String),
+  totalCount: (json['totalCount'] as num?)?.toInt() ?? 0,
+  priorityItems:
+      (json['priorityItems'] as List<dynamic>?)
+          ?.map((e) => TodayItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <TodayItem>[],
+  laterItems:
+      (json['laterItems'] as List<dynamic>?)
           ?.map((e) => TodayItem.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const <TodayItem>[],
@@ -67,7 +79,11 @@ Map<String, dynamic> _$TodayViewToJson(_TodayView instance) =>
     <String, dynamic>{
       'roleContext': instance.roleContext,
       'needsMyResponseCount': instance.needsMyResponseCount,
-      'expectations': instance.expectations,
+      'relationshipDay': instance.relationshipDay?.toIso8601String(),
+      'lastConfirmedAt': instance.lastConfirmedAt?.toIso8601String(),
+      'totalCount': instance.totalCount,
+      'priorityItems': instance.priorityItems,
+      'laterItems': instance.laterItems,
       'awaitingResponse': instance.awaitingResponse,
       'recentResponse': instance.recentResponse,
     };

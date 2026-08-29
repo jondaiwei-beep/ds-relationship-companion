@@ -24,24 +24,24 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('greeting is NEUTRAL — the system never speaks in the Dom voice',
-      (tester) async {
+  testWidgets('the system never speaks in the Dom voice', (tester) async {
     await pump(tester, const TodayView());
 
-    // ADR-0001 D-3: the V5 mockup's "Good morning, Sir." is dynamic-specific
-    // content; hardcoding it would violate red line #1.
-    expect(find.text('Good morning.'), findsOneWidget);
+    // Hardcoding an honorific would make the app speak as the partner.
+    // SCR-01 rev 2 heads the screen with the surface name and nothing else.
+    expect(find.text('Today'), findsOneWidget);
     expect(find.textContaining('Sir'), findsNothing);
     expect(find.textContaining('Master'), findsNothing);
   });
 
   testWidgets('an expectation shows who it came from', (tester) async {
-    await pump(tester, const TodayView(expectations: [
+    await pump(tester, const TodayView(priorityItems: [
       TodayItem(occurrenceId: 'o1', title: 'Prepare the evening space',
           purpose: 'A small act of care.', state: 'ACTIVE', fromDisplayName: 'Alex'),
     ]));
 
-    expect(find.text('FROM ALEX'), findsOneWidget);
+    // Direction comes from a person, and the row says whose.
+    expect(find.textContaining('From Alex'), findsOneWidget);
     expect(find.text('Prepare the evening space'), findsOneWidget);
   });
 
@@ -54,7 +54,8 @@ void main() {
     )));
 
     expect(find.text('I noticed the care you put into this.'), findsOneWidget);
-    expect(find.text('FROM ALEX'), findsOneWidget);
+    // Attributed to the person who sent it, never anonymous.
+    expect(find.textContaining('ALEX'), findsOneWidget);
   });
 
   testWidgets('no response yet means nothing warm is fabricated', (tester) async {
@@ -62,23 +63,25 @@ void main() {
       TodayItem(occurrenceId: 'o1', title: 'Done thing', state: 'WAITING_ACK'),
     ]));
 
-    // The system must not invent encouragement to fill the gap (red line #1).
-    expect(find.textContaining('Completed · waiting for a response'), findsOneWidget);
+    // The system must not invent encouragement to fill the gap.
     expect(find.textContaining('Well done'), findsNothing);
     expect(find.textContaining('Great job'), findsNothing);
+    expect(find.textContaining('Proud'), findsNothing);
   });
 
   testWidgets('completing is not being seen', (tester) async {
-    await pump(tester, const TodayView(awaitingResponse: [
+    await pump(tester, const TodayView(priorityItems: [
       TodayItem(occurrenceId: 'o1', title: 'Done thing', state: 'WAITING_ACK'),
     ]));
 
-    expect(find.textContaining('waiting for a response'), findsOneWidget);
+    // A completed item is waiting on a human, and must never read as though
+    // the response already arrived.
+    expect(find.textContaining('Waiting for a reply'), findsOneWidget);
     expect(find.textContaining('Acknowledged'), findsNothing);
   });
 
   testWidgets('backend state names never leak', (tester) async {
-    await pump(tester, const TodayView(expectations: [
+    await pump(tester, const TodayView(priorityItems: [
       TodayItem(occurrenceId: 'o1', title: 'x', state: 'NEED_TO_DISCUSS'),
     ]));
 
@@ -93,7 +96,7 @@ void main() {
   });
 
   testWidgets('no gamification vocabulary', (tester) async {
-    await pump(tester, const TodayView(expectations: [
+    await pump(tester, const TodayView(priorityItems: [
       TodayItem(occurrenceId: 'o1', title: 'x', state: 'ACTIVE'),
     ]));
     final banned = RegExp(r'\b(points|streaks?|scores?|trophy|badges?)\b',

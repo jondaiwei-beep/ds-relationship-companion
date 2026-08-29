@@ -59,7 +59,7 @@ void main() {
 
   test('parses a real /v1/dynamics/{id}/today response', () {
     // Captured live from https://ds-api.beforeweplay.com on 2026-08-27.
-    const raw = '{"expectations":['
+    const raw = '{"priorityItems":['
         '{"occurrenceId":"0656bbd4-c2e8-4f2e-8342-3193679587ca",'
         '"title":"Evening check-in message","purpose":"A few words before the day closes.",'
         '"state":"ACTIVE","dueAt":null,"fromDisplayName":"alex"}],'
@@ -70,8 +70,8 @@ void main() {
         '"sentAt":"2026-08-27T04:46:32.214019Z","senderDisplayName":"alex"}}';
 
     final v = TodayView.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-    expect(v.expectations, hasLength(1));
-    expect(v.expectations.first.fromDisplayName, 'alex');
+    expect(v.priorityItems, hasLength(1));
+    expect(v.priorityItems.first.fromDisplayName, 'alex');
     // An acknowledged item leaves the action list entirely.
     expect(v.awaitingResponse, isEmpty);
     expect(v.recentResponse!.senderDisplayName, 'alex');

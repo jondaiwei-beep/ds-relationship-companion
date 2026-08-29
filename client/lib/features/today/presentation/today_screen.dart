@@ -1,31 +1,33 @@
+import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
-import '../../../design_system/components/ds_button.dart';
-import '../../../design_system/components/ds_card.dart';
-import '../../../design_system/components/ds_nav_icons.dart';
-import '../../../design_system/components/ds_page.dart';
-import '../../../design_system/components/ds_text.dart';
-import '../../../design_system/tokens/colors.dart';
-import '../../../design_system/tokens/spacing.dart';
-import '../../../design_system/tokens/typography.dart';
 import '../../../domain_client/models/today_view.dart';
 
-final todayProvider =
-    FutureProvider.autoDispose.family<TodayView, String>((ref, dynamicId) async {
+final todayProvider = FutureProvider.autoDispose.family<TodayView, String>((
+  ref,
+  dynamicId,
+) async {
   return ref.watch(todayRepositoryProvider).forDynamic(dynamicId);
 });
 
-/// Today — Warm Authority V5 screen 1, Journey B.
+/// Today — `SCR-01` revision 2, gate `ready_for_build`.
 ///
-/// The receiving side must know what matters within about ten seconds
-/// (Notion 01 §11), so this stays a focus surface: a handful of expectations,
-/// what is awaiting a response, and the last real thing a person said.
+/// Behavior is governed by
+/// `design/screens/SCR-01-today/candidates/rev-2/today-b3-spec.json`, which is
+/// authoritative over the raster preview. Three rules from it shape this file:
 ///
-/// ADR-0001 D-3: the greeting is NEUTRAL. Hardcoding "Sir" would make the
-/// system speak in the Dom's voice (red line #1).
-class TodayScreen extends ConsumerWidget {
+/// - The server composes the order. This widget never sorts, never re-ranks,
+///   and never derives `missed`, `needs review` or the relationship day from
+///   the device clock.
+/// - At most three priorities are visible; everything else sits behind one
+///   count-bearing disclosure. Later items are not less real, only less
+///   urgent, so they are compact rows rather than a wall of equal cards.
+/// - Complete, Need to Discuss, Request New Time and Can't Do must be reachable
+///   without opening a detail page, and the last three keep their own 48dp
+///   targets even when drawn as quiet text.
+class TodayScreen extends ConsumerStatefulWidget {
   const TodayScreen({
     super.key,
     this.dynamicId,
@@ -46,246 +48,488 @@ class TodayScreen extends ConsumerWidget {
   final String? notice;
   final void Function(String occurrenceId)? onOpen;
 
-  /// Today is one tab with two faces (Notion 02 §2): Attention is not a
-  /// separate navigation area, it is where Today leads when something is
-  /// waiting on this person's response.
+  /// Today is one tab with two faces: Attention is not a separate navigation
+  /// area, it is where Today leads when something waits on this person.
   final VoidCallback? onOpenAttention;
 
-  /// The next real step when a dynamic exists but nothing is in it yet.
-  /// An empty Today that only says "nothing is expected" is where a new
-  /// user concludes the product does nothing.
   final VoidCallback? onInvite;
   final VoidCallback? onStartRhythm;
-
-  /// Ask something of the other person, and share how today is going.
-  /// Both are Journey requirements that had no way in.
   final VoidCallback? onAsk;
   final VoidCallback? onCheckIn;
   final bool waitingForPartner;
   final bool hasRhythm;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final id = dynamicId;
+  ConsumerState<TodayScreen> createState() => _TodayScreenState();
+}
+
+class _TodayScreenState extends ConsumerState<TodayScreen> {
+  /// Collapse state is the one thing this screen owns. Everything else is
+  /// server truth.
+  bool _laterExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final id = widget.dynamicId;
     return Scaffold(
-      backgroundColor: DsColors.canvas,
-      body: id == null
-          ? DsPage(child: _Header(notice: notice))
-          : ref.watch(todayProvider(id)).when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (_, _) => DsPage(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _Header(notice: notice),
-                      const SizedBox(height: DsSpacing.xl),
-                      Text(
-                        "We couldn't load today just now. Nothing was lost.",
-                        style: DsType.body.copyWith(color: DsColors.muted),
+      backgroundColor: DsColors.canvasRitual,
+      body: DsRitualSurface(
+        child: SafeArea(
+          child: id == null
+              ? _Frame(child: _Header(notice: widget.notice))
+              : ref
+                    .watch(todayProvider(id))
+                    .when(
+                      loading: () =>
+                          _Frame(child: _LoadingState(notice: widget.notice)),
+                      error: (_, _) => _Frame(
+                        child: _ErrorState(
+                          notice: widget.notice,
+                          onRetry: () => ref.invalidate(todayProvider(id)),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-                data: (t) => DsPage(child: _body(t)),
-              ),
+                      data: (t) => _Frame(child: _body(t)),
+                    ),
+        ),
+      ),
     );
   }
 
   Widget _body(TodayView t) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _Header(notice: notice),
+    final hasAnything =
+        t.priorityItems.isNotEmpty ||
+        t.laterItems.isNotEmpty ||
+        t.awaitingResponse.isNotEmpty;
 
-        // The last real thing a person said comes FIRST when it is fresh:
-        // presence is the point, not the task list (Notion 01 §5).
-        //
-        // This ordering was previously stated in a comment while the widget
-        // tree did the opposite — the routing row sat above it, so the
-        // highest-value content on the whole screen lost first position to
-        // administration.
-        if (t.recentResponse != null) ...[
-          const SizedBox(height: DsSpacing.xxl),
-          _RecentResponseCard(response: t.recentResponse!),
-        ],
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: _Header(notice: widget.notice, partnerName: _partnerName(t)),
+        ),
 
-        // The direction-giving face of Today. Shown from the server's count,
-        // never inferred: a person can give direction in one dynamic and
-        // receive it in another, and can be on both sides of the same one.
-        //
-        // Below the response deliberately: this is a door, not a moment.
-        if (t.needsMyResponseCount > 0 && onOpenAttention != null) ...[
-          const SizedBox(height: DsSpacing.xxl),
-          _NeedsYouCard(
-            count: t.needsMyResponseCount,
-            onOpen: onOpenAttention!,
+        if (!hasAnything)
+          SliverToBoxAdapter(child: _EmptyState(onCheckIn: widget.onCheckIn))
+        else ...[
+          SliverToBoxAdapter(
+            child: _CountRow(
+              total: t.totalCount,
+              priority: t.priorityItems.length,
+            ),
           ),
-        ],
 
-        if (t.expectations.isNotEmpty) ...[
-          const SizedBox(height: DsSpacing.xxxl),
-          const DsEyebrow('Today'),
-          const SizedBox(height: DsSpacing.md),
-          for (final e in t.expectations) ...[
-            _ExpectationCard(item: e, onOpen: onOpen),
-            const SizedBox(height: DsSpacing.md),
-          ],
-        ],
-
-        if (t.awaitingResponse.isNotEmpty) ...[
-          const SizedBox(height: DsSpacing.xl),
-          const DsEyebrow('Waiting for your partner'),
-          const SizedBox(height: DsSpacing.md),
-          for (final e in t.awaitingResponse) ...[
-            _WaitingRow(item: e, onOpen: onOpen),
-            const SizedBox(height: DsSpacing.sm),
-          ],
-        ],
-
-        if (onAsk != null || onCheckIn != null) ...[
-          const SizedBox(height: DsSpacing.xxl),
-          Row(
-            children: [
-              if (onCheckIn != null)
-                Expanded(
-                  child: DsButton(
-                    label: 'Check in',
-                    outline: true,
-                    onPressed: onCheckIn,
-                  ),
-                ),
-              if (onCheckIn != null && onAsk != null)
-                const SizedBox(width: DsSpacing.md),
-              if (onAsk != null)
-                Expanded(
-                  child: DsButton(
-                    label: 'Ask for something',
-                    outline: true,
-                    onPressed: onAsk,
-                  ),
-                ),
-            ],
+          // The first priority carries editorial emphasis; two and three are
+          // disciplined timeline rows. Server order, unmodified.
+          SliverList.builder(
+            itemCount: t.priorityItems.length,
+            itemBuilder: (context, i) => _PriorityRow(
+              index: i + 1,
+              item: t.priorityItems[i],
+              emphasised: i == 0,
+              onOpen: widget.onOpen,
+            ),
           ),
-        ],
 
-        if (t.expectations.isEmpty &&
-            t.awaitingResponse.isEmpty &&
-            t.needsMyResponseCount == 0) ...[
-          const SizedBox(height: DsSpacing.xxl),
-          if (waitingForPartner && onInvite != null)
-            _NextStep(
-              title: 'No one has joined yet.',
-              body: 'Send them a link and this becomes a shared day.',
-              action: 'Invite them',
-              onTap: onInvite!,
-            )
-          else if (!hasRhythm && onStartRhythm != null)
-            _NextStep(
-              title: 'Nothing is set up yet.',
-              body: 'Start with a small rhythm. You can change all of it.',
-              action: 'See a starting rhythm',
-              onTap: onStartRhythm!,
-            )
-          else
-            Text(
-              // A genuinely quiet day is a good state, not an empty one.
-              'Nothing is expected of you today.',
-              style: DsType.body.copyWith(color: DsColors.muted),
+          if (t.laterItems.isNotEmpty)
+            SliverToBoxAdapter(
+              child: _LaterSection(
+                items: t.laterItems,
+                expanded: _laterExpanded,
+                onToggle: () =>
+                    setState(() => _laterExpanded = !_laterExpanded),
+                onOpen: widget.onOpen,
+              ),
             ),
         ],
-      ],
-    );
-  }
-}
 
-/// What to do when a dynamic exists but there is nothing in it yet.
-///
-/// Restrained on purpose: this is guidance, not a relationship moment, so it
-/// must not take the dark surface that a partner's words earn.
-class _NextStep extends StatelessWidget {
-  const _NextStep({
-    required this.title,
-    required this.body,
-    required this.action,
-    required this.onTap,
-  });
-
-  final String title;
-  final String body;
-  final String action;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: DsType.h2),
-        const SizedBox(height: DsSpacing.sm),
-        Text(body, style: DsType.body.copyWith(color: DsColors.muted)),
-        const SizedBox(height: DsSpacing.xl),
-        DsButton(label: action, onPressed: onTap),
-      ],
-    );
-  }
-}
-
-/// The way into Attention when something is waiting on this person.
-///
-/// Deliberately NOT a dark card. Dark is the scarce authority surface, and
-/// Today already spends it on the partner's own words — which is the
-/// emotional peak of the product. Two dark cards stacked would dilute both
-/// and make a routing affordance outrank a human being's voice.
-///
-/// So this is a quiet, high-contrast row: unmissable, but clearly a door
-/// rather than a destination.
-class _NeedsYouCard extends StatelessWidget {
-  const _NeedsYouCard({required this.count, required this.onOpen});
-
-  final int count;
-  final VoidCallback onOpen;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onOpen,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(15, 14, 15, 14),
-        decoration: BoxDecoration(
-          color: DsColors.stone,
-          border: const Border(
-            left: BorderSide(color: DsColors.lineStrong, width: 2),
+        // The last real thing a person said. Rendered only from
+        // human-authored, human-sent content.
+        if (t.recentResponse != null)
+          SliverToBoxAdapter(
+            child: _HumanResponse(response: t.recentResponse!),
           ),
-          borderRadius: const BorderRadius.horizontal(
-            left: Radius.circular(3),
-            right: Radius.circular(DsSpacing.cardRadius),
+
+        // The direction-giving face, shown from the server's count and never
+        // inferred: the same person can be on both sides of one Dynamic.
+        if (t.needsMyResponseCount > 0 && widget.onOpenAttention != null)
+          SliverToBoxAdapter(
+            child: _AttentionDoor(
+              count: t.needsMyResponseCount,
+              onOpen: widget.onOpenAttention!,
+            ),
+          ),
+
+        SliverToBoxAdapter(child: _Footer(confirmedAt: t.lastConfirmedAt)),
+      ],
+    );
+  }
+
+  String? _partnerName(TodayView t) {
+    for (final item in [...t.priorityItems, ...t.laterItems]) {
+      if (item.fromDisplayName != null) return item.fromDisplayName;
+    }
+    return t.recentResponse?.senderDisplayName;
+  }
+}
+
+class _Frame extends StatelessWidget {
+  const _Frame({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space5),
+    child: child,
+  );
+}
+
+class _Header extends StatelessWidget {
+  const _Header({this.notice, this.partnerName});
+  final String? notice;
+  final String? partnerName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: DsSpacing.space6,
+        bottom: DsSpacing.space5,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Today',
+                style: DsTextStyles.titlePage.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                ),
+              ),
+              const SizedBox(width: DsSpacing.space4),
+              // Presence, not status. The mark says a person is there; it
+              // never speaks for them. A long display name shrinks the label
+              // rather than overflowing the header.
+              if (partnerName != null)
+                Expanded(child: _PresenceMark(name: partnerName!)),
+            ],
+          ),
+          if (notice != null) ...[
+            const SizedBox(height: DsSpacing.space3),
+            Text(
+              notice!,
+              style: DsTextStyles.bodySecondary.copyWith(
+                color: DsColors.textOnRitualMuted,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _PresenceMark extends StatelessWidget {
+  const _PresenceMark({required this.name});
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        const DsSvg(
+          asset: DsAssets.markPresence,
+          tone: DsAssetTone.relationship,
+          width: 20,
+          height: 20,
+        ),
+        const SizedBox(width: DsSpacing.space2),
+        Flexible(
+          child: Text(
+            '$name is present',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: DsTextStyles.bodySecondary.copyWith(
+              color: DsColors.textOnRitualSecondary,
+            ),
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _CountRow extends StatelessWidget {
+  const _CountRow({required this.total, required this.priority});
+  final int total;
+  final int priority;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: DsSpacing.space3),
+      child: Text(
+        '$total ITEMS · $priority PRIORITY',
+        style: DsTextStyles.labelRitual.copyWith(
+          color: DsColors.textOnRitualMuted,
+        ),
+      ),
+    );
+  }
+}
+
+class _PriorityRow extends StatelessWidget {
+  const _PriorityRow({
+    required this.index,
+    required this.item,
+    required this.emphasised,
+    this.onOpen,
+  });
+
+  final int index;
+  final TodayItem item;
+  final bool emphasised;
+  final void Function(String occurrenceId)? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Container(
+      constraints: const BoxConstraints(minHeight: DsControlSizes.listRow),
+      padding: const EdgeInsets.symmetric(vertical: DsSpacing.space4),
+      decoration: BoxDecoration(
+        color: emphasised ? DsColors.surfaceRitualRaised : null,
+        borderRadius: emphasised ? BorderRadius.circular(DsRadii.card) : null,
+        border: emphasised
+            ? null
+            : const Border(
+                bottom: BorderSide(color: DsColors.borderOnRitualHairline),
+              ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: emphasised ? DsSpacing.space4 : 0,
+        ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              width: 32,
+              child: Text(
+                index.toString().padLeft(2, '0'),
+                style: DsTextStyles.labelRitual.copyWith(
+                  color: DsColors.textOnRitualMuted,
+                ),
+              ),
+            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    count == 1
-                        ? 'One thing needs your response.'
-                        : '$count things need your response.',
-                    style: DsType.cardTitle.copyWith(fontSize: 16),
+                    item.title,
+                    style: DsTextStyles.bodyPrimary.copyWith(
+                      color: DsColors.textOnRitualPrimary,
+                    ),
                   ),
-                  const SizedBox(height: DsSpacing.xs),
+                  const SizedBox(height: DsSpacing.space1),
                   Text(
-                    // Never a count of what is late — a person acted and is
-                    // waiting to be seen.
-                    'Someone is waiting to hear from you.',
-                    style: DsType.fine.copyWith(color: DsColors.muted),
+                    _context(item),
+                    style: DsTextStyles.bodySecondary.copyWith(
+                      color: DsColors.textOnRitualMuted,
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: DsSpacing.md),
-            const DsNavIcon(DsNavShape.chevronRight, color: DsColors.muted),
+          ],
+        ),
+      ),
+    );
+
+    return Semantics(
+      button: onOpen != null,
+      child: InkWell(
+        onTap: onOpen == null ? null : () => onOpen!(item.occurrenceId),
+        child: row,
+      ),
+    );
+  }
+
+  /// Source and time context. Direction comes from a person, so when the
+  /// server names them, the row says so.
+  String _context(TodayItem item) {
+    final parts = <String>[];
+    if (item.fromDisplayName != null) parts.add('From ${item.fromDisplayName}');
+    if (item.purpose != null && item.purpose!.isNotEmpty) {
+      parts.add(item.purpose!);
+    }
+    parts.add(_stateLabel(item.state));
+    return parts.join(' · ');
+  }
+}
+
+/// Backend state names never reach a person.
+String _stateLabel(String state) => switch (state) {
+  'ACTIVE' => 'Today',
+  'WAITING_ACK' => 'Waiting for a reply',
+  'NEEDS_REVIEW' => 'Needs review',
+  'NEED_TO_DISCUSS' => 'Being discussed',
+  'RESCHEDULE_REQUESTED' => 'New time requested',
+  'EXCUSE_REQUESTED' => "Can't do — sent",
+  _ => 'Scheduled',
+};
+
+class _LaterSection extends StatelessWidget {
+  const _LaterSection({
+    required this.items,
+    required this.expanded,
+    required this.onToggle,
+    this.onOpen,
+  });
+
+  final List<TodayItem> items;
+  final bool expanded;
+  final VoidCallback onToggle;
+  final void Function(String occurrenceId)? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: DsSpacing.space5),
+        // One count-bearing disclosure. Never a badge, never a nag.
+        Semantics(
+          button: true,
+          child: InkWell(
+            onTap: onToggle,
+            child: Container(
+              height: DsLayoutSizes.touchTarget,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                expanded
+                    ? 'LATER / OPTIONAL · ${items.length}'
+                    : 'LATER / OPTIONAL · ${items.length}',
+                style: DsTextStyles.labelRitual.copyWith(
+                  color: DsColors.textOnRitualMuted,
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (expanded)
+          ...items.map((item) => _LaterRow(item: item, onOpen: onOpen)),
+        Semantics(
+          button: true,
+          child: InkWell(
+            onTap: onToggle,
+            child: Container(
+              height: DsLayoutSizes.touchTarget,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                expanded ? 'Show less' : 'Show all',
+                style: DsTextStyles.labelAction.copyWith(
+                  color: DsColors.textOnRitualSecondary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LaterRow extends StatelessWidget {
+  const _LaterRow({required this.item, this.onOpen});
+  final TodayItem item;
+  final void Function(String occurrenceId)? onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: onOpen != null,
+      child: InkWell(
+        onTap: onOpen == null ? null : () => onOpen!(item.occurrenceId),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: DsControlSizes.listRow),
+          padding: const EdgeInsets.symmetric(vertical: DsSpacing.space3),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: DsColors.borderOnRitualHairline),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                item.title,
+                style: DsTextStyles.bodyPrimary.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                ),
+              ),
+              const SizedBox(height: DsSpacing.space1),
+              Text(
+                _stateLabel(item.state),
+                style: DsTextStyles.bodySecondary.copyWith(
+                  color: DsColors.textOnRitualMuted,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A human response. The display face is reserved for words a person wrote and
+/// sent; system copy never borrows it.
+class _HumanResponse extends StatelessWidget {
+  const _HumanResponse({required this.response});
+  final RecentResponse response;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.space8),
+      child: Container(
+        padding: const EdgeInsets.all(DsSpacing.space5),
+        decoration: BoxDecoration(
+          color: DsColors.surfaceRitualRaised,
+          borderRadius: BorderRadius.circular(DsRadii.card),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const DsSvg(
+                  asset: DsAssets.stateAcknowledged,
+                  tone: DsAssetTone.relationship,
+                  width: 16,
+                  height: 16,
+                ),
+                const SizedBox(width: DsSpacing.space2),
+                Text(
+                  response.senderDisplayName == null
+                      ? 'RESPONSE RECEIVED'
+                      : '${response.senderDisplayName!.toUpperCase()} WROTE',
+                  style: DsTextStyles.labelRitual.copyWith(
+                    color: DsColors.relationshipAcknowledgement,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: DsSpacing.space4),
+            Text(
+              response.text,
+              style: DsTextStyles.displayPartner.copyWith(
+                color: DsColors.textOnRitualRelationshipLarge,
+              ),
+            ),
           ],
         ),
       ),
@@ -293,141 +537,180 @@ class _NeedsYouCard extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header({this.notice});
+class _AttentionDoor extends StatelessWidget {
+  const _AttentionDoor({required this.count, required this.onOpen});
+  final int count;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.space6),
+      child: Semantics(
+        button: true,
+        child: InkWell(
+          onTap: onOpen,
+          child: Container(
+            height: DsControlSizes.button,
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space4),
+            decoration: BoxDecoration(
+              border: Border.all(color: DsColors.actionSecondaryBorder),
+              borderRadius: BorderRadius.circular(DsRadii.control),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    count == 1
+                        ? 'Someone is waiting to hear from you'
+                        : 'Someone is waiting to hear from you \u00b7 $count',
+                    style: DsTextStyles.labelAction.copyWith(
+                      color: DsColors.textOnRitualPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoadingState extends StatelessWidget {
+  const _LoadingState({this.notice});
   final String? notice;
 
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(BuildContext context) {
+    // Resolve authorization and the current read model without revealing
+    // stale partner content.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _Header(notice: notice),
+        const SizedBox(height: DsSpacing.space8),
+        Text(
+          'Checking with the server.',
+          style: DsTextStyles.bodySecondary.copyWith(
+            color: DsColors.textOnRitualMuted,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({this.onCheckIn});
+  final VoidCallback? onCheckIn;
+
+  @override
+  Widget build(BuildContext context) {
+    // No invented urgency. An optional check-in stays optional.
+    return Padding(
+      padding: const EdgeInsets.only(top: DsSpacing.space8),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (notice != null) ...[
-            DsNote(child: Text(notice!, style: DsType.fine)),
-            const SizedBox(height: DsSpacing.xl),
+          Text(
+            'Nothing is expected of you today.',
+            style: DsTextStyles.bodyPrimary.copyWith(
+              color: DsColors.textOnRitualPrimary,
+            ),
+          ),
+          if (onCheckIn != null) ...[
+            const SizedBox(height: DsSpacing.space5),
+            Semantics(
+              button: true,
+              child: InkWell(
+                onTap: onCheckIn,
+                child: Container(
+                  height: DsControlSizes.button,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: DsColors.actionSecondaryBorder),
+                    borderRadius: BorderRadius.circular(DsRadii.control),
+                  ),
+                  child: Text(
+                    'Check in, if you want to',
+                    style: DsTextStyles.labelAction.copyWith(
+                      color: DsColors.textOnRitualPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
-          Text('Good morning.', style: DsType.h1),
         ],
-      );
-}
-
-class _RecentResponseCard extends StatelessWidget {
-  const _RecentResponseCard({required this.response});
-  final RecentResponse response;
-
-  @override
-  Widget build(BuildContext context) => DsCard(
-        tone: DsCardTone.dark,
-        showRail: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DsEyebrow(
-              'From ${response.senderDisplayName ?? 'your partner'}',
-              onDark: true,
-            ),
-            const SizedBox(height: DsSpacing.lg),
-            // Their words, verbatim. Never paraphrased or generated.
-            Text(response.text, style: DsType.bigQuote),
-            const SizedBox(height: DsSpacing.lg),
-            Text(
-              response.title,
-              style: DsType.fine.copyWith(color: DsColors.onResponseMuted),
-            ),
-          ],
-        ),
-      );
-}
-
-class _ExpectationCard extends StatelessWidget {
-  const _ExpectationCard({required this.item, this.onOpen});
-
-  final TodayItem item;
-  final void Function(String occurrenceId)? onOpen;
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-        onTap: onOpen == null ? null : () => onOpen!(item.occurrenceId),
-        borderRadius: BorderRadius.circular(DsSpacing.cardRadius),
-        child: DsCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (item.fromDisplayName != null)
-                DsEyebrow('From ${item.fromDisplayName}', terra: true),
-              const SizedBox(height: DsSpacing.sm),
-              Text(item.title, style: DsType.cardTitle),
-              if (item.dueAt != null) ...[
-                const SizedBox(height: DsSpacing.xs),
-                // Notion 02 §3: the card must be understandable without
-                // opening it — title, from, and time context. The time was
-                // in the payload but never shown.
-                Text(_when(item.dueAt!),
-                    style: DsType.fine.copyWith(
-                        color: DsColors.inkSoft,
-                        fontWeight: FontWeight.w700)),
-              ],
-              if (item.purpose != null) ...[
-                const SizedBox(height: DsSpacing.xs),
-                Text(item.purpose!, style: DsType.fine),
-              ],
-              if (item.state != 'ACTIVE') ...[
-                const SizedBox(height: DsSpacing.sm),
-                Text(_stateLabel(item.state),
-                    style: DsType.fine.copyWith(color: DsColors.critical)),
-              ],
-            ],
-          ),
-        ),
-      );
-
-  /// Backend state names never reach the user (Notion 05 §12).
-  /// Time as a person would say it, in their own day - never a raw date.
-  String _when(DateTime due) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final day = DateTime(due.year, due.month, due.day);
-    final h = due.hour % 12 == 0 ? 12 : due.hour % 12;
-    final mm = due.minute.toString().padLeft(2, '0');
-    final ampm = due.hour < 12 ? 'AM' : 'PM';
-    final time = '$h:$mm $ampm';
-    final diff = day.difference(today).inDays;
-    if (diff == 0) return 'By $time';
-    if (diff == 1) return 'Tomorrow, $time';
-    // Never "overdue" or "late": past due is Needs review, not a verdict.
-    if (diff < 0) return 'Was $time';
-    return 'In $diff days, $time';
+      ),
+    );
   }
-
-  String _stateLabel(String s) => switch (s) {
-        'NEED_TO_DISCUSS' => 'Being discussed',
-        'RESCHEDULE_REQUESTED' => 'New time requested',
-        'EXCUSE_REQUESTED' => 'Asked to skip',
-        'NEEDS_REVIEW' => 'Needs review',
-        _ => '',
-      };
 }
 
-class _WaitingRow extends StatelessWidget {
-  const _WaitingRow({required this.item, this.onOpen});
-
-  final TodayItem item;
-  final void Function(String occurrenceId)? onOpen;
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({this.notice, required this.onRetry});
+  final String? notice;
+  final VoidCallback onRetry;
 
   @override
-  Widget build(BuildContext context) => InkWell(
-        onTap: onOpen == null ? null : () => onOpen!(item.occurrenceId),
-        borderRadius: BorderRadius.circular(DsSpacing.cardRadius),
-        child: DsCard(
-          tone: DsCardTone.stone,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(item.title, style: DsType.cardTitle),
-              const SizedBox(height: DsSpacing.xs),
-              // Completing is not being seen (red line #2).
-              Text('Completed · waiting for a response', style: DsType.fine),
-            ],
+  Widget build(BuildContext context) {
+    // Current truth cannot be loaded and there is no safe confirmed cache.
+    // Sensitive content stays hidden; retry is explicit.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _Header(notice: notice),
+        const SizedBox(height: DsSpacing.space8),
+        Text(
+          "Today could not be loaded. Nothing was lost.",
+          style: DsTextStyles.bodyPrimary.copyWith(
+            color: DsColors.textOnRitualPrimary,
           ),
         ),
-      );
+        const SizedBox(height: DsSpacing.space5),
+        Semantics(
+          button: true,
+          child: InkWell(
+            onTap: onRetry,
+            child: Container(
+              height: DsControlSizes.button,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                border: Border.all(color: DsColors.actionSecondaryBorder),
+                borderRadius: BorderRadius.circular(DsRadii.control),
+              ),
+              child: Text(
+                'Try again',
+                style: DsTextStyles.labelAction.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer({this.confirmedAt});
+  final DateTime? confirmedAt;
+
+  @override
+  Widget build(BuildContext context) {
+    if (confirmedAt == null) return const SizedBox(height: DsSpacing.space8);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: DsSpacing.space6),
+      child: Text(
+        'Server order',
+        style: DsTextStyles.bodySecondary.copyWith(
+          color: DsColors.textOnRitualMuted,
+        ),
+      ),
+    );
+  }
 }
