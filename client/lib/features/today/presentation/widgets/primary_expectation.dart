@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain_client/models/today_view.dart';
+import '../../application/today_actions.dart';
 import 'today_layout.dart';
 import 'today_meta.dart';
 
@@ -9,9 +10,22 @@ import 'today_meta.dart';
 /// block, and the four contract actions are reachable here — never behind a
 /// detail page.
 class PrimaryExpectation extends StatelessWidget {
-  const PrimaryExpectation({super.key, required this.item});
+  const PrimaryExpectation({
+    super.key,
+    required this.item,
+    required this.onAction,
+    this.busy = false,
+  });
 
   final TodayItem item;
+
+  /// The four paths are equals: this widget reports which one was chosen and
+  /// knows nothing about how it reaches the server.
+  final void Function(TodayAction) onAction;
+
+  /// While an attempt is in flight the actions are withdrawn, so a second tap
+  /// cannot start a second attempt.
+  final bool busy;
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +90,12 @@ class PrimaryExpectation extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: DsSpacing.space3),
-                    const _CompleteButton(),
+                    _CompleteButton(
+                      busy: busy,
+                      onTap: () => onAction(TodayAction.complete),
+                    ),
                     const SizedBox(height: DsSpacing.space3),
-                    const _AdjustmentActions(),
+                    _AdjustmentActions(busy: busy, onAction: onAction),
                   ],
                 ),
               ),
@@ -101,7 +118,10 @@ class _AuthorityRule extends StatelessWidget {
 }
 
 class _CompleteButton extends StatelessWidget {
-  const _CompleteButton();
+  const _CompleteButton({required this.onTap, required this.busy});
+
+  final VoidCallback onTap;
+  final bool busy;
 
   @override
   Widget build(BuildContext context) {
@@ -113,10 +133,10 @@ class _CompleteButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(DsRadii.control),
         child: InkWell(
           borderRadius: BorderRadius.circular(DsRadii.control),
-          onTap: () {},
+          onTap: busy ? null : onTap,
           child: Center(
             child: Text(
-              'Complete',
+              busy ? 'Sending' : 'Complete',
               style: DsTextStyles.labelAction.copyWith(
                 color: DsColors.actionPrimaryForeground,
               ),
@@ -136,18 +156,29 @@ class _CompleteButton extends StatelessWidget {
 /// permanent structural furniture beside Complete — each keeping its own 48dp
 /// target even though they are drawn as quiet text.
 class _AdjustmentActions extends StatelessWidget {
-  const _AdjustmentActions();
+  const _AdjustmentActions({required this.onAction, required this.busy});
+
+  final void Function(TodayAction) onAction;
+  final bool busy;
+
+  /// Order and wording are fixed by the design; adjustment is never presented
+  /// as a lesser choice than completing.
+  static const _paths = <(String, TodayAction)>[
+    ('Discuss', TodayAction.discuss),
+    ('New time', TodayAction.requestNewTime),
+    ("Can't do", TodayAction.cantDo),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final label in ['Discuss', 'New time', "Can't do"])
+        for (final (label, action) in _paths)
           Expanded(
             child: SizedBox(
               height: DsLayoutSizes.touchTarget,
               child: InkWell(
-                onTap: () {},
+                onTap: busy ? null : () => onAction(action),
                 child: Center(
                   child: Text(
                     label,

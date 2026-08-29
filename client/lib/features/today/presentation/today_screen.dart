@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../domain_client/models/today_view.dart';
+import '../application/today_actions.dart';
 import 'widgets/bottom_navigation.dart';
 import 'widgets/compact_row.dart';
 import 'widgets/day_boundary.dart';
@@ -62,7 +63,7 @@ class TodayScreen extends ConsumerWidget {
                     _Failure.offline => _Offline(onRetry: reload),
                     _Failure.unknown => _Unavailable(onRetry: reload),
                   },
-                  data: (view) => _Loaded(view: view),
+                  data: (view) => _Loaded(view: view, dynamicId: dynamicId),
                 ),
               ),
               const TodayBottomNavigation(),
@@ -92,18 +93,45 @@ _Failure _classify(Object error) {
 }
 
 /// The server-confirmed list.
-class _Loaded extends StatefulWidget {
-  const _Loaded({required this.view});
+class _Loaded extends ConsumerStatefulWidget {
+  const _Loaded({required this.view, required this.dynamicId});
 
   final TodayView view;
+  final String dynamicId;
 
   @override
-  State<_Loaded> createState() => _LoadedState();
+  ConsumerState<_Loaded> createState() => _LoadedState();
 }
 
-class _LoadedState extends State<_Loaded> {
-  /// The only state this screen owns. Everything else is server truth.
+class _LoadedState extends ConsumerState<_Loaded> {
+  /// Disclosure and in-flight attempts are the only state this screen owns.
+  /// Everything else is server truth.
   bool _laterExpanded = false;
+  String? _busyOccurrenceId;
+
+  /// Runs one command and reports the outcome. Success needs no message: the
+  /// list re-reads from the server and the change is the confirmation.
+  Future<void> _run(String occurrenceId, TodayAction action) async {
+    setState(() => _busyOccurrenceId = occurrenceId);
+    final outcome = await ref
+        .read(todayActionsProvider)
+        .run(
+          dynamicId: widget.dynamicId,
+          occurrenceId: occurrenceId,
+          action: action,
+        );
+    if (!mounted) return;
+    setState(() => _busyOccurrenceId = null);
+
+    if (outcome case ActionFailed(:final message)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message, style: DsTextStyles.bodySecondary),
+          backgroundColor: DsColors.surfaceRitualRaised,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +150,11 @@ class _LoadedState extends State<_Loaded> {
           SectionLabel(_priorityHeading(priority.length)),
           for (final (index, item) in priority.indexed)
             if (index == 0)
-              PrimaryExpectation(item: item)
+              PrimaryExpectation(
+                item: item,
+                busy: _busyOccurrenceId == item.occurrenceId,
+                onAction: (action) => _run(item.occurrenceId, action),
+              )
             else
               CompactRow(
                 index: index + 1,
