@@ -24,11 +24,16 @@ SCR-02 用一条两节点的进度线表达它:`COMPLETED` ●——○ `WAITING
 |---|---|
 | occurrence 状态 | `ACTIVE / WAITING_ACK / ACKNOWLEDGED / NEEDS_REVIEW / REVIEWED / NEED_TO_DISCUSS / RESCHEDULE_REQUESTED / EXCUSE_REQUESTED / EXCUSED / CANCELLED` |
 | 完成非 ACTIVE 的 occurrence | 409 `OCCURRENCE_NOT_ACTIVE` |
-| 确认非 WAITING_ACK 的 | 409(`OccurrenceNotAcknowledgeable`) |
+| 确认非 WAITING_ACK 的 | 409 `OCCURRENCE_NOT_WAITING_ACK` |
+| 已确认后再调整 | 409 `OCCURRENCE_ACKNOWLEDGED` |
 | 四种响应类型 | `ACKNOWLEDGE / PRAISE / COMMENT / REVIEW` |
 | 前两种可以无文字 | **是**(今日修复;此前 API 要求非空) |
 | 后两种必须有文字 | 是,空的返回 400 `TEXT_REQUIRED` |
 | 私密笔记 | 只返回给作者,伴侣读到 null(今日修复;此前谁都读不到) |
+
+**三个冲突码都是实测的**,不是从异常类名推断的 —— 我用两个真实账号跑了一遍
+「重复完成 / 重复确认 / 确认后再调整」。客户端必须按码区分,
+因为它们对应三句完全不同的话。
 
 ## SCR-02 · 完成 → 等待响应
 
@@ -39,6 +44,7 @@ SCR-02 用一条两节点的进度线表达它:`COMPLETED` ●——○ `WAITING
 | Empty | **N/A** —— 这个屏总有一个 occurrence |
 | Error / retry | 提交失败:保留已写的笔记,提供重试。**笔记绝不因为一次网络失败而丢失** | 重试、返回 |
 | **已被完成** | 409 `OCCURRENCE_NOT_ACTIVE`:另一台设备已经完成了。**不是错误** —— 显示为已完成状态并继续 | 返回 Today |
+| **调整已关闭** | 409 `OCCURRENCE_ACKNOWLEDGED`:已经被确认了,不能再改。中性陈述 | 返回 |
 | Offline | 「You're offline. Connect to the internet, then try again.」笔记保留 | 恢复后重试 |
 | 授权丢失 | 移除所有关系内容,转到入口。**不说明是哪件事被中断** | 登录 |
 | 已被确认 | 伴侣在此期间回应了:第二个节点填实,显示伴侣的回应 | 阅读、返回 |
@@ -57,8 +63,8 @@ SCR-02 用一条两节点的进度线表达它:`COMPLETED` ●——○ `WAITING
 | Comment / Review 未填字 | Send 按下时解释需要文字并聚焦文字区。**服务端也会拒(400 `TEXT_REQUIRED`)** | 补字或换类型 |
 | Loading | 「Sending…」,字段与类型锁定 | 等待 |
 | Error / retry | **保留已写的文字**。重试是同一次尝试(幂等键) | 重试、Not now |
-| **已被确认** | 409:另一台设备已经回应过。**不是失败** —— 显示已发出的那条回应 | 阅读、关闭 |
-| **occurrence 不在等待中** | 409:对方撤回或改期了。中性说明,不指责任何人 | 关闭 |
+| **已被确认** | 409 `OCCURRENCE_NOT_WAITING_ACK`:另一台设备已经回应过。**不是失败** —— 显示已发出的那条回应 | 阅读、关闭 |
+| **occurrence 不在等待中** | 同上 409。对方撤回或改期了。中性说明,不指责任何人 | 关闭 |
 | Offline | 「You're offline.」文字保留 | 恢复后重试 |
 | 授权丢失 | 清空草稿,转入口。**未发送的文字不得留在任何地方** | 登录 |
 | Not now | 关闭。**不发送任何东西,也不记录「拒绝回应」** —— 沉默不是一种回应 |
