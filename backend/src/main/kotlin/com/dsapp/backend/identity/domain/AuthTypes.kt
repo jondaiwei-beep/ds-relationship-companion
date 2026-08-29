@@ -55,24 +55,6 @@ data class AuthResponse(
 
 data class ResolveInviteRequest(@field:NotBlank val token: String)
 
-data class InviteView(
-    val inviteId: UUID?,
-    val state: InviteState,
-    val intendedRoleContext: String?,
-    val expiresAt: String?,
-)
-
-data class AcceptInviteRequest(
-    val token: String? = null,
-    val inviteId: UUID? = null,
-)
-
-data class AcceptInviteResponse(
-    val inviteId: UUID?,
-    val state: InviteState,
-    val membershipGranted: Boolean,
-)
-
 class ApiException(
     val status: HttpStatus,
     val code: String,
