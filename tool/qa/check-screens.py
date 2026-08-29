@@ -1,0 +1,182 @@
+#!/usr/bin/env python3
+"""Enforce the design-system rules that are cheap to break and slow to notice.
+
+Run from the repository root:
+
+    python3 tool/qa/check-screens.py
+
+Every rule here exists because it was broken during a real build, or because
+the frozen specs state it and nothing else enforces it.
+"""
+import json
+import os
+import re
+import sys
+
+CLIENT = "client/lib"
+FAILURES = []
+CHECKED = 0
+
+
+def fail(rule, where, detail):
+    FAILURES.append(f"{rule}\n    {where}\n    {detail}")
+
+
+def screens():
+    """Every Dart file under features/ — the screen layer."""
+    for root, _, files in os.walk(f"{CLIENT}/features"):
+        for f in files:
+            if f.endswith(".dart"):
+                yield os.path.join(root, f)
+
+
+def check_no_raw_values():
+    """Colour and geometry must resolve through tokens.
+
+    B2-FREEZE §6: "Never copy raw Hex values into screens."
+    """
+    global CHECKED
+    hex_colour = re.compile(r"Color\(0x[0-9A-Fa-f]{6,8}\)")
+    material = re.compile(r"\bColors\.[a-z]")
+    for path in screens():
+        CHECKED += 1
+        src = open(path).read()
+        for m in hex_colour.finditer(src):
+            line = src[: m.start()].count("\n") + 1
+            fail("raw colour in a screen", f"{path}:{line}", m.group(0))
+        for m in material.finditer(src):
+            line = src[: m.start()].count("\n") + 1
+            fail("Material colour in a screen", f"{path}:{line}", m.group(0))
+
+
+def check_no_inline_svg():
+    """SVG-FREEZE §1: screens reference Asset IDs, never path data."""
+    for path in screens():
+        src = open(path).read()
+        if "SvgPicture.asset" in src:
+            fail(
+                "SvgPicture used directly",
+                path,
+                "use DsSvg so the tone licence is enforced",
+            )
+        if re.search(r'["\']M\s*-?\d+[\d\s,.\-]{20,}', src):
+            fail("inline SVG path data", path, "reference a registered master")
+
+
+def check_no_queue_vocabulary():
+    """A person's day is not a work queue.
+
+    Copy rule from the product contract; a widget test also covers Today.
+    """
+    banned = ["overdue", "backlog", "to-do list"]
+    for path in screens():
+        src = open(path).read()
+        for word in banned:
+            for m in re.finditer(rf"['\"][^'\"]*\b{word}\b", src, re.I):
+                line = src[: m.start()].count("\n") + 1
+                fail("queue vocabulary in copy", f"{path}:{line}", word)
+
+
+def check_no_backend_states_in_copy():
+    """Backend state names never reach a person."""
+    states = [
+        "WAITING_ACK",
+        "NEEDS_REVIEW",
+        "NEED_TO_DISCUSS",
+        "RESCHEDULE_REQUESTED",
+        "EXCUSE_REQUESTED",
+    ]
+    for path in screens():
+        src = open(path).read()
+        for state in states:
+            # A state name inside a string literal is copy. Comparing against
+            # one is fine, so only flag literals that are not on the right of
+            # an equality or a switch case.
+            for m in re.finditer(rf"['\"]([^'\"]*\b{state}\b[^'\"]*)['\"]", src):
+                before = src[max(0, m.start() - 30):m.start()]
+                if re.search(r"(==|case|=>\s*$|state\s*[:=])\s*$", before):
+                    continue
+                line = src[: m.start()].count("\n") + 1
+                fail("backend state rendered as copy", f"{path}:{line}", state)
+
+
+def check_gates_respected():
+    """Only a ready_for_build screen may have an implementation."""
+    index = json.load(open("manifests/screen-index.json"))
+    open_gates = {
+        s["screen_id"]
+        for s in index["screens"]
+        if s["build_gate"] == "ready_for_build"
+    }
+    # Map a feature directory to the screen it implements, when it declares one.
+    for path in screens():
+        src = open(path).read()
+        declared = re.search(r"(SCR-\d{2})", src)
+        if declared and declared.group(1) not in open_gates:
+            fail(
+                "screen implemented while its gate is closed",
+                path,
+                f"{declared.group(1)} is not ready_for_build",
+            )
+
+
+def check_assets_resolve():
+    """Every registered master exists, and DsAssets matches the freeze."""
+    registry = json.load(open("manifests/assets.json"))
+    for asset in registry["assets"]:
+        if asset["status"] != "approved":
+            continue
+        if not os.path.exists(asset["source_path"]):
+            fail("registered master missing", asset["id"], asset["source_path"])
+
+    generated = open("app/lib/src/design_system/ds_assets.dart").read()
+    for asset in registry["assets"]:
+        if asset["status"] == "approved" and f"'{asset['id']}'" not in generated:
+            fail("approved asset absent from DsAssets", asset["id"], "regenerate")
+
+
+def check_package_qualified():
+    """Assets and fonts must resolve from the package, not the host.
+
+    Every one of these was a real defect: bare paths 404'd all 33 SVGs, and
+    bare font families silently fell back to a system face.
+    """
+    assets = open("app/lib/src/design_system/ds_assets.dart").read()
+    for m in re.finditer(r"'(assets/(?:svg|textures)/[^']+)'", assets):
+        fail("unqualified asset path", "ds_assets.dart", m.group(1))
+
+    typography = open("app/lib/src/design_system/ds_typography.dart").read()
+    roles = typography.count("TextStyle(")
+    qualified = typography.count("package: _package")
+    if roles != qualified:
+        fail(
+            "type role without a package qualifier",
+            "ds_typography.dart",
+            f"{roles} roles, {qualified} qualified — the rest fall back silently",
+        )
+
+
+def main():
+    os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+    for check in (
+        check_no_raw_values,
+        check_no_inline_svg,
+        check_no_queue_vocabulary,
+        check_no_backend_states_in_copy,
+        check_gates_respected,
+        check_assets_resolve,
+        check_package_qualified,
+    ):
+        check()
+
+    if FAILURES:
+        print(f"{len(FAILURES)} problem(s):\n")
+        for f in FAILURES:
+            print(f"  {f}\n")
+        return 1
+    print(f"design-system checks passed ({CHECKED} screen files)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

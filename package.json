@@ -10,7 +10,8 @@
     "generate:tokens": "node design/tokens/scripts/generate-token-bindings.cjs",
     "sync:foundation": "node tool/sync-design-foundation.cjs",
     "validate:foundation": "node tool/validate-design-foundation.cjs",
-    "foundation:check": "npm run generate:texture && npm run generate:tokens && npm run sync:foundation && npm run validate:foundation"
+    "foundation:check": "npm run generate:texture && npm run generate:tokens && npm run sync:foundation && npm run validate:foundation && npm run check:screens",
+    "check:screens": "python3 tool/qa/check-screens.py"
   },
   "dependencies": {
     "sharp": "0.35.4"
