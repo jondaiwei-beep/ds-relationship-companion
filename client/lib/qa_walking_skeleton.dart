@@ -29,6 +29,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/providers.dart';
 import 'domain_client/api_client.dart';
 import 'domain_client/repositories/adjustment_repository.dart';
+import 'features/activation/application/activation_actions.dart';
 import 'features/entrance/application/auth_actions.dart';
 import 'features/invite/application/invite_actions.dart';
 import 'platform/session/session.dart';
@@ -116,13 +117,31 @@ class _RunnerState extends ConsumerState<_Runner> {
       }
       _log('creator registers');
 
-      final dynamicId = await creator.read(dynamicRepositoryProvider).create(
-            desiredOutcome: 'CLOSER',
-            structureLevel: 'LIGHT',
-            referenceTimezone: 'UTC',
-            idempotencyKey: ApiClient.newIdempotencyKey(),
-          );
-      _log('creates a Dynamic', detail: dynamicId);
+      // Through the activation layer the wizard will use, not the repository
+      // underneath it: the point is that the four screens' one command works.
+      const draft = ActivationDraft(
+        outcome: DesiredOutcome.accountability,
+        structure: StructureLevel.steady,
+        timezone: 'Europe/Berlin',
+        // Deliberately unnamed. A couple that declines to name a role must
+        // not be blocked, and the loop has to prove that rather than assert
+        // it.
+      );
+      final created = await creator.read(activationActionsProvider)
+          .createDynamic(draft);
+      if (created is! DynamicCreated) {
+        return _log('creates a Dynamic',
+            detail: (created as ActivationFailed).message, ok: false);
+      }
+      final dynamicId = created.dynamicId;
+      _log('creates a Dynamic, with no role named', detail: dynamicId);
+
+      // The outcome chooses the starter content, so this is not the same
+      // suggestion every couple gets.
+      final proposal = await creator.read(activationActionsProvider)
+          .proposeRhythm(dynamicId);
+      _log('a starting rhythm is proposed, and writes nothing',
+          detail: '${proposal.ritualTitle} · ${proposal.expectationTitle}');
 
       final invite = await creator.read(inviteActionsProvider).create(dynamicId);
       if (invite is! InviteLinkReady) {

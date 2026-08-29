@@ -108,6 +108,65 @@ void main() {
       expect(dynamics.keys.toSet(), hasLength(1));
     });
 
+    test('choosing "For myself" does not create a couple', () async {
+      // `mode` was hardcoded to COUPLE in the repository, so the solo choice
+      // on the role screen had no effect at all.
+      await actions().createDynamic(complete.copyWith(solo: true));
+
+      expect(dynamics.lastMode, 'SOLO');
+    });
+
+    test('a bare UTC offset is refused', () async {
+      // REQ-TIME-001. An offset passes every type check and then moves the
+      // relationship day when the clocks change — months later, looking like
+      // a scheduling bug.
+      for (final bad in ['+02:00', 'UTC+2', 'GMT+0200', '']) {
+        final outcome = await actions()
+            .createDynamic(complete.copyWith(timezone: bad));
+        expect(outcome, isA<ActivationFailed>(), reason: bad);
+      }
+      expect(dynamics.calls, 0);
+    });
+
+    test('real IANA names are accepted', () async {
+      for (final zone in ['Europe/Berlin', 'America/Los_Angeles', 'UTC',
+                          'America/Argentina/Ushuaia']) {
+        await actions().createDynamic(complete.copyWith(timezone: zone));
+      }
+      expect(dynamics.calls, 4);
+    });
+
+    test('an edited draft is a different request, not a conflicting retry',
+        () async {
+      // The server scopes a key to the exact body. Retrying an edited draft
+      // under the original key is a conflict, not a replay.
+      dynamics.failure = DioException.receiveTimeout(
+        timeout: const Duration(seconds: 1),
+        requestOptions: RequestOptions(path: '/'),
+      );
+      await actions().createDynamic(complete);
+
+      dynamics.failure = null;
+      await actions().createDynamic(
+        complete.copyWith(structure: StructureLevel.defined),
+      );
+
+      expect(dynamics.keys.toSet(), hasLength(2));
+    });
+
+    test('resubmitting the same draft after success does not duplicate',
+        () async {
+      await actions().createDynamic(complete);
+      await actions().createDynamic(complete);
+
+      expect(
+        dynamics.keys.toSet(),
+        hasLength(1),
+        reason: 'back-navigation and resubmit must not create a second '
+            'Dynamic; the server replays the original',
+      );
+    });
+
     test('offline says so', () async {
       dynamics.failure = DioException.connectionError(
         requestOptions: RequestOptions(path: '/'),
@@ -155,6 +214,7 @@ void main() {
 class _FakeDynamics implements DynamicRepository {
   int calls = 0;
   final keys = <String>[];
+  String? lastMode;
   String? lastOutcome;
   String? lastStructure;
   String? lastRolePreset;
@@ -163,6 +223,7 @@ class _FakeDynamics implements DynamicRepository {
 
   @override
   Future<String> create({
+    String mode = 'COUPLE',
     required String desiredOutcome,
     required String structureLevel,
     required String referenceTimezone,
@@ -172,6 +233,7 @@ class _FakeDynamics implements DynamicRepository {
   }) async {
     calls++;
     keys.add(idempotencyKey);
+    lastMode = mode;
     lastOutcome = desiredOutcome;
     lastStructure = structureLevel;
     lastRolePreset = rolePreset;

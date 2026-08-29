@@ -125,12 +125,17 @@ class ActivationActions {
 
   final Ref _ref;
 
-  /// Held so a retry after a lost response does not create a second Dynamic.
+  /// One key per distinct request, not per attempt.
   ///
-  /// There is no natural key to scope this by — the draft is not yet anything
-  /// the server knows about — so one key per instance, cleared only when a
-  /// Dynamic actually comes back.
-  String? _createKey;
+  /// A single key held across attempts is wrong in both directions. The
+  /// server scopes a key to the exact request body: retrying an *edited*
+  /// draft under the same key is a conflict, and clearing the key on success
+  /// means a back-navigation and resubmit creates a second Dynamic.
+  ///
+  /// Keying by the request itself gets both right. The same draft always
+  /// retries as the same attempt — including after a success whose response
+  /// was lost — and an edited draft is honestly a different request.
+  final Map<String, String> _createKeys = {};
 
   Future<ActivationOutcome> createDynamic(ActivationDraft draft) async {
     final outcome = draft.outcome;
@@ -140,17 +145,30 @@ class ActivationActions {
       // sending a half-formed command.
       return const ActivationFailed('Choose what you want more of first.');
     }
+    if (!_looksLikeIanaZone(timezone)) {
+      // REQ-TIME-001. A bare offset survives every type check and then moves
+      // someone's relationship day when the clocks change — the failure
+      // arrives months later and looks like a bug in scheduling.
+      return const ActivationFailed(
+        "We couldn't read this device's timezone. Try again.",
+      );
+    }
 
-    final key = _createKey ??= ApiClient.newIdempotencyKey();
+    final key = _createKeys.putIfAbsent(
+      _fingerprint(draft, outcome, timezone),
+      ApiClient.newIdempotencyKey,
+    );
     try {
       final id = await _ref.read(dynamicRepositoryProvider).create(
+            mode: draft.solo ? 'SOLO' : 'COUPLE',
             desiredOutcome: outcome.wire,
             structureLevel: draft.structure.wire,
             referenceTimezone: timezone,
             rolePreset: draft.rolePreset?.wire,
             idempotencyKey: key,
           );
-      _createKey = null;
+      // Not cleared: a success whose response was lost is exactly the case a
+      // retry has to survive, and the server replays rather than duplicating.
       return DynamicCreated(id);
     } on DioException catch (e) {
       // The key is kept: the next attempt is the same attempt.
@@ -169,7 +187,13 @@ class ActivationActions {
     String? ritualTitle,
     String? expectationTitle,
   }) async {
-    final key = _rhythmKeys.putIfAbsent(dynamicId, ApiClient.newIdempotencyKey);
+    // Keyed by the request, not just the Dynamic: editing a title after a
+    // failure and retrying under the same key would be a conflict.
+    final key = _rhythmKeys.putIfAbsent(
+      [dynamicId, assigneeUserId, ritualTitle ?? '-', expectationTitle ?? '-']
+          .join('|'),
+      ApiClient.newIdempotencyKey,
+    );
     try {
       await _ref.read(starterRhythmRepositoryProvider).start(
             dynamicId,
@@ -187,6 +211,29 @@ class ActivationActions {
   }
 
   final Map<String, String> _rhythmKeys = {};
+
+  /// Everything the request is made of, so an edited draft is a new request.
+  static String _fingerprint(
+    ActivationDraft draft,
+    DesiredOutcome outcome,
+    String timezone,
+  ) =>
+      [
+        draft.solo ? 'SOLO' : 'COUPLE',
+        outcome.wire,
+        draft.structure.wire,
+        timezone,
+        draft.rolePreset?.wire ?? '-',
+      ].join('|');
+
+  /// An IANA zone name, not an offset.
+  ///
+  /// Deliberately shape-only: the client has no zone database to check
+  /// membership against, and the point is to reject `+02:00` and `UTC+2`,
+  /// which are the forms a device actually offers by mistake.
+  static bool _looksLikeIanaZone(String value) =>
+      RegExp(r'^[A-Za-z_]+(/[A-Za-z0-9_+-]+){1,2}$').hasMatch(value) ||
+      value == 'UTC';
 
   static String _message(DioException e) {
     if (_isOffline(e)) {

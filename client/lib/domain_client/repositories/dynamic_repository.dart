@@ -15,6 +15,9 @@ class DynamicRepository {
   /// timezone the day is measured in. Nothing here is an agreement about
   /// anything specific — that comes later, from the two people.
   Future<String> create({
+    /// `SOLO` or `COUPLE`. Was hardcoded to COUPLE, which meant choosing
+    /// "For myself" on the role screen silently created a couple Dynamic.
+    String mode = 'COUPLE',
     required String desiredOutcome,
     required String structureLevel,
     required String referenceTimezone,
@@ -26,7 +29,7 @@ class DynamicRepository {
     final r = await _api.post(
       '/v1/dynamics',
       body: {
-        'mode': 'COUPLE',
+        'mode': mode,
         'desiredOutcome': desiredOutcome,
         'structureLevel': structureLevel,
         'referenceTimezone': referenceTimezone,
