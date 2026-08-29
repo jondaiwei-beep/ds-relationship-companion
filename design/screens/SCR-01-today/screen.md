@@ -42,6 +42,7 @@ Product references point to the migrated CURRENT v2 contracts. Revision 2 resolv
 - Cormorant Garamond is selective editorial/ritual typography; Inter is operational UI typography.
 - Default read order: partner/current context → 1–3 priority items → recent human response → check-in/ritual → later/optional.
 - First priority uses the editorial rail and full actions: `Complete`, `Discuss`, `New time`, `Can't do`. Compact rows do not suppress these rights; opening a row restores the same action set.
+- The first priority action treatment binds to B-2 geometry: 56dp for the primary action and separate 48dp minimum touch targets for each quiet secondary action.
 - Expanded state is an inline disclosure, not a new route. Server order is preserved; client time and cache never infer completion, missed or acknowledged status.
 - Offline content is explicitly last-confirmed and read-only. Authorization loss removes all protected content before recovery is offered.
 - Responsive and platform differences: **Android candidate complete; Web adaptation remains TBD before build**.

@@ -38,6 +38,7 @@
     "required_visible_fields": ["kind", "title", "source/context", "time or relationship-day context", "current state"],
     "actions": ["Complete", "Need to Discuss", "Request New Time", "Can't Do"],
     "action_rule": "The server supplies allowed actions. Basic understanding and these four paths must not require opening a detail page.",
+    "action_geometry": "Complete uses the frozen 56dp standard control height. Discuss, Request New Time and Can't Do retain separate 48dp minimum touch targets even when presented as quiet text actions. Compact priority and Later rows bind to the frozen 72dp operational-row contract.",
     "visual_rule": "The first priority receives editorial emphasis; items two and three use disciplined timeline rows. Later items use compact rows and never become a wall of equal cards."
   },
   "states": {

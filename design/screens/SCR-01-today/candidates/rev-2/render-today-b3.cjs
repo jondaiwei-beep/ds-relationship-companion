@@ -81,7 +81,7 @@ function asset(id, x, y, width, height, assetColor = color.bone, opacity = 1) {
 }
 
 function button(x, y, width, label, options = {}) {
-  const { height = 44, primary = false, disabled = false, outline = false } = options;
+  const { height = 56, primary = false, disabled = false, outline = false } = options;
   const fill = primary ? color.deepOlive : outline ? 'none' : color.darkMoss;
   const stroke = outline ? color.deepOlive : 'none';
   const opacity = disabled ? 0.48 : 1;
@@ -89,12 +89,18 @@ function button(x, y, width, label, options = {}) {
     text(x + width / 2, y + height / 2 + 5, label, 13, primary ? color.bone : color.stone, { weight: 600, anchor: 'middle', opacity });
 }
 
+function textAction(x, y, width, label) {
+  const height = 48;
+  return rect(x, y, width, height, 'none') +
+    text(x + width / 2, y + height / 2 + 4, label, 11, color.stone, { weight: 550, anchor: 'middle' });
+}
+
 function nav() {
   const items = [
     ['nav.today', 'Today', 49, true], ['nav.dynamic', 'Dynamic', 147, false],
     ['nav.explore', 'Explore', 245, false], ['nav.us', 'Us', 341, false],
   ];
-  let body = rect(0, 760, 390, 84, color.canvas, 0, 'none', 0, 0.97) + line(20, 760, 370, 760, color.deepOlive, 1, 0.42);
+  let body = rect(0, 764, 390, 80, color.canvas, 0, 'none', 0, 0.97) + line(20, 764, 370, 764, color.deepOlive, 1, 0.42);
   for (const [id, label, center, active] of items) {
     body += asset(id, center - 13, 774, 26, 26, active ? color.bone : color.warmGray, active ? 1 : 0.56);
     body += text(center, 820, label, 11, active ? color.bone : color.warmGray, { weight: 500, anchor: 'middle', opacity: active ? 1 : 0.62 });
@@ -137,12 +143,12 @@ function frame(body, options = {}) {
 
 function compactRow(y, number, assetId, titleValue, meta, options = {}) {
   const { relationship = false, selected = false } = options;
-  let body = selected ? rect(18, y - 9, 354, 68, color.darkMoss, 12, color.deepOlive, 1) : '';
+  let body = selected ? rect(18, y - 9, 354, 72, color.darkMoss, 12, color.deepOlive, 1) : '';
   body += text(24, y + 14, number, 10, relationship ? color.terracotta : color.warmGray, { weight: 600, tracking: 1.3 });
   body += asset(assetId, 48, y - 1, 28, 28, relationship ? color.terracotta : color.stone, relationship ? 1 : 0.88);
   body += text(88, y + 10, titleValue, 15, color.stone, { weight: 550 });
   body += text(88, y + 31, meta, 11, color.warmGray, { opacity: 0.72 });
-  body += line(88, y + 51, 366, y + 51, color.deepOlive, 1, 0.42);
+  body += line(88, y + 60, 366, y + 60, color.deepOlive, 1, 0.42);
   return body;
 }
 
@@ -151,35 +157,35 @@ function defaultState(options = {}) {
   const headline = roleVariant ? ['Hold space for our', 'evening check-in.'] : solo ? ['Write one honest line', 'before the day closes.'] : ['Prepare the bedroom', 'before 9:00 PM.'];
   const source = roleVariant ? 'Chosen together · 9:30 PM' : solo ? 'Your private rhythm · tonight' : 'From Morgan · due 9:00 PM';
   let body = text(20, 82, solo ? 'TWO THINGS MATTER · PRIVATE' : roleVariant ? 'THREE THINGS MATTER · CUSTOM ROLE' : 'THREE THINGS MATTER', 10, color.warmGray, { weight: 600, tracking: 1.8 });
-  body += line(20, 104, 20, 279, roleVariant ? color.terracotta : color.deepOlive, 1.5, 0.84);
+  body += line(20, 104, 20, 357, roleVariant ? color.terracotta : color.deepOlive, 1.5, 0.84);
   body += asset('mark.authority', 34, 106, 28, 28, roleVariant ? color.terracotta : color.stone, 0.9);
-  body += text(74, 121, '01 · NOW · EXPECTATION', 10, roleVariant ? color.terracotta : color.warmGray, { weight: 600, tracking: 1.4 });
+  body += text(74, 121, '01 · NOW · EXPECTATION', 10, roleVariant ? color.stone : color.warmGray, { weight: 600, tracking: 1.4 });
   body += multiline(34, 165, headline, 27, 31, color.bone, { family: 'Cormorant Garamond', weight: 500 });
   body += text(34, 231, source, 11, color.warmGray, { opacity: 0.78 });
-  body += button(34, 247, 90, 'Complete', { primary: true });
-  body += text(142, 274, 'Discuss', 11, color.stone, { weight: 550 });
-  body += text(206, 274, 'New time', 11, color.stone, { weight: 550 });
-  body += text(280, 274, "Can't do", 11, color.stone, { weight: 550 });
-  body += compactRow(315, '02', 'emblem.ritual.evening', solo ? 'Quiet evening ritual' : 'Evening ritual', '8:30 PM · 6 min');
-  body += compactRow(383, solo ? '—' : '03', 'mark.check-in', 'Daily check-in', solo ? 'Private unless you choose to share' : 'Optional · private until shared');
+  body += button(34, 247, 332, 'Complete', { primary: true });
+  body += textAction(34, 309, 106, 'Discuss');
+  body += textAction(146, 309, 106, 'New time');
+  body += textAction(258, 309, 108, "Can't do");
+  body += compactRow(377, '02', 'emblem.ritual.evening', solo ? 'Quiet evening ritual' : 'Evening ritual', '8:30 PM · 6 min');
+  body += compactRow(449, solo ? '—' : '03', 'mark.check-in', 'Daily check-in', solo ? 'Private unless you choose to share' : 'Optional · private until shared');
   if (!solo) {
-    body += line(20, 459, 370, 459, color.deepOlive, 1, 0.55);
-    body += asset('state.acknowledged', 22, 474, 24, 24, color.terracotta, 0.95);
-    body += text(56, 484, 'MORGAN RESPONDED · 12 MIN AGO', 9, color.terracotta, { weight: 600, tracking: 1.2 });
-    body += text(56, 521, roleVariant ? '“I felt the care in that.”' : '“I noticed your care.”', 22, color.terracotta, { family: 'Cormorant Garamond', weight: 500 });
-    body += line(20, 548, 370, 548, color.deepOlive, 1, 0.55);
-    body += text(20, 580, 'LATER / OPTIONAL', 10, color.warmGray, { weight: 600, tracking: 1.5 });
-    body += text(318, 580, 'Show 5', 12, color.stone, { weight: 550 });
-    body += rect(354, 567, 18, 18, color.darkMoss, 9, color.deepOlive, 1);
-    body += text(363, 580, '5', 10, color.stone, { weight: 600, anchor: 'middle' });
+    body += line(20, 529, 370, 529, color.deepOlive, 1, 0.55);
+    body += asset('state.acknowledged', 22, 544, 24, 24, color.terracotta, 0.95);
+    body += text(56, 554, 'MORGAN RESPONDED · 12 MIN AGO', 9, color.stone, { weight: 600, tracking: 1.2 });
+    body += text(56, 591, roleVariant ? '“I felt the care in that.”' : '“I noticed your care.”', 24, color.terracotta, { family: 'Cormorant Garamond', weight: 500 });
+    body += line(20, 618, 370, 618, color.deepOlive, 1, 0.55);
+    body += text(20, 650, 'LATER / OPTIONAL', 10, color.warmGray, { weight: 600, tracking: 1.5 });
+    body += text(318, 650, 'Show 5', 12, color.stone, { weight: 550 });
+    body += rect(354, 637, 18, 18, color.darkMoss, 9, color.deepOlive, 1);
+    body += text(363, 650, '5', 10, color.stone, { weight: 600, anchor: 'middle' });
   } else {
-    body += line(20, 459, 370, 459, color.deepOlive, 1, 0.55);
-    body += asset('icon.private-space', 22, 478, 26, 26, color.warmGray, 0.8);
-    body += text(58, 487, 'SOLO RHYTHM', 10, color.warmGray, { weight: 600, tracking: 1.4 });
-    body += multiline(58, 520, ['Only you can see these items.', 'Nothing is shared automatically.'], 15, 22, color.stone, { weight: 450 });
-    body += line(20, 582, 370, 582, color.deepOlive, 1, 0.55);
-    body += text(20, 614, 'LATER / OPTIONAL', 10, color.warmGray, { weight: 600, tracking: 1.5 });
-    body += text(318, 614, 'Show 3', 12, color.stone, { weight: 550 });
+    body += line(20, 529, 370, 529, color.deepOlive, 1, 0.55);
+    body += asset('icon.private-space', 22, 548, 26, 26, color.warmGray, 0.8);
+    body += text(58, 557, 'SOLO RHYTHM', 10, color.warmGray, { weight: 600, tracking: 1.4 });
+    body += multiline(58, 590, ['Only you can see these items.', 'Nothing is shared automatically.'], 15, 22, color.stone, { weight: 450 });
+    body += line(20, 652, 370, 652, color.deepOlive, 1, 0.55);
+    body += text(20, 684, 'LATER / OPTIONAL', 10, color.warmGray, { weight: 600, tracking: 1.5 });
+    body += text(318, 684, 'Show 3', 12, color.stone, { weight: 550 });
   }
   body += text(20, 716, 'Relationship day ends at 2:00 AM', 10, color.warmGray, { opacity: 0.56 });
   return frame(body, { solo });
@@ -188,9 +194,9 @@ function defaultState(options = {}) {
 function expandedState() {
   let body = text(20, 82, '8 ITEMS · 3 PRIORITY', 10, color.warmGray, { weight: 600, tracking: 1.8 });
   body += compactRow(103, '01', 'mark.authority', 'Prepare the bedroom', 'From Morgan · due 9:00 PM', { selected: true });
-  body += compactRow(174, '02', 'emblem.ritual.evening', 'Evening ritual', '8:30 PM · 6 min');
-  body += compactRow(245, '03', 'mark.check-in', 'Daily check-in', 'Optional · private until shared');
-  body += text(20, 326, 'LATER / OPTIONAL · 5', 10, color.warmGray, { weight: 600, tracking: 1.5 });
+  body += compactRow(175, '02', 'emblem.ritual.evening', 'Evening ritual', '8:30 PM · 6 min');
+  body += compactRow(247, '03', 'mark.check-in', 'Daily check-in', 'Optional · private until shared');
+  body += text(20, 332, 'LATER / OPTIONAL · 5', 10, color.warmGray, { weight: 600, tracking: 1.5 });
   const later = [
     ['04', 'Read Morgan’s note', 'When you are ready'],
     ['05', 'Lay out tomorrow’s clothes', 'Before sleep'],
@@ -199,14 +205,14 @@ function expandedState() {
     ['08', 'Review the weekend plan', 'Tomorrow · no action yet'],
   ];
   later.forEach(([number, titleValue, meta], index) => {
-    const y = 350 + index * 64;
+    const y = 350 + index * 72;
     body += text(24, y + 23, number, 10, color.warmGray, { weight: 600, tracking: 1.2 });
     body += text(58, y + 18, titleValue, 14, color.stone, { weight: 520 });
     body += text(58, y + 38, meta, 10, color.warmGray, { opacity: 0.68 });
-    body += line(58, y + 55, 366, y + 55, color.deepOlive, 1, 0.35);
+    body += line(58, y + 63, 366, y + 63, color.deepOlive, 1, 0.35);
   });
-  body += text(20, 700, 'Show less', 12, color.stone, { weight: 550 });
-  body += text(370, 700, 'Server order · last synced now', 9, color.warmGray, { anchor: 'end', opacity: 0.56 });
+  body += text(20, 734, 'Show less', 12, color.stone, { weight: 550 });
+  body += text(370, 734, 'Server order · last synced now', 9, color.warmGray, { anchor: 'end', opacity: 0.56 });
   return frame(body);
 }
 
@@ -261,9 +267,9 @@ function offlineState() {
   body += text(36, 114, 'Read-only until the server reconnects.', 11, color.stone, { opacity: 0.84 });
   body += text(20, 158, 'THREE CONFIRMED ITEMS', 10, color.warmGray, { weight: 600, tracking: 1.7 });
   body += compactRow(182, '01', 'mark.authority', 'Prepare the bedroom', 'From Morgan · due 9:00 PM', { selected: true });
-  body += compactRow(253, '02', 'emblem.ritual.evening', 'Evening ritual', '8:30 PM · 6 min');
-  body += compactRow(324, '03', 'mark.check-in', 'Daily check-in', 'Optional · private until shared');
-  body += line(20, 410, 370, 410, color.deepOlive, 1, 0.52);
+  body += compactRow(254, '02', 'emblem.ritual.evening', 'Evening ritual', '8:30 PM · 6 min');
+  body += compactRow(326, '03', 'mark.check-in', 'Daily check-in', 'Optional · private until shared');
+  body += line(20, 416, 370, 416, color.deepOlive, 1, 0.52);
   body += text(20, 445, 'Actions are paused offline', 15, color.stone, { weight: 550 });
   body += multiline(20, 475, ['Complete, Discuss, New Time and Can’t Do', 'will return after current truth is confirmed.'], 12, 19, color.warmGray, { opacity: 0.75 });
   body += button(20, 548, 350, 'Try to reconnect', { height: 56, outline: true });
@@ -358,6 +364,13 @@ async function main() {
     preserved_reference: 'design/screens/SCR-01-today/preview.webp',
     board: 'design/qa/reference/today-b3-state-family-board.png',
     tokens: tokenSource.meta.freezeId,
+    control_geometry: {
+      primary_action_height_dp: 56,
+      secondary_action_touch_target_dp: 48,
+      operational_row_height_dp: 72,
+      bottom_navigation_height_dp: 80,
+      result: 'pass',
+    },
     semantic_asset_ids: JSON.parse(fs.readFileSync(path.join(candidateRoot, 'today-b3-spec.json'), 'utf8')).assets,
   };
   fs.writeFileSync(path.join(referenceRoot, 'today-b3-state-family-validation.json'), `${JSON.stringify(report, null, 2)}\n`);

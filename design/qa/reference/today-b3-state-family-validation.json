@@ -1,6 +1,6 @@
 {
   "candidate_id": "SCR-01-REV-2-B3",
-  "generated_at": "2026-08-29T00:26:59.411Z",
+  "generated_at": "2026-08-29T00:47:35.429Z",
   "result": "pass",
   "viewport": {
     "width": 390,
@@ -57,6 +57,13 @@
   "preserved_reference": "design/screens/SCR-01-today/preview.webp",
   "board": "design/qa/reference/today-b3-state-family-board.png",
   "tokens": "TOKEN-FREEZE-B2-V1",
+  "control_geometry": {
+    "primary_action_height_dp": 56,
+    "secondary_action_touch_target_dp": 48,
+    "operational_row_height_dp": 72,
+    "bottom_navigation_height_dp": 80,
+    "result": "pass"
+  },
   "semantic_asset_ids": [
     "mark.presence",
     "mark.authority",

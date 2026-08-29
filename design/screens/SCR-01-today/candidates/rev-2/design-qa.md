@@ -11,6 +11,8 @@ Comparison input: `design/qa/reference/today-b3-state-family-board.png`, contain
 - No partner or item detail appears before current authorization is confirmed.
 - Offline content is labeled last-confirmed/read-only and exposes no mutation affordance.
 - Role wording changes without removing Complete, Discuss, New Time or Can't Do.
+- The first priority uses a 56dp primary action and three distinct 48dp secondary touch targets, matching Token Freeze B-2.
+- Compact priority and Later rows use the frozen 72dp operational-row height; small operational labels remain neutral while Terracotta is reserved for marks and large partner-authored copy.
 - Solo state has no partner-presence or partner-response module and explicitly states private visibility.
 - 390 × 844 previews and 3× lossless sources were generated for all nine new states.
 
