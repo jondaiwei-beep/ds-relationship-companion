@@ -137,15 +137,17 @@ void main() {
 
   group('Typography freeze', () {
     test('eight typography roles use bundled families', () {
-      expect(DsTextStyles.displayRitual.fontFamily, DsTextStyles.displayFamily);
-      expect(
-          DsTextStyles.displayPartner.fontFamily, DsTextStyles.displayFamily);
-      expect(DsTextStyles.titlePage.fontFamily, DsTextStyles.uiFamily);
-      expect(DsTextStyles.bodyPrimary.fontFamily, DsTextStyles.uiFamily);
-      expect(DsTextStyles.bodySecondary.fontFamily, DsTextStyles.uiFamily);
-      expect(DsTextStyles.labelAction.fontFamily, DsTextStyles.uiFamily);
-      expect(DsTextStyles.labelRitual.fontFamily, DsTextStyles.uiFamily);
-      expect(DsTextStyles.navLabel.fontFamily, DsTextStyles.uiFamily);
+      // fontFamily carries the package prefix; the family name is its tail.
+      String family(TextStyle s) => s.fontFamily!.split('/').last;
+
+      expect(family(DsTextStyles.displayRitual), DsTextStyles.displayFamily);
+      expect(family(DsTextStyles.displayPartner), DsTextStyles.displayFamily);
+      expect(family(DsTextStyles.titlePage), DsTextStyles.uiFamily);
+      expect(family(DsTextStyles.bodyPrimary), DsTextStyles.uiFamily);
+      expect(family(DsTextStyles.bodySecondary), DsTextStyles.uiFamily);
+      expect(family(DsTextStyles.labelAction), DsTextStyles.uiFamily);
+      expect(family(DsTextStyles.labelRitual), DsTextStyles.uiFamily);
+      expect(family(DsTextStyles.navLabel), DsTextStyles.uiFamily);
     });
 
     test('frozen size and line-height values match typography.md', () {
@@ -163,6 +165,31 @@ void main() {
       check(DsTextStyles.labelAction, 16, 20, 0.1);
       check(DsTextStyles.labelRitual, 12, 16, 2.4);
       check(DsTextStyles.navLabel, 12, 16, 0);
+    });
+
+    test('every role resolves its font from this package, not the host', () {
+      // Without the package qualifier Flutter looks the bare family name up in
+      // the host application, finds nothing, and silently substitutes a
+      // platform font. The screen still renders, so nothing fails — it just
+      // stops being the type system.
+      const roles = <TextStyle>[
+        DsTextStyles.displayRitual,
+        DsTextStyles.displayPartner,
+        DsTextStyles.titlePage,
+        DsTextStyles.bodyPrimary,
+        DsTextStyles.bodySecondary,
+        DsTextStyles.labelAction,
+        DsTextStyles.labelRitual,
+        DsTextStyles.navLabel,
+      ];
+      expect(roles, hasLength(8));
+      for (final role in roles) {
+        expect(
+          role.fontFamily,
+          startsWith('packages/ds_relationship_companion/'),
+          reason: '${role.fontSize}px role would fall back to a system font',
+        );
+      }
     });
 
     test('the display face is reserved for ritual and partner voice', () {
