@@ -30,7 +30,8 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 | `client/lib/app/` + `platform/session/` | App shell: router, auth guard, session lifecycle, shared form controls. 119 client tests. |
 | `client/lib/features/entrance/` | Auth command layer. The three screens it serves are still gated. |
 | `client/lib/features/invite/` | Invite command layer. `SCR-09`/`SCR-10` gated; their lifecycle states are designed. |
-| `client/lib/features/activation/` | Activation command layer. `SCR-31/07/08/12` gated; state family specified. |
+| `client/lib/features/activation/` | Activation command layer. `SCR-31/07/08/12` gated; state family specified and rendered. |
+| `design/screens/` | Every Phase 1 screen now has rendered states: entrance 18, activation 18, core loop 18, Attention 6, invite 5. |
 | Everything else | 34 screens, gates closed. |
 
 ## What is verified, and how
@@ -62,9 +63,16 @@ One branch: `main`. One remote: `git@github.com:jondaiwei-beep/ds-relationship-c
 
 ## Open blockers
 
-**Approval** — nine of the eleven screens in the vertical slice are
-`candidate_for_approval`. The design exists; the gate needs the product and
-design owner. Never change a gate yourself.
+**Approval, and now only approval.** Every screen in the Phase 1 slice has a
+state family, acceptance criteria where it needed them, and a command layer
+underneath that has been walked end to end against a real server. What is
+left is a gate change, which is the product and design owner's. Never change
+one yourself.
+
+The one exception is `SCR-11` Mutual Consent, which correctly has no design:
+its own contract says "do not build independently; merge the useful trust
+language into `SCR-10`". That is a copy task on Web Join, not a missing
+screen.
 
 **The entrance names the product before anyone signs in** — `SCR-04` reads
 "D/s Relationship Companion" and "the dynamic you share" on a signed-out
