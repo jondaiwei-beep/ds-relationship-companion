@@ -364,7 +364,7 @@ function composer(o = {}) {
 // ---------------------------------------------------------------------------
 
 function received(o = {}) {
-  const { wordless = false, loading = false, error = null } = o;
+  const { wordless = false, loading = false, error = null, offline = false } = o;
 
   let b = header('Acknowledgement', loading || error ? null : 'Morgan is present');
 
@@ -415,12 +415,101 @@ function received(o = {}) {
 
   b += text(W / 2, 610, 'RECEIVED AT 9:26 PM', 10, color.muted,
     { tracking: 1.8, anchor: 'middle' });
-  b += primary(668, 'Close ritual');
+
+  if (offline) {
+    // Their words already arrived and are already on this device. Hiding them
+    // would lose a human response the person has every right to keep reading —
+    // the opposite of what offline should protect. What is withheld is any
+    // claim that this is still the latest state.
+    b += banner(632, "You're offline — this is the last confirmed response.");
+    b += primary(692, 'Close ritual');
+  } else {
+    b += primary(668, 'Close ritual');
+  }
   b += nav();
   return page(b);
 }
 
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// The recovery states REQ-RECOVERY-001 requires and rev-3 had not yet drawn:
+// authorization loss on all three screens, loading on SCR-02 and SCR-33, and
+// offline on SCR-03.
+//
+// None of these three screens registers a lock mark, so authorization loss is
+// carried by geometry — an empty outlined circle where the screen's own mark
+// would sit — rather than by an icon borrowed from another screen's contract.
+
+/// Authorization loss, shared by all three core-loop screens.
+///
+/// It withholds the relationship entirely: no partner name, no expectation
+/// title, no note, no navigation. This is the one place in the loop where the
+/// person may not be who the session says they are, and the loop's content is
+/// exactly what must not leak. No `nav()`: the tabs name the product's
+/// surfaces, which is itself something to withhold on a shared device.
+function authLoss(where) {
+  let b = text(W / 2, 40, 'PRIVATE', 12, color.muted, {
+    anchor: 'middle', weight: 500, tracking: 2.4,
+  });
+  b += `<circle cx="${W / 2}" cy="238" r="40" fill="none" stroke="${color.hairline}" stroke-width="1"/>`;
+  b += text(W / 2, 344, 'Sign in to continue.', 34, color.primary, {
+    family: 'Cormorant Garamond', weight: 500, anchor: 'middle',
+  });
+  b += text(W / 2, 386, 'Your private space is hidden.', 15, color.secondary, {
+    anchor: 'middle',
+  });
+  b += text(W / 2, 412, `Sign in again to return to ${where}.`, 13, color.muted, {
+    anchor: 'middle',
+  });
+  b += primary(486, 'Sign in');
+  b += text(W / 2, 580, 'No relationship details are shown on this screen.', 12,
+    color.muted, { anchor: 'middle' });
+  return page(b);
+}
+
+/// SCR-02 loading. The two-node progress is the screen's whole argument, so it
+/// holds its geometry with neither node filled — the same reasoning as SCR-09's
+/// lifecycle track. A filled first node would claim the completion landed.
+function completionLoading() {
+  let b = header('Evening ritual', null);
+  b += text(M, 128, 'CHECKING', 11, color.muted, { tracking: 2.4, weight: 500 });
+  b += text(M, 188, 'Confirming where', 34, color.primary, {
+    family: 'Cormorant Garamond', weight: 500,
+  });
+  b += text(M, 230, 'this stands.', 34, color.primary, {
+    family: 'Cormorant Garamond', weight: 500,
+  });
+  const left = 88;
+  const right = W - 88;
+  b += rect(left, 331, right - left, 1, color.hairline);
+  b += `<circle cx="${left}" cy="331" r="9" fill="none" stroke="${color.hairline}" stroke-width="1.5"/>`;
+  b += `<circle cx="${right}" cy="331" r="9" fill="none" stroke="${color.hairline}" stroke-width="1.5"/>`;
+  b += text(left, 360, 'COMPLETED', 10, color.muted, { tracking: 1.4, anchor: 'middle' });
+  b += text(right, 360, 'RESPONSE', 10, color.muted, { tracking: 1.4, anchor: 'middle' });
+  b += text(M, 428, 'Nothing is shown until the server confirms it.', 14, color.muted);
+  b += nav();
+  return page(b);
+}
+
+/// SCR-33 loading. The composer withholds its four response paths until the
+/// occurrence is confirmed: offering Acknowledge before knowing the state is
+/// how a person sends into a moment that has already been answered.
+function composerLoading() {
+  let b = header('Respond', null);
+  b += text(M, 128, 'CHECKING', 11, color.muted, { tracking: 2.4, weight: 500 });
+  b += text(M, 188, 'Opening this', 34, color.primary, {
+    family: 'Cormorant Garamond', weight: 500,
+  });
+  b += text(M, 230, 'moment.', 34, color.primary, {
+    family: 'Cormorant Garamond', weight: 500,
+  });
+  b += text(M, 300, 'Your response options appear once it is confirmed.', 14, color.muted);
+  b += rect(M, 344, W - M * 2, 1, color.hairline);
+  b += primary(560, 'Send', { disabled: true });
+  return page(b);
+}
+
 
 const screens = [
   {
@@ -431,6 +520,8 @@ const screens = [
       ['offline', 'OFFLINE', () => completion({ offline: true })],
       ['already-completed', 'ALREADY DONE', () => completion({ alreadyDone: true })],
       ['answered', 'PARTNER REPLIED', () => completion({ answered: true })],
+      ['loading', 'CHECKING', () => completionLoading()],
+      ['authorization-loss', 'SIGN IN AGAIN', () => authLoss('Today')],
     ],
   },
   {
@@ -449,6 +540,8 @@ const screens = [
       })],
       ['offline', 'OFFLINE', () => composer({ selected: 1, offline: true, suggestion: false })],
       ['already-answered', 'ALREADY ANSWERED', () => composer({ alreadyAnswered: true })],
+      ['loading', 'CHECKING', () => composerLoading()],
+      ['authorization-loss', 'SIGN IN AGAIN', () => authLoss('your response')],
     ],
   },
   {
@@ -457,6 +550,8 @@ const screens = [
       ['wordless', 'WORDLESS', () => received({ wordless: true })],
       ['loading', 'LOADING', () => received({ loading: true })],
       ['error', 'RETRY', () => received({ error: true })],
+      ['offline', 'OFFLINE', () => received({ offline: true })],
+      ['authorization-loss', 'SIGN IN AGAIN', () => authLoss('their response')],
     ],
   },
 ];

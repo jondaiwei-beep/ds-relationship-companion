@@ -1,6 +1,6 @@
 {
   "candidate_id": "CORE-LOOP-REV-3",
-  "generated_at": "2026-08-30T00:22:36.125Z",
+  "generated_at": "2026-08-30T05:08:24.911Z",
   "result": "pass",
   "viewport": {
     "width": 390,
@@ -40,6 +40,16 @@
       "screen": "SCR-02",
       "key": "answered",
       "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/answered/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "loading",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/loading/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/authorization-loss/preview.webp"
     },
     {
       "screen": "SCR-33",
@@ -82,6 +92,16 @@
       "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/already-answered/preview.webp"
     },
     {
+      "screen": "SCR-33",
+      "key": "loading",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/loading/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/authorization-loss/preview.webp"
+    },
+    {
       "screen": "SCR-03",
       "key": "default",
       "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/preview.webp"
@@ -100,6 +120,16 @@
       "screen": "SCR-03",
       "key": "error",
       "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-03",
+      "key": "offline",
+      "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-03",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/states/authorization-loss/preview.webp"
     }
   ],
   "board": "design/qa/reference/core-loop-state-family-board.png",
