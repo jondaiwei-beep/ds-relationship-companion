@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
@@ -16,6 +17,11 @@ import 'session_resolving.dart';
 /// the invitation entry point — none of which is safe to re-invent.
 abstract final class Routes {
   static const today = '/today';
+  /// Where a signed-out person lands. SCR-04's contract is explicit — "first
+  /// open or signed-out launch" — and SCR-05 is reached by choosing to sign in
+  /// from here, not by being sent there.
+  static const entrance = '/entrance';
+  static const createAccount = '/create-account';
   static const signIn = '/sign-in';
   static const authCallback = '/auth/callback';
   static const invite = '/invite/:token';
@@ -36,6 +42,8 @@ abstract final class Routes {
   /// link is not joining — joining is an explicit act on the page.
   static bool isPublic(String location) =>
       location.startsWith('/invite/') ||
+      location == entrance ||
+      location == createAccount ||
       location == signIn ||
       location == authCallback;
 }
@@ -82,7 +90,7 @@ GoRouter createRouter(Ref ref) {
         final destination = _destinationFrom(state);
         return session.isAuthenticated
             ? destination
-            : '${Routes.signIn}?returnTo=${Uri.encodeComponent(destination)}';
+            : '${Routes.entrance}?returnTo=${Uri.encodeComponent(destination)}';
       }
 
       final public = Routes.isPublic(location);
@@ -91,10 +99,11 @@ GoRouter createRouter(Ref ref) {
         // The destination travels in the URL so it survives a Web refresh and
         // a magic-link callback opened in a new tab.
         final returnTo = Uri.encodeComponent(state.uri.toString());
-        return '${Routes.signIn}?returnTo=$returnTo';
+        return '${Routes.entrance}?returnTo=$returnTo';
       }
 
-      if (session.isAuthenticated && location == Routes.signIn) {
+      if (session.isAuthenticated &&
+          (location == Routes.signIn || location == Routes.entrance)) {
         return _destinationFrom(state);
       }
 
@@ -134,8 +143,23 @@ GoRouter createRouter(Ref ref) {
         builder: (_, _) => const SessionResolving(),
       ),
       GoRoute(
+        path: Routes.entrance,
+        builder: (context, state) => EntranceScreen(
+          // Registration is its own flow; the entrance only opens the door to
+          // it. Wiring `Continue` straight to a network call here would make
+          // this screen own a command it cannot show the result of.
+          onContinue: () => context.go(Routes.createAccount),
+          onSignIn: () => context.go(Routes.signIn),
+          notice: _noticeFor(ref.read(sessionProvider)),
+        ),
+      ),
+      GoRoute(
         path: Routes.signIn,
         builder: (_, _) => const NotBuiltYet(screen: 'SCR-05 Sign In'),
+      ),
+      GoRoute(
+        path: Routes.createAccount,
+        builder: (_, _) => const NotBuiltYet(screen: 'SCR-06 Create Account'),
       ),
       GoRoute(
         path: Routes.authCallback,
@@ -152,6 +176,17 @@ GoRouter createRouter(Ref ref) {
     ],
   );
 }
+
+/// What the entrance should say about the session, if anything.
+///
+/// Only an expired session earns a line. Being signed out because you asked to
+/// be, or because you have never signed in, is the ordinary case and the
+/// entrance says nothing about it — an app that explains your own sign-out back
+/// to you is talking about the wrong thing.
+EntranceNotice? _noticeFor(Session session) => switch (session) {
+  SignedOut(reason: SignedOutReason.expired) => EntranceNotice.sessionEnded,
+  _ => null,
+};
 
 /// Where a redirect should land after the session resolves.
 ///
@@ -172,7 +207,10 @@ String _destinationFrom(GoRouterState state) {
   }
   // Never bounce back to the waiting room or the entrance: both would loop.
   final path = Uri.tryParse(returnTo)?.path;
-  if (path == null || path == Routes.holding || path == Routes.signIn) {
+  if (path == null ||
+      path == Routes.holding ||
+      path == Routes.signIn ||
+      path == Routes.entrance) {
     return Routes.today;
   }
   return returnTo;

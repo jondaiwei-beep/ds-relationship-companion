@@ -108,7 +108,7 @@ void main() {
       await container.read(sessionProvider.notifier).restore();
       await tester.pumpAndSettle();
 
-      expect(h.location, startsWith(Routes.signIn));
+      expect(h.location, startsWith(Routes.entrance));
       expect(
         Uri.parse(h.location).queryParameters['returnTo'],
         '/dynamics/abc/today',
@@ -141,7 +141,7 @@ void main() {
 
       final h = await pump(tester, at: Routes.today);
 
-      expect(h.location, startsWith(Routes.signIn));
+      expect(h.location, startsWith(Routes.entrance));
       expect(find.byType(TodayScreen), findsNothing);
     });
 
@@ -230,7 +230,7 @@ void main() {
         reason: 'the guard must react to the session ending, not only to '
             'navigation — otherwise content stays on a borrowed device',
       );
-      expect(h.location, startsWith(Routes.signIn));
+      expect(h.location, startsWith(Routes.entrance));
     });
   });
 
