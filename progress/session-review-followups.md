@@ -242,3 +242,36 @@ never been imported; `initializeTimeZones()` now runs in both entry points.
 
 Falls back to the device zone only when the server did not state one (an older
 server) or named a zone this build's database does not know.
+
+### Two systemic gaps between the state matrices and REQ-RECOVERY-001
+
+Found while clearing the last blocked rows in Phase 1, and both affect all 31
+screen contracts rather than any one screen.
+
+**1. No screen has a `Stale` row.** `REQ-RECOVERY-001` names six behaviours —
+*loading, empty, error/retry, offline, **stale**, authorization-loss* — and the
+matrix template carries rows for five of them. Zero of 31 matrices mention
+stale.
+
+It is not unhandled in practice: SCR-01 folds it into Offline (*"Only
+last-confirmed cache is available / Label timestamp, make list read-only"*), and
+SCR-09 rev-3 and SCR-03 rev-3 do the same. But no contract states that, so the
+requirement reads as unmet on every screen and the coverage is invisible.
+
+**Owner decision:** either add a `Stale` row to the template and point it at the
+offline treatment, or amend `REQ-RECOVERY-001` to say stale is a qualifier on
+offline rather than a seventh state.
+
+**2. `Role/partner variant` is in every matrix and in no requirement.**
+`REQ-RECOVERY-001` does not list it. It appears to have come from SCR-01's
+matrix, where it is real and carries a genuine principle (*"Custom roles may
+alter wording, never rights"*), and then propagated to screens where it means
+nothing — including three pre-authentication screens that have no role at all.
+
+Resolved per screen from each contract rather than by template. Notably, on
+SCR-02 and SCR-03 it resolves to *not applicable*, and the schema is why:
+`memberships.role_preset` is `DOMINANT | SUBMISSIVE | SWITCH | CUSTOM` with **no
+free-text label column**, and V7 states it is *"never used for authorization"*.
+So a custom role cannot alter a word or a right on those screens — the display
+name is the only variable. SCR-01's rule is aspirational for a capability the
+schema does not yet have.

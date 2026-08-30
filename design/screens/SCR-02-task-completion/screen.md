@@ -57,11 +57,11 @@ The revised state removes the misleading “Send for acknowledgement” action. 
 |---|---|---|---|
 | Default | TBD | Match approved hierarchy after behavior alignment | candidate rev-3 |
 | Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-3 |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
+| Empty | Not applicable — a detail screen opens on one occurrence; a missing one is Error, not Empty | An occurrence that is gone resolves through error, never a blank surface | n/a — see note |
 | Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-3 |
 | Offline | TBD | Show availability and queued-action behavior | candidate rev-3 |
 | Authorization loss | TBD | Hide protected data and offer safe recovery | candidate rev-3 |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Role/partner variant | Not applicable to this surface — `role_preset` is never used for authorization and carries no free-text label, so it alters no word here | The partner's display name is the only variable; completion, privacy and agency are identical for every preset | n/a — see note |
 
 ## 4. Asset contract
 

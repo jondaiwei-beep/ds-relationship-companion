@@ -240,7 +240,10 @@ function page(body) {
 // SCR-04 · Private Entrance
 // ---------------------------------------------------------------------------
 
-function entrance({ offline = false, opening = false } = {}) {
+function entrance({
+  offline = false, opening = false, loading = false, error = false,
+  authLoss = false,
+} = {}) {
   let b = text(W / 2, 46, 'Companion', 12, color.muted, {
     anchor: 'middle', weight: 500, tracking: 2.4,
   });
@@ -258,6 +261,20 @@ function entrance({ offline = false, opening = false } = {}) {
   b += text(W / 2, 512, 'Private. Considered. Yours.', 12, color.muted, {
     anchor: 'middle', tracking: 2.6,
   });
+
+  // Context on the same composition rather than a separate page: the entrance
+  // is where every recovery path already lands, so replacing it with a
+  // "sign in again" screen would send a person to the screen they are on.
+  if (loading || error || authLoss) {
+    b += rect(MARGIN, 556, W - MARGIN * 2, 44, color.actionDisabledBg, 8);
+    const line = loading
+      ? 'Checking your session…'
+      : (authLoss
+        ? 'Your session ended. Enter again when you are ready.'
+        : "We couldn't reach the server. Try again.");
+    b += text(W / 2, 583, line, 12,
+      error ? color.error : color.secondary, { anchor: 'middle' });
+  }
 
   if (offline) {
     b += rect(MARGIN, 556, W - MARGIN * 2, 44, color.actionDisabledBg, 8);
@@ -373,6 +390,7 @@ function createAccount(o = {}) {
   const {
     ageChecked = false, ageError = false, fieldError = null,
     busy = false, uncertain = false, offline = false,
+    error = false, authLoss = false,
   } = o;
 
   let b = backArrow();
@@ -386,6 +404,16 @@ function createAccount(o = {}) {
   b += thread(W / 2, 214, 296, { glow: true });
 
   let y = 330;
+  // An expired session while creating an account is not a loss of protected
+  // content — there is none yet — so it says what happened and continues.
+  if (error || authLoss) {
+    b += rect(MARGIN, 310, W - MARGIN * 2, 44, color.actionDisabledBg, 8);
+    b += text(W / 2, 337,
+      authLoss ? 'Your session ended. Nothing you typed was sent.'
+               : "We couldn't create the account. Try again.",
+      13, error ? color.error : color.secondary, { anchor: 'middle' });
+    y = 380;
+  }
   if (uncertain || offline) {
     b += rect(MARGIN, 310, W - MARGIN * 2, offline ? 44 : 62, color.actionDisabledBg, 8);
     if (offline) {
@@ -445,6 +473,9 @@ const screens = [
       ['default', 'DEFAULT', () => entrance()],
       ['opening', 'OPENING', () => entrance({ opening: true })],
       ['offline', 'OFFLINE', () => entrance({ offline: true })],
+      ['loading', 'CHECKING', () => entrance({ loading: true })],
+      ['error', 'RETRY', () => entrance({ error: true })],
+      ['authorization-loss', 'SESSION ENDED', () => entrance({ authLoss: true })],
     ],
   },
   {
@@ -476,6 +507,10 @@ const screens = [
         ageChecked: true, uncertain: true,
       })],
       ['offline', 'OFFLINE', () => createAccount({ ageChecked: true, offline: true })],
+      ['error', 'RETRY', () => createAccount({ ageChecked: true, error: true })],
+      ['authorization-loss', 'SESSION ENDED', () => createAccount({
+        ageChecked: true, authLoss: true,
+      })],
     ],
   },
 ];

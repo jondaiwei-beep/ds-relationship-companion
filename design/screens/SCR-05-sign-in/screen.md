@@ -46,11 +46,11 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 |---|---|---|---|
 | Default | TBD | Match approved hierarchy after behavior alignment | candidate rev-2 |
 | Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-2 |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
+| Empty | Not applicable — a form is unfilled, never empty | Unfilled fields are Default and validation, never an empty surface | n/a — see note |
 | Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-2 |
 | Offline | TBD | Show availability and queued-action behavior | candidate rev-2 |
 | Authorization loss | TBD | Hide protected data and offer safe recovery | candidate rev-2 |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Role/partner variant | Not applicable — pre-authentication, no role context exists | A preserved invite is a context variant, not a role variant | n/a — see note |
 
 ## 4. Asset contract
 

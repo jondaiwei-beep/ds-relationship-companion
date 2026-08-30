@@ -345,7 +345,10 @@ const RHYTHM = [
 ];
 
 function rhythm(o = {}) {
-  const { loading = false, busy = false, error = null, offline = false, uncertain = false } = o;
+  const {
+    loading = false, busy = false, error = null, offline = false,
+    uncertain = false, solo = false,
+  } = o;
 
   let b = step(4);
   b += eyebrow(96, 'YOUR STARTING RHYTHM');
@@ -394,7 +397,12 @@ function rhythm(o = {}) {
     b += text(M + 128, y + 12, kind, 9, C.muted, { weight: 600, tracking: 1.5 });
     b += text(M + 128, y + 38, title, 19, C.primary,
       { family: 'Cormorant Garamond', weight: 500 });
-    b += text(M + 128, y + 60, meta, 11, C.muted);
+    // Solo has nobody to share it with; the expectation is named instead.
+    // Wording only — the item, its actions and its geometry are identical.
+    b += text(M + 128, y + 60,
+      solo && meta === 'Share what you need today.'
+        ? 'Name what you need today.' : meta,
+      11, C.muted);
     b += text(W - M, y + 38, 'Replace', 11, C.terra, { anchor: 'end', weight: 500 });
     b += rect(W - M - 46, y + 44, 46, 1, C.terra, 0, 'none', 1, 0.6);
     if (i < RHYTHM.length - 1) b += rect(M + 128, y + 84, 214, 1, C.line);
@@ -404,12 +412,76 @@ function rhythm(o = {}) {
   b += text(M + 42, 593, '+', 15, C.muted);
   b += text(M + 74, 593, 'Add another expectation', 13, C.secondary);
 
-  b += text(M, 660, 'Start light. Adjust together.', 12, C.muted);
+  // Solo has nobody to adjust *together* with, and the expectation is named
+  // rather than shared. Wording changes; the rhythm, the geometry and every
+  // action stay identical — a solo member has the same agency.
+  b += text(M, 660, solo ? 'Start light. Adjust as you go.'
+                         : 'Start light. Adjust together.', 12, C.muted);
   b += primary(716, busy ? 'Starting' : 'Start this rhythm', { busy });
   return page(b);
 }
 
 // ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// The recovery states REQ-RECOVERY-001 requires and rev-2/3 had not drawn.
+
+/// Authorization loss, shared by every activation step.
+///
+/// Setup is where a person states what they want from a relationship, so a
+/// half-finished wizard is sensitive in its own right. This withholds the step
+/// number too: "2 of 4" would disclose that setup is under way.
+function activationAuthLoss() {
+  let b = text(W / 2, 44, 'PRIVATE', 11, C.muted, {
+    anchor: 'middle', weight: 600, tracking: 1.9,
+  });
+  b += circle(W / 2, 236, 40, 'none', C.hairline, 1);
+  b += text(W / 2, 342, 'Sign in to continue.', 31, C.primary, {
+    family: 'Cormorant Garamond', weight: 500, anchor: 'middle',
+  });
+  b += text(W / 2, 382, 'Your setup so far is kept privately.', 14, C.secondary, {
+    anchor: 'middle',
+  });
+  b += text(W / 2, 408, 'Nothing was shared and nothing was lost.', 13, C.muted, {
+    anchor: 'middle',
+  });
+  b += primary(486, 'Sign in');
+  b += text(W / 2, 580, 'No relationship details are shown on this screen.', 12,
+    C.muted, { anchor: 'middle' });
+  return page(b);
+}
+
+/// SCR-07 loading. The two choices are withheld rather than skeletoned:
+/// "begin alone or with a partner" is the question this screen exists to ask,
+/// and a placeholder shaped like the answer pre-frames it.
+function rolesLoading() {
+  let b = step(2);
+  b += eyebrow(96, 'BEGIN TOGETHER');
+  b += heading(134, ['Who is beginning', 'this with you?']);
+  b += text(M, 214, 'Bringing your setup up to date…', 13, C.muted);
+  b += rect(M, 250, W - M * 2, 1, C.hairline);
+  b += primary(560, 'Continue', { busy: true });
+  return page(b);
+}
+
+/// SCR-07 error and offline. Nothing has reached the server at this step, so
+/// both say so plainly: the choice is still here and retrying costs nothing.
+function rolesRecovery({ offline = false } = {}) {
+  let b = step(2);
+  b += eyebrow(96, 'BEGIN TOGETHER');
+  b += heading(134, ['Who is beginning', 'this with you?']);
+  b += text(M, 214,
+    offline ? "You're offline. Your choice is kept on this device."
+            : "We couldn't save that just now.", 13, C.secondary);
+  b += text(M, 240,
+    offline ? 'It will be saved when you reconnect.'
+            : 'Nothing was lost — try again.', 13, C.muted);
+  b += banner(300, offline ? 'Offline — nothing has been sent yet.'
+                           : "Couldn't reach the server. Try again.",
+    { tone: offline ? 'muted' : 'error' });
+  b += primary(560, offline ? 'Try again' : 'Try again');
+  return page(b);
+}
 
 const screens = [
   {
@@ -424,6 +496,10 @@ const screens = [
       ['default', 'WITH A PARTNER', () => roles()],
       ['solo', 'FOR MYSELF', () => roles({ solo: true, named: false })],
       ['unnamed-role', 'NO ROLE NAMED', () => roles({ named: false })],
+      ['loading', 'CHECKING', () => rolesLoading()],
+      ['error', 'RETRY', () => rolesRecovery()],
+      ['offline', 'OFFLINE', () => rolesRecovery({ offline: true })],
+      ['authorization-loss', 'SIGN IN AGAIN', () => activationAuthLoss()],
     ],
   },
   {
@@ -434,6 +510,7 @@ const screens = [
       ['busy', 'SETTING UP', () => structure({ busy: true })],
       ['error', 'RETRY', () => structure({ error: "We couldn't set that up. Try again." })],
       ['offline', 'OFFLINE', () => structure({ offline: true })],
+      ['authorization-loss', 'SIGN IN AGAIN', () => activationAuthLoss()],
     ],
   },
   {
@@ -444,6 +521,8 @@ const screens = [
       ['error', 'RETRY', () => rhythm({ error: true })],
       ['offline', 'OFFLINE', () => rhythm({ offline: true })],
       ['uncertain', 'RESULT UNCERTAIN', () => rhythm({ uncertain: true })],
+      ['authorization-loss', 'SIGN IN AGAIN', () => activationAuthLoss()],
+      ['solo', 'FOR MYSELF', () => rhythm({ solo: true })],
     ],
   },
 ];

@@ -53,11 +53,11 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 |---|---|---|---|
 | Default | Use candidate revision 2 after approval | Structure + context hierarchy | candidate |
 | Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-3 |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
+| Empty | Not applicable — the structure choices are static content | An unchosen level is Default, never an empty surface | n/a — see note |
 | Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-3 |
 | Offline | TBD | Show availability and queued-action behavior | candidate rev-3 |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Authorization loss | TBD | Hide protected data and offer safe recovery | candidate rev-3 |
+| Role/partner variant | Solo omits partner-dependent context; Couple adds shared context without implying partner consent | Identical geometry and identical agency in both | candidate rev-3 |
 
 ## 4. Asset contract
 

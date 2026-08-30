@@ -1,6 +1,6 @@
 {
   "candidate_id": "ACTIVATION-WIZARD",
-  "generated_at": "2026-08-30T01:58:31.797Z",
+  "generated_at": "2026-08-30T06:39:32.661Z",
   "result": "pass",
   "viewport": {
     "width": 390,
@@ -42,6 +42,26 @@
       "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/unnamed-role/preview.webp"
     },
     {
+      "screen": "SCR-07",
+      "key": "loading",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/loading/preview.webp"
+    },
+    {
+      "screen": "SCR-07",
+      "key": "error",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-07",
+      "key": "offline",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-07",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/authorization-loss/preview.webp"
+    },
+    {
       "screen": "SCR-08",
       "key": "default",
       "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/preview.webp"
@@ -72,6 +92,11 @@
       "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/offline/preview.webp"
     },
     {
+      "screen": "SCR-08",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/authorization-loss/preview.webp"
+    },
+    {
       "screen": "SCR-12",
       "key": "default",
       "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/preview.webp"
@@ -100,6 +125,16 @@
       "screen": "SCR-12",
       "key": "uncertain",
       "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/uncertain/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/authorization-loss/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "solo",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/solo/preview.webp"
     }
   ],
   "board": "design/qa/reference/activation-state-family-board.png",

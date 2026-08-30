@@ -45,12 +45,12 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
 | Default | TBD | Match approved hierarchy after behavior alignment | candidate rev-2 |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
+| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-2 |
+| Empty | Not applicable — the entrance always carries its own static content | Unfilled fields are Default and validation, never an empty surface | n/a — see note |
+| Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-2 |
 | Offline | TBD | Show availability and queued-action behavior | candidate rev-2 |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Authorization loss | TBD | Hide protected data and offer safe recovery | candidate rev-2 |
+| Role/partner variant | Not applicable — pre-authentication, no role context exists | No relationship content is exposed before authorization | n/a — see note |
 
 ## 4. Asset contract
 

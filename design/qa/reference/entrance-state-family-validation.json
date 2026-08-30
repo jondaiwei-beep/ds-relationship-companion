@@ -1,6 +1,6 @@
 {
   "candidate_id": "ENTRANCE-REV-2",
-  "generated_at": "2026-08-29T14:39:25.799Z",
+  "generated_at": "2026-08-30T06:37:47.738Z",
   "result": "pass",
   "viewport": {
     "width": 390,
@@ -26,6 +26,21 @@
       "screen": "SCR-04",
       "key": "offline",
       "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-04",
+      "key": "loading",
+      "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/states/loading/preview.webp"
+    },
+    {
+      "screen": "SCR-04",
+      "key": "error",
+      "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-04",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-04-private-entrance/candidates/rev-2/states/authorization-loss/preview.webp"
     },
     {
       "screen": "SCR-05",
@@ -101,6 +116,16 @@
       "screen": "SCR-06",
       "key": "offline",
       "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "error",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-06",
+      "key": "authorization-loss",
+      "preview": "design/screens/SCR-06-create-account/candidates/rev-2/states/authorization-loss/preview.webp"
     }
   ],
   "board": "design/qa/reference/entrance-state-family-board.png",

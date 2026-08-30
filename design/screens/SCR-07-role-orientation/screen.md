@@ -53,12 +53,12 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
 | Default | Use candidate revision 2 after approval | Mode + role selection hierarchy | candidate |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
-| Offline | TBD | Show availability and queued-action behavior | blocked |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-3 |
+| Empty | Not applicable — the preset choices are static content | An unchosen preset is Default, never an empty surface | n/a — see note |
+| Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-3 |
+| Offline | TBD | Show availability and queued-action behavior | candidate rev-3 |
+| Authorization loss | TBD | Hide protected data and offer safe recovery | candidate rev-3 |
+| Role/partner variant | Solo or Couple changes setup context; presets stay optional, editable, and never constitute consent | Identical geometry and identical agency in both | candidate rev-3 |
 
 ## 4. Asset contract
 
