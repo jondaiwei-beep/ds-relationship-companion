@@ -626,7 +626,11 @@ mixin _$TodayView {
 /// `null` when an older server did not send it, in which case the line is
 /// omitted rather than stating a boundary nobody chose. Make it required
 /// once staging is redeployed (plan item T1.6).
- int? get dayBoundaryMinutes;/// When the server last confirmed this list. Offline shows the last
+ int? get dayBoundaryMinutes;/// The Dynamic's IANA zone. REQ-TIME-001: due times are rendered here, not
+/// in the device's zone, so a travelling partner reads the same hour their
+/// partner set. `null` from a server that predates the field, in which
+/// case the device's zone is the only thing left to use.
+ String? get referenceTimezone;/// When the server last confirmed this list. Offline shows the last
 /// confirmed list with this timestamp rather than implying it is current.
  DateTime? get lastConfirmedAt;/// Total actionable items for the day, stated by the server.
  int get totalCount;/// At most three, in server order: the first carries editorial emphasis,
@@ -645,16 +649,16 @@ $TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.priorityItems, priorityItems)&&const DeepCollectionEquality().equals(other.laterItems, laterItems)&&const DeepCollectionEquality().equals(other.awaitingResponse, awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.priorityItems, priorityItems)&&const DeepCollectionEquality().equals(other.laterItems, laterItems)&&const DeepCollectionEquality().equals(other.awaitingResponse, awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(priorityItems),const DeepCollectionEquality().hash(laterItems),const DeepCollectionEquality().hash(awaitingResponse),recentResponse);
+int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(priorityItems),const DeepCollectionEquality().hash(laterItems),const DeepCollectionEquality().hash(awaitingResponse),recentResponse);
 
 @override
 String toString() {
-  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
+  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
 }
 
 
@@ -665,7 +669,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+ String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
 });
 
 
@@ -682,13 +686,14 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
   return _then(_self.copyWith(
 roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
 as int,relationshipDay: freezed == relationshipDay ? _self.relationshipDay : relationshipDay // ignore: cast_nullable_to_non_nullable
 as DateTime?,dayBoundaryMinutes: freezed == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
-as int?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
+as int?,referenceTimezone: freezed == referenceTimezone ? _self.referenceTimezone : referenceTimezone // ignore: cast_nullable_to_non_nullable
+as String?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
 as int,priorityItems: null == priorityItems ? _self.priorityItems : priorityItems // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,laterItems: null == laterItems ? _self.laterItems : laterItems // ignore: cast_nullable_to_non_nullable
@@ -791,10 +796,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
   return orElse();
 
 }
@@ -812,10 +817,10 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -832,10 +837,10 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
   return null;
 
 }
@@ -847,7 +852,7 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 @JsonSerializable()
 
 class _TodayView implements TodayView {
-  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse;
+  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes, this.referenceTimezone, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse;
   factory _TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
 
 /// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
@@ -867,6 +872,11 @@ class _TodayView implements TodayView {
 /// omitted rather than stating a boundary nobody chose. Make it required
 /// once staging is redeployed (plan item T1.6).
 @override final  int? dayBoundaryMinutes;
+/// The Dynamic's IANA zone. REQ-TIME-001: due times are rendered here, not
+/// in the device's zone, so a travelling partner reads the same hour their
+/// partner set. `null` from a server that predates the field, in which
+/// case the device's zone is the only thing left to use.
+@override final  String? referenceTimezone;
 /// When the server last confirmed this list. Offline shows the last
 /// confirmed list with this timestamp rather than implying it is current.
 @override final  DateTime? lastConfirmedAt;
@@ -914,16 +924,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._priorityItems, _priorityItems)&&const DeepCollectionEquality().equals(other._laterItems, _laterItems)&&const DeepCollectionEquality().equals(other._awaitingResponse, _awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._priorityItems, _priorityItems)&&const DeepCollectionEquality().equals(other._laterItems, _laterItems)&&const DeepCollectionEquality().equals(other._awaitingResponse, _awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(_priorityItems),const DeepCollectionEquality().hash(_laterItems),const DeepCollectionEquality().hash(_awaitingResponse),recentResponse);
+int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(_priorityItems),const DeepCollectionEquality().hash(_laterItems),const DeepCollectionEquality().hash(_awaitingResponse),recentResponse);
 
 @override
 String toString() {
-  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
+  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
 }
 
 
@@ -934,7 +944,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+ String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
 });
 
 
@@ -951,13 +961,14 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
   return _then(_TodayView(
 roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
 as int,relationshipDay: freezed == relationshipDay ? _self.relationshipDay : relationshipDay // ignore: cast_nullable_to_non_nullable
 as DateTime?,dayBoundaryMinutes: freezed == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
-as int?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
+as int?,referenceTimezone: freezed == referenceTimezone ? _self.referenceTimezone : referenceTimezone // ignore: cast_nullable_to_non_nullable
+as String?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
 as int,priorityItems: null == priorityItems ? _self._priorityItems : priorityItems // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,laterItems: null == laterItems ? _self._laterItems : laterItems // ignore: cast_nullable_to_non_nullable

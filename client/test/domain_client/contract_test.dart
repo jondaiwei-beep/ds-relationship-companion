@@ -67,10 +67,10 @@ void main() {
 
   test('parses a real /v1/dynamics/{id}/today response', () {
     // Captured live from https://ds-api.beforeweplay.com on 2026-08-27, with
-    // `kind`, `dayBoundaryMinutes` and `allowedActions` re-captured from
-    // localhost:8082 on 2026-08-30.
+    // `kind`, `dayBoundaryMinutes`, `allowedActions` and `referenceTimezone`
+    // re-captured from localhost:8082 on 2026-08-30.
     const raw =
-        '{"dayBoundaryMinutes":0,'
+        '{"dayBoundaryMinutes":0,"referenceTimezone":"Europe/Berlin",'
         '"priorityItems":['
         '{"occurrenceId":"0656bbd4-c2e8-4f2e-8342-3193679587ca",'
         '"title":"Evening check-in message","purpose":"A few words before the day closes.",'
@@ -94,6 +94,8 @@ void main() {
     // This Dynamic rolls over at midnight, not the 2:00 AM the screen used to
     // state for everyone.
     expect(v.dayBoundaryMinutes, 0);
+    // Due times render here, never in the device's zone (REQ-TIME-001).
+    expect(v.referenceTimezone, 'Europe/Berlin');
     // Adjustment travels beside completion, never behind it (red line #3).
     expect(
       v.priorityItems.first.allowedActions,

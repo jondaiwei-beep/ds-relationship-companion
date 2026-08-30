@@ -13,11 +13,15 @@ class PrimaryExpectation extends StatelessWidget {
   const PrimaryExpectation({
     super.key,
     required this.item,
+    required this.zone,
     required this.onAction,
     this.busy = false,
   });
 
   final TodayItem item;
+
+  /// The Dynamic's IANA zone, for rendering the due time (REQ-TIME-001).
+  final String? zone;
 
   /// The four paths are equals: this widget reports which one was chosen and
   /// knows nothing about how it reaches the server.
@@ -92,7 +96,7 @@ class PrimaryExpectation extends StatelessWidget {
                     ),
                     const SizedBox(height: DsSpacing.space4),
                     Text(
-                      itemMeta(item),
+                      itemMeta(item, zone: zone),
                       style: DsTextStyles.bodySecondary.copyWith(
                         color: DsColors.textOnRitualMuted,
                         fontSize: todaySupportSize,

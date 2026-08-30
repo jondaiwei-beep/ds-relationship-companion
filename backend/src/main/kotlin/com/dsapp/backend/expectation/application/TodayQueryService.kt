@@ -94,6 +94,13 @@ class TodayQueryService(
          */
         val dayBoundaryMinutes: Int,
         /**
+         * The Dynamic's IANA zone. REQ-TIME-001: "device timezone changes do
+         * not silently move a relationship day" — a due time rendered in the
+         * device's zone shows a travelling partner a different hour than the
+         * one their partner set.
+         */
+        val referenceTimezone: String,
+        /**
          * When the server last confirmed this list. The offline state shows
          * only the last confirmed list with this timestamp, and disables every
          * mutation until confirmation returns.
@@ -150,9 +157,10 @@ class TodayQueryService(
         )!!
         val confirmedAt = Instant.now()
         val boundaryMinutes = tz.get("day_boundary_minutes", Int::class.java)
+        val referenceTimezone = tz.get("reference_timezone", String::class.java)
         val relationshipDay = RelationshipDay.dayOf(
             instant = confirmedAt,
-            zone = ZoneId.of(tz.get("reference_timezone", String::class.java)),
+            zone = ZoneId.of(referenceTimezone),
             boundaryMinutes = boundaryMinutes,
         )
 
@@ -238,6 +246,7 @@ class TodayQueryService(
             roleContext = ctx.role.name,
             relationshipDay = relationshipDay,
             dayBoundaryMinutes = boundaryMinutes,
+            referenceTimezone = referenceTimezone,
             lastConfirmedAt = confirmedAt,
             totalCount = actionable.size,
             needsMyResponseCount = needsMyResponse,

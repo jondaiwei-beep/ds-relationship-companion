@@ -10,6 +10,7 @@ class CompactRow extends StatelessWidget {
     super.key,
     required this.index,
     required this.item,
+    required this.zone,
     this.lastInGroup = false,
   });
 
@@ -18,6 +19,9 @@ class CompactRow extends StatelessWidget {
   final int index;
 
   final TodayItem item;
+
+  /// The Dynamic's IANA zone, for rendering the due time (REQ-TIME-001).
+  final String? zone;
 
   /// The last row closes against the next module's own border rather than
   /// drawing a second one.
@@ -80,7 +84,7 @@ class CompactRow extends StatelessWidget {
                   ),
                   const SizedBox(height: DsSpacing.space1),
                   Text(
-                    itemMeta(item),
+                    itemMeta(item, zone: zone),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(

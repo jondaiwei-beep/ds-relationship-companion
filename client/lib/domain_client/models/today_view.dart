@@ -72,6 +72,12 @@ abstract class TodayView with _$TodayView {
     /// once staging is redeployed (plan item T1.6).
     int? dayBoundaryMinutes,
 
+    /// The Dynamic's IANA zone. REQ-TIME-001: due times are rendered here, not
+    /// in the device's zone, so a travelling partner reads the same hour their
+    /// partner set. `null` from a server that predates the field, in which
+    /// case the device's zone is the only thing left to use.
+    String? referenceTimezone,
+
     /// When the server last confirmed this list. Offline shows the last
     /// confirmed list with this timestamp rather than implying it is current.
     DateTime? lastConfirmedAt,

@@ -169,12 +169,14 @@ class _LoadedState extends ConsumerState<_Loaded> {
           for (final (index, item) in priority.indexed)
             if (index == 0)
               PrimaryExpectation(
+                zone: view.referenceTimezone,
                 item: item,
                 busy: _busyOccurrenceId == item.occurrenceId,
                 onAction: (action) => _run(item.occurrenceId, action),
               )
             else
               CompactRow(
+                zone: view.referenceTimezone,
                 index: index + 1,
                 item: item,
                 lastInGroup: index == priority.length - 1,
@@ -190,6 +192,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
         if (_laterExpanded)
           for (final (index, item) in later.indexed)
             CompactRow(
+              zone: view.referenceTimezone,
               index: priority.length + index + 1,
               item: item,
               lastInGroup: index == later.length - 1,

@@ -60,6 +60,7 @@ _TodayView _$TodayViewFromJson(Map<String, dynamic> json) => _TodayView(
       ? null
       : DateTime.parse(json['relationshipDay'] as String),
   dayBoundaryMinutes: (json['dayBoundaryMinutes'] as num?)?.toInt(),
+  referenceTimezone: json['referenceTimezone'] as String?,
   lastConfirmedAt: json['lastConfirmedAt'] == null
       ? null
       : DateTime.parse(json['lastConfirmedAt'] as String),
@@ -90,6 +91,7 @@ Map<String, dynamic> _$TodayViewToJson(_TodayView instance) =>
       'needsMyResponseCount': instance.needsMyResponseCount,
       'relationshipDay': instance.relationshipDay?.toIso8601String(),
       'dayBoundaryMinutes': instance.dayBoundaryMinutes,
+      'referenceTimezone': instance.referenceTimezone,
       'lastConfirmedAt': instance.lastConfirmedAt?.toIso8601String(),
       'totalCount': instance.totalCount,
       'priorityItems': instance.priorityItems,

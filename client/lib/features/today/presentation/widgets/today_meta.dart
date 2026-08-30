@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../../../domain_client/models/today_view.dart';
 
@@ -17,10 +18,10 @@ String stateLabel(String state) => switch (state) {
 
 /// Source, then time, then state — the order the design reads in. A row that
 /// says only its state has lost the two facts a person scans for.
-String itemMeta(TodayItem item) {
+String itemMeta(TodayItem item, {String? zone}) {
   final parts = <String>[
     if (item.fromDisplayName != null) 'From ${item.fromDisplayName}',
-    if (item.dueAt != null) _clock(item.dueAt!.toLocal()),
+    if (item.dueAt != null) _clock(_inZone(item.dueAt!, zone)),
     if (item.purpose?.isNotEmpty ?? false) item.purpose!,
   ];
   // The state is worth saying when it is not simply "on the list today".
@@ -70,6 +71,22 @@ String responseAge(DateTime sentAt) {
 String responseHeading(RecentResponse r) =>
     '${r.senderDisplayName?.toUpperCase() ?? 'YOUR PARTNER'} RESPONDED'
     ' · ${responseAge(r.sentAt)}';
+
+/// The due time as the Dynamic reads it.
+///
+/// REQ-TIME-001: "device timezone changes do not silently move a relationship
+/// day". `toLocal()` showed a partner in another zone a different hour than
+/// the one their partner set — the failure the requirement names, and the case
+/// this product is built for. Falls back to the device only when the server
+/// did not state a zone, or named one this build's database does not know.
+DateTime _inZone(DateTime utc, String? zone) {
+  if (zone == null) return utc.toLocal();
+  try {
+    return tz.TZDateTime.from(utc, tz.getLocation(zone));
+  } on tz.LocationNotFoundException {
+    return utc.toLocal();
+  }
+}
 
 String _clock(DateTime t) {
   final hour = t.hour % 12 == 0 ? 12 : t.hour % 12;

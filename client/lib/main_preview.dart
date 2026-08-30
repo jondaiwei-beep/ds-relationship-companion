@@ -9,13 +9,17 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/providers.dart';
 import 'domain_client/repositories/today_repository.dart';
 import 'features/today/fixtures/today_fixtures.dart';
 import 'features/today/presentation/today_screen.dart';
 
-void main() => runApp(const _Preview());
+void main() {
+  tz.initializeTimeZones();
+  runApp(const _Preview());
+}
 
 class _Preview extends StatefulWidget {
   const _Preview();

@@ -6,6 +6,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 
 import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 
@@ -500,6 +501,45 @@ void main() {
       expect(find.textContaining('ON TODAY'), findsOneWidget);
       // No boundary is stated at all, rather than a time nobody chose.
       expect(find.textContaining('Relationship day ends'), findsNothing);
+    });
+
+    testWidgets('a due time reads in the Dynamic\'s zone, not the device\'s', (
+      tester,
+    ) async {
+      // REQ-TIME-001: "device timezone changes do not silently move a
+      // relationship day". `toLocal()` showed a partner in another zone a
+      // different hour than the one their partner set — the exact failure for
+      // the long-distance couple this product is built for.
+      //
+      // 2026-08-29T18:30Z is 8:30 PM in Berlin (CEST) and 2:30 PM in New York,
+      // whatever the machine running this test believes.
+      tzdata.initializeTimeZones();
+      const item = TodayItem(
+        occurrenceId: 'z1',
+        title: 'Prepare the evening space',
+        kind: 'TASK',
+        state: 'ACTIVE',
+        allowedActions: ['complete'],
+      );
+      final dueAt = DateTime.utc(2026, 8, 29, 18, 30);
+
+      await pump(
+        tester,
+        todayFixture(
+          priority: [item.copyWith(dueAt: dueAt)],
+          later: const [],
+        ).copyWith(referenceTimezone: 'Europe/Berlin'),
+      );
+      expect(find.textContaining('8:30 PM'), findsOneWidget);
+
+      await pump(
+        tester,
+        todayFixture(
+          priority: [item.copyWith(dueAt: dueAt)],
+          later: const [],
+        ).copyWith(referenceTimezone: 'America/New_York'),
+      );
+      expect(find.textContaining('2:30 PM'), findsOneWidget);
     });
   });
 }

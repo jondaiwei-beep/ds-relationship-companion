@@ -1,6 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/router.dart';
 import 'platform/session/session_controller.dart';
@@ -18,6 +19,10 @@ import 'platform/session/session_controller.dart';
 /// `main_preview.dart` is still the way to see every approved state of one
 /// screen without a server behind it.
 void main() {
+  // REQ-TIME-001: due times are rendered in the Dynamic's zone, not the
+  // device's. The bundled database loads synchronously and works on both Web
+  // and Android.
+  tz.initializeTimeZones();
   runApp(const ProviderScope(child: CompanionApp()));
 }
 

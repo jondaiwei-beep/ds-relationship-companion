@@ -143,6 +143,22 @@ class TodayIT {
     }
 
     @Test
+    fun `Today states the Dynamic's reference timezone`() {
+        // REQ-TIME-001. The client rendered due times with toLocal(), so a
+        // travelling partner read a different hour than the one that was set.
+        dsl.query(
+            "UPDATE dynamics SET reference_timezone = 'Europe/Berlin' WHERE id = {0}",
+            dynamicId,
+        ).execute()
+        expectation("anything", "ACTIVE")
+
+        assertEquals(
+            "Europe/Berlin",
+            today.forDynamic(partner, dynamicId).referenceTimezone,
+        )
+    }
+
+    @Test
     fun `Today states the Dynamic's own day boundary`() {
         // REQ-STATE-001. The screen hard-coded "2:00 AM"; a Dynamic that rolls
         // over at 05:30 was simply told the wrong time.

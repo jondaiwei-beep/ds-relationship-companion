@@ -225,3 +225,20 @@ your own request is a fifth verb that vocabulary does not yet name.
 from `AllowedActions` so the server stops advertising an action that does not
 exist. Advertising it is the worse of the two — a client that trusts
 `allowedActions`, as Today now does, will render a button that 404s.
+
+### `dueAt.toLocal()` rendered due times in the device's zone — fixed
+
+Codex's last finding, and a REQ-TIME-001 violation rather than a REQ-STATE-001
+one: *"DST and device timezone changes do not silently move a relationship
+day."* `itemMeta` formatted `item.dueAt!.toLocal()`, so a partner in another
+zone read a different hour than the one their partner set — the exact failure
+for the long-distance couple this product exists for.
+
+Same shape as the day boundary: the Today query already read
+`dynamics.reference_timezone` to resolve the relationship day, then discarded
+it. It now travels on the read model, and the two row widgets render the due
+time in it. The `timezone` package was already a declared dependency and had
+never been imported; `initializeTimeZones()` now runs in both entry points.
+
+Falls back to the device zone only when the server did not state one (an older
+server) or named a zone this build's database does not know.
