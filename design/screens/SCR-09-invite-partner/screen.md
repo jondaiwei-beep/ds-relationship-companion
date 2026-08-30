@@ -66,10 +66,10 @@ The revised primary surface removes the obsolete onboarding-step treatment and e
 | Accepted | Server invite is Accepted | Close link, show partner join and first shared moment | candidate rev-2 |
 | Expired | Server invite is Expired | No join implied; create a new private link | candidate rev-2 |
 | Revoked | Server invite is Revoked | Neutral closure; create a new private link | candidate rev-2 |
-| Loading | Resolve server current truth | Preserve lifecycle geometry without revealing stale state | blocked |
-| Share/error retry | Retain the current Invite and retry safely | Never create duplicate active links silently | blocked |
-| Offline | No state mutation without server confirmation | Explain availability and safe retry | blocked |
-| Authorization loss | Hide protected Dynamic context | Offer sign-in/session recovery | blocked |
+| Loading | Resolve server current truth | Preserve lifecycle geometry without revealing stale state | candidate rev-3 |
+| Share/error retry | Retain the current Invite and retry safely | Never create duplicate active links silently | candidate rev-3 |
+| Offline | No state mutation without server confirmation | Explain availability and safe retry | candidate rev-3 |
+| Authorization loss | Hide protected Dynamic context | Offer sign-in/session recovery | candidate rev-3 |
 
 ## 4. Asset contract
 
