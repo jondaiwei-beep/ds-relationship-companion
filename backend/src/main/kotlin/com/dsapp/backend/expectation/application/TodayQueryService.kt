@@ -43,6 +43,14 @@ class TodayQueryService(
         val occurrenceId: UUID,
         val title: String,
         val purpose: String?,
+        /**
+         * `TASK` or `RITUAL`, from the definition's checked constraint.
+         *
+         * REQ-STATE-001: the server is the only authority on what a thing is.
+         * The client used to infer this by substring-matching the title, which
+         * made a person's own wording decide which mark and label they saw.
+         */
+        val kind: String,
         val state: String,
         val dueAt: Instant?,
         /** Who set this expectation — it comes from a person, not the app. */
@@ -135,7 +143,7 @@ class TodayQueryService(
 
         val rows = dsl.fetch(
             """
-            SELECT o.id, o.state, o.due_at, d.title, d.purpose,
+            SELECT o.id, o.state, o.due_at, d.title, d.purpose, d.kind,
                    cu.display_name AS from_name
               FROM occurrences o
               JOIN expectation_definitions d ON d.id = o.definition_id
@@ -152,6 +160,7 @@ class TodayQueryService(
                 occurrenceId = it.get("id", UUID::class.java),
                 title = it.get("title", String::class.java),
                 purpose = it.get("purpose", String::class.java),
+                kind = it.get("kind", String::class.java),
                 state = it.get("state", String::class.java),
                 dueAt = it.get("due_at", Instant::class.java),
                 fromDisplayName = it.get("from_name", String::class.java),

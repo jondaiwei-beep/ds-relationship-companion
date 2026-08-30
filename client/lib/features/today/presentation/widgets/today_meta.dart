@@ -30,33 +30,29 @@ String itemMeta(TodayItem item) {
   return parts.join(' · ');
 }
 
-/// What kind of thing this is. A ritual and a check-in are not the same and do
-/// not share an identity.
-String kindLabel(TodayItem item) => switch (_kind(item)) {
-  _Kind.checkIn => 'CHECK-IN',
-  _Kind.ritual => 'RITUAL',
-  _Kind.expectation => 'EXPECTATION',
+/// What kind of thing this is, as the server states it.
+///
+/// REQ-STATE-001. This used to be inferred by substring-matching the title,
+/// which let a person's own wording decide their item's identity: an
+/// expectation called "ritual coffee" was labelled RITUAL and drew the evening
+/// emblem. `expectation_definitions.kind` has been the authority since V1.
+/// `TASK` and `RITUAL` are spelled out so a value that is neither is visibly a
+/// fallback rather than silently the common kind — the failure this whole fix
+/// is about. As with [stateLabel], the fallback stays neutral rather than
+/// leaking an identifier to a person.
+String kindLabel(TodayItem item) => switch (item.kind) {
+  'RITUAL' => 'RITUAL',
+  'TASK' => 'EXPECTATION',
+  _ => 'EXPECTATION',
 };
 
-/// The registered master for this item's kind.
-DsAssetId assetFor(TodayItem item) => switch (_kind(item)) {
-  _Kind.checkIn => DsAssets.markCheckIn,
-  _Kind.ritual => DsAssets.emblemRitualEvening,
-  _Kind.expectation => DsAssets.markAuthority,
+/// The registered master for this item's kind. SCR-01 §4: every mark states
+/// what a thing *is*, so this follows the kind and never the row's position.
+DsAssetId assetFor(TodayItem item) => switch (item.kind) {
+  'RITUAL' => DsAssets.emblemRitualEvening,
+  'TASK' => DsAssets.markAuthority,
+  _ => DsAssets.markAuthority,
 };
-
-enum _Kind { checkIn, ritual, expectation }
-
-_Kind _kind(TodayItem item) {
-  final title = item.title.toLowerCase();
-  if (title.contains('check-in') || title.contains('check in')) {
-    return _Kind.checkIn;
-  }
-  if (title.contains('ritual')) {
-    return _Kind.ritual;
-  }
-  return _Kind.expectation;
-}
 
 /// How long ago a person responded, in the coarse terms a person would use.
 String responseAge(DateTime sentAt) {

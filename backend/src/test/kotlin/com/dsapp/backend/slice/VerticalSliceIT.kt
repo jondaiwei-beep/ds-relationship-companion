@@ -91,6 +91,13 @@ class VerticalSliceIT {
         ).andExpect(status().isCreated).andReturn().response.contentAsString
         val occurrenceId = mapper.readTree(exp)["occurrenceId"].asText()
 
+        // 5b. Today states the item's kind over the wire. REQ-STATE-001: the
+        // client used to infer this from the title, so the title here says
+        // "evening" and the kind must still come back TASK.
+        mvc.perform(get("/v1/dynamics/$dynamicId/today").with(asUser(partner)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.priorityItems[0].kind").value("TASK"))
+
         // 6. Partner sees it, and is offered adjustment alongside completion.
         mvc.perform(get("/v1/occurrences/$occurrenceId").with(asUser(partner)))
             .andExpect(status().isOk)

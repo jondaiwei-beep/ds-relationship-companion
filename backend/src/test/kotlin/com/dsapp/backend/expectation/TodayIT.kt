@@ -43,13 +43,18 @@ class TodayIT {
         }
     }
 
-    private fun expectation(title: String, state: String, assignee: UUID = partner): UUID {
+    private fun expectation(
+        title: String,
+        state: String,
+        assignee: UUID = partner,
+        kind: String = "TASK",
+    ): UUID {
         val defId = UUID.randomUUID(); val occId = UUID.randomUUID()
         dsl.query(
             """INSERT INTO expectation_definitions
                  (id,dynamic_id,kind,title,purpose,creator_user_id,assignee_user_id,visibility)
-               VALUES ({0},{1},'TASK',{2},'A small act of care.',{3},{4},'SHARED')""",
-            defId, dynamicId, title, creator, assignee,
+               VALUES ({0},{1},{2},{3},'A small act of care.',{4},{5},'SHARED')""",
+            defId, dynamicId, kind, title, creator, assignee,
         ).execute()
         dsl.query(
             """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
@@ -140,6 +145,24 @@ class TodayIT {
         val item = today.forDynamic(partner, dynamicId).priorityItems.single()
         assertEquals("Alex", item.fromDisplayName)
         assertEquals("A small act of care.", item.purpose)
+    }
+
+    @Test
+    fun `Today states each item's kind so the client never guesses it`() {
+        // REQ-STATE-001. The titles deliberately contradict the kinds: the
+        // client used to infer this by substring-matching the title, so a
+        // task named "Evening ritual reminder" drew the ritual emblem. The
+        // definition's kind is the authority and has to reach the client.
+        expectation("Evening ritual reminder", "ACTIVE")
+        expectation("Prepare the bedroom", "ACTIVE", kind = "RITUAL")
+
+        val kinds = today.forDynamic(partner, dynamicId)
+            .priorityItems.associate { it.title to it.kind }
+
+        assertEquals(
+            mapOf("Evening ritual reminder" to "TASK", "Prepare the bedroom" to "RITUAL"),
+            kinds,
+        )
     }
 
     @Test

@@ -117,3 +117,69 @@ Findings 11 (async work outliving disposal) and 12 (access token in public
 state) are noted and judged low-value for now: both providers are
 app-lifetime, and the token is read only by the transport. Worth revisiting
 if session scope is ever rebuilt.
+
+## REQ-STATE-001 — the client was inventing an item's identity
+
+`REQ-STATE-001` ("server is the only business-state authority; clients do not
+derive missed, acknowledged, blocked or entitlement from local
+timestamps/cache") was the one requirement with **zero** references anywhere in
+the repository. Checking whether it held found a live violation.
+
+`today_meta.dart` decided what kind of thing an item was by substring-matching
+its **title**:
+
+```dart
+if (title.contains('check-in') || title.contains('check in')) return _Kind.checkIn;
+if (title.contains('ritual')) return _Kind.ritual;
+```
+
+That choice drove both the row's label (`RITUAL` / `EXPECTATION` / `CHECK-IN`)
+and which frozen SVG master it drew. So a person's own wording silently
+reclassified their item: an expectation named "Evening ritual reminder" was
+labelled a RITUAL and drew the evening emblem.
+
+This was not hypothetical. The payload already captured in `contract_test.dart`
+from the running backend is titled **"Evening check-in message"** — a `TASK`
+that the client rendered as a CHECK-IN.
+
+`expectation_definitions.kind` has been `CHECK (kind IN ('TASK','RITUAL'))`
+since `V1__foundation.sql`. The server knew the answer and did not send it; the
+query already joined the table for the title. `d.kind` now travels on the read
+model and the client reads it.
+
+**A check-in is not an expectation kind.** It is a separate entity
+(`POST /v1/dynamics/{id}/check-ins` — mood, energy, need, note, visibility): a
+person sharing their state, not something expected of them. The client's third
+branch conflated an obligation with a state disclosure. `DsAssets.markCheckIn`
+is therefore now unreferenced — correctly so. It is a frozen master waiting for
+the check-in surface, which `REQ-TODAY-001` gives its own slot in the priority
+order and no screen yet builds. **Do not delete it.**
+
+Covered by `TodayIT."Today states each item's kind so the client never guesses
+it"` and the `today_invariants_test` case of the same name; both fail if the
+title guess returns.
+
+### Two more REQ-STATE-001 violations of the same family, not yet fixed
+
+Codex's review of the `kind` fix surfaced two others. Both are the same
+mistake — the client stating a server-owned fact — and both are wider than
+this change, so they are recorded rather than folded in:
+
+1. **The relationship-day boundary is hard-coded.** `day_boundary.dart` renders
+   the literal `'Relationship day ends at 2:00 AM'` while the server computes
+   the day from `dynamics.day_boundary_minutes` and does not send it. Another
+   Dynamic with a different boundary is told the wrong time by a screen whose
+   own comment claims the value is server-stated. Fix: put the boundary on the
+   Today read model beside `relationshipDay`, which already travels correctly.
+
+2. **Today invents the available actions.** `primary_expectation.dart` always
+   offers all four commands (complete / discuss / reschedule / cant_do), while
+   `GET /v1/occurrences/{id}` returns an authoritative `allowedActions` the
+   contract test already asserts. This is the "entitlement" word in
+   REQ-STATE-001. Fix: carry `allowedActions` on the Today item and render from
+   it, as the detail screen does.
+
+Judged acceptable and deliberately left alone: `responseAge()` uses
+`DateTime.now()` to say "12 MIN AGO". That is elapsed-time *formatting*, not
+state derivation — it decides no status, ordering or affordance. It would
+become a violation the moment it fed missed/overdue.

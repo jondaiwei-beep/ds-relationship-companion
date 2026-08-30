@@ -48,8 +48,13 @@ class PrimaryExpectation extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const DsSvg(
-                          asset: DsAssets.markAuthority,
+                        // The mark states identity, not position: SCR-01 §4
+                        // registers `mark.authority` as "Priority/expectation
+                        // identity" and `emblem.ritual.evening` as "Evening
+                        // ritual identity". A ritual in first position drew
+                        // the authority mark while its label said RITUAL.
+                        DsSvg(
+                          asset: assetFor(item),
                           tone: DsAssetTone.primary,
                           width: 26,
                           height: 30,

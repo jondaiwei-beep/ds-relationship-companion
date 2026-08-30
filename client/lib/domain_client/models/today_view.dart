@@ -9,6 +9,10 @@ abstract class TodayItem with _$TodayItem {
     required String occurrenceId,
     required String title,
     String? purpose,
+    /// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001). Defaulted so
+    /// a client built against an older server degrades to the common kind
+    /// rather than failing to parse the day.
+    @Default('TASK') String kind,
     required String state,
     DateTime? dueAt,
     /// Who set this. Direction comes from a person, not from the app.

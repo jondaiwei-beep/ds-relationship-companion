@@ -66,11 +66,13 @@ void main() {
   });
 
   test('parses a real /v1/dynamics/{id}/today response', () {
-    // Captured live from https://ds-api.beforeweplay.com on 2026-08-27.
+    // Captured live from https://ds-api.beforeweplay.com on 2026-08-27, with
+    // `kind` re-captured from localhost:8082 on 2026-08-30.
     const raw =
         '{"priorityItems":['
         '{"occurrenceId":"0656bbd4-c2e8-4f2e-8342-3193679587ca",'
         '"title":"Evening check-in message","purpose":"A few words before the day closes.",'
+        '"kind":"TASK",'
         '"state":"ACTIVE","dueAt":null,"fromDisplayName":"alex"}],'
         '"awaitingResponse":[],'
         '"recentResponse":{"occurrenceId":"3b180366-7594-44c5-a85b-156317d11c8c",'
@@ -81,6 +83,10 @@ void main() {
     final v = TodayView.fromJson(jsonDecode(raw) as Map<String, dynamic>);
     expect(v.priorityItems, hasLength(1));
     expect(v.priorityItems.first.fromDisplayName, 'alex');
+    // REQ-STATE-001: a title containing "check-in" does not make the item one.
+    // This exact payload is why the rule matters — the client used to read the
+    // title and label this row CHECK-IN.
+    expect(v.priorityItems.first.kind, 'TASK');
     // An acknowledged item leaves the action list entirely.
     expect(v.awaitingResponse, isEmpty);
     expect(v.recentResponse!.senderDisplayName, 'alex');

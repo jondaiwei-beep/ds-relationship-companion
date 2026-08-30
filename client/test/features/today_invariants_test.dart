@@ -347,5 +347,76 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.textContaining("Read Morgan's note"), findsOneWidget);
     });
+
+    testWidgets('an item\'s kind comes from the server, not its wording', (
+      tester,
+    ) async {
+      // REQ-STATE-001. The two cases disagree on purpose. A person who names
+      // a task "Evening ritual reminder" has written a TASK; one who names a
+      // ritual "Prepare the bedroom" has written a RITUAL. Inferring the kind
+      // from the title got both backwards, silently reclassifying an item by
+      // its author's own wording and changing which mark it drew.
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(
+              occurrenceId: 'k1',
+              title: 'Evening ritual reminder',
+              state: 'ACTIVE',
+            ),
+          ],
+          later: const [],
+        ),
+      );
+      expect(find.textContaining('EXPECTATION'), findsOneWidget);
+      expect(find.textContaining('RITUAL'), findsNothing);
+
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(
+              occurrenceId: 'k2',
+              title: 'Prepare the bedroom',
+              kind: 'RITUAL',
+              state: 'ACTIVE',
+            ),
+          ],
+          later: const [],
+        ),
+      );
+      expect(find.textContaining('RITUAL'), findsOneWidget);
+    });
+
+    testWidgets('the mark states the kind, not the row position', (
+      tester,
+    ) async {
+      // SCR-01 §4 registers every mark as an *identity*: `mark.authority` is
+      // "Priority/expectation identity", `emblem.ritual.evening` is "Evening
+      // ritual identity". The primary card hard-coded the authority mark, so
+      // a ritual in first position said RITUAL and drew the wrong emblem.
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(
+              occurrenceId: 'k3',
+              title: 'Prepare the bedroom',
+              kind: 'RITUAL',
+              state: 'ACTIVE',
+            ),
+          ],
+          later: const [],
+        ),
+      );
+
+      final marks = tester
+          .widgetList<DsSvg>(find.byType(DsSvg))
+          .map((w) => w.asset)
+          .toList();
+      expect(marks, contains(DsAssets.emblemRitualEvening));
+      expect(marks, isNot(contains(DsAssets.markAuthority)));
+    });
   });
 }

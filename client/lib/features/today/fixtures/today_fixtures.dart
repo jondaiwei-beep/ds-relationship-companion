@@ -41,13 +41,17 @@ final _priority = [
   TodayItem(
     occurrenceId: 'o2',
     title: 'Evening ritual',
+    kind: 'RITUAL',
     state: 'ACTIVE',
     purpose: '6 min',
     dueAt: DateTime(2026, 8, 29, 20, 30).toUtc(),
   ),
+  // Not a check-in. A check-in is a separate entity (mood/energy/need, via
+  // `POST /v1/dynamics/{id}/check-ins`) and can never arrive as a Today item,
+  // so a fixture named like one taught the wrong model to every preview.
   const TodayItem(
     occurrenceId: 'o3',
-    title: 'Daily check-in',
+    title: 'A sentence about today',
     state: 'ACTIVE',
     purpose: 'Optional · private until shared',
   ),
