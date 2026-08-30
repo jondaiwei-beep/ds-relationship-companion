@@ -7,6 +7,7 @@ import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
+import '../features/invite/presentation/invite_partner_screen.dart';
 import '../features/invite/presentation/join_screen.dart';
 import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
@@ -31,6 +32,10 @@ abstract final class Routes {
   static const signIn = '/sign-in';
   static const authCallback = '/auth/callback';
   static const invite = '/invite/:token';
+
+  /// The sending side. Authenticated and inside a Dynamic, unlike
+  /// `/invite/:token`, which is the public page the link opens.
+  static const invitePartner = '/dynamics/:id/invite';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -184,6 +189,17 @@ GoRouter createRouter(Ref ref) {
           onSignedIn: () => context.go(_destinationFrom(state)),
           onRequestNewLink: () => context.go(Routes.signIn),
         ),
+      ),
+      GoRoute(
+        path: Routes.invitePartner,
+        builder: (context, state) {
+          final dynamicId = state.pathParameters['id']!;
+          return InvitePartnerScreen(
+            dynamicId: dynamicId,
+            onDone: () => context.go('/dynamics/$dynamicId/today'),
+            onBack: () => context.go('/dynamics/$dynamicId/today'),
+          );
+        },
       ),
       GoRoute(
         path: Routes.invite,

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../domain_client/repositories/invite_repository.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/invite_view.dart';
 
@@ -11,11 +12,15 @@ sealed class InviteCreated {
 }
 
 class InviteLinkReady extends InviteCreated {
-  const InviteLinkReady(this.url);
+  const InviteLinkReady(this.invite);
 
-  /// The full URL to hand to a partner. It points at the Web companion, not
-  /// at the API — the person opening it has not installed anything.
-  final String url;
+  /// The whole invitation as the server described it: the link to share, the
+  /// id needed to withdraw it, and when it stops working. The screen shows
+  /// the expiry rather than inventing one, and can revoke without a second
+  /// round trip to find out what it just made.
+  final CreatedInvite invite;
+
+  String get url => invite.url;
 }
 
 class InviteCreateFailed extends InviteCreated {
@@ -115,10 +120,11 @@ class InviteActions {
     );
 
     try {
-      final token =
-          await _ref.read(inviteRepositoryProvider).create(dynamicId, idempotencyKey: key);
+      final invite = await _ref
+          .read(inviteRepositoryProvider)
+          .create(dynamicId, idempotencyKey: key);
       _createKeys.remove(dynamicId);
-      return InviteLinkReady('${webBaseUrl()}/invite/$token');
+      return InviteLinkReady(invite);
     } on DioException catch (e) {
       if (_code(e) == 'INVITE_ALREADY_PENDING') {
         // Terminal for this attempt, and not retryable: the key goes.

@@ -45,7 +45,11 @@ void main() {
         reason: 'the partner opens this on their phone without installing '
             'anything',
       );
-      expect(result.url, startsWith(webBaseUrl()));
+      // The URL comes from the server now. The client used to build it from
+      // its own `webBaseUrl()`, which meant a build pointed at the wrong
+      // origin would mint links nobody could open.
+      expect(result.invite.inviteId, 'inv-1');
+      expect(result.invite.expiresAt, DateTime.utc(2026, 9, 6));
     });
 
     test('a retry after a timeout is the same attempt', () async {
@@ -231,10 +235,20 @@ class _FakeInvites implements InviteRepository {
   InviteState state = InviteState.pending;
 
   @override
-  Future<String> create(String dynamicId, {required String idempotencyKey}) async {
+  Future<CreatedInvite> create(
+    String dynamicId, {
+    required String idempotencyKey,
+  }) async {
     keysUsed.add(idempotencyKey);
     if (failure != null) throw failure!;
-    return 'tok-1';
+    return CreatedInvite(
+      inviteId: 'inv-1',
+      token: 'tok-1',
+      // The server builds this, not the client — it knows the Web origin the
+      // link must point at.
+      url: 'https://ds.example.com/invite/tok-1',
+      expiresAt: DateTime.utc(2026, 9, 6),
+    );
   }
 
   @override

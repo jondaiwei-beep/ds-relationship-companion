@@ -409,3 +409,36 @@ handler for a code its own endpoint never returns.
 Also fixed: ten screen contracts said `ready_for_build` in their metadata and
 `Current result: **blocked_alignment_required**` in their footer checklist —
 stale text from before the gates opened.
+
+### SCR-09 — the create response was being thrown away
+
+Found building the sending side. `POST /v1/dynamics/{id}/invites` returns
+`inviteId`, `token`, `inviteUrl` and `expiresAt`; the repository kept the token
+and discarded the other three, then rebuilt the URL from the client's own
+`webBaseUrl()`.
+
+Three consequences, all fixed by carrying the whole response through as
+`CreatedInvite`:
+
+- **The screen could not revoke**, because revoking needs the `inviteId`. The
+  action existed and nothing could call it.
+- **The expiry had to be invented.** The design's fixed "Expires in 6 days" is
+  wrong for six of the seven days it describes; it now counts down from the
+  server's `expiresAt`.
+- **The URL was built client-side**, so a build pointed at the wrong Web origin
+  would mint links nobody could open. The server knows the origin; it now says.
+
+### Deferred: the native share sheet
+
+The design's primary action on SCR-09 is a system share sheet, which needs
+`share_plus`. Not added for one control — copying works on every platform
+including Web, where this screen is also reachable, and the link is equally
+shareable either way. Worth adding when a second surface wants it.
+
+### `DsPrimaryButton` broke on long labels
+
+Three screens hit the same 5–20px overflow before it was treated as the
+component's problem: the label sat in an unbounded `Row`. It is now `Flexible`
+with `TextOverflow.ellipsis` and its own horizontal padding. A control that
+breaks on a longer word is a trap for whoever writes the next screen, and for
+translation.

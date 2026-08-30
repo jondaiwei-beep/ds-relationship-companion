@@ -54,9 +54,16 @@ class DsPrimaryButton extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(DsRadii.control),
             onTap: enabled ? onPressed : null,
-            child: Center(
+            child: Padding(
+              // The label owns the width, and long ones ellipsize rather
+              // than overflowing. Three screens hit this before it was the
+              // component's problem instead of each caller's: a control that
+              // breaks on a longer word is a trap for whoever writes the next
+              // one, and for translation.
+              padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space4),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (busy) ...[
                     SizedBox(
@@ -71,12 +78,17 @@ class DsPrimaryButton extends StatelessWidget {
                     ),
                     const SizedBox(width: DsSpacing.space3),
                   ],
-                  Text(
-                    busy ? (busyLabel ?? label) : label,
-                    style: DsTextStyles.labelAction.copyWith(
-                      color: enabled
-                          ? DsColors.actionPrimaryForeground
-                          : DsColors.actionPrimaryDisabledForeground,
+                  Flexible(
+                    child: Text(
+                      busy ? (busyLabel ?? label) : label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: DsTextStyles.labelAction.copyWith(
+                        color: enabled
+                            ? DsColors.actionPrimaryForeground
+                            : DsColors.actionPrimaryDisabledForeground,
+                      ),
                     ),
                   ),
                 ],

@@ -1,6 +1,32 @@
 import '../api_client.dart';
 import '../models/invite_view.dart';
 
+/// A newly created invitation, as the server describes it.
+///
+/// The repository used to keep only the token and throw the rest away, which
+/// left the sending screen unable to revoke — that needs the `inviteId` — and
+/// unable to state an expiry without inventing one.
+class CreatedInvite {
+  const CreatedInvite({
+    required this.inviteId,
+    required this.token,
+    required this.url,
+    required this.expiresAt,
+  });
+
+  final String inviteId;
+
+  /// Returned exactly once. Only its hash is persisted server-side, so it
+  /// cannot be recovered by asking again.
+  final String token;
+
+  /// Points at the Web companion, not the API: the person opening it has not
+  /// installed anything.
+  final String url;
+
+  final DateTime expiresAt;
+}
+
 class InviteRepository {
   InviteRepository(this._api);
 
@@ -10,12 +36,20 @@ class InviteRepository {
   ///
   /// A Creator has no other way into the product: they cannot be handed a
   /// link, because they are the one who makes it.
-  Future<String> create(String dynamicId, {required String idempotencyKey}) async {
+  Future<CreatedInvite> create(
+    String dynamicId, {
+    required String idempotencyKey,
+  }) async {
     final r = await _api.post(
       '/v1/dynamics/$dynamicId/invites',
       idempotencyKey: idempotencyKey,
     );
-    return r['token'] as String;
+    return CreatedInvite(
+      inviteId: r['inviteId'] as String,
+      token: r['token'] as String,
+      url: r['inviteUrl'] as String,
+      expiresAt: DateTime.parse(r['expiresAt'] as String),
+    );
   }
 
   /// Anonymous pre-auth resolve. Never 404s — every terminal state is explicit,
