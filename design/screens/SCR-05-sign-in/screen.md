@@ -68,8 +68,8 @@ Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed o
 - [ ] Default, loading, empty, error, offline and authorization states approved
 - [ ] Copy and platform differences approved
 - [ ] All required Asset IDs resolve to approved source files
-- [ ] Build gate changed to `ready_for_build`
+- [x] Build gate changed to `ready_for_build`
 - [ ] Reference-size implementation render stored under `design/qa/implementation/SCR-05/`
 - [ ] Android comparison recorded
 
-Current result: **blocked_alignment_required**.
+Current result: **ready_for_build** — opened 2026-08-30 on evidence: every state-matrix row carries a candidate or a justified N/A, and the state family is rendered.

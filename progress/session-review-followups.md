@@ -364,3 +364,48 @@ fresh clones, so a stale checkout on the server cannot reintroduce this.
 
 **On-device acceptance is no longer blocked.** Builds should carry
 `--dart-define=API_BASE_URL=https://ds-api.beforeweplay.com`.
+
+### SCR-05 review — one real defect, one wrong finding, three deferred
+
+Codex reviewed the sign-in screen. Worth recording both what it caught and what
+it got wrong, because the wrong one is instructive.
+
+**Fixed: the password outlived the attempt.** `entrance-state-family.md` says
+plainly *"Error / retry: 保留 email，清空密码"* and *"密码不得…在离开流程后保留"*.
+The screen kept it after a refusal and across a round trip through link mode.
+Retyping an email is friction; a password left in a field is a credential
+sitting on a screen someone else may be holding, which on this product is the
+likely case rather than the edge one. Now cleared on every failure and on
+leaving the password flow, with tests that fail when the clearing is removed.
+
+**Also fixed: `AuthUncertain` on a link request said "try again."** A timeout
+may still have sent the email, so inviting a second request is wrong. It now
+lands in the same conditional confirmation as a success.
+
+**Wrong: "the password flow enables account enumeration via
+`ACCOUNT_NOT_ACTIVE`."** It does not. That code is thrown only from *magic-link
+completion* (`AuthServices.kt:160`), after someone has already proven they
+control the mailbox — so it discloses nothing to an attacker. Password sign-in
+has exactly one failure path, `INVALID_CREDENTIALS`, covering "no such account",
+"no password set" and "wrong password" alike, with a comment in the server
+naming this exact threat.
+
+The mistake is worth naming: Codex read the client's `switch` over error codes
+and assumed every branch was reachable from every caller. A client can carry a
+handler for a code its own endpoint never returns.
+
+**Deferred, and genuinely missing:**
+
+1. **The magic-link callback is still `NotBuiltYet`.** The screen promises a
+   working link and `/auth/callback` does not exist yet, so expired-link and
+   completion states are unreachable. `completeSignInLink()` is written and
+   tested; only the route is missing. **This is the next thing to build.**
+2. **No client-side field validation.** Empty and malformed values are sent to
+   the server. The decision record specifies blur validation, focusing the
+   first invalid field, and clearing errors as input becomes valid.
+3. **No visible resend rate limit** on the link-sent state, which the decision
+   record calls for.
+
+Also fixed: ten screen contracts said `ready_for_build` in their metadata and
+`Current result: **blocked_alignment_required**` in their footer checklist —
+stale text from before the gates opened.

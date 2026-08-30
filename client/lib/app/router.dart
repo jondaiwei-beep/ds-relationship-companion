@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
+import '../features/entrance/presentation/sign_in_screen.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
@@ -156,7 +157,12 @@ GoRouter createRouter(Ref ref) {
       ),
       GoRoute(
         path: Routes.signIn,
-        builder: (_, _) => const NotBuiltYet(screen: 'SCR-05 Sign In'),
+        builder: (context, state) => SignInScreen(
+          onSignedIn: () => context.go(_destinationFrom(state)),
+          onCreateAccount: () => context.go(Routes.createAccount),
+          onBack: () => context.go(Routes.entrance),
+          notice: _signInNoticeFor(ref.read(sessionProvider)),
+        ),
       ),
       GoRoute(
         path: Routes.createAccount,
@@ -192,6 +198,15 @@ GoRouter createRouter(Ref ref) {
 /// to you is talking about the wrong thing.
 EntranceNotice? _noticeFor(Session session) => switch (session) {
   SignedOut(reason: SignedOutReason.expired) => EntranceNotice.sessionEnded,
+  _ => null,
+};
+
+/// Why sign-in is being shown, when it was not chosen.
+///
+/// Only an expired session says anything. Arriving here by choosing "I already
+/// have an account" is the ordinary case and needs no explanation.
+SignInNotice? _signInNoticeFor(Session session) => switch (session) {
+  SignedOut(reason: SignedOutReason.expired) => SignInNotice.authorizationLost,
   _ => null,
 };
 
