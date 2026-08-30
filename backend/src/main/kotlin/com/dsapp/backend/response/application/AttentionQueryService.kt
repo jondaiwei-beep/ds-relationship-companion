@@ -84,7 +84,18 @@ class AttentionQueryService(
 
         return Attention(
             items = items,
-            needsResponseCount = items.count { it.state == "WAITING_ACK" },
+            // Everything a person still owes an answer to, not just
+            // completions. A partner asking to discuss, or for a new time, or
+            // saying they cannot — those are the most urgent things on this
+            // screen (the server sorts them first), and they were in no count
+            // at all. A badge reading "1" while two things waited is worse
+            // than no badge.
+            needsResponseCount = items.count {
+                it.state in setOf(
+                    "NEED_TO_DISCUSS", "RESCHEDULE_REQUESTED", "EXCUSE_REQUESTED",
+                    "WAITING_ACK",
+                )
+            },
             needsReviewCount = items.count { it.state == "NEEDS_REVIEW" },
         )
     }

@@ -89,6 +89,35 @@ class AttentionIT {
     }
 
     @Test
+    fun `a partner waiting on an answer is counted as needing a response`() {
+        // These three sort FIRST — they are the most urgent thing on the
+        // screen — and they were counted nowhere. A badge built on this would
+        // have read "1" while three people waited.
+        occurrence("they asked to discuss", "NEED_TO_DISCUSS")
+        occurrence("they asked for a new time", "RESCHEDULE_REQUESTED")
+        occurrence("they said they cannot", "EXCUSE_REQUESTED")
+        occurrence("they completed something", "WAITING_ACK")
+
+        val r = attention.forDynamic(creator, dynamicId)
+
+        assertEquals(4, r.needsResponseCount)
+        assertEquals(0, r.needsReviewCount)
+    }
+
+    @Test
+    fun `work needing review is not counted as awaiting a response`() {
+        // Past due is a fact, not a question someone asked. REQ-REVIEW-001
+        // also forbids the software assigning consequence, and folding review
+        // into "you owe an answer" is a small way of doing exactly that.
+        occurrence("still open", "NEEDS_REVIEW")
+
+        val r = attention.forDynamic(creator, dynamicId)
+
+        assertEquals(0, r.needsResponseCount)
+        assertEquals(1, r.needsReviewCount)
+    }
+
+    @Test
     fun `settled occurrences do not clutter Attention`() {
         occurrence("done and seen", "ACKNOWLEDGED")
         occurrence("cancelled", "CANCELLED")
