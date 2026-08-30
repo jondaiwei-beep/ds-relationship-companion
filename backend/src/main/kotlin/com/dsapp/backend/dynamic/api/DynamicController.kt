@@ -232,6 +232,26 @@ class DynamicController(
     }
 
     /** Anonymous. Never 404s — every terminal state is explicit (Notion 02 §A4). */
+    /**
+     * Withdraw a live invitation.
+     *
+     * Scoped to the Dynamic in the path, so a caller cannot revoke by
+     * guessing an invite id belonging to somewhere they are not a member.
+     */
+    @PostMapping("/dynamics/{dynamicId}/invites/{inviteId}/revoke")
+    fun revokeInvite(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable inviteId: UUID,
+        @RequestHeader("Idempotency-Key", required = false) key: String?,
+    ): ResponseEntity<Any> = runOnce(
+        jwt, key, "revoke_invite", "/v1/dynamics/{id}/invites/{inviteId}/revoke",
+        listOf(dynamicId.toString(), inviteId.toString()), null,
+    ) {
+        invites.revoke(jwt.actorId(), dynamicId, inviteId)
+        200 to mapOf("state" to "REVOKED")
+    }
+
     @PostMapping("/invites/resolve")
     fun resolve(@Valid @RequestBody body: ResolveInviteRequest): ResponseEntity<Any> =
         ResponseEntity.ok()

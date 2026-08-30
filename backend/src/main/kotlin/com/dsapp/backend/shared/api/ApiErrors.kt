@@ -1,6 +1,7 @@
 package com.dsapp.backend.shared.api
 
 import com.dsapp.backend.dynamic.application.InviteAlreadyPending
+import com.dsapp.backend.dynamic.application.InviteNotRevocable
 import com.dsapp.backend.dynamic.application.InviteNotJoinable
 import com.dsapp.backend.dynamic.application.DynamicNotPausable
 import com.dsapp.backend.dynamic.domain.AuthorizationException
@@ -67,6 +68,13 @@ class ApiErrorHandler {
     @ExceptionHandler(NoOpenAdjustment::class)
     fun onNoOpenAdjustment(e: NoOpenAdjustment): ResponseEntity<ApiError> =
         ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("NO_OPEN_ADJUSTMENT"))
+
+    @ExceptionHandler(InviteNotRevocable::class)
+    fun onInviteNotRevocable(e: InviteNotRevocable): ResponseEntity<ApiError> =
+        // 409, not 404: the caller is a member of this Dynamic and is allowed
+        // to know that the invitation is settled. What they are not told is
+        // *how* it settled — accepted, revoked and expired answer alike.
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("INVITE_NOT_LIVE"))
 
     @ExceptionHandler(InviteAlreadyPending::class)
     fun onInvitePending(e: InviteAlreadyPending): ResponseEntity<ApiError> =

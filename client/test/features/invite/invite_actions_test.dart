@@ -95,6 +95,50 @@ void main() {
     });
   });
 
+  group('withdrawing', () {
+    test('frees the Dynamic for a new invitation', () async {
+      // The escape hatch the one-live-invite rule depends on. Creating was
+      // refused, so its key was held; after a revoke that attempt is over.
+      invites.failure = status(409);
+      await actions().create('dyn-1');
+      invites.failure = null;
+
+      await actions().revoke('dyn-1', 'inv-1');
+      await actions().create('dyn-1');
+
+      expect(invites.revoked, ['inv-1']);
+      expect(
+        invites.keysUsed.toSet(),
+        hasLength(2),
+        reason: 'the refused attempt is finished; this is a new one',
+      );
+    });
+
+    test('a retry after a lost response replays', () async {
+      invites.failure = transport(DioExceptionType.receiveTimeout);
+      await actions().revoke('dyn-1', 'inv-1');
+      invites.failure = null;
+      await actions().revoke('dyn-1', 'inv-1');
+
+      expect(invites.revokeKeys.toSet(), hasLength(1));
+    });
+
+    test('an already-settled invitation is not a failure', () async {
+      // Accepted, expired, or revoked from another device. The person wanted
+      // it gone and it is gone.
+      invites.failure = DioException(
+        requestOptions: RequestOptions(path: '/'),
+        response: Response(
+          requestOptions: RequestOptions(path: '/'),
+          statusCode: 409,
+          data: {'code': 'INVITE_NOT_LIVE'},
+        ),
+      );
+
+      expect(await actions().revoke('dyn-1', 'inv-1'), isA<InviteRevoked>());
+    });
+  });
+
   group('resolving', () {
     test('never joins', () async {
       // Mail scanners and link previews issue requests. Only an explicit
@@ -180,6 +224,8 @@ void main() {
 class _FakeInvites implements InviteRepository {
   final keysUsed = <String>[];
   final joinKeys = <String>[];
+  final revokeKeys = <String>[];
+  final revoked = <String>[];
   int joinCalls = 0;
   Object? failure;
   InviteState state = InviteState.pending;
@@ -189,6 +235,17 @@ class _FakeInvites implements InviteRepository {
     keysUsed.add(idempotencyKey);
     if (failure != null) throw failure!;
     return 'tok-1';
+  }
+
+  @override
+  Future<void> revoke(
+    String dynamicId,
+    String inviteId, {
+    required String idempotencyKey,
+  }) async {
+    revokeKeys.add(idempotencyKey);
+    if (failure != null) throw failure!;
+    revoked.add(inviteId);
   }
 
   @override

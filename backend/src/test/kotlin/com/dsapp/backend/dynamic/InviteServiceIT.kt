@@ -1,9 +1,11 @@
 package com.dsapp.backend.dynamic
 
 import com.dsapp.backend.dynamic.application.InviteAlreadyPending
+import com.dsapp.backend.dynamic.application.InviteNotRevocable
 import com.dsapp.backend.dynamic.application.InviteNotJoinable
 import com.dsapp.backend.dynamic.application.InviteService
 import com.dsapp.backend.dynamic.domain.RoleContext
+import com.dsapp.backend.dynamic.domain.AuthorizationException
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -159,5 +161,72 @@ class InviteServiceIT {
         // The Creator can always issue another once the live one is closed.
         val second = invites.create(creator, dynamicId, RoleContext.PARTNER)
         assertNotEquals(first.inviteId, second.inviteId)
+    }
+
+    @Test
+    fun `a creator can withdraw an invitation they sent`() {
+        // There was no way to do this at all. Invites were revoked only as a
+        // side effect of Block — a safety action about a person — so a link
+        // sent to the wrong address had no way back.
+        val invite = invites.create(creator, dynamicId, RoleContext.PARTNER)
+
+        invites.revoke(creator, dynamicId, invite.inviteId)
+
+        assertEquals("REVOKED", invites.resolve(invite.token).state)
+    }
+
+    @Test
+    fun `withdrawing frees the dynamic for a new invitation`() {
+        // The reason this endpoint had to exist: one PENDING invite per
+        // Dynamic, and the guidance when a second is refused is to revoke the
+        // first. That was impossible to follow.
+        val first = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        invites.revoke(creator, dynamicId, first.inviteId)
+
+        val second = invites.create(creator, dynamicId, RoleContext.PARTNER)
+
+        assertNotEquals(first.inviteId, second.inviteId)
+    }
+
+    @Test
+    fun `a revoked link cannot be joined`() {
+        val invite = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        invites.revoke(creator, dynamicId, invite.inviteId)
+
+        assertFailsWith<InviteNotJoinable> { invites.join(invitee, invite.token) }
+    }
+
+    @Test
+    fun `withdrawing twice is refused rather than silently repeated`() {
+        val invite = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        invites.revoke(creator, dynamicId, invite.inviteId)
+
+        assertFailsWith<InviteNotRevocable> {
+            invites.revoke(creator, dynamicId, invite.inviteId)
+        }
+    }
+
+    @Test
+    fun `an accepted invitation cannot be withdrawn`() {
+        // The partner is already in. Withdrawing the link would suggest
+        // undoing that, and leaving is a separate act with its own rules.
+        val invite = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        invites.join(invitee, invite.token)
+
+        assertFailsWith<InviteNotRevocable> {
+            invites.revoke(creator, dynamicId, invite.inviteId)
+        }
+    }
+
+    @Test
+    fun `a non-member cannot withdraw someone else's invitation`() {
+        val invite = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        val stranger = UUID.randomUUID()
+        dsl.query("INSERT INTO users (id,email,display_name) VALUES ({0},{1},'Sam')",
+            stranger, "$stranger@t.local").execute()
+
+        assertFailsWith<AuthorizationException.NotAMember> {
+            invites.revoke(stranger, dynamicId, invite.inviteId)
+        }
     }
 }

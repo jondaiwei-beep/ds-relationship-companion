@@ -129,6 +129,46 @@ class InviteService(
     }
 
     /**
+     * Withdraw a live invitation.
+     *
+     * A Creator could not do this at all. Invites were revoked only as a side
+     * effect of Block, which is a safety action about a person — a link sent
+     * to the wrong address, or simply thought better of, had no way back.
+     *
+     * It is also the escape hatch [create] depends on: only one PENDING
+     * invitation may exist per Dynamic, and the guidance when a second is
+     * refused is to revoke the first. That guidance was impossible to follow.
+     *
+     * Guarded like [join]: only a PENDING invite flips, so two revokes, or a
+     * revoke racing a join, cannot both win.
+     */
+    @Transactional
+    fun revoke(actorUserId: UUID, dynamicId: UUID, inviteId: UUID) {
+        authorizer.requireSetUp(
+            authorizer.contextForDynamic(actorUserId, dynamicId),
+            RoleContext.CREATOR,
+        )
+
+        dsl.fetchOne(
+            """
+            UPDATE invites
+               SET state = 'REVOKED', revoked_at = now()
+             WHERE id = {0} AND dynamic_id = {1} AND state = 'PENDING'
+            RETURNING id
+            """.trimIndent(),
+            inviteId, dynamicId,
+        ) ?: throw InviteNotRevocable(inviteId)
+
+        events.append(
+            dynamicId = dynamicId,
+            actorUserId = actorUserId,
+            eventType = "invite_revoked",
+            objectRef = """{"invite_id":"$inviteId"}""",
+        )
+    }
+
+
+    /**
      * Consume the invite and create the partner membership, atomically.
      *
      * Notion 03 §4: joining is NOT consent to future expectations — it only
@@ -186,3 +226,12 @@ class InviteNotJoinable(val state: String) : RuntimeException("Invite is $state"
  * already exists and offers to revoke it.
  */
 class InviteAlreadyPending(val inviteId: UUID) : RuntimeException("Invite already pending")
+
+/**
+ * The invitation is not live, so there is nothing to withdraw.
+ *
+ * Already accepted, already revoked, expired, or belonging to another
+ * Dynamic — all one answer, because distinguishing them would describe
+ * invitations the caller may not be entitled to know about.
+ */
+class InviteNotRevocable(val inviteId: UUID) : RuntimeException("Invite not revocable")

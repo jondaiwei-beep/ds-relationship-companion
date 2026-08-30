@@ -24,6 +24,11 @@ class InviteCreateFailed extends InviteCreated {
   final String message;
 }
 
+/// The invitation is no longer live.
+class InviteRevoked extends InviteCreated {
+  const InviteRevoked();
+}
+
 /// A live invitation already exists for this Dynamic.
 ///
 /// Not a failure of the Creator's action: two taps, or reopening the screen
@@ -118,6 +123,38 @@ class InviteActions {
       );
     }
   }
+
+  /// Withdraw a live invitation.
+  ///
+  /// Keyed per invitation so a retry after a lost response replays rather
+  /// than reporting a second revoke as a conflict — the person did withdraw
+  /// it, and telling them otherwise would send them looking for a link that
+  /// is already gone.
+  Future<InviteCreated> revoke(String dynamicId, String inviteId) async {
+    final key = _revokeKeys.putIfAbsent(inviteId, ApiClient.newIdempotencyKey);
+    try {
+      await _ref.read(inviteRepositoryProvider)
+          .revoke(dynamicId, inviteId, idempotencyKey: key);
+      // The Dynamic can hold a live invitation again, so a create attempt
+      // that was refused should no longer be treated as the same attempt.
+      _createKeys.remove(dynamicId);
+      return const InviteRevoked();
+    } on DioException catch (e) {
+      if (_code(e) == 'INVITE_NOT_LIVE') {
+        // Already settled — accepted, expired, or revoked elsewhere. Not a
+        // failure of this action.
+        _createKeys.remove(dynamicId);
+        return const InviteRevoked();
+      }
+      return InviteCreateFailed(
+        _isOffline(e)
+            ? "You're offline. Connect to the internet, then try again."
+            : "We couldn't withdraw that link right now. Try again.",
+      );
+    }
+  }
+
+  final Map<String, String> _revokeKeys = {};
 
   /// Read what an invitation is, without accepting it.
   ///
