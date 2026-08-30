@@ -1,0 +1,40 @@
+{
+  "candidate_id": "SCR-32-REV-1",
+  "generated_at": "2026-08-30T01:17:13.482Z",
+  "result": "pass",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "source_scale": 3,
+  "tokens": "TOKEN-FREEZE-B2-V1",
+  "svg_freeze": "SVG-FREEZE-V1",
+  "states": [
+    {
+      "key": "default",
+      "preview": "design/screens/SCR-32-attention/candidates/rev-1/preview.webp"
+    },
+    {
+      "key": "loading",
+      "preview": "design/screens/SCR-32-attention/candidates/rev-1/states/loading/preview.webp"
+    },
+    {
+      "key": "empty",
+      "preview": "design/screens/SCR-32-attention/candidates/rev-1/states/empty/preview.webp"
+    },
+    {
+      "key": "offline",
+      "preview": "design/screens/SCR-32-attention/candidates/rev-1/states/offline/preview.webp"
+    },
+    {
+      "key": "error",
+      "preview": "design/screens/SCR-32-attention/candidates/rev-1/states/error/preview.webp"
+    },
+    {
+      "key": "auth-loss",
+      "preview": "design/screens/SCR-32-attention/candidates/rev-1/states/auth-loss/preview.webp"
+    }
+  ],
+  "board": "design/qa/reference/attention-state-family-board.png",
+  "build_gate": "unchanged — this is a candidate, not an approval"
+}
