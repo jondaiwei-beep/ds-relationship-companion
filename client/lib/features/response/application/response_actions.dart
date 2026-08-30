@@ -121,9 +121,15 @@ class ResponseActions {
     }
     return switch (_code(e)) {
       'TEXT_REQUIRED' => const ResponseNeedsWords(),
-      // The occurrence has already been answered. Not this person's problem
-      // to solve, and not a failure of what they just did.
-      'ALREADY_ACKNOWLEDGED' ||
+      // The occurrence is no longer waiting for an answer — someone got
+      // there first, or a lost response actually landed. Not this person's
+      // problem to solve, and not a failure of what they just did.
+      //
+      // `OCCURRENCE_NOT_WAITING_ACK` is the code the server actually sends
+      // (`ApiErrors.kt`). An earlier draft guessed `ALREADY_ACKNOWLEDGED`,
+      // which exists nowhere, so every real conflict fell through to
+      // "couldn't send" and invited a third attempt.
+      'OCCURRENCE_NOT_WAITING_ACK' ||
       'OCCURRENCE_NOT_ACTIVE' =>
         const ResponseAlreadySent(),
       _ => const ResponseFailed("We couldn't send that just now. Try again."),

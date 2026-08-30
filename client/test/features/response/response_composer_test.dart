@@ -165,7 +165,10 @@ void main() {
     testWidgets('it says so, and does not invite a second send', (
       tester,
     ) async {
-      await pump(tester, throws: _coded('ALREADY_ACKNOWLEDGED'));
+      // The code the server actually sends (`ApiErrors.kt`). An earlier draft
+      // guessed `ALREADY_ACKNOWLEDGED`, which exists nowhere — so every real
+      // conflict fell through to "couldn't send" and invited a third attempt.
+      await pump(tester, throws: _coded('OCCURRENCE_NOT_WAITING_ACK'));
       await tester.tap(find.text('Send to Morgan'));
       await tester.pumpAndSettle();
 

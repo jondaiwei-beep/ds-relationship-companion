@@ -442,3 +442,41 @@ component's problem: the label sat in an unbounded `Row`. It is now `Flexible`
 with `TextOverflow.ellipsis` and its own horizontal padding. A control that
 breaks on a longer word is a trap for whoever writes the next screen, and for
 translation.
+
+### The core loop — Codex found two real defects and one contradiction
+
+**Wrong conflict code.** The composer handled `ALREADY_ACKNOWLEDGED`, which the
+server does not have. The real code is `OCCURRENCE_NOT_WAITING_ACK`
+(`ApiErrors.kt:62`), so every genuine conflict — a partner answering first, or
+a lost response that actually landed — fell through to "We couldn't send that"
+and invited a third attempt at a moment already closed. Fixed and tested;
+the test fails when the wrong code is restored.
+
+**A red-line breach in attribution.** `ui-invariants.md` says plainly *"received
+screen attributes the words to the real sender"*, and SCR-03 was using the
+occurrence's `partnerDisplayName` rather than the acknowledgement's
+`senderDisplayName`. On a two-person Dynamic those are the same person today —
+attributing by role rather than by record is how a screen names the wrong human
+the first time they are not. Fixed, with a test that uses a different sender
+than the partner and fails when the role is used again.
+
+**An invariant that contradicted a requirement.** `ui-invariants.md` said "send
+is disabled until the human writes something" while `REQ-ACK-001` requires basic
+acknowledgement in at most two taps — and Acknowledge and Praise carry no words
+by design. A disabled Send makes that floor unreachable. The requirement wins;
+the invariant is corrected in place with the reasoning.
+
+Also taken: "Morgan will respond" became "Waiting for Morgan", and "Morgan's
+acknowledgement will appear here" became "Morgan has not responded yet." Both
+promised another person's future action, which is the app speaking for them.
+
+**Not taken, recorded instead:** Codex is right that the idempotency keys live
+only in memory, so a restart loses retry identity, and that the map holds
+response text for the life of the provider. Real, but it needs a persisted
+operation store to fix properly rather than a patch here. The exposure is a
+duplicate send after an app restart mid-retry, which the server's own
+`OCCURRENCE_NOT_WAITING_ACK` already turns into an honest "already answered".
+
+Its accessibility point is also fair: the "needs your words" error should focus
+the field and announce as a live region. Worth doing across every form at once
+rather than only here.

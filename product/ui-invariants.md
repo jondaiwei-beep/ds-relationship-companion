@@ -102,7 +102,13 @@ git history and from `dsapp-legacy-history.bundle`.
 - the waiting screen names the person, not a workflow state
 - waiting screen never claims the partner has already responded
 - respond screen starts EMPTY — no pre-filled system words
-- send is disabled until the human writes something
+- send is never disabled; pressing it with nothing to send says what is missing
+  <!-- Was "send is disabled until the human writes something", which
+       contradicted REQ-ACK-001: basic acknowledgement is at most two taps, and
+       Acknowledge and Praise carry no words by design. A disabled Send would
+       make that floor unreachable. Comment and Review still require words —
+       they are words by definition — and say so beside the field when pressed
+       rather than by going dead. Corrected 2026-08-31. -->
 - suggestions are labelled as suggestions and only fill the field
 - the person is never asked to classify their own words
 - an untouched suggestion cannot be sent as your own words
