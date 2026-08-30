@@ -1,0 +1,107 @@
+{
+  "candidate_id": "CORE-LOOP-REV-3",
+  "generated_at": "2026-08-30T00:22:36.125Z",
+  "result": "pass",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "source_scale": 3,
+  "state_family": "product/decisions/core-loop-state-family.md",
+  "tokens": "TOKEN-FREEZE-B2-V1",
+  "svg_freeze": "SVG-FREEZE-V1",
+  "states": [
+    {
+      "screen": "SCR-02",
+      "key": "default",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "busy",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/busy/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "error",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "offline",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "already-completed",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/already-completed/preview.webp"
+    },
+    {
+      "screen": "SCR-02",
+      "key": "answered",
+      "preview": "design/screens/SCR-02-task-completion/candidates/rev-3/states/answered/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "default",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "praise",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/praise/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "words",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/words/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "needs-words",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/needs-words/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "busy",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/busy/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "error",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "offline",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-33",
+      "key": "already-answered",
+      "preview": "design/screens/SCR-33-acknowledgement-composer/candidates/rev-3/states/already-answered/preview.webp"
+    },
+    {
+      "screen": "SCR-03",
+      "key": "default",
+      "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/preview.webp"
+    },
+    {
+      "screen": "SCR-03",
+      "key": "wordless",
+      "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/states/wordless/preview.webp"
+    },
+    {
+      "screen": "SCR-03",
+      "key": "loading",
+      "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/states/loading/preview.webp"
+    },
+    {
+      "screen": "SCR-03",
+      "key": "error",
+      "preview": "design/screens/SCR-03-partner-acknowledgement/candidates/rev-3/states/error/preview.webp"
+    }
+  ],
+  "board": "design/qa/reference/core-loop-state-family-board.png",
+  "build_gate": "unchanged — these are candidates, not approvals"
+}

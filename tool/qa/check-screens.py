@@ -107,16 +107,30 @@ def check_no_backend_states_in_copy():
 
 
 def check_gates_respected():
-    """Only a ready_for_build screen may have an implementation."""
+    """Only a ready_for_build screen may have an implementation.
+
+    What counts as an implementation is a *widget*. A command layer under
+    `application/` talks to the server and draws nothing, so it may exist —
+    and must, since a screen built on an unbuilt command layer would arrive
+    all at once with nothing verified underneath it.
+
+    The rule used to match any `SCR-nn` anywhere in `features/`, which meant a
+    comment naming the screen a file will one day serve tripped it. Rules that
+    fire on prose get worked around rather than obeyed.
+    """
     index = json.load(open("manifests/screen-index.json"))
     open_gates = {
         s["screen_id"]
         for s in index["screens"]
         if s["build_gate"] == "ready_for_build"
     }
-    # Map a feature directory to the screen it implements, when it declares one.
     for path in screens():
+        # Only the presentation layer draws.
+        if f"{os.sep}presentation{os.sep}" not in path:
+            continue
         src = open(path).read()
+        if not re.search(r"extends\s+(Stateless|Stateful|Consumer\w*)Widget", src):
+            continue
         declared = re.search(r"(SCR-\d{2})", src)
         if declared and declared.group(1) not in open_gates:
             fail(
