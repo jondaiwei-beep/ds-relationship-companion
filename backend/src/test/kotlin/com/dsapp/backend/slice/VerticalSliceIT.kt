@@ -118,12 +118,33 @@ class VerticalSliceIT {
             .andExpect(jsonPath("$.acknowledgement").doesNotExist())
 
         // 8. Creator sends a HUMAN acknowledgement.
+        val ackKey = UUID.randomUUID().toString()
         mvc.perform(
             post("/v1/occurrences/$occurrenceId/acknowledgements").with(asUser(creator))
-                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .header("Idempotency-Key", ackKey)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""{"type":"PRAISE","text":"I noticed the care you put into this."}"""),
         ).andExpect(status().isCreated)
+
+        // 8b. REQ-IDEMP-001: the same send, retried. This is the operation the
+        // requirement protects most tightly — an acknowledgement is the only
+        // thing that closes the loop, and two of them would mean the system
+        // manufactured a human response nobody sent.
+        //
+        // A lost response is the realistic case: the phone shows a spinner,
+        // the person taps again, and the second request is byte-identical.
+        mvc.perform(
+            post("/v1/occurrences/$occurrenceId/acknowledgements").with(asUser(creator))
+                .header("Idempotency-Key", ackKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"type":"PRAISE","text":"I noticed the care you put into this."}"""),
+        ).andExpect(status().isCreated)
+
+        val acks = dsl.fetchOne(
+            "SELECT count(*) AS n FROM acknowledgements WHERE occurrence_id = {0}",
+            UUID.fromString(occurrenceId),
+        )!!.get("n", Int::class.java)
+        assertEquals(1, acks, "a retried send must not create a second acknowledgement")
 
         // 9. Partner sees a response that is visibly from a real person.
         mvc.perform(get("/v1/occurrences/$occurrenceId").with(asUser(partner)))
@@ -287,5 +308,89 @@ class VerticalSliceIT {
             occurrenceId,
         )!!.get(0, Int::class.java)
         assertEquals(1, n, "a retry must not create a second completion")
+    }
+
+    @Test
+    fun `retrying a reschedule does not create two replacement occurrences`() {
+        // REQ-IDEMP-001, and the most dangerous of the six operations it names.
+        // RESCHEDULE is the only resolution that CREATES something: it cancels
+        // the original and opens a replacement. Applied twice, a person would
+        // wake up owing two of the same thing, with no way to tell which is
+        // real — and the duplicate would look exactly like an expectation
+        // their partner had set.
+        //
+        // Nothing covered this. `AdjustmentIT` calls the service directly with
+        // a fresh key each time, so it exercises the domain rule and not the
+        // HTTP idempotency layer; no test reached this endpoint at all.
+        val creator = user("Alex")
+        val partner = user("Jamie")
+        val dyn = mvc.perform(
+            post("/v1/dynamics").with(asUser(creator))
+                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"mode":"COUPLE","desiredOutcome":"CLOSER","structureLevel":"LIGHT","referenceTimezone":"UTC"}"""),
+        ).andReturn().response.contentAsString
+        val dynamicId = mapper.readTree(dyn)["dynamicId"].asText()
+        val inv = mvc.perform(
+            post("/v1/dynamics/$dynamicId/invites").with(asUser(creator))
+                .header("Idempotency-Key", UUID.randomUUID().toString()),
+        ).andReturn().response.contentAsString
+        mvc.perform(
+            post("/v1/invites/join").with(asUser(partner))
+                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"token":"${mapper.readTree(inv)["token"].asText()}"}"""),
+        ).andExpect(status().isCreated)
+        val exp = mvc.perform(
+            post("/v1/dynamics/$dynamicId/expectations").with(asUser(creator))
+                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"title":"Prepare the room","assigneeUserId":"$partner"}"""),
+        ).andReturn().response.contentAsString
+        val occurrenceId = mapper.readTree(exp)["occurrenceId"].asText()
+
+        // The partner asks for a different time; the creator agrees.
+        mvc.perform(
+            post("/v1/occurrences/$occurrenceId/adjustments").with(asUser(partner))
+                .header("Idempotency-Key", UUID.randomUUID().toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"type":"RESCHEDULE","note":"Tomorrow instead?"}"""),
+        ).andExpect(status().isCreated)
+
+        val newTime = java.time.Instant.now().plusSeconds(86_400).toString()
+        val key = UUID.randomUUID().toString()
+        val bodies = mutableListOf<String>()
+        repeat(2) {
+            bodies += mvc.perform(
+                post("/v1/occurrences/$occurrenceId/adjustments/resolve").with(asUser(creator))
+                    .header("Idempotency-Key", key)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""{"resolution":"RESCHEDULE","note":"Of course.","newTime":"$newTime"}"""),
+            ).andExpect(status().isOk).andReturn().response.contentAsString
+        }
+
+        // The replay returns the same replacement, not a second one.
+        assertEquals(
+            mapper.readTree(bodies[0])["replacementOccurrenceId"].asText(),
+            mapper.readTree(bodies[1])["replacementOccurrenceId"].asText(),
+            "a retry must replay the first replacement, not create another",
+        )
+
+        // Counted against the ORIGINAL, not the dynamic: counting active
+        // occurrences per dynamic would pass for the wrong reason as soon as
+        // the fixture gains a second expectation.
+        val replacements = dsl.fetchOne(
+            """SELECT count(*) AS n FROM occurrences
+                 WHERE definition_id = (SELECT definition_id FROM occurrences WHERE id = CAST({0} AS uuid))
+                   AND id <> CAST({0} AS uuid)""",
+            occurrenceId,
+        )!!.get("n", Int::class.java)
+        assertEquals(1, replacements, "a retried reschedule must not create a second occurrence")
+
+        // And the original is cancelled exactly once, not resurrected.
+        val original = dsl.fetchOne(
+            "SELECT state FROM occurrences WHERE id = CAST({0} AS uuid)", occurrenceId,
+        )!!.get("state", String::class.java)
+        assertEquals("CANCELLED", original, "the original stays cancelled after a retry")
     }
 }

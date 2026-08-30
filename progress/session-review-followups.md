@@ -294,3 +294,46 @@ independently; merge the useful trust language into SCR-10". Two of the 35
 screens are instructions to fold something in, not screens.
 
 **Phase 2 screen count is therefore 12, not 13.**
+
+### REQ-IDEMP-001 — coverage audited, two real gaps closed
+
+Sprint 6 T6.3. The requirement names six operations; the mechanisms protecting
+them turn out to be three different things, and two operations had no retry test
+at all.
+
+| Operation | Protected by | Retry test |
+|---|---|---|
+| Complete | idempotency key | HTTP, pre-existing |
+| **Acknowledge** | idempotency key + `occurrence_id UNIQUE` | **HTTP, added** |
+| **Adjustment resolution** | idempotency key | **HTTP, added (reschedule)** |
+| Join | invite single-use | service |
+| Pause / Resume | guarded transition, throws | service |
+| Leave / Block | authorization guard | **service, added** |
+
+**Acknowledge** mattered most: it is the only thing that closes the loop, so two
+of them would mean the system manufactured a human response nobody sent.
+
+**Adjustment resolution had no HTTP test whatsoever.** `AdjustmentIT` calls the
+service directly with a fresh key each time, exercising the domain rule and not
+the idempotency layer. `RESCHEDULE` is the dangerous branch because it is the
+only resolution that *creates* an occurrence — applied twice, a person owes two
+of the same thing and the duplicate is indistinguishable from something their
+partner set.
+
+**Leave taught me something by failing.** Reading the method, steps 1–2 use
+guarded SQL (`WHERE access_state = 'ACTIVE'`) but the `membership_terminations`
+insert and the event append below them are unconditional, so I wrote a test
+expecting duplicates. It failed for a different reason: `requireRead` rejects
+the second call before any insert runs, because the actor is no longer an active
+member of what they just left. The protection is real but sits somewhere the
+code does not look like it is. Now tested, and verified by removing the guard.
+
+Codex's review corrected two things. The reschedule assertion counted active
+occurrences per *dynamic*, which would pass for the wrong reason once the
+fixture gains a second expectation — now counted against the original's
+definition, plus an assertion that the original stays `CANCELLED`. And it caught
+that `requireRead` runs *before* the advisory lock, so two concurrent direct
+service calls could both pass it. Over HTTP that is unreachable — `/leave` goes
+through `runOnce` and the DB unique index arbitrates same-key races, which
+`IdempotencyServiceIT` already proves — so the test now states its scope rather
+than overclaiming.

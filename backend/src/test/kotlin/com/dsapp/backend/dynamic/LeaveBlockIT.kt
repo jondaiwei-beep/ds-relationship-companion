@@ -85,6 +85,48 @@ class LeaveBlockIT {
     // ---- Leave ----
 
     @Test
+    fun `leaving twice records one departure, not two`() {
+        // REQ-IDEMP-001 names Leave: "retry produces at most one effective
+        // business transition."
+        //
+        // The protection is not where it looks. The access-state and
+        // dynamic-state updates are guarded (`WHERE access_state = 'ACTIVE'`),
+        // but the termination record and the domain event below them are
+        // unconditional INSERTs — so reading the method suggests a retry would
+        // duplicate them. It cannot: `requireRead` rejects the second call
+        // before any of it runs, because the actor is no longer an active
+        // member of what they just left.
+        //
+        // That is worth a test precisely because the guard is invisible at the
+        // point it protects. Someone relaxing authorization to let a departed
+        // member read their own history would remove it without noticing.
+        //
+        // Scope: this covers the SEQUENTIAL retry. `requireRead` runs before
+        // the advisory lock, so two *concurrent* direct service calls could
+        // both pass it and reach the unconditional inserts. Over HTTP that
+        // cannot happen — `/leave` goes through `runOnce`, and
+        // `IdempotencyServiceIT."concurrent duplicates run the command only
+        // once"` proves the DB unique index arbitrates same-key races. The
+        // exposure is a keyless direct call, which no client makes.
+        leaveBlock.leave(partner, dynamicId, "I need to step away.")
+        assertFailsWith<AuthorizationException.NotAMember> {
+            leaveBlock.leave(partner, dynamicId, "I need to step away.")
+        }
+
+        val terminations = dsl.fetchOne(
+            "SELECT count(*) AS n FROM membership_terminations WHERE dynamic_id={0} AND kind='LEAVE'",
+            dynamicId,
+        )!!.get("n", Int::class.java)
+        assertEquals(1, terminations, "a retried leave must record one departure")
+
+        val events = dsl.fetchOne(
+            "SELECT count(*) AS n FROM relationship_events WHERE dynamic_id={0} AND event_type='member_left'",
+            dynamicId,
+        )!!.get("n", Int::class.java)
+        assertEquals(1, events, "a retried leave must emit one member_left event")
+    }
+
+    @Test
     fun `leaving needs no approval from the partner`() {
         // Journey F: the person leaving does not have to ask.
         leaveBlock.leave(partner, dynamicId, "I need to step away.")
