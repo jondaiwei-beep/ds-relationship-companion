@@ -1,0 +1,107 @@
+{
+  "candidate_id": "ACTIVATION-WIZARD",
+  "generated_at": "2026-08-30T01:58:31.797Z",
+  "result": "pass",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "source_scale": 3,
+  "state_family": "product/decisions/activation-state-family.md",
+  "tokens": "TOKEN-FREEZE-B2-V1",
+  "svg_freeze": "SVG-FREEZE-V1",
+  "states": [
+    {
+      "screen": "SCR-31",
+      "key": "default",
+      "preview": "design/screens/SCR-31-goal-selection/candidates/rev-2/preview.webp"
+    },
+    {
+      "screen": "SCR-31",
+      "key": "other-goal",
+      "preview": "design/screens/SCR-31-goal-selection/candidates/rev-2/states/other-goal/preview.webp"
+    },
+    {
+      "screen": "SCR-31",
+      "key": "nothing-chosen",
+      "preview": "design/screens/SCR-31-goal-selection/candidates/rev-2/states/nothing-chosen/preview.webp"
+    },
+    {
+      "screen": "SCR-07",
+      "key": "default",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/preview.webp"
+    },
+    {
+      "screen": "SCR-07",
+      "key": "solo",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/solo/preview.webp"
+    },
+    {
+      "screen": "SCR-07",
+      "key": "unnamed-role",
+      "preview": "design/screens/SCR-07-role-orientation/candidates/rev-3/states/unnamed-role/preview.webp"
+    },
+    {
+      "screen": "SCR-08",
+      "key": "default",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/preview.webp"
+    },
+    {
+      "screen": "SCR-08",
+      "key": "light",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/light/preview.webp"
+    },
+    {
+      "screen": "SCR-08",
+      "key": "long-distance",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/long-distance/preview.webp"
+    },
+    {
+      "screen": "SCR-08",
+      "key": "busy",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/busy/preview.webp"
+    },
+    {
+      "screen": "SCR-08",
+      "key": "error",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-08",
+      "key": "offline",
+      "preview": "design/screens/SCR-08-relationship-structure/candidates/rev-3/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "default",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "loading",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/loading/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "busy",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/busy/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "error",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/error/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "offline",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/offline/preview.webp"
+    },
+    {
+      "screen": "SCR-12",
+      "key": "uncertain",
+      "preview": "design/screens/SCR-12-relationship-foundation/candidates/rev-3/states/uncertain/preview.webp"
+    }
+  ],
+  "board": "design/qa/reference/activation-state-family-board.png",
+  "build_gate": "unchanged — these are candidates, not approvals"
+}
