@@ -99,9 +99,18 @@ and what is next.
 ## Rules that override convenience
 
 - **Never trace or redraw an asset from a raster preview.** If a master does not
-  exist, the screen is blocked. This is stated in `SVG-FREEZE.md` and it holds.
+  exist, the screen cannot draw it. This is stated in `SVG-FREEZE.md` and it
+  holds without exception — a traced mark is a forged asset. Adding a *new*
+  master is a design task with its own freeze process, not something to
+  improvise mid-screen.
 - **Never infer product behaviour from a design image.** A raster is a visual
   reference, not a behavioural specification. Missing states, copy or permission
-  rules are blockers, not gaps to fill with judgement.
-- **Never open a gate because the assets are ready.** Product, state, recovery,
-  platform and visual gates are independent.
+  rules are design work to be *produced* (see `ds-design-generate`), not gaps to
+  fill with judgement while building.
+- **Never open a gate yourself** — product, state, recovery, platform and visual
+  gates are independent, and opening one is the owner's decision.
+
+  But a closed gate means *go make the missing design*, not *stop and wait*.
+  The system is frozen and the style is settled, so producing a state family is
+  execution. Generate it, review it, render it, commit it, then hand the owner a
+  gate decision they can make in a minute.

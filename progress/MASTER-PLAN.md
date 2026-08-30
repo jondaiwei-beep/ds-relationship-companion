@@ -65,11 +65,17 @@ Written 2026-08-29. 这是**待确认稿** —— 每个条目需要你逐项过
 
 ### Sprint 2 · 进入与认证（SCR-04/05/06）
 
+**2026-08-30 实测更正：这三个屏的设计已经完成，计划里的"只有参考图"已过时。**
+共享渲染器 `SCR-04/candidates/rev-2/render-entrance.cjs` 一次产出 **18 个状态**，
+重跑后所有已提交 PNG 逐字节复现（只有一个时间戳变化）。命令层
+（`features/entrance/application/auth_actions.dart`）也已建好并有测试。
+**唯一缺的是 gate。**
+
 | 屏 | 状态 | 前置 |
 |---|---|---|
-| SCR-04 私密入口 | 只有参考图 | **需设计状态族** |
-| SCR-05 登录 | 只有参考图 | **需设计状态族** |
-| SCR-06 注册 | 只有参考图 | **需设计状态族** |
+| SCR-04 私密入口 | ✅ 渲染器 + 状态族 | 等 gate |
+| SCR-05 登录 | ✅ 7 个状态已渲染 | 等 gate |
+| SCR-06 注册 | ✅ 6 个状态已渲染 | 等 gate |
 
 后端 `/register` `/sign-in` `/magic-links` `/refresh` `/logout` 已就绪。
 `REQ-TRUST-001`：入口必须中性表达 18+、条款、隐私、默认私密。
@@ -96,8 +102,8 @@ Written 2026-08-29. 这是**待确认稿** —— 每个条目需要你逐项过
 | 屏 | 设计现状 | 备注 |
 |---|---|---|
 | SCR-09 邀请伴侣 | 3 个状态渲染 ✅ | 缺 share/copy、loading、offline、授权恢复 |
-| SCR-10 Web 加入 | 2 个状态渲染 ✅ | 缺 revoked/stale、loading、offline |
-| SCR-11 双方同意 | 仅参考图 | 需设计 |
+| SCR-10 Web 加入 | 3 个状态渲染 ✅ | 5 个恢复态已出设计稿（rev-3），待渲染 |
+| SCR-11 双方同意 | **不做** | 契约明言 "do not build independently"，信任文案并入 SCR-10 |
 
 `REQ-INVITE-001`：Pending / Accepted / Expired / Revoked 四态必须
 从服务端解析，**不允许出现不透明 404**。
@@ -183,7 +189,7 @@ FCM 真实投递替换 `LoggingNotificationChannel`；Web Push 在
 | TD-02 | **`platform/session/` 空目录** | 无 token 生命周期管理 |
 | TD-03 | **`platform/deeplink/` 空目录** | 邀请链接无法落地 → Sprint 4 直接卡死 |
 | TD-04 | **deploy-ds.sh 指向旧仓库** | 🔴 实测发现：脚本 clone `JonDai/dsapp`，实际仓库是 `jondaiwei-beep/ds-relationship-companion`。**staging 正在部署一个陈旧 jar** —— `/v1/auth/register` 线上返回 401，但当前源码里它是 `permitAll` |
-| TD-05 | **28 个屏门禁未开** | 需产品/设计负责人逐屏审批。绝不自行修改 gate |
+| TD-05 | **28 个屏门禁未开** | 需产品/设计负责人逐屏审批。绝不自行修改 gate —— **但门禁关闭不等于停工**：缺设计就按 `ds-design-generate` 生成、评审、渲染、提交，再把带渲染图的 gate 决策交给负责人。只有真正的产品问题（红线、状态语义未定）才停下来问 |
 | TD-16 | **staging 跑的是旧构建** | TD-04 的后果。密码注册（V9）线上不可用，真机连产品环境前必须先修 |
 
 ### 🟠 功能缺失（非 bug，是未建）

@@ -22,8 +22,27 @@ python3 -c "import json;d=json.load(open('manifests/screen-index.json'));\
 print([(s['screen_id'],s['build_gate']) for s in d['screens'] if s['screen_id']=='SCR-XX'])"
 ```
 
-Only `ready_for_build` may be implemented. Never change a gate yourself — that
-is a product and design owner decision.
+Only `ready_for_build` may be implemented, and **never change a gate yourself**
+— that stays a product and design owner decision.
+
+**A closed gate is not a reason to stop working.** It says the design is not
+finished; it does not say to sit and wait for someone else to finish it. The
+design system is frozen and the house style is settled, so a missing state
+family is production work, not a decision that needs the owner. When a gate is
+closed:
+
+1. Find out *why* — a missing state family, no candidate, only a reference
+   image. `design/screens/SCR-XX-*/screen.md` says which.
+2. Produce what is missing, following `ds-design-generate`: brief Codex with the
+   reference images and the frozen tokens, review what comes back against the
+   house style, render the full state family deterministically.
+3. Commit the design, then tell the owner the screen is ready for their gate
+   decision — with the renders in hand, so the decision takes a minute rather
+   than a design cycle.
+
+Escalate and pause only for a genuine product question: a red line, a state
+nobody has decided the meaning of, a flow that contradicts a requirement.
+"Nobody has drawn this yet" is not one of those.
 
 **2. Read these, in this order.** Skipping any of them means inventing a value
 that already exists:

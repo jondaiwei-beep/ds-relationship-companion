@@ -4,6 +4,16 @@ Written by Claude Code after reading the repository on 2026-08-29; reconciled wi
 This file states only what blocks writing Flutter code against this design system.
 It does not propose design decisions — those belong to the design owner.
 
+**Updated 2026-08-30 — "missing design" is no longer a blocker.** The system is
+frozen and the house style is settled, so producing a missing state family is
+execution, not a decision. When a screen has no design, the loop in
+`.claude/skills/ds-design-generate/SKILL.md` applies: brief Codex with
+compressed reference images, review the returned directions against the freeze
+and the red lines, render the full family deterministically, commit it, and then
+ask the owner for the gate. Setting a gate is still the owner's alone. Only a
+genuine product question — a red line, an undecided state meaning, a flow that
+contradicts a requirement — stops the work.
+
 ## Status summary
 
 | Area | State | Blocks build? |
