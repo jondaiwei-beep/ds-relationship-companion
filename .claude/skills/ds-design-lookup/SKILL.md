@@ -107,10 +107,10 @@ and what is next.
   reference, not a behavioural specification. Missing states, copy or permission
   rules are design work to be *produced* (see `ds-design-generate`), not gaps to
   fill with judgement while building.
-- **Never open a gate yourself** — product, state, recovery, platform and visual
-  gates are independent, and opening one is the owner's decision.
+- **Open a gate only on evidence.** You own the decision, but the gate means
+  one checkable thing: every state-matrix row has a candidate or a justified
+  N/A, and the states are rendered. Count the blocked rows; do not assert it.
 
-  But a closed gate means *go make the missing design*, not *stop and wait*.
-  The system is frozen and the style is settled, so producing a state family is
-  execution. Generate it, review it, render it, commit it, then hand the owner a
-  gate decision they can make in a minute.
+  A closed gate means *go make the missing design*, not *stop and wait*. The
+  system is frozen and the style is settled, so producing a state family is
+  execution. Generate it, review it, render it, commit it, open the gate, build.

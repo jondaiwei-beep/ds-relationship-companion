@@ -22,8 +22,21 @@ python3 -c "import json;d=json.load(open('manifests/screen-index.json'));\
 print([(s['screen_id'],s['build_gate']) for s in d['screens'] if s['screen_id']=='SCR-XX'])"
 ```
 
-Only `ready_for_build` may be implemented, and **never change a gate yourself**
-— that stays a product and design owner decision.
+Only `ready_for_build` may be implemented. **You own the gate** (confirmed by
+the owner on 2026-08-30: *"你们有完全的自主决定权，我只负责真机验收"*). Open it
+when the design is genuinely complete, and hold it when it is not.
+
+The gate means one checkable thing: **every row in the screen's state matrix has
+a candidate or a justified N/A, and the states are rendered.** Verify that before
+opening it — never assert it:
+
+```bash
+sed -n '/## 3. State matrix/,/## 4/p' design/screens/SCR-XX-*/screen.md | grep -c '| blocked |'
+ls -d design/screens/SCR-XX-*/candidates/*/states/*/ | wc -l
+```
+
+Zero blocked rows and a non-empty state family, or it stays closed. Update both
+`manifests/screen-index.json` and the screen's own `screen.md` — they must agree.
 
 **A closed gate is not a reason to stop working.** It says the design is not
 finished; it does not say to sit and wait for someone else to finish it. The

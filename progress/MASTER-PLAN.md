@@ -189,7 +189,7 @@ FCM 真实投递替换 `LoggingNotificationChannel`；Web Push 在
 | TD-02 | **`platform/session/` 空目录** | 无 token 生命周期管理 |
 | TD-03 | **`platform/deeplink/` 空目录** | 邀请链接无法落地 → Sprint 4 直接卡死 |
 | TD-04 | **deploy-ds.sh 指向旧仓库** | 🔴 实测发现：脚本 clone `JonDai/dsapp`，实际仓库是 `jondaiwei-beep/ds-relationship-companion`。**staging 正在部署一个陈旧 jar** —— `/v1/auth/register` 线上返回 401，但当前源码里它是 `permitAll` |
-| TD-05 | **28 个屏门禁未开** | 需产品/设计负责人逐屏审批。绝不自行修改 gate —— **但门禁关闭不等于停工**：缺设计就按 `ds-design-generate` 生成、评审、渲染、提交，再把带渲染图的 gate 决策交给负责人。只有真正的产品问题（红线、状态语义未定）才停下来问 |
+| ~~TD-05~~ | ~~28 个屏门禁未开~~ | **2026-08-30 解除。** 负责人确认 gate 从来不是他设的（"你们有完全的自主决定权，我只负责真机验收"）。一期 14 个屏的 gate 已全部打开——依据是可核验的：每个屏 state matrix 零 blocked 行、状态族已渲染。二期 12 个屏仍关闭，因为它们确实没有设计 |
 | TD-16 | **staging 跑的是旧构建** | TD-04 的后果。密码注册（V9）线上不可用，真机连产品环境前必须先修 |
 
 ### 🟠 功能缺失（非 bug，是未建）

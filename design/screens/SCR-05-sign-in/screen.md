@@ -9,7 +9,7 @@
 | Release tier | Core Beta |
 | Platforms | Android |
 | Disposition | `retain_and_align` |
-| Build gate | `blocked_alignment_required` |
+| Build gate | `ready_for_build` |
 | Visual reference | [`preview.webp`](preview.webp) |
 | Preserved source | `01 Access and Authentication/05-sign-in.webp` |
 

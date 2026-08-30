@@ -8,7 +8,7 @@
 | Revision | `0 — candidate revision 1` |
 | Release tier | Core Beta |
 | Platforms | Android, Web |
-| Build gate | `blocked_alignment_required` |
+| Build gate | `ready_for_build` |
 | Visual status | **candidate for approval** |
 | Coverage | `manifests/design-coverage.json` |
 | Candidate preview | [`candidates/rev-1/preview.webp`](candidates/rev-1/preview.webp) |

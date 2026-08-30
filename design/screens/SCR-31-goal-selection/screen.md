@@ -8,7 +8,7 @@
 | Revision | `1 — candidate for approval` |
 | Release tier | Core Beta |
 | Platforms | Android, Web |
-| Build gate | `blocked_alignment_required` |
+| Build gate | `ready_for_build` |
 | Visual status | **high-fidelity candidate available** |
 | Visual reference | [`preview.webp`](preview.webp) |
 | Lossless source | [`source.png`](source.png) |

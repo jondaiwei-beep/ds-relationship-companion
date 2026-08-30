@@ -9,7 +9,7 @@
 | Release tier | Core Beta |
 | Platforms | Android |
 | Disposition | `retain_and_align` |
-| Build gate | `blocked_alignment_required` |
+| Build gate | `ready_for_build` |
 | Visual reference | [`preview.webp`](preview.webp) |
 | Candidate revision | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
 | Preserved source | `00 Visual Baseline/02-task-completion.webp` |

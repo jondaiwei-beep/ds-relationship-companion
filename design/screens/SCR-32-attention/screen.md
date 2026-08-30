@@ -8,7 +8,7 @@
 | Revision | `0 — design pending` |
 | Release tier | Core Beta |
 | Platforms | Android, Web |
-| Build gate | `blocked_alignment_required` |
+| Build gate | `ready_for_build` |
 | Visual status | **missing required design** |
 | Coverage | `manifests/design-coverage.json` |
 

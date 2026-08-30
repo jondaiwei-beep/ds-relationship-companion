@@ -10,7 +10,7 @@
 | Release tier | Core Beta |
 | Platforms | Android |
 | Disposition | `retain_and_align` |
-| Build gate | `blocked_alignment_required` |
+| Build gate | `ready_for_build` |
 | Released legacy reference | [`preview.webp`](preview.webp) |
 | Candidate preview | [`candidates/rev-2/preview.webp`](candidates/rev-2/preview.webp) |
 | Candidate lossless source | [`candidates/rev-2/source.png`](candidates/rev-2/source.png) |

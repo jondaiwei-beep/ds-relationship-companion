@@ -47,7 +47,9 @@ for d in design/screens/SCR-*/; do \
   提交 → 把带渲染图的 gate 决策交给我。
 - **只有这几种情况才停下来问我**：产品红线冲突、某个状态的语义从没人定过、
   不可逆操作、真正的所有权死锁。「还没人画过」不算。
-- **绝不自己改 gate**，那是我的决定。
+- **gate 由你们决定**（2026-08-30 授权）。设计真正完整时就开：state matrix
+  零 blocked 行 + 状态已渲染，两个条件都要**数出来**而不是断言。
+  `manifests/screen-index.json` 和 `screen.md` 必须同步。
 - **绝不从位图描摹 SVG**，这条无例外。
 - **给 Codex 发图前必须压缩**：390×844 WebP q82，约为原图 **7.8%**
   （实测 6.9MB → 91KB）。设计稿是 3× 倍率出的，那分辨率给渲染用，不是给评审用。
@@ -74,11 +76,10 @@ for d in design/screens/SCR-*/; do \
    SCR-03 收到确认、SCR-32 Attention
 3. **命令层已就绪、只差屏幕的三处**：`features/entrance/`、`activation/`、
    `invite/` 都有 `application/` 无 `presentation/`
-4. 我开 gate 之后：按 `ds-screen-build` 建屏
+4. 建屏：按 `ds-screen-build`。一期 14 个屏的 gate 已于 2026-08-30 全部打开
 
 ## 我这边的待决事项（你可以催，但不要替我决定）
 
-- **28 个屏的 gate**
 - **staging 未重新部署** —— `https://ds-api.beforeweplay.com/v1/auth/register`
   仍返回 401（新代码应为 400），线上跑的是旧 jar，脚本 `ops/deploy-ds.sh` 已修好，
   差在服务器上跑一次。这挡着我真机测试。
