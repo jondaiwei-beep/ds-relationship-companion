@@ -184,12 +184,16 @@ class _Top extends StatelessWidget {
               ),
             ),
           const Spacer(),
-          Text(
-            '$step of 4',
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: 11,
-              letterSpacing: 0.6,
+          Flexible(
+            child: Text(
+              '$step of 4',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: DsTextStyles.bodySecondary.copyWith(
+                color: DsColors.textOnRitualMuted,
+                fontSize: 11,
+                letterSpacing: 0.6,
+              ),
             ),
           ),
         ],

@@ -227,6 +227,53 @@ def check_package_qualified():
         )
 
 
+def check_text_in_row_is_bounded():
+    """A `Text` directly inside a `Row` must be `Expanded` or `Flexible`.
+
+    This exact overflow was found by hand on five screens — the entrance,
+    SCR-09, SCR-10, SCR-12 and SCR-33 — always the same shape: an icon, a gap,
+    and a sentence that fits until a longer name or a translation arrives.
+    Runtime catches it only if a test happens to render that state at 390dp.
+
+    Deliberately shallow: it looks one line ahead for the `Text(` that follows
+    a `Row(`'s opening, which is where the pattern actually appears. A real
+    parser would catch more and be wrong more often.
+    """
+    for path in sorted(glob.glob("client/lib/features/**/*.dart", recursive=True)):
+        lines = open(path).read().split("\n")
+        for i, line in enumerate(lines):
+            if not re.search(r"\bRow\($", line.strip()):
+                continue
+            # Walk this Row's immediate children, stopping at its close.
+            depth = 0
+            for j in range(i + 1, min(i + 60, len(lines))):
+                body = lines[j]
+                stripped = body.strip()
+                depth += body.count("(") - body.count(")")
+                if depth < 0:
+                    break
+                # An unwrapped Text at the Row's own child indentation, and
+                # only when something precedes it. A leading Text takes the
+                # space it needs and pushes later children along; one that
+                # follows an icon or a gap is the shape that overflows, and it
+                # is the shape all five real cases had.
+                if re.match(r"^Text\($", stripped) and depth <= 2:
+                    before = "\n".join(lines[i + 1:j])
+                    follows_sibling = re.search(
+                        r"(SizedBox|DsSvg|Icon|Container|Spacer)\(", before
+                    )
+                    prev = lines[j - 1].strip()
+                    if follows_sibling and not re.search(
+                        r"(Expanded|Flexible)\(", prev
+                    ):
+                        fail(
+                            "unbounded Text in a Row",
+                            f"{path}:{j + 1}",
+                            "wrap it in Expanded or Flexible — this overflows "
+                            "on a longer name or a translation",
+                        )
+
+
 def main():
     os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
     for check in (
@@ -238,6 +285,7 @@ def main():
         check_assets_resolve,
         check_preview_fits_viewport,
         check_package_qualified,
+        check_text_in_row_is_bounded,
     ):
         check()
 
