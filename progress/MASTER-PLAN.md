@@ -188,9 +188,9 @@ FCM 真实投递替换 `LoggingNotificationChannel`；Web Push 在
 | TD-01 | **无 App 外壳** | 无路由、无导航、无认证守卫。`main.dart` 是预览器 |
 | TD-02 | **`platform/session/` 空目录** | 无 token 生命周期管理 |
 | TD-03 | **`platform/deeplink/` 空目录** | 邀请链接无法落地 → Sprint 4 直接卡死 |
-| TD-04 | **deploy-ds.sh 指向旧仓库** | 🔴 实测发现：脚本 clone `JonDai/dsapp`，实际仓库是 `jondaiwei-beep/ds-relationship-companion`。**staging 正在部署一个陈旧 jar** —— `/v1/auth/register` 线上返回 401，但当前源码里它是 `permitAll` |
+| ~~TD-04~~ | ~~deploy-ds.sh 指向旧仓库~~ | **2026-08-30 已修复并部署。** 根因确认：服务器上的 `~/deploy-ds.sh` 是 8-27 的旧副本，仍 clone `JonDai/dsapp`。仓库里的脚本早就修好了，但从未上传。已 scp 覆盖并重新部署，线上 commit = `eb5718a` |
 | ~~TD-05~~ | ~~28 个屏门禁未开~~ | **2026-08-30 解除。** 负责人确认 gate 从来不是他设的（"你们有完全的自主决定权，我只负责真机验收"）。一期 14 个屏的 gate 已全部打开——依据是可核验的：每个屏 state matrix 零 blocked 行、状态族已渲染。二期 12 个屏仍关闭，因为它们确实没有设计 |
-| TD-16 | **staging 跑的是旧构建** | TD-04 的后果。密码注册（V9）线上不可用，真机连产品环境前必须先修 |
+| ~~TD-16~~ | ~~staging 跑的是旧构建~~ | **2026-08-30 解除。** 实测 `/v1/auth/register` 从 401 变为 400，V9 密码注册可用（返回 `AGE_NOT_CONFIRMED`），本次会话新增的四个字段（`kind` / `dayBoundaryMinutes` / `referenceTimezone` / `allowedActions`）线上全部可见。**真机验收不再被阻塞** |
 
 ### 🟠 功能缺失（非 bug，是未建）
 

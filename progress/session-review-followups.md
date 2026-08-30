@@ -337,3 +337,30 @@ service calls could both pass it. Over HTTP that is unreachable — `/leave` goe
 through `runOnce` and the DB unique index arbitrates same-key races, which
 `IdempotencyServiceIT` already proves — so the test now states its scope rather
 than overclaiming.
+
+### staging was deploying from a repo that no longer exists — fixed
+
+TD-04 / TD-16, open since the plan was written. The root cause was not the
+script in this repository: that had been corrected days ago. The server's own
+copy at `~/deploy-ds.sh` was a snapshot from 27 August that still cloned
+`JonDai/dsapp.git`, a repo the project moved away from. Every deploy since then
+had been a no-op against a stale build.
+
+Fixed by uploading the corrected script (md5 verified on both ends) and running
+it. Live commit is now `eb5718a`.
+
+Verified by behaviour rather than by the health check, which the script itself
+warns is not evidence:
+
+- `POST /v1/auth/register` answers **400**, not 401 — the exact symptom that
+  identified the stale jar.
+- It returns `AGE_NOT_CONFIRMED`, so the V9 password-registration schema is live.
+- A full register → create dynamic → create expectation → read Today loop runs
+  against production, and Today returns all four fields added this session:
+  `kind`, `dayBoundaryMinutes`, `referenceTimezone`, `allowedActions`.
+
+The corrected script also repoints an existing `origin` rather than only fixing
+fresh clones, so a stale checkout on the server cannot reintroduce this.
+
+**On-device acceptance is no longer blocked.** Builds should carry
+`--dart-define=API_BASE_URL=https://ds-api.beforeweplay.com`.
