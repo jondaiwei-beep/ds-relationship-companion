@@ -439,5 +439,38 @@ void main() {
 
       expect(find.text('Relationship day ends at 5:30 AM'), findsOneWidget);
     });
+
+    testWidgets('only the actions the server permits are offered', (
+      tester,
+    ) async {
+      // REQ-STATE-001 names entitlement explicitly. Verified against a live
+      // server: a partner who has asked to discuss an expectation gets
+      // allowedActions ['withdraw'] from GET /v1/occurrences/{id}, while Today
+      // rendered Complete / Discuss / New time / Can't do — four actions, none
+      // of them the permitted one.
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(
+              occurrenceId: 'a1',
+              title: 'Prepare the evening space',
+              state: 'NEED_TO_DISCUSS',
+              allowedActions: ['withdraw'],
+            ),
+          ],
+          later: const [],
+        ),
+      );
+
+      expect(find.text('Complete'), findsNothing);
+      expect(find.text('Discuss'), findsNothing);
+      expect(find.text('New time'), findsNothing);
+      expect(find.text("Can't do"), findsNothing);
+      // The item itself is still shown — losing an action is not losing the
+      // item, and the state is what tells the person where it stands.
+      expect(find.textContaining('Prepare the evening space'), findsOneWidget);
+      expect(find.textContaining('Being discussed'), findsOneWidget);
+    });
   });
 }

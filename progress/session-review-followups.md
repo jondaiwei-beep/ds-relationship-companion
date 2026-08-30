@@ -175,12 +175,18 @@ this change, so they are recorded rather than folded in:
    contract payload has `dayBoundaryMinutes: 0`, so that Dynamic rolls over at
    midnight and was being told 2:00 AM.
 
-2. **Today invents the available actions.** `primary_expectation.dart` always
-   offers all four commands (complete / discuss / reschedule / cant_do), while
-   `GET /v1/occurrences/{id}` returns an authoritative `allowedActions` the
-   contract test already asserts. This is the "entitlement" word in
-   REQ-STATE-001. Fix: carry `allowedActions` on the Today item and render from
-   it, as the detail screen does.
+2. ~~**Today invents the available actions.**~~ **Fixed.**
+   `primary_expectation.dart` rendered all four commands unconditionally while
+   `GET /v1/occurrences/{id}` returned an authoritative `allowedActions` — the
+   "entitlement" word in REQ-STATE-001. Reproduced against a live server: a
+   partner who asks to discuss an expectation may do exactly one thing,
+   `withdraw`, and Today showed Complete / Discuss / New time / Can't do —
+   four actions, none of them the permitted one.
+
+   The rule moved out of `OccurrenceQueryService` into `AllowedActions` so both
+   read models share one definition rather than drifting, and Today now carries
+   the list per item. A card with no offerable action shows the item and its
+   state, not a button that would be refused.
 
 Judged acceptable and deliberately left alone: `responseAge()` uses
 `DateTime.now()` to say "12 MIN AGO". That is elapsed-time *formatting*, not

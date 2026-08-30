@@ -14,6 +14,12 @@ abstract class TodayItem with _$TodayItem {
     /// rather than failing to parse the day.
     @Default('TASK') String kind,
     required String state,
+
+    /// What this person may do with this item right now, stated by the server.
+    /// REQ-STATE-001 names entitlement explicitly: the screen used to offer
+    /// all four actions unconditionally, including on items whose only
+    /// permitted action was to withdraw an open adjustment.
+    @Default(<String>[]) List<String> allowedActions,
     DateTime? dueAt,
     /// Who set this. Direction comes from a person, not from the app.
     String? fromDisplayName,

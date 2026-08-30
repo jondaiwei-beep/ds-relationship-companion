@@ -12,6 +12,11 @@ _TodayItem _$TodayItemFromJson(Map<String, dynamic> json) => _TodayItem(
   purpose: json['purpose'] as String?,
   kind: json['kind'] as String? ?? 'TASK',
   state: json['state'] as String,
+  allowedActions:
+      (json['allowedActions'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
   dueAt: json['dueAt'] == null ? null : DateTime.parse(json['dueAt'] as String),
   fromDisplayName: json['fromDisplayName'] as String?,
 );
@@ -23,6 +28,7 @@ Map<String, dynamic> _$TodayItemToJson(_TodayItem instance) =>
       'purpose': instance.purpose,
       'kind': instance.kind,
       'state': instance.state,
+      'allowedActions': instance.allowedActions,
       'dueAt': instance.dueAt?.toIso8601String(),
       'fromDisplayName': instance.fromDisplayName,
     };

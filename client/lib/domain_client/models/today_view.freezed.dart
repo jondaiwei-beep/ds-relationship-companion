@@ -18,7 +18,11 @@ mixin _$TodayItem {
  String get occurrenceId; String get title; String? get purpose;/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001). Defaulted so
 /// a client built against an older server degrades to the common kind
 /// rather than failing to parse the day.
- String get kind; String get state; DateTime? get dueAt;/// Who set this. Direction comes from a person, not from the app.
+ String get kind; String get state;/// What this person may do with this item right now, stated by the server.
+/// REQ-STATE-001 names entitlement explicitly: the screen used to offer
+/// all four actions unconditionally, including on items whose only
+/// permitted action was to withdraw an open adjustment.
+ List<String> get allowedActions; DateTime? get dueAt;/// Who set this. Direction comes from a person, not from the app.
  String? get fromDisplayName;
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
@@ -32,16 +36,16 @@ $TodayItemCopyWith<TodayItem> get copyWith => _$TodayItemCopyWithImpl<TodayItem>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other.allowedActions, allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,dueAt,fromDisplayName);
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(allowedActions),dueAt,fromDisplayName);
 
 @override
 String toString() {
-  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
+  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
 }
 
 
@@ -52,7 +56,7 @@ abstract mixin class $TodayItemCopyWith<$Res>  {
   factory $TodayItemCopyWith(TodayItem value, $Res Function(TodayItem) _then) = _$TodayItemCopyWithImpl;
 @useResult
 $Res call({
- String occurrenceId, String title, String? purpose, String kind, String state, DateTime? dueAt, String? fromDisplayName
+ String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName
 });
 
 
@@ -69,14 +73,15 @@ class _$TodayItemCopyWithImpl<$Res>
 
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
   return _then(_self.copyWith(
 occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,purpose: freezed == purpose ? _self.purpose : purpose // ignore: cast_nullable_to_non_nullable
 as String?,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
-as String,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
+as String,allowedActions: null == allowedActions ? _self.allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
+as List<String>,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -163,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  DateTime? dueAt,  String? fromDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayItem() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.dueAt,_that.fromDisplayName);case _:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName);case _:
   return orElse();
 
 }
@@ -184,10 +189,10 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  DateTime? dueAt,  String? fromDisplayName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName)  $default,) {final _that = this;
 switch (_that) {
 case _TodayItem():
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.dueAt,_that.fromDisplayName);case _:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +209,10 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  DateTime? dueAt,  String? fromDisplayName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayItem() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.dueAt,_that.fromDisplayName);case _:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName);case _:
   return null;
 
 }
@@ -219,7 +224,7 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 @JsonSerializable()
 
 class _TodayItem implements TodayItem {
-  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = 'TASK', required this.state, this.dueAt, this.fromDisplayName});
+  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = 'TASK', required this.state, final  List<String> allowedActions = const <String>[], this.dueAt, this.fromDisplayName}): _allowedActions = allowedActions;
   factory _TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
 
 @override final  String occurrenceId;
@@ -230,6 +235,21 @@ class _TodayItem implements TodayItem {
 /// rather than failing to parse the day.
 @override@JsonKey() final  String kind;
 @override final  String state;
+/// What this person may do with this item right now, stated by the server.
+/// REQ-STATE-001 names entitlement explicitly: the screen used to offer
+/// all four actions unconditionally, including on items whose only
+/// permitted action was to withdraw an open adjustment.
+ final  List<String> _allowedActions;
+/// What this person may do with this item right now, stated by the server.
+/// REQ-STATE-001 names entitlement explicitly: the screen used to offer
+/// all four actions unconditionally, including on items whose only
+/// permitted action was to withdraw an open adjustment.
+@override@JsonKey() List<String> get allowedActions {
+  if (_allowedActions is EqualUnmodifiableListView) return _allowedActions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_allowedActions);
+}
+
 @override final  DateTime? dueAt;
 /// Who set this. Direction comes from a person, not from the app.
 @override final  String? fromDisplayName;
@@ -247,16 +267,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other._allowedActions, _allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,dueAt,fromDisplayName);
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(_allowedActions),dueAt,fromDisplayName);
 
 @override
 String toString() {
-  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
+  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
 }
 
 
@@ -267,7 +287,7 @@ abstract mixin class _$TodayItemCopyWith<$Res> implements $TodayItemCopyWith<$Re
   factory _$TodayItemCopyWith(_TodayItem value, $Res Function(_TodayItem) _then) = __$TodayItemCopyWithImpl;
 @override @useResult
 $Res call({
- String occurrenceId, String title, String? purpose, String kind, String state, DateTime? dueAt, String? fromDisplayName
+ String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName
 });
 
 
@@ -284,14 +304,15 @@ class __$TodayItemCopyWithImpl<$Res>
 
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
   return _then(_TodayItem(
 occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,purpose: freezed == purpose ? _self.purpose : purpose // ignore: cast_nullable_to_non_nullable
 as String?,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
-as String,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
+as String,allowedActions: null == allowedActions ? _self._allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
+as List<String>,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

@@ -36,6 +36,9 @@ final _priority = [
     occurrenceId: 'o1',
     title: 'Prepare the bedroom before 9:00 PM.',
     state: 'ACTIVE',
+    // What the server returns for an ACTIVE item the partner is assigned:
+    // adjustment beside completion, never behind it.
+    allowedActions: ['complete', 'discuss', 'reschedule', 'cant_do'],
     fromDisplayName: 'Morgan',
   ),
   TodayItem(

@@ -27,6 +27,11 @@ class PrimaryExpectation extends StatelessWidget {
   /// cannot start a second attempt.
   final bool busy;
 
+  /// The adjustment paths the server permits, in the order the design fixes.
+  List<(String, TodayAction)> get _adjustments => _AdjustmentActions._paths
+      .where((p) => item.allowedActions.contains(p.$2.wire))
+      .toList();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -94,13 +99,27 @@ class PrimaryExpectation extends StatelessWidget {
                         height: todaySupportHeight,
                       ),
                     ),
-                    const SizedBox(height: DsSpacing.space3),
-                    _CompleteButton(
-                      busy: busy,
-                      onTap: () => onAction(TodayAction.complete),
-                    ),
-                    const SizedBox(height: DsSpacing.space3),
-                    _AdjustmentActions(busy: busy, onAction: onAction),
+                    // Only what the server says this person may do. An item
+                    // with an open adjustment permits `withdraw` and nothing
+                    // this card offers, so it correctly shows no buttons
+                    // rather than a Complete that would be refused.
+                    if (item.allowedActions.contains(
+                      TodayAction.complete.wire,
+                    )) ...[
+                      const SizedBox(height: DsSpacing.space3),
+                      _CompleteButton(
+                        busy: busy,
+                        onTap: () => onAction(TodayAction.complete),
+                      ),
+                    ],
+                    if (_adjustments.isNotEmpty) ...[
+                      const SizedBox(height: DsSpacing.space3),
+                      _AdjustmentActions(
+                        busy: busy,
+                        onAction: onAction,
+                        paths: _adjustments,
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -161,10 +180,17 @@ class _CompleteButton extends StatelessWidget {
 /// permanent structural furniture beside Complete — each keeping its own 48dp
 /// target even though they are drawn as quiet text.
 class _AdjustmentActions extends StatelessWidget {
-  const _AdjustmentActions({required this.onAction, required this.busy});
+  const _AdjustmentActions({
+    required this.onAction,
+    required this.busy,
+    required this.paths,
+  });
 
   final void Function(TodayAction) onAction;
   final bool busy;
+
+  /// Already filtered to what the server permits.
+  final List<(String, TodayAction)> paths;
 
   /// Order and wording are fixed by the design; adjustment is never presented
   /// as a lesser choice than completing.
@@ -178,7 +204,7 @@ class _AdjustmentActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (final (label, action) in _paths)
+        for (final (label, action) in paths)
           Expanded(
             child: SizedBox(
               height: DsLayoutSizes.touchTarget,

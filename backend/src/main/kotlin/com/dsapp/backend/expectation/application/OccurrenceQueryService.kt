@@ -109,34 +109,7 @@ class OccurrenceQueryService(
                     senderDisplayName = r.get("ack_sender", String::class.java),
                 )
             },
-            allowedActions = allowedActions(state, ctx.role, ctx.mayMutate),
+            allowedActions = AllowedActions.forOccurrence(state, ctx.role, ctx.mayMutate),
         )
-    }
-
-    private fun allowedActions(state: String, role: RoleContext, mayMutate: Boolean): List<String> {
-        if (!mayMutate) return emptyList()
-        return when (state) {
-            // Adjustment is always offered alongside completion — it is a normal
-            // path, not a failure (red line #3, Notion 02 §5).
-            "ACTIVE" -> if (role == RoleContext.PARTNER) {
-                listOf("complete", "discuss", "reschedule", "cant_do")
-            } else emptyList()
-            "WAITING_ACK" -> if (role == RoleContext.CREATOR) {
-                listOf("acknowledge", "praise", "comment")
-            } else emptyList()
-            // An open adjustment awaits the OTHER person's answer. Journey D
-            // fixes the vocabulary: Continue / Adjust / Reschedule / Excuse /
-            // Cancel — never "approve" or "reject", which would frame asking
-            // as a request for permission.
-            "NEED_TO_DISCUSS", "RESCHEDULE_REQUESTED", "EXCUSE_REQUESTED" ->
-                if (role == RoleContext.CREATOR) {
-                    listOf("continue", "adjust", "reschedule", "excuse", "cancel")
-                } else listOf("withdraw")
-            // Past due is only ever a prompt to look, never a penalty.
-            "NEEDS_REVIEW" -> if (role == RoleContext.PARTNER) {
-                listOf("complete", "discuss", "reschedule", "cant_do")
-            } else listOf("review", "excuse", "reschedule")
-            else -> emptyList()
-        }
     }
 }

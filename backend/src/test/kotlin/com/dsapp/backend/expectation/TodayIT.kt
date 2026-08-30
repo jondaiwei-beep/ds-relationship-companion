@@ -118,6 +118,31 @@ class TodayIT {
     }
 
     @Test
+    fun `Today states what each person may do, from the same authority`() {
+        // REQ-STATE-001. Today offered all four partner actions
+        // unconditionally, so an item with an open adjustment still showed
+        // Complete when the only permitted action was to withdraw.
+        val occurrenceId = expectation("Prepare the evening space", "ACTIVE")
+        assertEquals(
+            listOf("complete", "discuss", "reschedule", "cant_do"),
+            today.forDynamic(partner, dynamicId).priorityItems.single().allowedActions,
+        )
+
+        dsl.query(
+            "UPDATE occurrences SET state = 'NEED_TO_DISCUSS' WHERE id = {0}",
+            occurrenceId,
+        ).execute()
+
+        // The creator's side of an open adjustment is not on Today — Today
+        // lists what is assigned to you — so only the partner's view is
+        // asserted here.
+        assertEquals(
+            listOf("withdraw"),
+            today.forDynamic(partner, dynamicId).priorityItems.single().allowedActions,
+        )
+    }
+
+    @Test
     fun `Today states the Dynamic's own day boundary`() {
         // REQ-STATE-001. The screen hard-coded "2:00 AM"; a Dynamic that rolls
         // over at 05:30 was simply told the wrong time.

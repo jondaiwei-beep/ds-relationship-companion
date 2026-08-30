@@ -11,7 +11,17 @@ import '../presentation/today_screen.dart';
 /// to discuss, so they share one shape and one failure path — a design where
 /// Complete succeeds cleanly and Can't Do fails obscurely would make adjustment
 /// feel like the lesser choice.
-enum TodayAction { complete, discuss, requestNewTime, cantDo }
+enum TodayAction {
+  complete('complete'),
+  discuss('discuss'),
+  requestNewTime('reschedule'),
+  cantDo('cant_do');
+
+  const TodayAction(this.wire);
+
+  /// The name the server uses in `allowedActions`.
+  final String wire;
+}
 
 /// The outcome of one attempt, so the UI can say what happened without
 /// inspecting exceptions.

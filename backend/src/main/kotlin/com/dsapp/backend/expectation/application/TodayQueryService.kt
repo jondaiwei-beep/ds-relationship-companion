@@ -52,6 +52,13 @@ class TodayQueryService(
          */
         val kind: String,
         val state: String,
+        /**
+         * What this person may do with this item right now, from the same
+         * authority the Occurrence detail uses. REQ-STATE-001: Today used to
+         * offer all four partner actions unconditionally, so an item the
+         * partner had asked to discuss still showed Complete.
+         */
+        val allowedActions: List<String>,
         val dueAt: Instant?,
         /** Who set this expectation — it comes from a person, not the app. */
         val fromDisplayName: String?,
@@ -170,6 +177,9 @@ class TodayQueryService(
                 purpose = it.get("purpose", String::class.java),
                 kind = it.get("kind", String::class.java),
                 state = it.get("state", String::class.java),
+                allowedActions = AllowedActions.forOccurrence(
+                    it.get("state", String::class.java), ctx.role, ctx.mayMutate,
+                ),
                 dueAt = it.get("due_at", Instant::class.java),
                 fromDisplayName = it.get("from_name", String::class.java),
             )
