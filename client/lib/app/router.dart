@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/entrance/presentation/auth_callback_screen.dart';
 import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
@@ -176,7 +177,10 @@ GoRouter createRouter(Ref ref) {
       ),
       GoRoute(
         path: Routes.authCallback,
-        builder: (_, _) => const NotBuiltYet(screen: 'Magic-link callback'),
+        builder: (context, state) => AuthCallbackScreen(
+          onSignedIn: () => context.go(_destinationFrom(state)),
+          onRequestNewLink: () => context.go(Routes.signIn),
+        ),
       ),
       GoRoute(
         path: Routes.invite,
