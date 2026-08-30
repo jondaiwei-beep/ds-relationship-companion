@@ -44,12 +44,12 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
-| Default | TBD | Match approved hierarchy after behavior alignment | blocked |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
+| Default | TBD | Match approved hierarchy after behavior alignment | candidate rev-2 |
+| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-2 |
 | Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
-| Offline | TBD | Show availability and queued-action behavior | blocked |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
+| Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-2 |
+| Offline | TBD | Show availability and queued-action behavior | candidate rev-2 |
+| Authorization loss | TBD | Hide protected data and offer safe recovery | candidate rev-2 |
 | Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
 
 ## 4. Asset contract

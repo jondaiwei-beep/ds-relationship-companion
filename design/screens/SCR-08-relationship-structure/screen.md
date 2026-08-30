@@ -52,10 +52,10 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
 | Default | Use candidate revision 2 after approval | Structure + context hierarchy | candidate |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
+| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | candidate rev-3 |
 | Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
-| Offline | TBD | Show availability and queued-action behavior | blocked |
+| Error and retry | TBD | Recovery action and retained data must be explicit | candidate rev-3 |
+| Offline | TBD | Show availability and queued-action behavior | candidate rev-3 |
 | Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
 | Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
 
