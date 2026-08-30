@@ -275,3 +275,22 @@ free-text label column**, and V7 states it is *"never used for authorization"*.
 So a custom role cannot alter a word or a right on those screens — the display
 name is the only variable. SCR-01's rule is aspirational for a capability the
 schema does not yet have.
+
+### SCR-19 Task List should not be built, like SCR-11
+
+Found when starting Sprint 7. Its contract says so directly:
+
+> Business logic and state transitions: **Merge into the Today family as its
+> prioritized-list state, not a separate primary navigation tab.**
+>
+> Known alignment work: use as Today secondary list, not a new primary tab
+
+SCR-01 already implements this — the priority list, the count-bearing "Show"
+disclosure and the Later rows *are* SCR-19. Designing it separately would build
+the fourth navigation tab the contract rejects.
+
+Same shape as SCR-11 Mutual Consent, whose contract says "do not build
+independently; merge the useful trust language into SCR-10". Two of the 35
+screens are instructions to fold something in, not screens.
+
+**Phase 2 screen count is therefore 12, not 13.**

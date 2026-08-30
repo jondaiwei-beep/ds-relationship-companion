@@ -45,13 +45,16 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 
 | State | Product rule | UI requirement | Status |
 |---|---|---|---|
-| Default | TBD | Match approved hierarchy after behavior alignment | blocked |
-| Loading | TBD | Skeleton/progress must preserve privacy and layout stability | blocked |
-| Empty | TBD | Explain next safe action without invented urgency | blocked |
-| Error and retry | TBD | Recovery action and retained data must be explicit | blocked |
-| Offline | TBD | Show availability and queued-action behavior | blocked |
-| Authorization loss | TBD | Hide protected data and offer safe recovery | blocked |
-| Role/partner variant | TBD | Preserve consent, privacy and agency invariants | blocked |
+| Default | Authorized member opens one occurrence | Actions render from the server’s allowedActions, never from the state | candidate rev-1 |
+| Loading | Current server truth is not yet confirmed | Privacy-safe; no name-shaped skeletons | candidate rev-1 |
+| Empty | Not applicable — a detail screen opens on one occurrence; a missing one is Error, not Empty | An occurrence that is gone resolves through error, never a blank surface | n/a — see note |
+| Error and retry | Current server truth cannot be confirmed | Retry without losing context; nothing was changed | candidate rev-1 |
+| Offline | No mutation without server confirmation | Detail stays readable; every action is withheld, not disabled | candidate rev-1 |
+| Authorization loss | Session or membership is no longer current | Withhold the expectation entirely; sign in again | candidate rev-1 |
+| Needs review | `REQ-REVIEW-001` — past-due active work becomes Needs Review | A prompt to look, never punishment, consequence or urgency; Stone, never Terracotta | candidate rev-1 |
+| Adjustment open | The member's own adjustment request is pending the other person's answer | Only `withdraw` is offered, because it is the only action the server permits | candidate rev-1 |
+| Waiting for acknowledgement | Completed; the moment is unfinished until a human answers | Completion is marked and no action is offered; never reads as finished | candidate rev-1 |
+| Role/partner variant | Not applicable to this surface — `role_preset` is never used for authorization and carries no free-text label | Allowed actions come from the server; every preset sees identical geometry and agency | n/a — see note |
 
 ## 4. Asset contract
 
