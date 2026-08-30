@@ -363,6 +363,7 @@ void main() {
             TodayItem(
               occurrenceId: 'k1',
               title: 'Evening ritual reminder',
+              kind: 'TASK',
               state: 'ACTIVE',
             ),
           ],
@@ -471,6 +472,34 @@ void main() {
       // item, and the state is what tells the person where it stands.
       expect(find.textContaining('Prepare the evening space'), findsOneWidget);
       expect(find.textContaining('Being discussed'), findsOneWidget);
+    });
+
+    testWidgets('what the server did not say is not invented', (tester) async {
+      // A client newer than its server. `kind` and `dayBoundaryMinutes` are
+      // rollout concessions (plan item T1.6 has not redeployed staging), so
+      // they can arrive absent — but absent must read as unknown, never as a
+      // guessed fact. The old defaults asserted TASK and 2:00 AM.
+      await pump(
+        tester,
+        todayFixture(
+          priority: const [
+            TodayItem(
+              occurrenceId: 'u1',
+              title: 'Something from an older server',
+              state: 'ACTIVE',
+              allowedActions: ['complete'],
+            ),
+          ],
+          later: const [],
+        ).copyWith(dayBoundaryMinutes: null),
+      );
+
+      // Neither kind is claimed.
+      expect(find.textContaining('EXPECTATION'), findsNothing);
+      expect(find.textContaining('RITUAL'), findsNothing);
+      expect(find.textContaining('ON TODAY'), findsOneWidget);
+      // No boundary is stated at all, rather than a time nobody chose.
+      expect(find.textContaining('Relationship day ends'), findsNothing);
     });
   });
 }

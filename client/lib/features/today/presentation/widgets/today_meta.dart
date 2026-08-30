@@ -38,19 +38,23 @@ String itemMeta(TodayItem item) {
 /// emblem. `expectation_definitions.kind` has been the authority since V1.
 /// `TASK` and `RITUAL` are spelled out so a value that is neither is visibly a
 /// fallback rather than silently the common kind — the failure this whole fix
-/// is about. As with [stateLabel], the fallback stays neutral rather than
-/// leaking an identifier to a person.
+/// is about. An unknown kind says the neutral word instead of asserting one:
+/// as with [stateLabel], a backend identifier never reaches a person.
 String kindLabel(TodayItem item) => switch (item.kind) {
   'RITUAL' => 'RITUAL',
   'TASK' => 'EXPECTATION',
-  _ => 'EXPECTATION',
+  _ => 'ON TODAY',
 };
 
 /// The registered master for this item's kind. SCR-01 §4: every mark states
 /// what a thing *is*, so this follows the kind and never the row's position.
+///
+/// Every registered mark asserts a specific identity, so there is no neutral
+/// one to fall back to and the row still has to draw something. An unknown
+/// kind therefore borrows the expectation mark while [kindLabel] declines to
+/// name it — the picture is the weaker claim of the two.
 DsAssetId assetFor(TodayItem item) => switch (item.kind) {
   'RITUAL' => DsAssets.emblemRitualEvening,
-  'TASK' => DsAssets.markAuthority,
   _ => DsAssets.markAuthority,
 };
 

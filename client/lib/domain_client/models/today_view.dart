@@ -9,10 +9,15 @@ abstract class TodayItem with _$TodayItem {
     required String occurrenceId,
     required String title,
     String? purpose,
-    /// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001). Defaulted so
-    /// a client built against an older server degrades to the common kind
-    /// rather than failing to parse the day.
-    @Default('TASK') String kind,
+    /// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001).
+    ///
+    /// The default is a rollout concession, not a fact: the current server
+    /// always sends this, but staging has not been redeployed (plan item
+    /// T1.6) and a required field would hard-fail the build the owner tests
+    /// with. It is deliberately `''` rather than `'TASK'` — an absent kind is
+    /// unknown, not a task, and [kindLabel] keeps the claim neutral instead of
+    /// asserting one. Make it required once staging is redeployed.
+    @Default('') String kind,
     required String state,
 
     /// What this person may do with this item right now, stated by the server.
@@ -61,7 +66,11 @@ abstract class TodayView with _$TodayView {
     /// Minutes past midnight at which the relationship day rolls over, in the
     /// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
     /// which was wrong for any Dynamic that chose another boundary.
-    @Default(120) int dayBoundaryMinutes,
+    ///
+    /// `null` when an older server did not send it, in which case the line is
+    /// omitted rather than stating a boundary nobody chose. Make it required
+    /// once staging is redeployed (plan item T1.6).
+    int? dayBoundaryMinutes,
 
     /// When the server last confirmed this list. Offline shows the last
     /// confirmed list with this timestamp rather than implying it is current.

@@ -192,3 +192,36 @@ Judged acceptable and deliberately left alone: `responseAge()` uses
 `DateTime.now()` to say "12 MIN AGO". That is elapsed-time *formatting*, not
 state derivation — it decides no status, ordering or affordance. It would
 become a violation the moment it fed missed/overdue.
+
+### `withdraw` is advertised and not implemented — open product gap
+
+Found reviewing the `allowedActions` fix. The server tells a partner with an
+open adjustment that their one permitted action is `withdraw`:
+
+```
+GET /v1/occurrences/{id}  ->  allowedActions: ["withdraw"]
+```
+
+**No endpoint implements it.** `POST /occurrences/{id}/adjustments/resolve` is
+the creator's side (continue / adjust / reschedule / excuse / cancel). Nothing
+lets the person who asked to discuss take the request back.
+
+So a `NEED_TO_DISCUSS` item is a dead end for its own author. It is visible —
+Attention lists it at priority 1 and Today shows it as "Being discussed" — but
+neither surface offers an action, and Today rows do not navigate anywhere.
+
+This gap pre-dates the `allowedActions` fix and the fix did not widen it. Before
+it, Today offered Complete on that item, which the server refuses with
+`409 OCCURRENCE_NOT_ACTIVE` (verified live). The dead end was the same; it was
+just reached through a button that looked like it worked.
+
+Not fixed here because it is a feature, not a cleanup: it needs an endpoint, a
+service method and guarded transition, a screen affordance, and copy — and it
+touches the adjustment vocabulary Journey D fixes deliberately ("never approve
+or reject, which would frame asking as a request for permission"). Withdrawing
+your own request is a fifth verb that vocabulary does not yet name.
+
+**Owner decision needed:** either implement `withdraw` end-to-end, or drop it
+from `AllowedActions` so the server stops advertising an action that does not
+exist. Advertising it is the worse of the two — a client that trusts
+`allowedActions`, as Today now does, will render a button that 404s.

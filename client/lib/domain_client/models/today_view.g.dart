@@ -10,7 +10,7 @@ _TodayItem _$TodayItemFromJson(Map<String, dynamic> json) => _TodayItem(
   occurrenceId: json['occurrenceId'] as String,
   title: json['title'] as String,
   purpose: json['purpose'] as String?,
-  kind: json['kind'] as String? ?? 'TASK',
+  kind: json['kind'] as String? ?? '',
   state: json['state'] as String,
   allowedActions:
       (json['allowedActions'] as List<dynamic>?)
@@ -59,7 +59,7 @@ _TodayView _$TodayViewFromJson(Map<String, dynamic> json) => _TodayView(
   relationshipDay: json['relationshipDay'] == null
       ? null
       : DateTime.parse(json['relationshipDay'] as String),
-  dayBoundaryMinutes: (json['dayBoundaryMinutes'] as num?)?.toInt() ?? 120,
+  dayBoundaryMinutes: (json['dayBoundaryMinutes'] as num?)?.toInt(),
   lastConfirmedAt: json['lastConfirmedAt'] == null
       ? null
       : DateTime.parse(json['lastConfirmedAt'] as String),

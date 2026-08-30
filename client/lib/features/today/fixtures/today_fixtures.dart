@@ -23,6 +23,8 @@ TodayView todayFixture({
     roleContext: 'PARTNER',
     needsMyResponseCount: needsMyResponseCount ?? 0,
     relationshipDay: DateTime(2026, 8, 29),
+    // A real server always states this; omitting it would depict an old one.
+    dayBoundaryMinutes: 120,
     lastConfirmedAt: DateTime(2026, 8, 29, 21, 18),
     totalCount: (priority ?? _priority).length + (later ?? _later).length,
     priorityItems: priority ?? _priority,
@@ -35,6 +37,7 @@ final _priority = [
   TodayItem(
     occurrenceId: 'o1',
     title: 'Prepare the bedroom before 9:00 PM.',
+    kind: 'TASK',
     state: 'ACTIVE',
     // What the server returns for an ACTIVE item the partner is assigned:
     // adjustment beside completion, never behind it.
@@ -55,6 +58,7 @@ final _priority = [
   const TodayItem(
     occurrenceId: 'o3',
     title: 'A sentence about today',
+    kind: 'TASK',
     state: 'ACTIVE',
     purpose: 'Optional · private until shared',
   ),
@@ -65,21 +69,25 @@ const _later = [
   TodayItem(
     occurrenceId: 'o5',
     title: "Lay out tomorrow's clothes",
+    kind: 'TASK',
     state: 'ACTIVE',
   ),
   TodayItem(
     occurrenceId: 'o6',
     title: 'One honest journal sentence',
+    kind: 'TASK',
     state: 'ACTIVE',
   ),
   TodayItem(
     occurrenceId: 'o7',
     title: 'Drink water and reset',
+    kind: 'TASK',
     state: 'ACTIVE',
   ),
   TodayItem(
     occurrenceId: 'o8',
     title: 'Review the weekend plan',
+    kind: 'TASK',
     state: 'ACTIVE',
   ),
 ];

@@ -194,7 +194,9 @@ class _LoadedState extends ConsumerState<_Loaded> {
               item: item,
               lastInGroup: index == later.length - 1,
             ),
-        DayBoundary(boundaryMinutes: view.dayBoundaryMinutes),
+        // Omitted rather than guessed when the server did not state it.
+        if (view.dayBoundaryMinutes case final minutes?)
+          DayBoundary(boundaryMinutes: minutes),
       ],
     );
   }

@@ -15,9 +15,14 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TodayItem {
 
- String get occurrenceId; String get title; String? get purpose;/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001). Defaulted so
-/// a client built against an older server degrades to the common kind
-/// rather than failing to parse the day.
+ String get occurrenceId; String get title; String? get purpose;/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001).
+///
+/// The default is a rollout concession, not a fact: the current server
+/// always sends this, but staging has not been redeployed (plan item
+/// T1.6) and a required field would hard-fail the build the owner tests
+/// with. It is deliberately `''` rather than `'TASK'` — an absent kind is
+/// unknown, not a task, and [kindLabel] keeps the claim neutral instead of
+/// asserting one. Make it required once staging is redeployed.
  String get kind; String get state;/// What this person may do with this item right now, stated by the server.
 /// REQ-STATE-001 names entitlement explicitly: the screen used to offer
 /// all four actions unconditionally, including on items whose only
@@ -224,15 +229,20 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 @JsonSerializable()
 
 class _TodayItem implements TodayItem {
-  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = 'TASK', required this.state, final  List<String> allowedActions = const <String>[], this.dueAt, this.fromDisplayName}): _allowedActions = allowedActions;
+  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = '', required this.state, final  List<String> allowedActions = const <String>[], this.dueAt, this.fromDisplayName}): _allowedActions = allowedActions;
   factory _TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
 
 @override final  String occurrenceId;
 @override final  String title;
 @override final  String? purpose;
-/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001). Defaulted so
-/// a client built against an older server degrades to the common kind
-/// rather than failing to parse the day.
+/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001).
+///
+/// The default is a rollout concession, not a fact: the current server
+/// always sends this, but staging has not been redeployed (plan item
+/// T1.6) and a required field would hard-fail the build the owner tests
+/// with. It is deliberately `''` rather than `'TASK'` — an absent kind is
+/// unknown, not a task, and [kindLabel] keeps the claim neutral instead of
+/// asserting one. Make it required once staging is redeployed.
 @override@JsonKey() final  String kind;
 @override final  String state;
 /// What this person may do with this item right now, stated by the server.
@@ -612,7 +622,11 @@ mixin _$TodayView {
  DateTime? get relationshipDay;/// Minutes past midnight at which the relationship day rolls over, in the
 /// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
 /// which was wrong for any Dynamic that chose another boundary.
- int get dayBoundaryMinutes;/// When the server last confirmed this list. Offline shows the last
+///
+/// `null` when an older server did not send it, in which case the line is
+/// omitted rather than stating a boundary nobody chose. Make it required
+/// once staging is redeployed (plan item T1.6).
+ int? get dayBoundaryMinutes;/// When the server last confirmed this list. Offline shows the last
 /// confirmed list with this timestamp rather than implying it is current.
  DateTime? get lastConfirmedAt;/// Total actionable items for the day, stated by the server.
  int get totalCount;/// At most three, in server order: the first carries editorial emphasis,
@@ -651,7 +665,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int dayBoundaryMinutes, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+ String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
 });
 
 
@@ -668,13 +682,13 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = null,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
   return _then(_self.copyWith(
 roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
 as int,relationshipDay: freezed == relationshipDay ? _self.relationshipDay : relationshipDay // ignore: cast_nullable_to_non_nullable
-as DateTime?,dayBoundaryMinutes: null == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
-as int,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,dayBoundaryMinutes: freezed == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
+as int?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
 as int,priorityItems: null == priorityItems ? _self.priorityItems : priorityItems // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,laterItems: null == laterItems ? _self.laterItems : laterItems // ignore: cast_nullable_to_non_nullable
@@ -777,7 +791,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
 return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
@@ -798,7 +812,7 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
 return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
@@ -818,7 +832,7 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
 return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
@@ -833,7 +847,7 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 @JsonSerializable()
 
 class _TodayView implements TodayView {
-  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes = 120, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse;
+  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse;
   factory _TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
 
 /// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
@@ -848,7 +862,11 @@ class _TodayView implements TodayView {
 /// Minutes past midnight at which the relationship day rolls over, in the
 /// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
 /// which was wrong for any Dynamic that chose another boundary.
-@override@JsonKey() final  int dayBoundaryMinutes;
+///
+/// `null` when an older server did not send it, in which case the line is
+/// omitted rather than stating a boundary nobody chose. Make it required
+/// once staging is redeployed (plan item T1.6).
+@override final  int? dayBoundaryMinutes;
 /// When the server last confirmed this list. Offline shows the last
 /// confirmed list with this timestamp rather than implying it is current.
 @override final  DateTime? lastConfirmedAt;
@@ -916,7 +934,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int dayBoundaryMinutes, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+ String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
 });
 
 
@@ -933,13 +951,13 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = null,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
   return _then(_TodayView(
 roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
 as int,relationshipDay: freezed == relationshipDay ? _self.relationshipDay : relationshipDay // ignore: cast_nullable_to_non_nullable
-as DateTime?,dayBoundaryMinutes: null == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
-as int,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,dayBoundaryMinutes: freezed == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
+as int?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
 as int,priorityItems: null == priorityItems ? _self._priorityItems : priorityItems // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,laterItems: null == laterItems ? _self._laterItems : laterItems // ignore: cast_nullable_to_non_nullable
