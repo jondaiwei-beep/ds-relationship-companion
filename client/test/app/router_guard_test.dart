@@ -1,5 +1,4 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
-import 'package:dsapp/app/not_built_yet.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/app/router.dart';
 import 'package:dsapp/domain_client/api_client.dart';
@@ -8,6 +7,7 @@ import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/domain_client/repositories/today_repository.dart';
 import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dsapp/features/invite/presentation/join_screen.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
@@ -169,7 +169,9 @@ void main() {
         reason: 'an invited person must see WHAT they are joining first; '
             'opening the link is not joining',
       );
-      expect(find.byType(NotBuiltYet), findsOneWidget);
+      // The real screen, resolving against the server rather than a
+      // placeholder — and still without a session.
+      expect(find.byType(JoinScreen), findsOneWidget);
     });
   });
 

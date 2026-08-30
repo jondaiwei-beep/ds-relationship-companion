@@ -118,6 +118,24 @@ class InviteService(
             else -> stored
         }
 
+        // A live invitation is the only one that carries content.
+        //
+        // This endpoint is anonymous, so whoever holds the URL gets whatever
+        // it returns. For a PENDING invite that is the point — the invitee
+        // must know who invited them before signing in (Notion 02 §A5). For a
+        // revoked, expired or already-used one there is nothing to decide, and
+        // returning the inviter's name and the Dynamic id would hand a
+        // stranger a fact about someone's private life long after the link
+        // was meant to stop working.
+        //
+        // It also makes the states genuinely indistinguishable rather than
+        // only indistinguishable on screen: SCR-10 renders revoked and
+        // not-found identically, which was cosmetic while the JSON told them
+        // apart.
+        if (effective != "PENDING") {
+            return ResolvedInvite(effective, null, null, null, null)
+        }
+
         return ResolvedInvite(
             state = effective,
             inviteId = row.get("id", UUID::class.java),

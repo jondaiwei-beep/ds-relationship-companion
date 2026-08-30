@@ -64,6 +64,16 @@ class JoinFailed extends JoinOutcome {
   final String message;
 }
 
+/// Joining needs an account, and this visitor does not have a session.
+///
+/// Not a failure: the invitation is fine and so is the person. SCR-10 is
+/// public on purpose — someone must be able to see *what* they are being
+/// asked to join before signing in — so arriving here unauthenticated is the
+/// expected path, not an error to report.
+class JoinNeedsAccount extends JoinOutcome {
+  const JoinNeedsAccount();
+}
+
 /// Creating, reading and accepting an invitation.
 ///
 /// The one place in the product where two people's actions meet before a
@@ -190,6 +200,10 @@ class InviteActions {
         );
       }
       final status = e.response?.statusCode;
+      // 401 is the ordinary case, not a fault: this page is reachable without
+      // a session. The idempotency key is kept — the same person will come
+      // back to the same invitation after signing in, and that is one attempt.
+      if (status == 401) return const JoinNeedsAccount();
       // 409/410 mean the invitation itself is finished, not that the request
       // failed. Retrying will never help, so it is not offered.
       if (status == 409 || status == 410 || status == 404) {

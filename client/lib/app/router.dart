@@ -7,6 +7,7 @@ import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
+import '../features/invite/presentation/join_screen.dart';
 import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../platform/session/session.dart';
@@ -186,7 +187,20 @@ GoRouter createRouter(Ref ref) {
       ),
       GoRoute(
         path: Routes.invite,
-        builder: (_, _) => const NotBuiltYet(screen: 'SCR-10 Web Join'),
+        builder: (context, state) {
+          final token = state.pathParameters['token'] ?? '';
+          return JoinScreen(
+            token: token,
+            onJoined: (dynamicId) => context.go('/dynamics/$dynamicId/today'),
+            onDecline: () => context.go(Routes.entrance),
+            // The invitation travels with them so they land back here rather
+            // than in an empty Today after signing in.
+            onSignIn: () => context.go(
+              '${Routes.entrance}?returnTo='
+              '${Uri.encodeComponent('/invite/$token')}',
+            ),
+          );
+        },
       ),
       GoRoute(
         path: Routes.start,

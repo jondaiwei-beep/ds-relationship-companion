@@ -88,6 +88,40 @@ class InviteServiceIT {
     }
 
     @Test
+    fun `a dead invitation carries no content at all`() {
+        // `resolve` is anonymous, so whatever it returns goes to whoever holds
+        // the URL. A live invitation must name its inviter — that is how the
+        // invitee knows the link is real. A revoked one must not: there is
+        // nothing left to decide, and the name is a fact about someone's
+        // private life handed to a stranger after the link was meant to stop
+        // working.
+        //
+        // It is also what makes REVOKED and NOT_FOUND genuinely
+        // indistinguishable. SCR-10 renders them identically, which was
+        // cosmetic while the JSON told them apart.
+        val created = invites.create(creator, dynamicId, RoleContext.PARTNER)
+        invites.revoke(creator, dynamicId, created.inviteId)
+
+        val revoked = invites.resolve(created.token)
+        assertEquals("REVOKED", revoked.state)
+        assertNull(revoked.inviterDisplayName, "a dead link must not name a person")
+        assertNull(revoked.dynamicId, "a dead link must not identify a Dynamic")
+        assertNull(revoked.inviteId)
+        assertNull(revoked.intendedRoleContext)
+
+        val absent = invites.resolve("no-such-token")
+        assertEquals("NOT_FOUND", absent.state)
+        assertEquals(
+            listOf(absent.inviteId, absent.dynamicId, absent.intendedRoleContext,
+                   absent.inviterDisplayName),
+            listOf(revoked.inviteId, revoked.dynamicId, revoked.intendedRoleContext,
+                   revoked.inviterDisplayName),
+            "revoked and not-found must be indistinguishable in the payload, " +
+                "not only on the screen",
+        )
+    }
+
+    @Test
     fun `join creates an active membership and consumes the invite`() {
         val created = invites.create(creator, dynamicId, RoleContext.PARTNER)
         val membershipId = invites.join(invitee, created.token)
