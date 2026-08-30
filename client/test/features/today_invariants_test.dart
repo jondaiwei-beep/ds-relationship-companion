@@ -418,5 +418,26 @@ void main() {
       expect(marks, contains(DsAssets.emblemRitualEvening));
       expect(marks, isNot(contains(DsAssets.markAuthority)));
     });
+
+    testWidgets('the day boundary is the one the Dynamic chose', (
+      tester,
+    ) async {
+      // REQ-STATE-001. The screen used to state a hard-coded "2:00 AM" while
+      // the server owned `day_boundary_minutes`, so any Dynamic on a different
+      // boundary was told the wrong time by a widget whose own comment claimed
+      // the value came from the server. 5:30 AM is deliberately not the
+      // default.
+      await pump(
+        tester,
+        todayFixture().copyWith(dayBoundaryMinutes: 330),
+      );
+      await tester.scrollUntilVisible(
+        find.textContaining('Relationship day ends'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+
+      expect(find.text('Relationship day ends at 5:30 AM'), findsOneWidget);
+    });
   });
 }

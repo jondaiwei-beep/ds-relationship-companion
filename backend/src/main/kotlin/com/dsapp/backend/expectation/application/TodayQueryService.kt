@@ -80,6 +80,13 @@ class TodayQueryService(
          */
         val relationshipDay: LocalDate,
         /**
+         * Minutes past midnight at which the relationship day rolls over, in
+         * the Dynamic's own timezone. REQ-STATE-001: the screen used to state
+         * a hard-coded "2:00 AM", which is simply wrong for any Dynamic that
+         * chose a different boundary.
+         */
+        val dayBoundaryMinutes: Int,
+        /**
          * When the server last confirmed this list. The offline state shows
          * only the last confirmed list with this timestamp, and disables every
          * mutation until confirmation returns.
@@ -135,10 +142,11 @@ class TodayQueryService(
             dynamicId,
         )!!
         val confirmedAt = Instant.now()
+        val boundaryMinutes = tz.get("day_boundary_minutes", Int::class.java)
         val relationshipDay = RelationshipDay.dayOf(
             instant = confirmedAt,
             zone = ZoneId.of(tz.get("reference_timezone", String::class.java)),
-            boundaryMinutes = tz.get("day_boundary_minutes", Int::class.java),
+            boundaryMinutes = boundaryMinutes,
         )
 
         val rows = dsl.fetch(
@@ -219,6 +227,7 @@ class TodayQueryService(
         return Today(
             roleContext = ctx.role.name,
             relationshipDay = relationshipDay,
+            dayBoundaryMinutes = boundaryMinutes,
             lastConfirmedAt = confirmedAt,
             totalCount = actionable.size,
             needsMyResponseCount = needsMyResponse,

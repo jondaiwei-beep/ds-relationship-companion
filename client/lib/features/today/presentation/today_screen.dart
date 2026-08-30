@@ -194,7 +194,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
               item: item,
               lastInGroup: index == later.length - 1,
             ),
-        const DayBoundary(),
+        DayBoundary(boundaryMinutes: view.dayBoundaryMinutes),
       ],
     );
   }

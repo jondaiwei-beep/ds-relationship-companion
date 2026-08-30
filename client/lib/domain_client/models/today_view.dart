@@ -52,6 +52,11 @@ abstract class TodayView with _$TodayView {
     /// device clock.
     DateTime? relationshipDay,
 
+    /// Minutes past midnight at which the relationship day rolls over, in the
+    /// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
+    /// which was wrong for any Dynamic that chose another boundary.
+    @Default(120) int dayBoundaryMinutes,
+
     /// When the server last confirmed this list. Offline shows the last
     /// confirmed list with this timestamp rather than implying it is current.
     DateTime? lastConfirmedAt,

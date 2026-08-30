@@ -118,6 +118,19 @@ class TodayIT {
     }
 
     @Test
+    fun `Today states the Dynamic's own day boundary`() {
+        // REQ-STATE-001. The screen hard-coded "2:00 AM"; a Dynamic that rolls
+        // over at 05:30 was simply told the wrong time.
+        dsl.query(
+            "UPDATE dynamics SET day_boundary_minutes = 330 WHERE id = {0}",
+            dynamicId,
+        ).execute()
+        expectation("anything", "ACTIVE")
+
+        assertEquals(330, today.forDynamic(partner, dynamicId).dayBoundaryMinutes)
+    }
+
+    @Test
     fun `completed work moves out of the action list and into awaiting response`() {
         expectation("still to do", "ACTIVE")
         expectation("already done", "WAITING_ACK")

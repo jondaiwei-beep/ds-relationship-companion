@@ -165,12 +165,15 @@ Codex's review of the `kind` fix surfaced two others. Both are the same
 mistake — the client stating a server-owned fact — and both are wider than
 this change, so they are recorded rather than folded in:
 
-1. **The relationship-day boundary is hard-coded.** `day_boundary.dart` renders
-   the literal `'Relationship day ends at 2:00 AM'` while the server computes
-   the day from `dynamics.day_boundary_minutes` and does not send it. Another
-   Dynamic with a different boundary is told the wrong time by a screen whose
-   own comment claims the value is server-stated. Fix: put the boundary on the
-   Today read model beside `relationshipDay`, which already travels correctly.
+1. ~~**The relationship-day boundary is hard-coded.**~~ **Fixed.**
+   `day_boundary.dart` rendered the literal `'Relationship day ends at
+   2:00 AM'` while the server computed the day from
+   `dynamics.day_boundary_minutes` and did not send it — a screen whose own
+   comment claimed the value was server-stated. The query already read the
+   column to resolve the day and then discarded it; `dayBoundaryMinutes` now
+   travels on the read model beside `relationshipDay`. The freshly captured
+   contract payload has `dayBoundaryMinutes: 0`, so that Dynamic rolls over at
+   midnight and was being told 2:00 AM.
 
 2. **Today invents the available actions.** `primary_expectation.dart` always
    offers all four commands (complete / discuss / reschedule / cant_do), while

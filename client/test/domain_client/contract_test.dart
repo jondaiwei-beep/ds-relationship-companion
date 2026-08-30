@@ -67,9 +67,11 @@ void main() {
 
   test('parses a real /v1/dynamics/{id}/today response', () {
     // Captured live from https://ds-api.beforeweplay.com on 2026-08-27, with
-    // `kind` re-captured from localhost:8082 on 2026-08-30.
+    // `kind` and `dayBoundaryMinutes` re-captured from localhost:8082 on
+    // 2026-08-30.
     const raw =
-        '{"priorityItems":['
+        '{"dayBoundaryMinutes":0,'
+        '"priorityItems":['
         '{"occurrenceId":"0656bbd4-c2e8-4f2e-8342-3193679587ca",'
         '"title":"Evening check-in message","purpose":"A few words before the day closes.",'
         '"kind":"TASK",'
@@ -87,6 +89,9 @@ void main() {
     // This exact payload is why the rule matters — the client used to read the
     // title and label this row CHECK-IN.
     expect(v.priorityItems.first.kind, 'TASK');
+    // This Dynamic rolls over at midnight, not the 2:00 AM the screen used to
+    // state for everyone.
+    expect(v.dayBoundaryMinutes, 0);
     // An acknowledged item leaves the action list entirely.
     expect(v.awaitingResponse, isEmpty);
     expect(v.recentResponse!.senderDisplayName, 'alex');
