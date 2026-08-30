@@ -8,6 +8,7 @@ Run from the repository root:
 Every rule here exists because it was broken during a real build, or because
 the frozen specs state it and nothing else enforces it.
 """
+import glob
 import json
 import os
 import re
@@ -155,6 +156,56 @@ def check_assets_resolve():
             fail("approved asset absent from DsAssets", asset["id"], "regenerate")
 
 
+def check_preview_fits_viewport():
+    """Every candidate preview renders at the reference viewport and fits it.
+
+    Two things at once, because they fail together. A `preview.webp` is what a
+    reviewer compares screens by, so it has to be at one scale — and once it
+    is, the same file can be probed for content running off the bottom, which
+    is the defect that survived three rounds of review on SCR-01.
+
+    Twelve candidates predate this and sit at source resolution (853 × 1844).
+    They are scaled before probing rather than rewritten: they are approved
+    artifacts, and re-encoding them to satisfy a checker would change files
+    nobody asked to change. New candidates are held to 390 × 844.
+    """
+    global CHECKED
+    try:
+        from PIL import Image
+    except ImportError:
+        return  # Pillow is not a hard dependency of the repository.
+
+    grandfathered = 853, 1844
+    for path in sorted(glob.glob("design/screens/*/candidates/**/preview.webp",
+                                 recursive=True)):
+        CHECKED += 1
+        image = Image.open(path)
+        if image.size not in ((390, 844), grandfathered):
+            fail(
+                "candidate preview is not the reference viewport",
+                path,
+                f"{image.size[0]}x{image.size[1]}, expected 390x844",
+            )
+            continue
+
+        grey = image.convert("L")
+        if grey.size != (390, 844):
+            grey = grey.resize((390, 844))
+        pixels = grey.load()
+        last = 0
+        for y in range(844):
+            if max(pixels[x, y] for x in range(0, 390, 2)) > 120:
+                last = y
+        # 838 rather than 844: a glyph's last antialiased row is not content
+        # running off the screen.
+        if last > 838:
+            fail(
+                "candidate content runs past the bottom of the viewport",
+                path,
+                f"last content at {last}dp of 844",
+            )
+
+
 def check_package_qualified():
     """Assets and fonts must resolve from the package, not the host.
 
@@ -185,6 +236,7 @@ def main():
         check_no_backend_states_in_copy,
         check_gates_respected,
         check_assets_resolve,
+        check_preview_fits_viewport,
         check_package_qualified,
     ):
         check()
