@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../platform/session/session.dart';
@@ -159,7 +160,13 @@ GoRouter createRouter(Ref ref) {
       ),
       GoRoute(
         path: Routes.createAccount,
-        builder: (_, _) => const NotBuiltYet(screen: 'SCR-06 Create Account'),
+        builder: (context, state) => CreateAccountScreen(
+          // The session is adopted by `register` before this fires, so the
+          // guard sends them on to wherever they were heading.
+          onCreated: () => context.go(_destinationFrom(state)),
+          onSignIn: () => context.go(Routes.signIn),
+          onBack: () => context.go(Routes.entrance),
+        ),
       ),
       GoRoute(
         path: Routes.authCallback,

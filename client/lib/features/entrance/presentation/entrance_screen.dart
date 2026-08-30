@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
 import 'widgets/descending_thread.dart';
+import 'widgets/trust_footer.dart';
 
 /// SCR-04 — the private entrance. Where a signed-out person lands.
 ///
@@ -183,7 +184,7 @@ class _EntranceBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: DsSpacing.space5),
-          const _TrustFooter(),
+          const TrustFooter(),
           const SizedBox(height: DsSpacing.space5),
         ],
       ),
@@ -217,45 +218,6 @@ class _Notice extends StatelessWidget {
               : DsColors.textOnRitualSecondary,
         ),
       ),
-    );
-  }
-}
-
-/// Facts, not promises.
-///
-/// An earlier draft said "Your space stays between you." That both exposed the
-/// relationship context and promised an absolute the product cannot deliver —
-/// it cannot speak for the device, the browser or anyone nearby. Replaced with
-/// what is verifiably true (decision D8).
-class _TrustFooter extends StatelessWidget {
-  const _TrustFooter();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const DsSvg(
-          asset: DsAssets.stateLocked,
-          tone: DsAssetTone.muted,
-          width: 20,
-          height: 20,
-        ),
-        const SizedBox(height: DsSpacing.space5),
-        Opacity(
-          opacity: 0.72,
-          child: Text(
-            'For adults 18+. Use of this service is subject to our Terms.\n'
-            'See how we handle data in our Privacy Policy.\n'
-            'Accounts are private by default.',
-            textAlign: TextAlign.center,
-            style: DsTextStyles.navLabel.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: 10,
-              height: 15 / 10,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
