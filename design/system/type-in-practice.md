@@ -72,10 +72,31 @@ confirmed this by eye before it was measured. Proposed:
 
 ## Rules that are not negotiable
 
-**Cormorant appears only where a person's words appear.** On SCR-01 that is the
-expectation itself and the partner's quotation. Every other string is Inter.
-`app/test/design_system_foundation_test.dart` asserts UI chrome cannot take the
+**Cormorant is never UI chrome.** Labels, controls, navigation, metadata and
+surface names are Inter without exception.
+`app/test/design_system_foundation_test.dart` asserts chrome cannot take the
 display family.
+
+Within Cormorant the two roles are not interchangeable, and the distinction is
+**authorship for one and composition for the other**:
+
+- `display.partner` is *only* words a person wrote and sent. Nothing the system
+  authors may ever take it — that is red line #1 wearing a typeface.
+- `display.ritual` is the ritual-focus composition: one thing, centred, alone.
+  It is earned by the **role the line plays on the screen**, not by who wrote
+  it. SCR-01's expectation headline takes it, and that sentence is written by
+  the creator and read by the partner. The entrance headlines ("A private
+  space,", "Begin privately.") take it for the same reason.
+
+Clarified 2026-08-30. The earlier wording — "Cormorant appears only where a
+person's words appear" — collapsed both roles into an authorship test and read
+as forbidding every system-authored serif line. Reviewing SCR-10's recovery
+states surfaced it: the rule as written condemned four approved entrance
+headlines that are correct `display.ritual` usage.
+
+The practical test for a system-authored line: **is it alone at the centre of
+the composition, and is it the one thing the screen is about?** If yes,
+`display.ritual`. If it is a heading with content beneath it, `title.page`.
 
 **Terracotta text needs 24sp regular or 19sp bold** (`B2-FREEZE.md` §2, 4.02:1
 against the ritual canvas). The partner quotation qualifies at 28px. Small

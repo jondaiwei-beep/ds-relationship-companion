@@ -65,11 +65,11 @@ The revised mobile-Web trust surface makes the invitation legible before authent
 | Default trust review | Pending invite resolved | Show inviter, intention, shared/private boundary and leave right | candidate rev-2 |
 | Auth return | Identity restored; Join not yet confirmed | Preserve invite context and return to explicit review | candidate rev-2 |
 | Expired | Invite is Expired | Hide protected context; confirm no membership | candidate rev-2 |
-| Revoked/stale | Invite unavailable or access relation changed | Neutral safe landing with no sensitive content | blocked |
-| Loading | Resolve token and current server truth | Stable privacy-safe loading surface | blocked |
-| Error and retry | Recover without dropping invite context | Explicit retry and retained safe context | blocked |
-| Offline | Cannot confirm current invite truth | Explain offline state; never infer validity | blocked |
-| Authorization loss/shared device | Session is absent, expired or wrong account | Hide protected content and offer safe account recovery | blocked |
+| Revoked/stale | Invite unavailable or access relation changed | Neutral safe landing with no sensitive content | candidate rev-3 |
+| Loading | Resolve token and current server truth | Stable privacy-safe loading surface | candidate rev-3 |
+| Error and retry | Recover without dropping invite context | Explicit retry and retained safe context | candidate rev-3 |
+| Offline | Cannot confirm current invite truth | Explain offline state; never infer validity | candidate rev-3 |
+| Authorization loss/shared device | Session is absent, expired or wrong account | Hide protected content and offer safe account recovery | candidate rev-3 |
 
 ## 4. Asset contract
 

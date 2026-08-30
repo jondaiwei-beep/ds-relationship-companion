@@ -31,13 +31,36 @@ Direction B's `Continue to sign in` is untrue when a valid but ineligible
 account is already present, and two account actions read as a choice the person
 cannot meaningfully make.
 
-**Cormorant is not used in these states — accepted, and it exposes a real
-inconsistency.** `type-in-practice.md` is unambiguous: *"Cormorant appears only
-where a person's words appear."* These headings are system-authored, so they
-take `title.page`. This means **the approved rev-2 recovery artwork violates
-the frozen type contract** by setting serif system headlines. That is a
-pre-existing defect in approved work, not a new one, and is recorded below
-rather than silently copied forward.
+**Cormorant — Codex read the rule correctly and drew the wrong conclusion, and
+the rule was at fault.** It cited *"Cormorant appears only where a person's
+words appear"* and concluded these system-authored headings must be
+`title.page`. Following that consistently would also have condemned four
+*approved* entrance headlines ("A private space,", "A link is on its way.",
+"Return to your space.", "Begin privately.") — none of which are anyone's
+words.
+
+That is the tell that the rule, not the artwork, was wrong. The two Cormorant
+roles are distinguished by different things: `display.partner` is an
+**authorship** test (only words a person wrote and sent — red line #1 in a
+typeface), while `display.ritual` is a **compositional** one ("one thing,
+centred, alone on the screen"). SCR-01 settles it: the expectation headline
+takes `display.ritual` and is written by the creator, not the reader.
+
+`type-in-practice.md` has been corrected to say this, with the practical test:
+*is the line alone at the centre, and is it the one thing the screen is about?*
+
+Applied to these five states:
+
+| State | Headline | Role | Why |
+|---|---|---|---|
+| `revoked` | `This invitation is no longer available.` | `display.ritual` | Alone at the centre; the whole point of the screen |
+| `loading` | — | — | No headline; a resolving surface states nothing yet |
+| `error` | `We couldn't check this invitation.` | `display.ritual` | Same composition as revoked and expired |
+| `offline` | `You're offline.` | `display.ritual` | Same |
+| `authorization-loss` | `Confirm your account to continue.` | `display.ritual` | Same |
+
+This keeps rev-3 consistent with the approved rev-2 recovery states rather than
+splitting the flow across two type treatments — which was the real risk.
 
 **`mark.partner-bond` withheld while invite truth is unresolved — accepted.**
 Drawing the bond mark before the server confirms the invite would be the app
@@ -45,13 +68,11 @@ implying a relationship exists. That is the right reading of `REQ-INVITE-001`.
 
 ## Open for the owner
 
-1. **Type-contract inconsistency in approved rev-2.** Either rev-2's recovery
-   headlines are corrected to `title.page`, or `type-in-practice.md` gains an
-   explicit exception for recovery headings. Until then, rev-2 and rev-3
-   disagree with each other on screen. **This one needs deciding before build**,
-   because the two revisions will sit side by side in the same flow.
-2. **Gate.** Not set here. `blocked_alignment_required` stands until the owner
+1. **Gate.** Not set here. `blocked_alignment_required` stands until the owner
    opens it.
+
+The type question that appeared to need a decision did not: the frozen roles
+already answered it once stated precisely. Recorded in `type-in-practice.md`.
 
 ## Not done yet
 
