@@ -66,6 +66,7 @@ Product references now point to the migrated CURRENT v2 contracts. This package 
 |---|---|---|---|
 | `mark.guidance` | Resolve purpose from the approved visual and asset registry | `manifests/assets.json` | approved — SVG Freeze v1 |
 | `mark.partner-bond` | Selected partner-mode relationship symbol | `manifests/assets.json` | approved — SVG Freeze v1 |
+| `icon.private-space` | Solo-mode symbol — beginning alone is a real choice, not the absence of a partner | `manifests/assets.json` | approved — SVG Freeze v1 |
 
 Bundled fonts are under `design/assets/fonts/`. Do not trace, redraw, or embed one-off SVG paths from the preview.
 

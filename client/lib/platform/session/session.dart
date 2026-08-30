@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// Who is signed in, and whether the app may show relationship content.
 ///
 /// Three states, not two. "Not signed in" and "was signed in, and the session
@@ -49,4 +51,28 @@ final class Authenticated extends Session {
   const Authenticated({required this.accessToken});
 
   final String accessToken;
+
+  /// Who this session belongs to, read from the token's `sub`.
+  ///
+  /// Not a security claim — the server re-derives the actor from the token on
+  /// every request and never trusts a client-supplied id. This is for the one
+  /// place a screen legitimately needs to name itself in a request body:
+  /// assigning the first rhythm to the person setting it up.
+  ///
+  /// Null rather than throwing on a malformed token: a screen should show a
+  /// recoverable failure, not crash, and the transport will reject the
+  /// request anyway.
+  String? get userId {
+    final parts = accessToken.split('.');
+    if (parts.length != 3) return null;
+    try {
+      final payload = parts[1];
+      final padded = payload.padRight((payload.length + 3) ~/ 4 * 4, '=');
+      final json = utf8.decode(base64Url.decode(padded));
+      final sub = (jsonDecode(json) as Map<String, dynamic>)['sub'];
+      return sub is String && sub.isNotEmpty ? sub : null;
+    } on Object {
+      return null;
+    }
+  }
 }

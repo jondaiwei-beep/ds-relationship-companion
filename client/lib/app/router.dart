@@ -5,7 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../features/entrance/presentation/auth_callback_screen.dart';
 import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
+import '../features/activation/presentation/activation_wizard.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
+import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
@@ -188,7 +190,22 @@ GoRouter createRouter(Ref ref) {
       ),
       GoRoute(
         path: Routes.start,
-        builder: (_, _) => const NotBuiltYet(screen: 'SCR-31 Goal Selection'),
+        builder: (context, state) {
+          final zone = deviceTimezone();
+          if (zone == null) {
+            // REQ-TIME-001 will not accept a guess, and a Dynamic created in
+            // the wrong zone moves someone's relationship day months later.
+            return const NotBuiltYet(
+              screen: 'Timezone unavailable on this platform',
+            );
+          }
+          return ActivationWizard(
+            timezone: zone,
+            onStarted: (dynamicId) =>
+                context.go('/dynamics/$dynamicId/today'),
+            onLeave: () => context.go(Routes.today),
+          );
+        },
       ),
     ],
   );
