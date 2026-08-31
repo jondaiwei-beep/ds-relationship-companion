@@ -104,6 +104,7 @@ Future<_FakeDynamicRepository> _pump(
   WidgetTester tester,
   Object result, {
   String? viewer = 'u-creator',
+  VoidCallback? onPause,
 }) async {
   // Assert against the reference viewport, not the 800x600 test default: the
   // bug this caught — Pause below the fold — only exists at phone height.
@@ -120,7 +121,7 @@ Future<_FakeDynamicRepository> _pump(
       ],
       child: MaterialApp(
         theme: DsTheme.ritual(),
-        home: const DynamicScreen(dynamicId: 'dyn-1'),
+        home: DynamicScreen(dynamicId: 'dyn-1', onPause: onPause),
       ),
     ),
   );
@@ -156,26 +157,31 @@ void main() {
     expect(find.textContaining('CHECK-IN'), findsNothing);
   });
 
-  testWidgets('either member may pause, and resuming comes back lighter', (
+  testWidgets('pausing is reachable without scrolling, and opens SCR-24', (
     tester,
   ) async {
-    final repo = await _pump(tester, _detail());
-    // Reachable without scrolling: agency you have to hunt for is not the
-    // inviolable agency Notion 04 §4 describes.
+    // Agency you have to hunt for is not the inviolable agency Notion 04 §4
+    // describes. The act itself lives on SCR-24 now, which is where the
+    // pause/resume assertions moved to.
+    var opened = 0;
+    await _pump(tester, _detail(), onPause: () => opened++);
     expect(find.text('Pause this Dynamic'), findsOneWidget);
     await tester.tap(find.text('Pause this Dynamic'));
     await tester.pumpAndSettle();
-    expect(repo.pauseCalls, 1);
+    expect(opened, 1);
+  });
 
-    final paused = await _pump(
+  testWidgets('a paused Dynamic offers coming back, not pausing again', (
+    tester,
+  ) async {
+    await _pump(
       tester,
       _detail(state: 'PAUSED', pausedAt: DateTime.utc(2026, 8, 31)),
+      onPause: () {},
     );
     expect(find.text('PAUSED'), findsOneWidget);
-    await tester.tap(find.text('Resume, lighter'));
-    await tester.pumpAndSettle();
-    expect(paused.resumeCalls, 1);
-    expect(paused.lastLighter, isTrue, reason: 'Journey E: half the structure');
+    expect(find.text('Come back'), findsOneWidget);
+    expect(find.text('Pause this Dynamic'), findsNothing);
   });
 
   testWidgets('an unconfirmed session shows no partner, role or structure', (

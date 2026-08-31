@@ -42,7 +42,15 @@ class DynamicActions {
     ApiClient.newIdempotencyKey,
   );
 
-  Future<DynamicOutcome> run(String dynamicId, DynamicAction action) async {
+  /// [lighter] applies to resume only. It defaults to true because that is
+  /// Journey E's default — being handed the same load you paused under is how
+  /// people leave again — but SCR-24 lets the person returning decide, and
+  /// their choice must reach the server rather than being overridden here.
+  Future<DynamicOutcome> run(
+    String dynamicId,
+    DynamicAction action, {
+    bool lighter = true,
+  }) async {
     final repo = _ref.read(dynamicRepositoryProvider);
     final key = _keyFor(dynamicId, action);
     try {
@@ -50,9 +58,7 @@ class DynamicActions {
         case DynamicAction.pause:
           await repo.pause(dynamicId, idempotencyKey: key);
         case DynamicAction.resume:
-          // Coming back lighter is Journey E's default: being handed the same
-          // load you paused under is how people leave again.
-          await repo.resume(dynamicId, lighter: true, idempotencyKey: key);
+          await repo.resume(dynamicId, lighter: lighter, idempotencyKey: key);
       }
 
       _keys.remove((dynamicId, action));

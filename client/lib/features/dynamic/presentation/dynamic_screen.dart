@@ -12,7 +12,6 @@ import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
-import '../application/dynamic_actions.dart';
 
 import 'widgets/member_pair.dart';
 import 'widgets/orbit_figure.dart';
@@ -64,6 +63,8 @@ class DynamicScreen extends ConsumerWidget {
     this.onSignIn,
     this.onSelectTab,
     this.onAsk,
+    this.onPause,
+    this.onWeekly,
   });
 
   final String dynamicId;
@@ -72,6 +73,13 @@ class DynamicScreen extends ConsumerWidget {
 
   /// Opens SCR-20. Null while there is no route to it.
   final VoidCallback? onAsk;
+
+  /// Opens SCR-24. Pausing goes through a screen that says what it does
+  /// rather than happening on one tap.
+  final VoidCallback? onPause;
+
+  /// Opens SCR-23.
+  final VoidCallback? onWeekly;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -104,6 +112,8 @@ class DynamicScreen extends ConsumerWidget {
                     view: view,
                     dynamicId: dynamicId,
                     onAsk: onAsk,
+                    onPause: onPause,
+                    onWeekly: onWeekly,
                   ),
                 ),
               ),
@@ -139,20 +149,21 @@ class _Loaded extends ConsumerStatefulWidget {
     required this.view,
     required this.dynamicId,
     this.onAsk,
+    this.onPause,
+    this.onWeekly,
   });
 
   final DynamicDetail view;
   final String dynamicId;
   final VoidCallback? onAsk;
+  final VoidCallback? onPause;
+  final VoidCallback? onWeekly;
 
   @override
   ConsumerState<_Loaded> createState() => _LoadedState();
 }
 
 class _LoadedState extends ConsumerState<_Loaded> {
-  bool _busy = false;
-  String? _failure;
-
   DynamicDetail get view => widget.view;
 
   bool get _paused => view.pausedAt != null || view.state == 'PAUSED';
@@ -180,21 +191,6 @@ class _LoadedState extends ConsumerState<_Loaded> {
       if (m.userId != id) return m;
     }
     return null;
-  }
-
-  Future<void> _run(DynamicAction action) async {
-    setState(() {
-      _busy = true;
-      _failure = null;
-    });
-    final outcome = await ref
-        .read(dynamicActionsProvider)
-        .run(widget.dynamicId, action);
-    if (!mounted) return;
-    setState(() {
-      _busy = false;
-      _failure = outcome is DynamicFailed ? outcome.message : null;
-    });
   }
 
   @override
@@ -241,11 +237,6 @@ class _LoadedState extends ConsumerState<_Loaded> {
             value: rituals.map((r) => r.title).join(' · '),
           ),
 
-        if (_failure != null) ...[
-          const SizedBox(height: DsSpacing.space5),
-          RecoveryMessage(_failure!, prominent: true),
-        ],
-
         const SizedBox(height: DsSpacing.space8),
 
         // Only offered when there is someone to ask and the Dynamic is running.
@@ -263,25 +254,36 @@ class _LoadedState extends ConsumerState<_Loaded> {
           const SizedBox(height: DsSpacing.space6),
         ],
 
+        // Looking back at the week. Offered, never required — and only when
+        // the Dynamic is running, since a paused week is not one to reflect on.
+        if (widget.onWeekly != null && !_paused) ...[
+          Padding(
+            padding: todayInset,
+            child: SecondaryButton(
+              label: 'This week',
+              onTap: widget.onWeekly!,
+            ),
+          ),
+          const SizedBox(height: DsSpacing.space6),
+        ],
+
         // Agency, last and unmissable. Never behind a menu: a person deciding
         // to pause should not have to look for it.
+        //
+        // It opens SCR-24 rather than acting here. Pausing on one tap gave no
+        // room to say what pausing does, and returning had no way to ask how
+        // much to come back to.
         Padding(
           padding: todayInset,
           child: SecondaryButton(
-            label: _busy
-                ? (_paused ? 'Resuming…' : 'Pausing…')
-                : (_paused ? 'Resume, lighter' : 'Pause this Dynamic'),
-            onTap: _busy
-                ? () {}
-                : () => _run(
-                    _paused ? DynamicAction.resume : DynamicAction.pause,
-                  ),
+            label: _paused ? 'Come back' : 'Pause this Dynamic',
+            onTap: widget.onPause ?? () {},
           ),
         ),
         const SizedBox(height: DsSpacing.space4),
         RecoveryMessage(
           _paused
-              ? 'Resuming returns half the structure, not all of it.'
+              ? 'Nothing from the paused days is waiting for you.'
               : 'Either of you may pause. Nothing is lost while paused.',
         ),
         const SizedBox(height: DsSpacing.space10),

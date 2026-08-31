@@ -8,6 +8,8 @@ import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
+import '../features/dynamic/presentation/pause_screen.dart';
+import '../features/weekly/presentation/weekly_screen.dart';
 import '../features/checkin/presentation/check_in_screen.dart';
 import '../features/expectation/presentation/create_expectation_screen.dart';
 import '../features/expectation/presentation/occurrence_detail_screen.dart';
@@ -52,6 +54,10 @@ abstract final class Routes {
 
   /// Mood, energy, need (SCR-22). Entered from Today.
   static const checkIn = '/dynamics/:id/check-in';
+
+  /// The week behind you (SCR-23), and pausing or returning (SCR-24).
+  static const weekly = '/dynamics/:id/weekly';
+  static const pause = '/dynamics/:id/pause';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -171,6 +177,27 @@ GoRouter createRouter(Ref ref) {
         },
       ),
       GoRoute(
+        path: Routes.weekly,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return WeeklyScreen(
+            dynamicId: dynamicId,
+            onClose: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
+            onPause: () => context.go('/dynamics/$dynamicId/pause'),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.pause,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return PauseScreen(
+            dynamicId: dynamicId,
+            onDone: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.checkIn,
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
@@ -213,6 +240,8 @@ GoRouter createRouter(Ref ref) {
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
             onAsk: () => context.go('/dynamics/$dynamicId/ask'),
+            onPause: () => context.go('/dynamics/$dynamicId/pause'),
+            onWeekly: () => context.go('/dynamics/$dynamicId/weekly'),
           );
         },
       ),
