@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.companion.two",
+      "sha256_cert_fingerprints": [
+        "19:0F:12:30:35:C8:1F:1A:34:55:6E:02:1A:CD:E6:F3:A6:C9:A9:79:1E:88:2E:3D:31:C2:9C:CD:83:74:68:6D"
+      ]
+    }
+  }
+]

@@ -46,3 +46,23 @@ rm -rf "$TMP"
 echo "ok: production host present, no localhost"
 echo
 ls -la "$APK"
+
+# --- Android App Links ---------------------------------------------------
+#
+# `ops/well-known/assetlinks.json` must be served at
+# https://<WEB_BASE_URL>/.well-known/assetlinks.json as application/json, or
+# Android shows an app chooser instead of opening invite links directly.
+#
+# It pins the signing certificate's SHA-256. The fingerprint below is the
+# DEBUG key, because that is what this build is signed with. A real release
+# key means a new fingerprint and a new file — the link silently falls back to
+# a chooser otherwise, which looks like a bug and is not one.
+#
+#   keytool -list -v -keystore ~/.android/debug.keystore \
+#     -alias androiddebugkey -storepass android | grep SHA256
+#
+# Verify after deploying, with Google's own checker rather than by eye:
+#
+#   curl "https://digitalassetlinks.googleapis.com/v1/statements:list\
+# ?source.web.site=https://ds-staging.beforeweplay.com\
+# &relation=delegate_permission/common.handle_all_urls"
