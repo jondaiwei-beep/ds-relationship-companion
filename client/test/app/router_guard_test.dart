@@ -186,9 +186,12 @@ void main() {
     testWidgets('protected content renders', (tester) async {
       await signIn();
 
-      final h = await pump(tester, at: Routes.today);
+      // A dynamic id, not `/today`: `/today` is the resolver, which asks the
+      // server which Dynamic to open. What this test is about is the guard
+      // letting a signed-in person through to real content at all.
+      final h = await pump(tester, at: '/dynamics/abc/today');
 
-      expect(h.location, Routes.today);
+      expect(h.location, '/dynamics/abc/today');
       expect(find.byType(TodayScreen), findsOneWidget);
     });
 
@@ -220,7 +223,7 @@ void main() {
               accessTokenExpiresIn: const Duration(minutes: 15),
             ),
           );
-      final h = await pump(tester, at: Routes.today);
+      final h = await pump(tester, at: '/dynamics/abc/today');
       expect(find.byType(TodayScreen), findsOneWidget);
 
       await container.read(sessionProvider.notifier).signOut();

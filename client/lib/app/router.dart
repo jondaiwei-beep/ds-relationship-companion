@@ -6,6 +6,9 @@ import '../features/entrance/presentation/auth_callback_screen.dart';
 import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
+import 'coming_surface.dart';
+import 'home_resolver.dart';
+import 'shell/bottom_navigation.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
 import '../features/invite/presentation/invite_partner_screen.dart';
 import '../features/invite/presentation/join_screen.dart';
@@ -38,6 +41,12 @@ abstract final class Routes {
   static const invitePartner = '/dynamics/:id/invite';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
+
+  /// The three nav surfaces that are routed but not yet built. They exist so
+  /// the bottom bar responds — see `ComingSurface`.
+  static const dynamicHome = '/dynamics/:id/dynamic';
+  static const dynamicExplore = '/dynamics/:id/explore';
+  static const dynamicUs = '/dynamics/:id/us';
 
   /// Where a request waits while the session is still resolving.
   ///
@@ -124,24 +133,42 @@ GoRouter createRouter(Ref ref) {
     routes: [
       GoRoute(
         path: Routes.today,
-        // Sign-in cannot know a dynamic id and every real screen needs one.
-        // Until the resolver screen exists this is the one built surface.
-        builder: (context, _) => TodayScreen(
-          dynamicId: 'preview',
+        // Nobody can know a dynamic id at sign-in, and a fresh account has no
+        // Dynamic at all. This used to pass the literal string 'preview',
+        // which the server rejected as an invalid UUID — so a person who had
+        // just registered was told "Today could not be loaded".
+        builder: (context, _) => HomeResolver(
+          onDynamic: (id) => context.go('/dynamics/$id/today'),
+          onNoDynamic: () => context.go(Routes.start),
           onSignIn: () => context.go(Routes.signIn),
         ),
       ),
       GoRoute(
         path: Routes.dynamicToday,
-        builder: (context, s) => TodayScreen(
-          dynamicId: s.pathParameters['id']!,
-          onSignIn: () => context.go(Routes.signIn),
-          // `onSelectTab` stays absent: three of the four destinations have
-          // no screen. A bar that routes to a placeholder is worse than one
-          // that does not respond — it teaches that the app is broken rather
-          // than unfinished.
-        ),
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return TodayScreen(
+            dynamicId: dynamicId,
+            onSignIn: () => context.go(Routes.signIn),
+            onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
+          );
+        },
       ),
+      for (final surface in const [
+        NavSurface.dynamic_,
+        NavSurface.explore,
+        NavSurface.us,
+      ])
+        GoRoute(
+          path: _navPath(':id', surface),
+          builder: (context, s) {
+            final dynamicId = s.pathParameters['id']!;
+            return ComingSurface(
+              surface: surface,
+              onSelect: (next) => context.go(_navPath(dynamicId, next)),
+            );
+          },
+        ),
 
       // Named, not stubbed.
       //
@@ -240,6 +267,17 @@ GoRouter createRouter(Ref ref) {
     ],
   );
 }
+
+/// The route behind each tab of the bottom bar.
+///
+/// One function so the bar and the routes cannot disagree: every caller that
+/// navigates and every route that registers reads the same mapping.
+String _navPath(String dynamicId, NavSurface surface) => switch (surface) {
+  NavSurface.today => '/dynamics/$dynamicId/today',
+  NavSurface.dynamic_ => '/dynamics/$dynamicId/dynamic',
+  NavSurface.explore => '/dynamics/$dynamicId/explore',
+  NavSurface.us => '/dynamics/$dynamicId/us',
+};
 
 /// What the entrance should say about the session, if anything.
 ///

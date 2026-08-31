@@ -24,20 +24,33 @@ fi
 echo "API_BASE_URL=$API"
 echo "WEB_BASE_URL=$WEB"
 
-flutter build apk --release \
+# Split per ABI. A fat APK carries every architecture's engine and came out
+# at 55MB, which is over the limit for handing the file to someone directly.
+# arm64 alone is ~19MB and covers every phone made in the last several years.
+flutter build apk --release --split-per-abi \
   --dart-define=API_BASE_URL="$API" \
   --dart-define=WEB_BASE_URL="$WEB"
 
-APK=build/app/outputs/flutter-apk/app-release.apk
+APK=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 
 # The build succeeding does not mean it is pointed anywhere in particular.
 # Dart compiles to native, so the host lands in the .so rather than in assets.
 echo
 echo "--- verifying what was actually baked in"
 TMP=$(mktemp -d)
-unzip -q -o "$APK" -d "$TMP" 'lib/*'
-hits=$(grep -rao "${API#https://}" "$TMP/lib" 2>/dev/null | wc -l | tr -d ' ')
-local_hits=$(grep -rao 'localhost:' "$TMP/lib" 2>/dev/null | wc -l | tr -d ' ')
+# `|| true` on the unzip, not because a failure is acceptable, but because
+# unzip returns 1 on a mere warning and `set -e` then killed the script — with
+# exit 0, so the whole verification silently never ran. The real check is that
+# the .so is on disk afterwards.
+unzip -q -o "$APK" -d "$TMP" 'lib/*' || true
+[ -d "$TMP/lib" ] || { echo "FAIL: could not read lib/ out of $APK"; exit 1; }
+
+# `|| true` on both greps. Under `set -e` a grep that matches nothing returns
+# 1 and kills the script — so the localhost check aborted the run every time
+# it PASSED, and the script exited 0 having printed no verdict. A check that
+# silently vanishes when it succeeds is worse than no check.
+hits=$(grep -rao "${API#https://}" "$TMP/lib" 2>/dev/null | wc -l | tr -d ' ' || true)
+local_hits=$(grep -rac 'localhost:' "$TMP/lib" 2>/dev/null | awk -F: '{n+=$NF} END {print n+0}' || true)
 rm -rf "$TMP"
 
 [ "$hits" -gt 0 ] || { echo "FAIL: $API is not in the APK"; exit 1; }
