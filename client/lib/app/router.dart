@@ -9,6 +9,8 @@ import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
 import '../features/dynamic/presentation/pause_screen.dart';
+import '../features/settings/presentation/leave_screen.dart';
+import '../features/settings/presentation/settings_screen.dart';
 import '../features/us/presentation/us_screen.dart';
 import '../features/weekly/presentation/weekly_screen.dart';
 import '../features/checkin/presentation/check_in_screen.dart';
@@ -59,6 +61,10 @@ abstract final class Routes {
   /// The week behind you (SCR-23), and pausing or returning (SCR-24).
   static const weekly = '/dynamics/:id/weekly';
   static const pause = '/dynamics/:id/pause';
+
+  /// Settings (SCR-28/29/34), and ending the pairing (SCR-30).
+  static const settings = '/dynamics/:id/settings';
+  static const leave = '/dynamics/:id/leave';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -178,6 +184,31 @@ GoRouter createRouter(Ref ref) {
         },
       ),
       GoRoute(
+        path: Routes.settings,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return SettingsScreen(
+            dynamicId: dynamicId,
+            onClose: () => context.go(_navPath(dynamicId, NavSurface.us)),
+            onSignOut: () =>
+                ref.read(sessionProvider.notifier).signOut(),
+            onLeave: () => context.go('/dynamics/$dynamicId/leave'),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.leave,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return LeaveScreen(
+            dynamicId: dynamicId,
+            // Back to the root: the Dynamic may no longer exist to return to,
+            // and the guard sends a signed-in person wherever they now belong.
+            onDone: () => context.go(Routes.today),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.weekly,
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
@@ -255,6 +286,7 @@ GoRouter createRouter(Ref ref) {
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
             onWeekly: () => context.go('/dynamics/$dynamicId/weekly'),
+            onSettings: () => context.go('/dynamics/$dynamicId/settings'),
           );
         },
       ),

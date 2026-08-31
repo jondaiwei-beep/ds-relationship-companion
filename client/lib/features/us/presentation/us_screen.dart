@@ -40,6 +40,7 @@ class UsScreen extends ConsumerWidget {
     this.onSignIn,
     this.onSelectTab,
     this.onWeekly,
+    this.onSettings,
   });
 
   final String dynamicId;
@@ -48,6 +49,10 @@ class UsScreen extends ConsumerWidget {
 
   /// Opens SCR-23 — the "one light D7 card" the alignment work asks for.
   final VoidCallback? onWeekly;
+
+  /// Opens SCR-28. Us is where a person looks for themselves, so their own
+  /// settings hang off it rather than off a surface about the pair.
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,7 +100,11 @@ class UsScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                  data: (view) => _Loaded(view: view, onWeekly: onWeekly),
+                  data: (view) => _Loaded(
+                    view: view,
+                    onWeekly: onWeekly,
+                    onSettings: onSettings,
+                  ),
                 ),
               ),
               DsBottomNavigation(
@@ -115,17 +124,38 @@ bool _isAuthLoss(Object error) =>
     (error.response?.statusCode == 401 || error.response?.statusCode == 403);
 
 class _Loaded extends StatelessWidget {
-  const _Loaded({required this.view, this.onWeekly});
+  const _Loaded({required this.view, this.onWeekly, this.onSettings});
 
   final UsView view;
   final VoidCallback? onWeekly;
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const TodayHeader(title: 'Us', context_: 'So far'),
+        Row(
+          children: [
+            const Expanded(
+              child: TodayHeader(title: 'Us', context_: 'So far'),
+            ),
+            if (onSettings != null)
+              Padding(
+                padding: const EdgeInsets.only(right: DsSpacing.space5),
+                child: GestureDetector(
+                  onTap: onSettings,
+                  behavior: HitTestBehavior.opaque,
+                  child: Icon(
+                    Icons.settings_outlined,
+                    size: 22,
+                    color: DsColors.textOnRitualMuted,
+                    semanticLabel: 'Settings',
+                  ),
+                ),
+              ),
+          ],
+        ),
 
         Padding(
           padding: todayInset,
