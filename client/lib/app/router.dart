@@ -6,6 +6,7 @@ import '../features/entrance/presentation/auth_callback_screen.dart';
 import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
+import '../features/activation/presentation/timezone_unavailable.dart';
 import 'coming_surface.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
@@ -16,7 +17,6 @@ import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
-import 'not_built_yet.dart';
 import 'session_resolving.dart';
 
 /// Paths, named once.
@@ -248,12 +248,17 @@ GoRouter createRouter(Ref ref) {
       GoRoute(
         path: Routes.start,
         builder: (context, state) {
-          final zone = deviceTimezone();
+          // REQ-TIME-001 will not accept a guess, and a Dynamic created in
+          // the wrong zone moves someone's relationship day months later. But
+          // "cannot read it" must stay recoverable: this used to render a
+          // placeholder with no way forward, which is where every newly
+          // registered Android account landed.
+          final zone = deviceTimezone() ?? state.uri.queryParameters['tz'];
           if (zone == null) {
-            // REQ-TIME-001 will not accept a guess, and a Dynamic created in
-            // the wrong zone moves someone's relationship day months later.
-            return const NotBuiltYet(
-              screen: 'Timezone unavailable on this platform',
+            return TimezoneUnavailable(
+              onResolved: (tz) => context.go(
+                '${Routes.start}?tz=${Uri.encodeComponent(tz)}',
+              ),
             );
           }
           return ActivationWizard(

@@ -5,6 +5,7 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/router.dart';
 import 'platform/session/session_controller.dart';
+import 'platform/time/device_timezone.dart';
 
 /// The product entry point.
 ///
@@ -18,11 +19,21 @@ import 'platform/session/session_controller.dart';
 ///
 /// `main_preview.dart` is still the way to see every approved state of one
 /// screen without a server behind it.
-void main() {
+Future<void> main() async {
+  // The plugin that reads the device zone speaks over a platform channel, so
+  // the bindings have to exist before it is called.
+  WidgetsFlutterBinding.ensureInitialized();
+
   // REQ-TIME-001: due times are rendered in the Dynamic's zone, not the
   // device's. The bundled database loads synchronously and works on both Web
   // and Android.
   tz.initializeTimeZones();
+
+  // Resolve the device's own zone before the first frame. Activation needs it
+  // synchronously and will not invent one, so a screen asking before this
+  // completes would see null and dead-end.
+  await primeDeviceTimezone();
+
   runApp(const ProviderScope(child: CompanionApp()));
 }
 

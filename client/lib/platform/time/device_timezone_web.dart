@@ -14,6 +14,9 @@ extension type _ResolvedOptions._(JSObject _) implements JSObject {
   external String? get timeZone;
 }
 
+/// The web reader is already synchronous, so priming has nothing to do.
+Future<String?> resolveDeviceTimezone() async => readDeviceTimezone();
+
 String? readDeviceTimezone() {
   try {
     final zone = _DateTimeFormat().resolvedOptions().timeZone;
