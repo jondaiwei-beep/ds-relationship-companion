@@ -15,6 +15,16 @@ class EntranceHeader extends StatelessWidget {
     this.onBack,
   });
 
+  /// Below this the composition is decoration a person has to scroll past to
+  /// reach a form. The design is drawn at 844dp; a Samsung in gesture mode
+  /// gives about 700 of usable height, and the fixed ornament does not shrink
+  /// on its own — so the form ends up below the fold and its primary button
+  /// under the system bar.
+  static const compactBelow = 760.0;
+
+  static bool isCompact(BuildContext context) =>
+      MediaQuery.sizeOf(context).height < compactBelow;
+
   final String eyebrow;
   final String headline;
 
@@ -24,6 +34,7 @@ class EntranceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compact = isCompact(context);
     return Column(
       children: [
         Align(
@@ -42,20 +53,20 @@ class EntranceHeader extends StatelessWidget {
             ),
           ),
         ),
-        const DsSvg(
+        DsSvg(
           asset: DsAssets.markAuthority,
           tone: DsAssetTone.primary,
-          width: 32,
-          height: 32,
+          width: compact ? 26 : 32,
+          height: compact ? 26 : 32,
         ),
-        const SizedBox(height: DsSpacing.space8),
+        SizedBox(height: compact ? DsSpacing.space4 : DsSpacing.space8),
         Text(
           eyebrow,
           style: DsTextStyles.labelRitual.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
         ),
-        const SizedBox(height: DsSpacing.space5),
+        SizedBox(height: compact ? DsSpacing.space3 : DsSpacing.space5),
         Text(
           headline,
           textAlign: TextAlign.center,

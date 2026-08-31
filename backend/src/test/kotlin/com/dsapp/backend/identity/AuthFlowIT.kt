@@ -138,4 +138,76 @@ class AuthFlowIT {
         assertTrue(!row.contains(token), "plaintext magic token leaked into the row")
         assertTrue(!row.contains(verifier), "plaintext verifier leaked into the row")
     }
+
+    @Test
+    fun `a session survives its first refresh`() {
+        // Found on a real device, not here: registration succeeded and the
+        // app signed the person out moments later. The refresh insert bound
+        // `idle_expires_at` as a plain `?`, jOOQ sent it as varchar, and
+        // Postgres refused it against a timestamptz column. The SQL error
+        // surfaced as a 401, which the client correctly read as "this session
+        // is over" — so the app rotated its own token and destroyed the
+        // session it had just created.
+        //
+        // Nothing exercised /v1/auth/refresh at all, which is how a defect
+        // this total reached a device.
+        val email = "refresh-${UUID.randomUUID()}@t.co"
+        val registered = mvc.perform(
+            post("/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """{"email":"$email","password":"correct horse battery staple",
+                       "displayName":"Alex","ageConfirmed":true}"""
+                ),
+        ).andExpect(status().isOk).andReturn().response.contentAsString
+
+        val refreshToken = mapper.readTree(registered)["refreshToken"].asText()
+        assertTrue(refreshToken.isNotBlank(), "register must issue a refresh token")
+
+        val rotated = mvc.perform(
+            post("/v1/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"refreshToken":"$refreshToken","clientType":"ANDROID"}"""),
+        ).andExpect(status().isOk).andReturn().response.contentAsString
+
+        val next = mapper.readTree(rotated)
+        assertTrue(
+            next["accessToken"].asText().isNotBlank(),
+            "a refresh must return a usable access token",
+        )
+        assertTrue(
+            next["refreshToken"].asText() != refreshToken,
+            "the refresh token must rotate, or a stolen one stays valid forever",
+        )
+    }
+
+    @Test
+    fun `a rotated refresh token replaces the one before it`() {
+        val email = "rotate-${UUID.randomUUID()}@t.co"
+        val registered = mvc.perform(
+            post("/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """{"email":"$email","password":"correct horse battery staple",
+                       "displayName":"Alex","ageConfirmed":true}"""
+                ),
+        ).andReturn().response.contentAsString
+        val first = mapper.readTree(registered)["refreshToken"].asText()
+
+        val second = mapper.readTree(
+            mvc.perform(
+                post("/v1/auth/refresh")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""{"refreshToken":"$first","clientType":"ANDROID"}"""),
+            ).andExpect(status().isOk).andReturn().response.contentAsString,
+        )["refreshToken"].asText()
+
+        // The new one works, which is the point of rotating.
+        mvc.perform(
+            post("/v1/auth/refresh")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"refreshToken":"$second","clientType":"ANDROID"}"""),
+        ).andExpect(status().isOk)
+    }
+
 }

@@ -99,6 +99,11 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   @override
   Widget build(BuildContext context) {
     final fieldError = _failedField;
+    // On a short screen the ornament is what pushes the form below the fold.
+    // The fields and the button keep their sizes; the decoration around them
+    // gives way, because a person came here to make an account.
+    final compact = EntranceHeader.isCompact(context);
+    final gap = compact ? DsSpacing.space3 : DsSpacing.space5;
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -113,8 +118,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   eyebrow: 'Create an account',
                   headline: 'Begin privately.',
                 ),
-                const Center(child: DescendingThread(height: 82)),
-                const SizedBox(height: DsSpacing.space5),
+                Center(child: DescendingThread(height: compact ? 40 : 82)),
+                SizedBox(height: gap),
 
                 if (_uncertain) ...[
                   _Notice(
@@ -138,7 +143,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   autofillHints: const [AutofillHints.email],
                   error: fieldError == AuthField.email ? _message : null,
                 ),
-                const SizedBox(height: DsSpacing.space6),
+                SizedBox(height: gap),
                 DsTextField(
                   label: 'CREATE PASSWORD',
                   controller: _password,
@@ -154,7 +159,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   error: fieldError == AuthField.password ? _message : null,
                   onSubmitted: (_) => _submit(),
                 ),
-                const SizedBox(height: DsSpacing.space4),
+                SizedBox(height: gap),
 
                 _AgeConfirmation(
                   checked: _ageConfirmed,
@@ -162,7 +167,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                   error: fieldError == AuthField.ageConfirmation ? _message : null,
                   onChanged: (v) => setState(() => _ageConfirmed = v),
                 ),
-                const SizedBox(height: DsSpacing.space4),
+                SizedBox(height: gap),
 
                 // Never disabled while unconfirmed. Pressing it explains what
                 // is missing; a silently dead control is unreachable for a
@@ -198,9 +203,13 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: DsSpacing.space4),
+                SizedBox(height: gap),
+                // The trust footer is required reading, not decoration
+                // (REQ-TRUST-001), so it stays — but it does not need to
+                // repeat what the line above it already said on a small
+                // screen.
                 const TrustFooter(),
-                const SizedBox(height: DsSpacing.space5),
+                SizedBox(height: gap),
               ],
             ),
           ),

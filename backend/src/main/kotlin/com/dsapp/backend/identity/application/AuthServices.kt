@@ -299,13 +299,18 @@ class AuthService(
                     state, issued_at, expires_at
                 )
                 values (
-                    ?, ?, ?, ?, 'ACTIVE', clock_timestamp(), ?
+                    ?, ?, ?, ?, 'ACTIVE', clock_timestamp(), cast(? as timestamptz)
                 )
                 """.trimIndent(),
                 UUID.randomUUID(),
                 sessionId,
                 refreshId,
                 tokens.hash(nextRefresh),
+                // Cast is load-bearing. jOOQ binds a plain `?` here as
+                // varchar, and Postgres refuses to compare that against a
+                // timestamptz column — which surfaced as a 401 on the very
+                // first refresh, so a person registered successfully and was
+                // then signed out by the app's own token rotation.
                 session.get("idle_expires_at", OffsetDateTime::class.java),
             ).execute()
 

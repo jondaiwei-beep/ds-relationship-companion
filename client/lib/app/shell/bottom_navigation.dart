@@ -44,9 +44,17 @@ class DsBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The system inset EXTENDS the bar, it does not eat into it.
+    //
+    // `height: 80` with `padding: bottom 48` gave a bar that was still 80 tall
+    // with its tabs pushed 48dp down — straight into a Samsung's gesture bar,
+    // where the labels sat under the system's own back and home controls.
+    // Found on a real device; the widget test below it now measures the same
+    // thing at a 48dp inset.
+    final inset = MediaQuery.paddingOf(context).bottom;
     return Container(
-      height: DsControlSizes.bottomNavigation,
-      padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom),
+      height: DsControlSizes.bottomNavigation + inset,
+      padding: EdgeInsets.only(bottom: inset),
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: DsColors.borderOnRitualHairline)),
       ),
