@@ -24,6 +24,10 @@ class AdjustmentNotPossible(val state: String) :
 class NoOpenAdjustment(val occurrenceId: UUID) :
     RuntimeException("No open adjustment on $occurrenceId")
 
+/** Only the person who asked may take the request back. */
+class NotTheRequester(val occurrenceId: UUID) :
+    RuntimeException("Only the requester may withdraw the adjustment on $occurrenceId")
+
 /**
  * The adjustment path — Journey D (Notion 02 §5).
  *
@@ -43,6 +47,7 @@ class AdjustmentService(
 ) {
     data class Requested(val adjustmentId: UUID, val occurrenceState: String)
     data class Resolved(val occurrenceState: String, val replacementOccurrenceId: UUID?)
+    data class Withdrawn(val occurrenceState: String)
 
     @Transactional
     fun request(
@@ -169,6 +174,84 @@ class AdjustmentService(
             "occurrence", occurrenceId, "adjustment_resolved", "adjustment-resolved:$adjustmentId",
         )
         return Resolved(target.name, replacement)
+    }
+
+    /**
+     * Take your own request back — the fifth verb.
+     *
+     * `AllowedActions` has advertised `withdraw` to the person who asked all
+     * along, and nothing implemented it, so a NEED_TO_DISCUSS item was a dead
+     * end for its own author: visible on Attention and Today, with no way out
+     * that did not require the other person to act first.
+     *
+     * Deliberately not a sixth `AdjustmentResolution`. Journey D's vocabulary
+     * is how the OTHER person answers, and it is chosen to avoid framing a
+     * request as needing permission. Withdrawing is not an answer to a
+     * request; it is the request ending because the person who made it no
+     * longer needs it. So it writes `WITHDRAWN` — a status the schema has
+     * always allowed and nothing has ever set — with no resolution and no
+     * resolver, because nobody resolved anything.
+     *
+     * Only the requester may do it. Letting the other person withdraw it for
+     * them would be exactly the "reject" this vocabulary exists to prevent.
+     */
+    @Transactional
+    fun withdraw(
+        actorUserId: UUID,
+        occurrenceId: UUID,
+    ): Withdrawn {
+        val ctx = authorizer.requireRead(
+            authorizer.contextForOccurrence(actorUserId, occurrenceId),
+        )
+
+        val open = dsl.fetchOne(
+            """SELECT id, requester_user_id FROM adjustment_requests
+                WHERE occurrence_id = {0} AND status = 'OPEN'""",
+            occurrenceId,
+        ) ?: throw NoOpenAdjustment(occurrenceId)
+
+        val adjustmentId = open.get("id", UUID::class.java)
+        if (open.get("requester_user_id", UUID::class.java) != actorUserId) {
+            throw NotTheRequester(occurrenceId)
+        }
+
+        // Back to where it was before asking. The work itself was never in
+        // question — only whether it needed talking about first.
+        val from = OccurrenceState.valueOf(currentState(occurrenceId))
+        val target = OccurrenceState.ACTIVE
+        require(OccurrenceTransition.isLegal(from, target)) {
+            "illegal transition $from -> $target"
+        }
+
+        dsl.query(
+            """
+            UPDATE occurrences SET state = {1}, version = version + 1, updated_at = now()
+             WHERE id = {0} AND state = {2}
+            """.trimIndent(),
+            occurrenceId, target.name, from.name,
+        ).execute()
+
+        dsl.query(
+            """
+            UPDATE adjustment_requests
+               SET status = 'WITHDRAWN', resolved_at = now()
+             WHERE id = {0} AND status = 'OPEN'
+            """.trimIndent(),
+            adjustmentId,
+        ).execute()
+
+        // A withdrawal is a real thing a person did, so it belongs in the
+        // timeline — but it is not `adjustment_resolved`, which would credit
+        // the pair with working something out that never got discussed.
+        events.append(
+            ctx.dynamicId, actorUserId, "adjustment_withdrawn",
+            """{"occurrence_id":"$occurrenceId","adjustment_id":"$adjustmentId"}""",
+        )
+        events.enqueueOutbox(
+            "occurrence", occurrenceId, "adjustment_withdrawn",
+            "adjustment-withdrawn:$adjustmentId",
+        )
+        return Withdrawn(target.name)
     }
 
     /**

@@ -8,6 +8,7 @@ import com.dsapp.backend.dynamic.domain.AuthorizationException
 import com.dsapp.backend.expectation.application.OccurrenceNotCompletable
 import com.dsapp.backend.response.application.AdjustmentNotPossible
 import com.dsapp.backend.response.application.NoOpenAdjustment
+import com.dsapp.backend.response.application.NotTheRequester
 import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
 import com.dsapp.backend.shared.idempotency.IdempotencyKeyReusedException
 import com.dsapp.backend.shared.idempotency.MissingIdempotencyKeyException
@@ -68,6 +69,12 @@ class ApiErrorHandler {
     @ExceptionHandler(NoOpenAdjustment::class)
     fun onNoOpenAdjustment(e: NoOpenAdjustment): ResponseEntity<ApiError> =
         ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("NO_OPEN_ADJUSTMENT"))
+
+    @ExceptionHandler(NotTheRequester::class)
+    fun onNotTheRequester(e: NotTheRequester): ResponseEntity<ApiError> =
+        // 403, not 404: the caller is a member and may see the adjustment.
+        // What they may not do is take back a request that is not theirs.
+        ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError("NOT_THE_REQUESTER"))
 
     @ExceptionHandler(InviteNotRevocable::class)
     fun onInviteNotRevocable(e: InviteNotRevocable): ResponseEntity<ApiError> =

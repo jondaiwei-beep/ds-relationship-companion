@@ -66,4 +66,18 @@ class AdjustmentRepository {
         },
         idempotencyKey: idempotencyKey,
       );
+
+  /// Take your own request back.
+  ///
+  /// Not a sixth [AdjustmentResolution]: that vocabulary is how the OTHER
+  /// person answers. This is the person who asked deciding they no longer
+  /// need to, which is why it carries no resolution and no note.
+  Future<void> withdraw(
+    String occurrenceId, {
+    required String idempotencyKey,
+  }) =>
+      _api.post(
+        '/v1/occurrences/$occurrenceId/adjustments/withdraw',
+        idempotencyKey: idempotencyKey,
+      );
 }

@@ -154,6 +154,11 @@ class _OccurrenceDetailScreenState
       if (actions.contains('cant_do')) TodayAction.cantDo,
     ];
 
+    // The way out of your own open request. Until this existed, an item you
+    // had asked to discuss showed you no action at all: it could only end when
+    // the other person answered.
+    final canWithdraw = actions.contains('withdraw');
+
     return _Frame(
       onClose: widget.onClose,
       children: [
@@ -311,7 +316,26 @@ class _OccurrenceDetailScreenState
           ),
         ],
 
-        if (!canComplete && adjustments.isEmpty) ...[
+        if (canWithdraw) ...[
+          _Quiet(_nothingToDo(view.state), prominent: true),
+          const SizedBox(height: DsSpacing.space5),
+          Padding(
+            padding: todayInset,
+            child: SecondaryButton(
+              label: _busy == TodayAction.withdraw
+                  ? 'Taking it back…'
+                  : 'Never mind, take it back',
+              onTap: _busy != null
+                  ? () {}
+                  : () => _run(TodayAction.withdraw),
+            ),
+          ),
+          const SizedBox(height: DsSpacing.space3),
+          const _Quiet(
+            'It goes back to how it was. Nothing is recorded as agreed or '
+            'refused.',
+          ),
+        ] else if (!canComplete && adjustments.isEmpty) ...[
           _Quiet(_nothingToDo(view.state), prominent: true),
         ],
 
@@ -343,6 +367,9 @@ String _adjustmentLabel(TodayAction a) => switch (a) {
   TodayAction.requestNewTime => 'New time',
   TodayAction.cantDo => "Can't do",
   TodayAction.complete => 'Complete',
+  // Never rendered in the adjustment row: withdrawing is offered on its own,
+  // because it is the only thing available when it is available at all.
+  TodayAction.withdraw => 'Take it back',
 };
 
 bool _isAuthLoss(Object error) =>

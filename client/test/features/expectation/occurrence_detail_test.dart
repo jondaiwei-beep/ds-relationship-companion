@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/occurrence.dart';
 import 'package:dsapp/domain_client/models/occurrence_view.dart';
+import 'package:dsapp/domain_client/repositories/adjustment_repository.dart';
 import 'package:dsapp/domain_client/repositories/occurrence_repository.dart';
 import 'package:dsapp/features/expectation/presentation/occurrence_detail_screen.dart';
 
@@ -50,6 +51,23 @@ OccurrenceView _view({
   allowedActions: allowed,
 );
 
+class _FakeAdjustments implements AdjustmentRepository {
+  int withdrawals = 0;
+
+  @override
+  Future<void> withdraw(
+    String occurrenceId, {
+    required String idempotencyKey,
+  }) async {
+    withdrawals++;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
+}
+
+late _FakeAdjustments lastAdjustments;
+
 Future<_FakeOccurrenceRepository> _pump(
   WidgetTester tester,
   OccurrenceView view,
@@ -61,7 +79,12 @@ Future<_FakeOccurrenceRepository> _pump(
   final repo = _FakeOccurrenceRepository(view);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [occurrenceRepositoryProvider.overrideWithValue(repo)],
+      overrides: [
+        occurrenceRepositoryProvider.overrideWithValue(repo),
+        adjustmentRepositoryProvider.overrideWithValue(
+          lastAdjustments = _FakeAdjustments(),
+        ),
+      ],
       child: MaterialApp(
         theme: DsTheme.ritual(),
         home: const OccurrenceDetailScreen(
@@ -152,6 +175,41 @@ void main() {
     );
     expect(find.text('MORGAN WROTE'), findsOneWidget);
     expect(find.text('Thank you — I noticed.'), findsOneWidget);
+  });
+
+  testWidgets('your own open request can be taken back', (tester) async {
+    // The server advertised `withdraw` from the start and nothing implemented
+    // it, so a NEED_TO_DISCUSS item was a dead end for the person who asked:
+    // visible everywhere, actionable nowhere until the other person answered.
+    await _pump(
+      tester,
+      _view(
+        state: OccurrenceState.needToDiscuss,
+        allowed: const ['withdraw'],
+      ),
+    );
+    expect(find.text('You asked to talk about this.'), findsOneWidget);
+    expect(find.text('Never mind, take it back'), findsOneWidget);
+
+    await tester.tap(find.text('Never mind, take it back'));
+    await tester.pumpAndSettle();
+    expect(lastAdjustments.withdrawals, 1);
+  });
+
+  testWidgets('taking it back is not framed as agreeing or refusing', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      _view(
+        state: OccurrenceState.needToDiscuss,
+        allowed: const ['withdraw'],
+      ),
+    );
+    expect(
+      find.textContaining('Nothing is recorded as agreed or refused'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('waiting says so plainly, and never as a fault', (tester) async {

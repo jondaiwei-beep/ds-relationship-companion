@@ -15,7 +15,12 @@ enum TodayAction {
   complete('complete'),
   discuss('discuss'),
   requestNewTime('reschedule'),
-  cantDo('cant_do');
+  cantDo('cant_do'),
+
+  /// Take back an adjustment you asked for. The server has advertised this in
+  /// `allowedActions` from the start; until now nothing implemented it, so an
+  /// item you had asked to discuss was a dead end for you alone.
+  withdraw('withdraw');
 
   const TodayAction(this.wire);
 
@@ -89,6 +94,10 @@ class TodayActions {
           );
         case TodayAction.cantDo:
           await _request(occurrenceId, AdjustmentType.cantDo, note, null, key);
+        case TodayAction.withdraw:
+          await _ref
+              .read(adjustmentRepositoryProvider)
+              .withdraw(occurrenceId, idempotencyKey: key);
       }
 
       // The attempt is finished; a later action on the same item is new.

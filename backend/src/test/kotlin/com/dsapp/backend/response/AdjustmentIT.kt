@@ -6,6 +6,7 @@ import com.dsapp.backend.response.application.AdjustmentResolution
 import com.dsapp.backend.response.application.AdjustmentService
 import com.dsapp.backend.response.application.AdjustmentType
 import com.dsapp.backend.response.application.NoOpenAdjustment
+import com.dsapp.backend.response.application.NotTheRequester
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -241,5 +242,89 @@ class AdjustmentIT {
             dynamicId,
         ).map { it.get("event_type", String::class.java) }
         assertEquals(listOf("adjustment_requested", "adjustment_resolved"), types)
+    }
+
+    // --- withdraw -------------------------------------------------------
+    //
+    // `AllowedActions` advertised `withdraw` to the requester from the start
+    // and nothing implemented it, so an item someone had asked to discuss was
+    // a dead end for its own author.
+
+    @Test
+    fun `the person who asked can take the request back`() {
+        adjustments.request(
+            partner, occurrenceId, AdjustmentType.DISCUSS, "can we talk",
+            null, idem(partner),
+        )
+        assertEquals("NEED_TO_DISCUSS", stateOf())
+
+        val r = adjustments.withdraw(partner, occurrenceId)
+
+        assertEquals("ACTIVE", r.occurrenceState)
+        assertEquals("ACTIVE", stateOf(), "back to where it was before asking")
+    }
+
+    @Test
+    fun `withdrawing records no resolution and no resolver`() {
+        // Nobody resolved anything: the request ended because the person who
+        // made it no longer needed it.
+        adjustments.request(
+            partner, occurrenceId, AdjustmentType.DISCUSS, null, null, idem(partner),
+        )
+        adjustments.withdraw(partner, occurrenceId)
+
+        val row = dsl.fetchOne(
+            "SELECT status, resolution, resolver_user_id, resolved_at " +
+                "FROM adjustment_requests WHERE occurrence_id={0}",
+            occurrenceId,
+        )!!
+        assertEquals("WITHDRAWN", row.get("status", String::class.java))
+        assertNull(row.get("resolution", String::class.java))
+        assertNull(row.get("resolver_user_id", UUID::class.java))
+        assertNotNull(row.get("resolved_at", Instant::class.java))
+    }
+
+    @Test
+    fun `the other person cannot withdraw a request that is not theirs`() {
+        // Withdrawing on someone else's behalf would be the "reject" that
+        // Journey D's vocabulary exists to prevent.
+        adjustments.request(
+            partner, occurrenceId, AdjustmentType.DISCUSS, null, null, idem(partner),
+        )
+        assertFailsWith<NotTheRequester> {
+            adjustments.withdraw(creator, occurrenceId)
+        }
+        assertEquals("NEED_TO_DISCUSS", stateOf(), "nothing changed")
+    }
+
+    @Test
+    fun `withdrawing when nothing is open is refused`() {
+        assertFailsWith<NoOpenAdjustment> {
+            adjustments.withdraw(partner, occurrenceId)
+        }
+    }
+
+    @Test
+    fun `a withdrawal is not recorded as an adjustment being resolved`() {
+        // Crediting the pair with working something out they never discussed
+        // would inflate the one signal Us and the weekly reflection report.
+        adjustments.request(
+            partner, occurrenceId, AdjustmentType.DISCUSS, null, null, idem(partner),
+        )
+        adjustments.withdraw(partner, occurrenceId)
+
+        val resolved = dsl.fetch(
+            "SELECT 1 FROM relationship_events WHERE dynamic_id={0} " +
+                "AND event_type='adjustment_resolved'",
+            dynamicId,
+        )
+        assertTrue(resolved.isEmpty(), "no adjustment_resolved event")
+
+        val withdrawn = dsl.fetch(
+            "SELECT 1 FROM relationship_events WHERE dynamic_id={0} " +
+                "AND event_type='adjustment_withdrawn'",
+            dynamicId,
+        )
+        assertEquals(1, withdrawn.size, "the withdrawal itself is recorded")
     }
 }

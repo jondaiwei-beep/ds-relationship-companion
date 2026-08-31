@@ -90,6 +90,8 @@ data class AdjustmentRequestBody(
     val requestedAt: Instant? = null,
 )
 
+data class WithdrawResponse(val state: String)
+
 data class AdjustmentResponse(val adjustmentId: UUID, val state: String)
 
 data class ResolveAdjustmentBody(
@@ -259,6 +261,28 @@ class OccurrenceController(
             jwt.actorId(), occurrenceId, body.resolution, body.note, body.newTime, idem,
         )
         200 to ResolveResponse(r.occurrenceState, r.replacementOccurrenceId)
+    }
+
+    /**
+     * Take your own request back.
+     *
+     * Separate from `/resolve` because it is a different act by a different
+     * person: resolve is how the other person answers, withdraw is the asker
+     * deciding they no longer need to ask. Folding it into the resolution
+     * vocabulary would make taking back your own request look like one of the
+     * answers available to someone else.
+     */
+    @PostMapping("/occurrences/{occurrenceId}/adjustments/withdraw")
+    fun withdrawAdjustment(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable occurrenceId: UUID,
+        @RequestHeader("Idempotency-Key", required = false) key: String?,
+    ): ResponseEntity<Any> = runOnce(
+        jwt, key, "withdraw_adjustment",
+        "/v1/occurrences/{id}/adjustments/withdraw", listOf(occurrenceId.toString()), null,
+    ) {
+        val r = adjustments.withdraw(jwt.actorId(), occurrenceId)
+        200 to WithdrawResponse(r.occurrenceState)
     }
 
     private fun runOnce(
