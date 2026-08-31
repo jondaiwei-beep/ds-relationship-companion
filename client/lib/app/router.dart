@@ -7,6 +7,7 @@ import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
+import '../features/dynamic/presentation/dynamic_screen.dart';
 import 'coming_surface.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
@@ -42,8 +43,8 @@ abstract final class Routes {
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
-  /// The three nav surfaces that are routed but not yet built. They exist so
-  /// the bottom bar responds — see `ComingSurface`.
+  /// Dynamic is built (SCR-13). Explore and Us are routed but not yet built,
+  /// so the bottom bar still responds — see `ComingSurface`.
   static const dynamicHome = '/dynamics/:id/dynamic';
   static const dynamicExplore = '/dynamics/:id/explore';
   static const dynamicUs = '/dynamics/:id/us';
@@ -154,11 +155,18 @@ GoRouter createRouter(Ref ref) {
           );
         },
       ),
-      for (final surface in const [
-        NavSurface.dynamic_,
-        NavSurface.explore,
-        NavSurface.us,
-      ])
+      GoRoute(
+        path: _navPath(':id', NavSurface.dynamic_),
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return DynamicScreen(
+            dynamicId: dynamicId,
+            onSignIn: () => context.go(Routes.signIn),
+            onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
+          );
+        },
+      ),
+      for (final surface in const [NavSurface.explore, NavSurface.us])
         GoRoute(
           path: _navPath(':id', surface),
           builder: (context, s) {

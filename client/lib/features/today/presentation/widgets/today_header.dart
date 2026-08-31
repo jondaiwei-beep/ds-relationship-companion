@@ -3,10 +3,23 @@ import 'package:flutter/material.dart';
 
 import 'today_layout.dart';
 
-/// Today's header: the surface name, and partner presence when there is a
+/// A surface header: the surface name, and partner presence when there is a
 /// partner to name.
+///
+/// Shared with Dynamic rather than copied. Presence is the one thing on this
+/// row carrying a privacy rule — Terracotta only when a partner is really
+/// there, hidden entirely while access is unconfirmed — and two copies of that
+/// rule would eventually disagree about it.
 class TodayHeader extends StatelessWidget {
-  const TodayHeader({super.key, this.partnerName, this.context_});
+  const TodayHeader({
+    super.key,
+    this.title = 'Today',
+    this.partnerName,
+    this.context_,
+  });
+
+  /// The surface name shown at the left.
+  final String title;
 
   /// Null when no partner presence may be shown — a Solo Dynamic, or a session
   /// whose authorization has not been confirmed.
@@ -29,7 +42,7 @@ class TodayHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Today',
+            title,
             style: DsTextStyles.titlePage.copyWith(
               color: DsColors.textOnRitualPrimary,
               fontSize: 23,

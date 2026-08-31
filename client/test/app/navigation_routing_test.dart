@@ -68,15 +68,22 @@ void main() {
     final router = await pump(tester, '/dynamics/d-1/today');
     expect(find.byType(TodayScreen), findsOneWidget);
 
-    for (final (label, path) in const [
-      ('Dynamic', '/dynamics/d-1/dynamic'),
-      ('Explore', '/dynamics/d-1/explore'),
-      ('Us', '/dynamics/d-1/us'),
+    // The invariant is that a tap always lands somewhere — not that it lands
+    // on a placeholder. Dynamic is built (SCR-13); Explore and Us are not yet,
+    // so only those two are still expected to be ComingSurface.
+    for (final (label, path, built) in const [
+      ('Dynamic', '/dynamics/d-1/dynamic', true),
+      ('Explore', '/dynamics/d-1/explore', false),
+      ('Us', '/dynamics/d-1/us', false),
     ]) {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
       expect(where(router), path, reason: '$label must go somewhere');
-      expect(find.byType(ComingSurface), findsOneWidget);
+      expect(
+        find.byType(ComingSurface),
+        built ? findsNothing : findsOneWidget,
+        reason: built ? '$label is built' : '$label is not built yet',
+      );
     }
   });
 

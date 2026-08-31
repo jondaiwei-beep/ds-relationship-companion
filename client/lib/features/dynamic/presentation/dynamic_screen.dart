@@ -1,0 +1,453 @@
+import 'package:dio/dio.dart';
+import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../app/providers.dart';
+import '../../../app/shell/bottom_navigation.dart';
+import '../../../domain_client/models/dynamic_view.dart';
+import '../../today/presentation/widgets/recovery_scaffold.dart';
+import '../../today/presentation/widgets/secondary_button.dart';
+import '../../today/presentation/widgets/today_header.dart';
+import '../../today/presentation/widgets/today_layout.dart';
+import '../application/dynamic_actions.dart';
+
+import 'widgets/member_pair.dart';
+import 'widgets/orbit_figure.dart';
+import 'widgets/structure_row.dart';
+
+final dynamicDetailProvider = FutureProvider.autoDispose
+    .family<DynamicDetail, String>(
+      (ref, dynamicId) =>
+          ref.watch(dynamicRepositoryProvider).detail(dynamicId),
+    );
+
+/// SCR-13 Dynamic Overview.
+///
+/// Shows the current shape of the relationship and the adjustments that must
+/// always be reachable. Three decisions worth stating, because the screen
+/// package left their product rules open and the preview alone does not
+/// authorize an answer:
+///
+/// - **Agreement is absent.** The preview carries an "OPEN AGREEMENT" row in
+///   Terracotta, but the package's own alignment work says to remove Agreement
+///   from Core Beta, and its acceptance criterion says this is not a
+///   governance dashboard. Building the most eye-catching row on the screen
+///   for a concept the tier does not have would have been the easiest thing
+///   here to get wrong.
+///
+/// - **No "next shared check-in".** The preview shows one. The server has no
+///   scheduled check-in to report — `/check-ins` returns written entries, not
+///   appointments — and the acceptance criterion is that displayed state
+///   matches server truth. A plausible date rendered from nothing is the one
+///   failure this screen cannot recover from, so the row is not built.
+///
+/// - **Pause is offered to both members.** Notion 04 §4 makes it inviolable
+///   agency, and `alwaysAvailable` carries it whatever the viewer's role.
+class DynamicScreen extends ConsumerWidget {
+  const DynamicScreen({
+    super.key,
+    required this.dynamicId,
+    this.onSignIn,
+    this.onSelectTab,
+  });
+
+  final String dynamicId;
+  final VoidCallback? onSignIn;
+  final void Function(NavSurface surface)? onSelectTab;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final detail = ref.watch(dynamicDetailProvider(dynamicId));
+    void reload() => ref.invalidate(dynamicDetailProvider(dynamicId));
+
+    return Scaffold(
+      backgroundColor: DsColors.canvasRitual,
+      body: DsRitualSurface(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(
+                child: detail.when(
+                  // An AsyncValue can be loading *and* carry the previous
+                  // error. Without this a failed refresh spins forever instead
+                  // of saying what went wrong.
+                  skipLoadingOnReload: true,
+                  skipLoadingOnRefresh: true,
+                  loading: () => const _Loading(),
+                  error: (error, _) => switch (_classify(error)) {
+                    _Failure.authorizationLost => _AuthorizationLost(
+                      onSignIn: onSignIn,
+                    ),
+                    _Failure.offline => _Offline(onRetry: reload),
+                    _Failure.unknown => _Unavailable(onRetry: reload),
+                  },
+                  data: (view) => _Loaded(view: view, dynamicId: dynamicId),
+                ),
+              ),
+              DsBottomNavigation(
+                current: NavSurface.dynamic_,
+                onSelect: onSelectTab ?? (_) {},
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+enum _Failure { offline, authorizationLost, unknown }
+
+_Failure _classify(Object error) {
+  if (error is! DioException) return _Failure.unknown;
+  final status = error.response?.statusCode;
+  if (status == 401 || status == 403) return _Failure.authorizationLost;
+  return switch (error.type) {
+    DioExceptionType.connectionError ||
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.receiveTimeout ||
+    DioExceptionType.sendTimeout => _Failure.offline,
+    _ => _Failure.unknown,
+  };
+}
+
+class _Loaded extends ConsumerStatefulWidget {
+  const _Loaded({required this.view, required this.dynamicId});
+
+  final DynamicDetail view;
+  final String dynamicId;
+
+  @override
+  ConsumerState<_Loaded> createState() => _LoadedState();
+}
+
+class _LoadedState extends ConsumerState<_Loaded> {
+  bool _busy = false;
+  String? _failure;
+
+  DynamicDetail get view => widget.view;
+
+  bool get _paused => view.pausedAt != null || view.state == 'PAUSED';
+
+  /// The member who is not the viewer. Null in a Solo Dynamic, and null while
+  /// the partner has not joined — in both cases there is no presence to claim.
+  MemberView? get _partner {
+    for (final m in view.members) {
+      if (m.roleContext == 'PARTNER' && !_viewerIsPartner) return m;
+      if (m.roleContext == 'CREATOR' && _viewerIsPartner) return m;
+    }
+    return null;
+  }
+
+  /// The server marks the viewer's own row; `isMine` is not on this model, so
+  /// the viewer is identified by which role has an active access state and a
+  /// counterpart. With two members exactly one is the other person.
+  bool get _viewerIsPartner => view.members.length > 1 && !_viewerIsCreator;
+
+  bool get _viewerIsCreator {
+    // Role context on the detail is the viewer's own vantage on the Dynamic:
+    // the server composes members with the caller's row first.
+    final first = view.members.isEmpty ? null : view.members.first;
+    return first?.roleContext == 'CREATOR';
+  }
+
+  Future<void> _run(DynamicAction action) async {
+    setState(() {
+      _busy = true;
+      _failure = null;
+    });
+    final outcome = await ref
+        .read(dynamicActionsProvider)
+        .run(widget.dynamicId, action);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _failure = outcome is DynamicFailed ? outcome.message : null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final partner = _partner;
+    final rituals = view.structure.where((s) => s.active).toList();
+
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        TodayHeader(title: 'Dynamic', partnerName: partner?.displayName),
+
+        MemberPair(members: view.members, viewerIsCreator: _viewerIsCreator),
+
+        // The orbit is the screen's one piece of visual weight. It carries no
+        // information the rows do not also state, so it is decorative and
+        // excluded from semantics rather than described to a screen reader.
+        //
+        // Its height is a share of the viewport rather than a constant. At a
+        // fixed 300 it pushed Pause below the fold on a 390x844 screen — and
+        // an agency action that has to be scrolled for is not the inviolable
+        // one Notion 04 §4 describes.
+        OrbitFigure(
+          height: (MediaQuery.sizeOf(context).height * 0.26).clamp(140.0, 260.0),
+        ),
+
+        if (_paused) ...[
+          const SizedBox(height: DsSpacing.space6),
+          const _PausedNotice(),
+        ],
+
+        const SizedBox(height: DsSpacing.space6),
+
+        StructureRow(
+          asset: DsAssets.markAuthority,
+          label: 'CURRENT STRUCTURE',
+          value: _structureLine(view),
+        ),
+
+        if (rituals.isNotEmpty)
+          StructureRow(
+            asset: DsAssets.markCheckIn,
+            label: rituals.length == 1 ? 'CURRENT RHYTHM' : 'CURRENT RHYTHMS',
+            value: rituals.map((r) => r.title).join(' · '),
+          ),
+
+        if (_failure != null) ...[
+          const SizedBox(height: DsSpacing.space5),
+          RecoveryMessage(_failure!, prominent: true),
+        ],
+
+        const SizedBox(height: DsSpacing.space8),
+
+        // Agency, last and unmissable. Never behind a menu: a person deciding
+        // to pause should not have to look for it.
+        Padding(
+          padding: todayInset,
+          child: SecondaryButton(
+            label: _busy
+                ? (_paused ? 'Resuming…' : 'Pausing…')
+                : (_paused ? 'Resume, lighter' : 'Pause this Dynamic'),
+            onTap: _busy
+                ? () {}
+                : () => _run(
+                    _paused ? DynamicAction.resume : DynamicAction.pause,
+                  ),
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space4),
+        RecoveryMessage(
+          _paused
+              ? 'Resuming returns half the structure, not all of it.'
+              : 'Either of you may pause. Nothing is lost while paused.',
+        ),
+        const SizedBox(height: DsSpacing.space10),
+      ],
+    );
+  }
+}
+
+/// "Service-led · mutually held" in the preview. Both halves come from the
+/// server: the outcome the couple chose, and how much structure they asked
+/// for. Neither is inferred.
+String _structureLine(DynamicDetail view) {
+  final outcome = switch (view.desiredOutcome) {
+    'CLOSER' => 'Closeness-led',
+    'STRUCTURE' => 'Structure-led',
+    'SERVICE' => 'Service-led',
+    'ACCOUNTABILITY' => 'Accountability-led',
+    'EXPLORE' => 'Exploration-led',
+    _ => view.desiredOutcome,
+  };
+  final level = switch (view.structureLevel) {
+    'LIGHT' => 'lightly held',
+    'STEADY' => 'mutually held',
+    'DEFINED' => 'clearly defined',
+    _ => view.structureLevel,
+  };
+  return '$outcome · $level';
+}
+
+/// Paused is a state to be stated plainly, never a warning. Pausing is a
+/// normal use of the product, not a failure of it.
+class _PausedNotice extends StatelessWidget {
+  const _PausedNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: todayInset,
+      child: Container(
+        padding: const EdgeInsets.all(DsSpacing.space4),
+        decoration: BoxDecoration(
+          color: DsColors.surfaceRitualRaised,
+          borderRadius: BorderRadius.circular(DsRadii.card),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'PAUSED',
+              style: DsTextStyles.labelRitual.copyWith(
+                color: DsColors.textOnRitualMuted,
+              ),
+            ),
+            const SizedBox(height: DsSpacing.space2),
+            Text(
+              'Nothing is expected of either of you while this is paused.',
+              style: DsTextStyles.bodySecondary.copyWith(
+                color: DsColors.textOnRitualSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Loading extends StatelessWidget {
+  const _Loading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const RecoveryScaffold(
+      context_: 'Confirming context',
+      title: 'Dynamic',
+      children: [
+        SizedBox(height: DsSpacing.space8),
+        RecoveryMessage('Confirming the current structure with the server.'),
+      ],
+    );
+  }
+}
+
+/// The last confirmed structure is not shown from cache: unlike a list of
+/// tasks, a stale pause state would be actively misleading about whether
+/// anything is expected of you right now.
+class _Offline extends StatelessWidget {
+  const _Offline({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return RecoveryScaffold(
+      context_: 'Offline',
+      title: 'Dynamic',
+      children: [
+        const SizedBox(height: DsSpacing.space8),
+        const RecoveryMessage(
+          'The current structure could not be confirmed.',
+          prominent: true,
+        ),
+        const SizedBox(height: DsSpacing.space3),
+        const RecoveryMessage(
+          'Pause and Resume need the server, so they are unavailable until it '
+          'reconnects. Whatever was already agreed still stands.',
+        ),
+        const SizedBox(height: DsSpacing.space6),
+        Padding(
+          padding: todayInset,
+          child: SecondaryButton(label: 'Try to reconnect', onTap: onRetry),
+        ),
+      ],
+    );
+  }
+}
+
+class _Unavailable extends StatelessWidget {
+  const _Unavailable({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return RecoveryScaffold(
+      context_: 'Not confirmed',
+      title: 'Dynamic',
+      children: [
+        const SizedBox(height: DsSpacing.space8),
+        const RecoveryMessage(
+          'The Dynamic could not be loaded. Nothing was changed.',
+          prominent: true,
+        ),
+        const SizedBox(height: DsSpacing.space6),
+        Padding(
+          padding: todayInset,
+          child: SecondaryButton(label: 'Try again', onTap: onRetry),
+        ),
+      ],
+    );
+  }
+}
+
+/// Partner identity, role names and structure are all protected content: this
+/// screen states who the other person is and how they describe their role, so
+/// an unconfirmed session must show none of it.
+class _AuthorizationLost extends StatelessWidget {
+  const _AuthorizationLost({this.onSignIn});
+
+  final VoidCallback? onSignIn;
+
+  @override
+  Widget build(BuildContext context) {
+    return RecoveryScaffold(
+      context_: 'Confirming context',
+      title: 'Dynamic',
+      children: [
+        Padding(
+          padding: todayInset,
+          child: Text(
+            'PRIVATE SESSION ENDED',
+            style: DsTextStyles.labelRitual.copyWith(
+              color: DsColors.textOnRitualMuted,
+            ),
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space16),
+        const Center(
+          child: DsSvg(
+            asset: DsAssets.stateLocked,
+            tone: DsAssetTone.primary,
+            width: 44,
+            height: 44,
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space8),
+        Padding(
+          padding: todayInset,
+          child: Column(
+            children: [
+              Text(
+                'Your private session\nneeds to be restored.',
+                textAlign: TextAlign.center,
+                style: DsTextStyles.displayRitual.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                  fontSize: 28,
+                  height: 31 / 28,
+                ),
+              ),
+              const SizedBox(height: DsSpacing.space5),
+              Text(
+                'Partner, roles and current structure have been hidden.\n'
+                'Sign in again to confirm current access.',
+                textAlign: TextAlign.center,
+                style: DsTextStyles.bodySecondary.copyWith(
+                  color: DsColors.textOnRitualMuted,
+                ),
+              ),
+              const SizedBox(height: DsSpacing.space8),
+              SecondaryButton(
+                label: 'Sign in again',
+                onTap: onSignIn ?? () {},
+                filled: true,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space6),
+        const RecoveryMessage('No protected content remains on this screen.'),
+      ],
+    );
+  }
+}

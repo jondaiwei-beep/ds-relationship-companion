@@ -15,11 +15,16 @@ class RecoveryScaffold extends StatelessWidget {
     super.key,
     required this.context_,
     required this.children,
+    this.title = 'Today',
   });
 
   /// Replaces partner presence in the header. Protected content is never shown
   /// while access is unconfirmed.
   final String context_;
+
+  /// The surface this recovery state belongs to. A person who cannot load
+  /// Dynamic should still be told which screen they are on.
+  final String title;
 
   final List<Widget> children;
 
@@ -28,7 +33,7 @@ class RecoveryScaffold extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(partnerName: null, context_: context_),
+        TodayHeader(title: title, partnerName: null, context_: context_),
         ...children,
       ],
     );
