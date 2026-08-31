@@ -163,6 +163,66 @@ def check_gates_respected():
             )
 
 
+def check_no_shipped_stubs():
+    """A platform stub must not be reachable from a release build.
+
+    `readDeviceTimezone()` on Android was `return null`, under a comment of
+    mine calling it "the last thing standing between activation and a real
+    device". Everything compiled, 274 tests passed, and every newly registered
+    Android account dead-ended on a placeholder. The stub was in a `_io` file,
+    which no widget test loads — so nothing else could have caught it.
+
+    A stub is fine while it is honest about being one. What is not fine is a
+    stub that a person can reach, which is what `platform/` means: those files
+    ARE the release build's behaviour.
+    """
+    global CHECKED
+    marker = re.compile(
+        r"(?i)(not implemented yet|TODO|FIXME|stub(?:bed)? out|for now,? return)"
+    )
+    for root, _, files in os.walk(f"{CLIENT}/platform"):
+        for name in files:
+            if not name.endswith(".dart"):
+                continue
+            path = os.path.join(root, name)
+            src = open(path).read()
+            CHECKED += 1
+            for i, line in enumerate(src.splitlines(), 1):
+                if marker.search(line):
+                    fail(
+                        "a stub is reachable from a release build",
+                        f"{path}:{i}",
+                        line.strip(),
+                    )
+
+
+def check_no_dead_end_copy():
+    """No screen may talk to a person about the build.
+
+    The screen a real device reached said "This route is reserved. The screen
+    is designed and its build gate is closed." Build gates are an internal
+    invention — the owner had said as much — and a person mid-registration can
+    do nothing with that sentence. Copy about our process is a dead end
+    wearing an explanation.
+    """
+    process_words = re.compile(
+        r"(?i)build gate|route is reserved|not built yet|coming soon|"
+        r"under construction|not implemented"
+    )
+    for path in screens():
+        if f"{os.sep}presentation{os.sep}" not in path:
+            continue
+        for i, line in enumerate(strip_comments(open(path).read()).splitlines(), 1):
+            if not re.search(r"['\"]", line):
+                continue
+            if process_words.search(line):
+                fail(
+                    "a screen explains the build to a person",
+                    f"{path}:{i}",
+                    line.strip(),
+                )
+
+
 def check_assets_resolve():
     """Every registered master exists, and DsAssets matches the freeze."""
     registry = json.load(open("manifests/assets.json"))
@@ -304,6 +364,8 @@ def main():
         check_no_queue_vocabulary,
         check_no_backend_states_in_copy,
         check_gates_respected,
+        check_no_shipped_stubs,
+        check_no_dead_end_copy,
         check_assets_resolve,
         check_preview_fits_viewport,
         check_package_qualified,

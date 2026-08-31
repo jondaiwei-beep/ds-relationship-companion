@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
+import 'package:dsapp/platform/storage/auth_flow_store.dart';
 import 'package:dsapp/features/entrance/presentation/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,7 +60,14 @@ void main() {
   }) async {
     final auth = _FakeAuth(signInThrows: signInThrows);
     final container = ProviderContainer(
-      overrides: [authRepositoryProvider.overrideWithValue(auth)],
+      overrides: [
+        authRepositoryProvider.overrideWithValue(auth),
+        // Without this the magic-link path reaches real secure storage, which
+        // has no platform channel here and never answers — `pumpAndSettle`
+        // then times out. On a device the same silence is a spinner that
+        // never stops, which is why the store itself now has a timeout.
+        authFlowStoreProvider.overrideWithValue(_MemoryFlows()),
+      ],
     );
     addTearDown(container.dispose);
     await tester.binding.setSurfaceSize(const Size(390, 844));
@@ -209,4 +217,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });
+}
+
+/// The flow store, without a platform channel behind it.
+class _MemoryFlows implements AuthFlowStore {
+  final _flows = <String, AuthFlow>{};
+
+  @override
+  Future<void> save(AuthFlow flow) async => _flows[flow.flowId] = flow;
+
+  @override
+  Future<AuthFlow?> load(String flowId) async => _flows[flowId];
+
+  @override
+  Future<void> clear(String flowId) async => _flows.remove(flowId);
 }

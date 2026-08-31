@@ -8,3 +8,12 @@ import 'callback_params.dart';
 /// be read from the location directly.
 CallbackParams? readCurrentCallback() =>
     CallbackParams.parse(web.window.location.href);
+
+/// Nothing to prime: the browser URL is already there.
+Future<void> primeLaunchLink() async {}
+
+/// The browser has no equivalent — a new link is a new page load.
+Stream<Uri> incomingLinks() => const Stream.empty();
+
+/// Nothing to remember: the location bar is always current.
+void rememberIncoming(Uri uri) {}

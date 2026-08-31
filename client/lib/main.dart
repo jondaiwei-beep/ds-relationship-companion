@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/router.dart';
+import 'platform/deeplink/callback_params.dart';
 import 'platform/session/session_controller.dart';
 import 'platform/time/device_timezone.dart';
 
@@ -34,6 +37,10 @@ Future<void> main() async {
   // completes would see null and dead-end.
   await primeDeviceTimezone();
 
+  // And the link this launch came from, if any. Android only reports it
+  // asynchronously, while the screen that consumes it asks during build.
+  await CallbackParams.prime();
+
   runApp(const ProviderScope(child: CompanionApp()));
 }
 
@@ -57,6 +64,35 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
     // while the process is suspended.
     session.watchLifecycle();
     session.restore();
+
+    // Links that arrive while the app is already running. A cold-start read
+    // alone misses the common case: tapping an invite while the app sits in
+    // the background hands the URI to the live process.
+    _links = CallbackParams.incoming().listen(_open);
+  }
+
+  StreamSubscription<Uri>? _links;
+
+  /// Route an incoming link the way the browser would route the same URL.
+  ///
+  /// The path is the contract — `/invite/<token>` and `/auth/callback` — so
+  /// this hands go_router the path and lets the guard decide, rather than
+  /// deciding here what a signed-out person may see.
+  void _open(Uri uri) {
+    // Before navigating: the callback screen reads the token synchronously,
+    // and go_router drops the fragment the token travels in.
+    CallbackParams.remember(uri);
+    final path = uri.fragment.isEmpty
+        ? uri.path
+        : '${uri.path}#${uri.fragment}';
+    if (path.isEmpty) return;
+    ref.read(routerProvider).go(path);
+  }
+
+  @override
+  void dispose() {
+    _links?.cancel();
+    super.dispose();
   }
 
   @override

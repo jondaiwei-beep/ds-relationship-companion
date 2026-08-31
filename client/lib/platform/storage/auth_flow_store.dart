@@ -8,8 +8,10 @@ import 'auth_flow_store_io.dart'
 /// Platform difference is real here (Notion 04 §1):
 /// - **Web**: the callback may open in a NEW TAB, so `sessionStorage` is
 ///   unsuitable — `localStorage` is used and cleared on consume.
-/// - **Android**: the flow stays in memory; the app process survives the
-///   round trip and the App Link returns to the same instance.
+/// - **Android**: secure storage, not memory. Completing a magic link means
+///   leaving for a mail app, and Android kills a backgrounded process whenever
+///   it wants the memory — taking an in-memory flow with it, so the link the
+///   person just tapped could not be completed.
 abstract interface class AuthFlowStore {
   Future<void> save(AuthFlow flow);
   Future<AuthFlow?> load(String flowId);

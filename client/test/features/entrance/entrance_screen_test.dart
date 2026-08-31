@@ -1,3 +1,5 @@
+import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:dsapp/features/entrance/presentation/widgets/trust_footer.dart';
 import 'package:dsapp/features/entrance/presentation/entrance_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -150,4 +152,46 @@ void main() {
       );
     }
   });
+
+  group('the whole entrance is visible without scrolling', () {
+    // The fixed spacings come from a design render at a fixed canvas height.
+    // Measured against a real viewport they totalled 975dp, so the legal
+    // footer sat 101dp below the fold on an iPhone 17 and 131dp below it on a
+    // 390x844 phone — with no cue that anything was there. Nothing overflowed
+    // and no test failed, because the page scrolls. It was found by looking at
+    // a simulator.
+    for (final size in [
+      const Size(360, 740),
+      const Size(390, 844),
+      const Size(402, 874), // iPhone 17
+      const Size(430, 932),
+    ]) {
+      testWidgets('at ${size.width.toInt()}x${size.height.toInt()}', (
+        tester,
+      ) async {
+        await tester.binding.setSurfaceSize(size);
+        addTearDown(() => tester.binding.setSurfaceSize(null));
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: DsTheme.ritual(),
+            home: EntranceScreen(onContinue: () {}, onSignIn: () {}),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        final footer = tester.getRect(find.byType(TrustFooter));
+        expect(
+          footer.bottom,
+          lessThanOrEqualTo(size.height),
+          reason: 'the legal footer is below the fold',
+        );
+        // And the primary action, which matters more.
+        expect(
+          tester.getRect(find.text('Continue')).bottom,
+          lessThanOrEqualTo(size.height),
+        );
+      });
+    }
+  });
+
 }

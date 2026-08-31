@@ -56,14 +56,21 @@ class EntranceScreen extends StatelessWidget {
           // constraint already gives.
           child: LayoutBuilder(
             builder: (context, constraints) => SingleChildScrollView(
+              // `IntrinsicHeight` so the Column can be BOTH exactly the
+              // viewport when the content fits and taller when it does not.
+              // A bare min-height constraint leaves the incoming height
+              // unbounded, and a `Spacer` in an unbounded Column is a layout
+              // error — which is what the device reported.
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: _EntranceBody(
-                  minHeight: constraints.maxHeight,
-                  onContinue: onContinue,
-                  onSignIn: onSignIn,
-                  notice: notice,
-                  busy: busy,
+                child: IntrinsicHeight(
+                  child: _EntranceBody(
+                    minHeight: constraints.maxHeight,
+                    onContinue: onContinue,
+                    onSignIn: onSignIn,
+                    notice: notice,
+                    busy: busy,
+                  ),
                 ),
               ),
             ),
@@ -112,13 +119,27 @@ class _EntranceBody extends StatelessWidget {
   final EntranceNotice? notice;
   final bool busy;
 
+
   @override
   Widget build(BuildContext context) {
+    // The absolute spacings below come from `render-entrance.cjs`, which
+    // composes at a fixed canvas height. On an iPhone 17 they overflowed by
+    // 101dp and put the legal footer below the fold with no cue it was there.
+    // The page scrolls, so nothing overflowed and no test failed; it was found
+    // by looking at a simulator.
+    //
+    // Only the breathing room yields — never type, targets or the mark.
+
     return Container(
       constraints: BoxConstraints(minHeight: minHeight),
       padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space6),
+      // A Column that fills its box, so the breathing room is real space
+      // handed to flex children rather than a number guessed in advance. A
+      // hardcoded "fixed content" constant was wrong on the device by 122dp:
+      // measured in a widget test, it did not survive the platform's own text
+      // metrics. Flex asks the layout instead of predicting it.
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         // The gap between the statement and the actions is where the
         // composition's calm comes from, and the design fixes it at 112dp
         // rather than letting it collapse. A `Spacer` cannot do this inside a
@@ -127,14 +148,14 @@ class _EntranceBody extends StatelessWidget {
           // Spacing follows `render-entrance.cjs`, which places every element
           // at an absolute y. Rounding these to the 4dp scale moved the whole
           // composition 46dp up against the design — measured, not guessed.
-          const SizedBox(height: 26),
+          const Spacer(flex: 26),
           Text(
             'Companion',
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
           ),
-          const SizedBox(height: 62),
+          const Spacer(flex: 62),
           const DsSvg(
             asset: DsAssets.markAuthority,
             tone: DsAssetTone.primary,
@@ -144,8 +165,8 @@ class _EntranceBody extends StatelessWidget {
           // The thread starts 6dp below the mark and runs to its point of
           // light; the headline sits 46dp further down.
           const SizedBox(height: 6),
-          const DescendingThread(height: 164),
-          const SizedBox(height: 32),
+          const DescendingThread(height: 130),
+          const Spacer(flex: 32),
           Text(
             'A private space,\non your terms.',
             textAlign: TextAlign.center,
@@ -153,7 +174,7 @@ class _EntranceBody extends StatelessWidget {
               color: DsColors.textOnRitualPrimary,
             ),
           ),
-          const SizedBox(height: 26),
+          const Spacer(flex: 26),
           Text(
             'Private. Considered. Yours.',
             style: DsTextStyles.labelRitual.copyWith(
@@ -161,7 +182,7 @@ class _EntranceBody extends StatelessWidget {
               letterSpacing: 2.6,
             ),
           ),
-          const SizedBox(height: 92),
+          const Spacer(flex: 92),
           if (notice case final notice?) ...[
             _Notice(notice),
             const SizedBox(height: DsSpacing.space5),

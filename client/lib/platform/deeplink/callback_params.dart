@@ -33,4 +33,17 @@ class CallbackParams {
 
   /// The callback this process was opened with, if any.
   static CallbackParams? current() => readCurrentCallback();
+
+  /// Reads the launching link before the first frame.
+  ///
+  /// Android only exposes it asynchronously, and the callback screen asks for
+  /// it during build. Without this the app opened on Today and the tapped
+  /// link did nothing.
+  static Future<void> prime() => primeLaunchLink();
+
+  /// Links delivered while the app is already running.
+  static Stream<Uri> incoming() => incomingLinks();
+
+  /// Hold a warm link so [current] can answer for it too.
+  static void remember(Uri uri) => rememberIncoming(uri);
 }
