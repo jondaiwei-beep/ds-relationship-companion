@@ -8,6 +8,7 @@ import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
+import '../features/expectation/presentation/create_expectation_screen.dart';
 import 'coming_surface.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
@@ -40,6 +41,9 @@ abstract final class Routes {
   /// The sending side. Authenticated and inside a Dynamic, unlike
   /// `/invite/:token`, which is the public page the link opens.
   static const invitePartner = '/dynamics/:id/invite';
+
+  /// Asking one thing of the other person (SCR-20).
+  static const createExpectation = '/dynamics/:id/ask';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -156,6 +160,19 @@ GoRouter createRouter(Ref ref) {
         },
       ),
       GoRoute(
+        path: Routes.createExpectation,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return CreateExpectationScreen(
+            dynamicId: dynamicId,
+            onCancel: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
+            // Back to Today, where the thing that was just asked now lives for
+            // the other person — and where the asker sees it waiting.
+            onDone: (_) => context.go('/dynamics/$dynamicId/today'),
+          );
+        },
+      ),
+      GoRoute(
         path: _navPath(':id', NavSurface.dynamic_),
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
@@ -163,6 +180,7 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
+            onAsk: () => context.go('/dynamics/$dynamicId/ask'),
           );
         },
       ),

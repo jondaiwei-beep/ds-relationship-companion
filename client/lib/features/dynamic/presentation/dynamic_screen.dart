@@ -24,6 +24,17 @@ final dynamicDetailProvider = FutureProvider.autoDispose
           ref.watch(dynamicRepositoryProvider).detail(dynamicId),
     );
 
+/// Who the viewer is, from the `sub` in their own session token.
+///
+/// Not from the members list's order: it comes back CREATOR-first whatever
+/// the caller's role, so position says nothing about who is asking. Shared by
+/// every screen that has to tell "you" from "them", because getting it wrong
+/// once already showed a person their own name as their partner's.
+final dynamicViewerIdProvider = Provider<String?>((ref) {
+  final session = ref.watch(sessionProvider);
+  return session is Authenticated ? session.userId : null;
+});
+
 /// SCR-13 Dynamic Overview.
 ///
 /// Shows the current shape of the relationship and the adjustments that must
@@ -52,11 +63,15 @@ class DynamicScreen extends ConsumerWidget {
     required this.dynamicId,
     this.onSignIn,
     this.onSelectTab,
+    this.onAsk,
   });
 
   final String dynamicId;
   final VoidCallback? onSignIn;
   final void Function(NavSurface surface)? onSelectTab;
+
+  /// Opens SCR-20. Null while there is no route to it.
+  final VoidCallback? onAsk;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,7 +100,11 @@ class DynamicScreen extends ConsumerWidget {
                     _Failure.offline => _Offline(onRetry: reload),
                     _Failure.unknown => _Unavailable(onRetry: reload),
                   },
-                  data: (view) => _Loaded(view: view, dynamicId: dynamicId),
+                  data: (view) => _Loaded(
+                    view: view,
+                    dynamicId: dynamicId,
+                    onAsk: onAsk,
+                  ),
                 ),
               ),
               DsBottomNavigation(
@@ -116,10 +135,15 @@ _Failure _classify(Object error) {
 }
 
 class _Loaded extends ConsumerStatefulWidget {
-  const _Loaded({required this.view, required this.dynamicId});
+  const _Loaded({
+    required this.view,
+    required this.dynamicId,
+    this.onAsk,
+  });
 
   final DynamicDetail view;
   final String dynamicId;
+  final VoidCallback? onAsk;
 
   @override
   ConsumerState<_Loaded> createState() => _LoadedState();
@@ -133,18 +157,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
 
   bool get _paused => view.pausedAt != null || view.state == 'PAUSED';
 
-  /// Which row is the viewer, by their own id from the session token.
-  ///
-  /// Not by position. The members list comes back in a fixed order — CREATOR
-  /// first — whatever the caller's own role is, so reading `members.first` as
-  /// "me" showed the partner their *own* name in both halves of the screen
-  /// and in the presence line. There is no `isMine` on this model and the
-  /// server states no vantage here, so the token's `sub` is the only thing
-  /// that actually answers the question.
-  String? get _viewerId {
-    final session = ref.watch(sessionProvider);
-    return session is Authenticated ? session.userId : null;
-  }
+  String? get _viewerId => ref.watch(dynamicViewerIdProvider);
 
   MemberView? get _me {
     final id = _viewerId;
@@ -234,6 +247,21 @@ class _LoadedState extends ConsumerState<_Loaded> {
         ],
 
         const SizedBox(height: DsSpacing.space8),
+
+        // Only offered when there is someone to ask and the Dynamic is running.
+        // Asking during a pause would be the one thing a pause is meant to
+        // stop.
+        if (widget.onAsk != null && _partner != null && !_paused) ...[
+          Padding(
+            padding: todayInset,
+            child: SecondaryButton(
+              label: 'Ask one thing',
+              onTap: widget.onAsk!,
+              filled: true,
+            ),
+          ),
+          const SizedBox(height: DsSpacing.space6),
+        ],
 
         // Agency, last and unmissable. Never behind a menu: a person deciding
         // to pause should not have to look for it.
