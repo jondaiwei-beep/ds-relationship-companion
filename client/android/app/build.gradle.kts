@@ -6,7 +6,18 @@ plugins {
 
 android {
     namespace = "app.companion.two"
-    compileSdk = flutter.compileSdkVersion
+
+    // 37 because `flutter_secure_storage` requires it, and the session tokens
+    // it holds are not something to downgrade around.
+    //
+    // Google publishes this platform as `android-37.0` while Gradle looks for
+    // `android-37`, so a local build needs the two names bridged:
+    //
+    //   ln -sfn android-37.0 $ANDROID_HOME/platforms/android-37
+    //
+    // Pinned rather than `flutter.compileSdkVersion` so a Flutter upgrade
+    // cannot silently change what we ship.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -20,7 +31,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36  // Behaviour we have actually tested against.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
