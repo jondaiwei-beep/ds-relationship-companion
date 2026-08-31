@@ -71,11 +71,33 @@ def check_no_queue_vocabulary():
     """
     banned = ["overdue", "backlog", "to-do list"]
     for path in screens():
-        src = open(path).read()
+        src = strip_comments(open(path).read())
         for word in banned:
             for m in re.finditer(rf"['\"][^'\"]*\b{word}\b", src, re.I):
                 line = src[: m.start()].count("\n") + 1
                 fail("queue vocabulary in copy", f"{path}:{line}", word)
+
+
+def strip_comments(src):
+    """Source with `//` comments removed, line numbering preserved.
+
+    Every copy rule below looks for a forbidden word in a string literal. A
+    comment explaining *why* the word is forbidden contains it too, so without
+    this the checks fire on the very notes that document them — which teaches
+    people to stop writing the notes.
+
+    Line-based and deliberately simple. It leaves `/* */` alone (this codebase
+    does not use them) and does not try to tell a `//` inside a string from a
+    real comment; a URL in a literal loses its tail, which no rule reads.
+    """
+    out = []
+    for line in src.split("\n"):
+        stripped = line.lstrip()
+        if stripped.startswith("//"):
+            out.append("")
+        else:
+            out.append(line)
+    return "\n".join(out)
 
 
 def check_no_backend_states_in_copy():
@@ -88,7 +110,7 @@ def check_no_backend_states_in_copy():
         "EXCUSE_REQUESTED",
     ]
     for path in screens():
-        src = open(path).read()
+        src = strip_comments(open(path).read())
         for state in states:
             # A state name inside a string literal is copy. Comparing against
             # one is fine, so only flag literals that are not on the right of

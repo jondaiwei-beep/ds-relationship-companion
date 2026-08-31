@@ -480,3 +480,31 @@ duplicate send after an app restart mid-retry, which the server's own
 Its accessibility point is also fair: the "needs your words" error should focus
 the field and announce as a live region. Worth doing across every form at once
 rather than only here.
+
+### SCR-32 — the foundation check was flagging its own documentation
+
+Building Attention, `check-screens.py` failed on two lines that were *comments
+explaining the rules it enforces*: one saying `NEED_TO_DISCUSS` is how the
+database phrases something and the label must not, another saying never to
+write "overdue".
+
+The copy rules read the whole file, so a note about a forbidden word contains
+the forbidden word. That teaches people to stop writing the notes, which is the
+opposite of what the rules are for. Both copy checks now strip `//` comments
+first; the code checks are untouched because they read constructs, not prose.
+Verified by planting real violations in actual copy — both still caught.
+
+### SCR-32's asset contract and the manifest disagreed
+
+`screen.md` lists three marks for this screen; `assets.json` recorded SCR-32 as
+a user of none of them. The contract is the authority, so the manifest was
+synced to it.
+
+I had also reached for `response.acknowledge` and `response.praise` on the
+inline controls — SCR-33's marks, not this screen's. Replaced with the
+registered ones.
+
+The freeze then caught a third thing at runtime: `mark.guidance` licenses
+`primary` and `authority`, not `relationship`, and `DsSvg` refused to build.
+Worth noting that this is the design system enforcing itself in a widget test —
+the tone now follows the mark rather than the row.
