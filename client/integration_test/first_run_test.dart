@@ -1,5 +1,7 @@
 import 'package:dsapp/main.dart' as app;
+import 'package:dsapp/platform/session/session_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -26,8 +28,24 @@ void main() {
     app.main();
     await tester.pumpAndSettle(const Duration(seconds: 5));
 
+    // A previous run leaves a real refresh token in secure storage, which is
+    // correct — but it means the second run starts signed in, inside the app.
+    // The test failed exactly that way after passing once. Clearing it makes
+    // every run start where a new person starts.
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(MaterialApp)),
+      listen: false,
+    );
+    await container.read(refreshStoreProvider).clear();
+    await container.read(sessionProvider.notifier).signOut();
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+
     // The entrance.
-    expect(find.text('Continue'), findsOneWidget);
+    expect(
+      find.text('Continue'),
+      findsOneWidget,
+      reason: 'a person with no session starts at the entrance',
+    );
     await tester.tap(find.text('Continue'));
     await tester.pumpAndSettle();
 
@@ -35,6 +53,18 @@ void main() {
     // second account on the same one.
     final email = 'sim-${DateTime.now().millisecondsSinceEpoch}@example.com';
     final fields = find.byType(TextField);
+    if (fields.evaluate().isEmpty) {
+      // Name what IS on screen. "expected 2, found 0" cost a build cycle to
+      // diagnose; "you are on the activation wizard" would not have.
+      final texts = find
+          .byType(Text)
+          .evaluate()
+          .map((e) => (e.widget as Text).data)
+          .whereType<String>()
+          .take(6)
+          .toList();
+      fail('expected the create-account screen, but the app is showing $texts');
+    }
     expect(
       fields,
       findsNWidgets(2),

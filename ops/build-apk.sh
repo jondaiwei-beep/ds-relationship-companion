@@ -7,6 +7,9 @@
 # pointed.
 set -euo pipefail
 
+# Resolved before the cd below, or the gate's relative path breaks.
+OPS="$(cd "$(dirname "$0")" && pwd)"
+
 cd "$(dirname "$0")/../client"
 
 API="${DS_API_BASE_URL:-https://ds-api.beforeweplay.com}"
@@ -19,6 +22,16 @@ SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/opt/homebrew/share/android-commandline
 if [ -d "$SDK/platforms/android-37.0" ] && [ ! -e "$SDK/platforms/android-37" ]; then
   echo "bridging android-37.0 -> android-37"
   ln -sfn android-37.0 "$SDK/platforms/android-37"
+fi
+
+# The gate that was missing. Every bug that reached a real phone — a
+# placeholder dynamic id, a dead nav bar, a timezone stub, a lost sign-in
+# flow, a dropped deep link, a footer below the fold — passed `flutter test`
+# and failed on a device. Set DS_SKIP_DEVICE_VERIFY=1 only when you already
+# ran it and know why you are skipping.
+if [ "${DS_SKIP_DEVICE_VERIFY:-0}" != "1" ]; then
+  bash "$OPS/verify-on-device.sh"
+  echo
 fi
 
 echo "API_BASE_URL=$API"
