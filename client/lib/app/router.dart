@@ -8,6 +8,7 @@ import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
+import '../features/checkin/presentation/check_in_screen.dart';
 import '../features/expectation/presentation/create_expectation_screen.dart';
 import '../features/expectation/presentation/occurrence_detail_screen.dart';
 import 'coming_surface.dart';
@@ -48,6 +49,9 @@ abstract final class Routes {
 
   /// One occurrence in full (SCR-14). Entered from Today or Attention.
   static const occurrence = '/dynamics/:id/occurrences/:occurrenceId';
+
+  /// Mood, energy, need (SCR-22). Entered from Today.
+  static const checkIn = '/dynamics/:id/check-in';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -162,6 +166,17 @@ GoRouter createRouter(Ref ref) {
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
             onOpenOccurrence: (id) =>
                 context.go('/dynamics/$dynamicId/occurrences/$id'),
+            onCheckIn: () => context.go('/dynamics/$dynamicId/check-in'),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.checkIn,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return CheckInScreen(
+            dynamicId: dynamicId,
+            onClose: () => context.go('/dynamics/$dynamicId/today'),
           );
         },
       ),
