@@ -39,6 +39,7 @@ class TodayScreen extends ConsumerWidget {
     required this.dynamicId,
     this.onSignIn,
     this.onSelectTab,
+    this.onOpenOccurrence,
   });
 
   final String dynamicId;
@@ -49,6 +50,9 @@ class TodayScreen extends ConsumerWidget {
 
   /// Supplied once the other three surfaces exist.
   final void Function(NavSurface surface)? onSelectTab;
+
+  /// Opens SCR-14 for one item.
+  final void Function(String occurrenceId)? onOpenOccurrence;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,7 +82,11 @@ class TodayScreen extends ConsumerWidget {
                     _Failure.offline => _Offline(onRetry: reload),
                     _Failure.unknown => _Unavailable(onRetry: reload),
                   },
-                  data: (view) => _Loaded(view: view, dynamicId: dynamicId),
+                  data: (view) => _Loaded(
+                    view: view,
+                    dynamicId: dynamicId,
+                    onOpenOccurrence: onOpenOccurrence,
+                  ),
                 ),
               ),
               DsBottomNavigation(
@@ -112,10 +120,15 @@ _Failure _classify(Object error) {
 
 /// The server-confirmed list.
 class _Loaded extends ConsumerStatefulWidget {
-  const _Loaded({required this.view, required this.dynamicId});
+  const _Loaded({
+    required this.view,
+    required this.dynamicId,
+    this.onOpenOccurrence,
+  });
 
   final TodayView view;
   final String dynamicId;
+  final void Function(String occurrenceId)? onOpenOccurrence;
 
   @override
   ConsumerState<_Loaded> createState() => _LoadedState();
@@ -173,6 +186,9 @@ class _LoadedState extends ConsumerState<_Loaded> {
                 item: item,
                 busy: _busyOccurrenceId == item.occurrenceId,
                 onAction: (action) => _run(item.occurrenceId, action),
+                onOpen: widget.onOpenOccurrence == null
+                    ? null
+                    : () => widget.onOpenOccurrence!(item.occurrenceId),
               )
             else
               CompactRow(

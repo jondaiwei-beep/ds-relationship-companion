@@ -16,6 +16,7 @@ class PrimaryExpectation extends StatelessWidget {
     required this.zone,
     required this.onAction,
     this.busy = false,
+    this.onOpen,
   });
 
   final TodayItem item;
@@ -30,6 +31,11 @@ class PrimaryExpectation extends StatelessWidget {
   /// While an attempt is in flight the actions are withdrawn, so a second tap
   /// cannot start a second attempt.
   final bool busy;
+
+  /// Opens SCR-14 for this item. The four actions stay reachable here rather
+  /// than behind it — the detail is for reading the whole of something, not a
+  /// gate in front of acting on it.
+  final VoidCallback? onOpen;
 
   /// The adjustment paths the server permits, in the order the design fixes.
   List<(String, TodayAction)> get _adjustments => _AdjustmentActions._paths
@@ -84,14 +90,19 @@ class PrimaryExpectation extends StatelessWidget {
                     const SizedBox(height: DsSpacing.space4),
                     // The editorial face carries what a person is being asked
                     // to do. UI chrome never borrows it.
-                    Text(
-                      item.title,
-                      // Design measures 28px with a 31px line box; the frozen
-                      // 34/42 role is the ritual-focus size, not this one.
-                      style: DsTextStyles.displayRitual.copyWith(
-                        color: DsColors.textOnRitualPrimary,
-                        fontSize: 28,
-                        height: 31 / 28,
+                    GestureDetector(
+                      onTap: onOpen,
+                      behavior: HitTestBehavior.opaque,
+                      child: Text(
+                        item.title,
+                        // Design measures 28px with a 31px line box; the
+                        // frozen 34/42 role is the ritual-focus size, not
+                        // this one.
+                        style: DsTextStyles.displayRitual.copyWith(
+                          color: DsColors.textOnRitualPrimary,
+                          fontSize: 28,
+                          height: 31 / 28,
+                        ),
                       ),
                     ),
                     const SizedBox(height: DsSpacing.space4),

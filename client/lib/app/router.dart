@@ -9,6 +9,7 @@ import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
 import '../features/expectation/presentation/create_expectation_screen.dart';
+import '../features/expectation/presentation/occurrence_detail_screen.dart';
 import 'coming_surface.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
@@ -44,6 +45,9 @@ abstract final class Routes {
 
   /// Asking one thing of the other person (SCR-20).
   static const createExpectation = '/dynamics/:id/ask';
+
+  /// One occurrence in full (SCR-14). Entered from Today or Attention.
+  static const occurrence = '/dynamics/:id/occurrences/:occurrenceId';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -156,6 +160,19 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
+            onOpenOccurrence: (id) =>
+                context.go('/dynamics/$dynamicId/occurrences/$id'),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.occurrence,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return OccurrenceDetailScreen(
+            dynamicId: dynamicId,
+            occurrenceId: s.pathParameters['occurrenceId']!,
+            onClose: () => context.go('/dynamics/$dynamicId/today'),
           );
         },
       ),
