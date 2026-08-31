@@ -5,6 +5,9 @@ import 'package:dsapp/app/router.dart';
 import 'package:dsapp/app/shell/bottom_navigation.dart';
 import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
+import 'package:dsapp/domain_client/models/dynamic_view.dart';
+import 'package:dsapp/domain_client/models/us_view.dart';
+import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/today_repository.dart';
 import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
@@ -32,6 +35,7 @@ void main() {
         todayRepositoryProvider.overrideWithValue(
           FixtureTodayRepository(todayFixture()) as TodayRepository,
         ),
+        dynamicRepositoryProvider.overrideWithValue(_StubDynamic()),
       ],
     );
     addTearDown(container.dispose);
@@ -69,12 +73,12 @@ void main() {
     expect(find.byType(TodayScreen), findsOneWidget);
 
     // The invariant is that a tap always lands somewhere — not that it lands
-    // on a placeholder. Dynamic is built (SCR-13); Explore and Us are not yet,
-    // so only those two are still expected to be ComingSurface.
+    // on a placeholder. Dynamic (SCR-13) and Us (SCR-17) are built; Explore is
+    // Public MVP and still ComingSurface.
     for (final (label, path, built) in const [
       ('Dynamic', '/dynamics/d-1/dynamic', true),
       ('Explore', '/dynamics/d-1/explore', false),
-      ('Us', '/dynamics/d-1/us', false),
+      ('Us', '/dynamics/d-1/us', true),
     ]) {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
@@ -88,11 +92,11 @@ void main() {
   });
 
   testWidgets('the way back to Today is always one tap', (tester) async {
-    final router = await pump(tester, '/dynamics/d-1/us');
+    final router = await pump(tester, '/dynamics/d-1/explore');
     expect(find.byType(ComingSurface), findsOneWidget);
 
-    // The bar is on the unbuilt surface too. Without it, tapping Us would be
-    // a one-way trip on a device with gesture navigation.
+    // The bar is on the unbuilt surface too. Without it, tapping Explore would
+    // be a one-way trip on a device with gesture navigation.
     await tester.tap(find.text('Today'));
     await tester.pumpAndSettle();
 
@@ -112,21 +116,21 @@ void main() {
   });
 
   testWidgets('the tab you are on is not re-selectable', (tester) async {
-    final router = await pump(tester, '/dynamics/d-1/us');
+    final router = await pump(tester, '/dynamics/d-1/explore');
 
     // Re-entering the route you are reading rebuilds it and loses the scroll
     // position, for a tap that meant "I am already here".
     final tab = tester.widget<InkWell>(
       find.descendant(
         of: find.ancestor(
-          of: find.text('Us'),
+          of: find.text('Explore'),
           matching: find.byType(Expanded),
         ),
         matching: find.byType(InkWell),
       ),
     );
     expect(tab.onTap, isNull);
-    expect(where(router), '/dynamics/d-1/us');
+    expect(where(router), '/dynamics/d-1/explore');
   });
 
   testWidgets('the bar clears a gesture inset instead of sitting under it', (
@@ -161,6 +165,28 @@ void main() {
       reason: 'a label inside the system inset is under the back button',
     );
   });
+}
+
+/// Dynamic and Us both read the server as soon as they build. Without a stub
+/// the real client reaches a dead URL, fails, and Riverpod schedules a retry
+/// timer that outlives the test — which surfaces as "pending timers", not as
+/// a routing failure. These tests are about navigation, so the reads simply
+/// have to resolve.
+class _StubDynamic implements DynamicRepository {
+  @override
+  Future<DynamicDetail> detail(String id) async => const DynamicDetail(
+    dynamicId: 'd-1',
+    state: 'ACTIVE',
+    desiredOutcome: 'SERVICE',
+    structureLevel: 'STEADY',
+    referenceTimezone: 'Asia/Shanghai',
+  );
+
+  @override
+  Future<UsView> us(String id) async => const UsView();
+
+  @override
+  dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
 }
 
 class _FakeAuth implements AuthRepository {

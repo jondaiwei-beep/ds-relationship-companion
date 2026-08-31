@@ -162,8 +162,16 @@ def complete(token, occurrence_id, note=None):
 
 
 def acknowledge(token, occurrence_id, message):
+    """The field is `text`, not `message`.
+
+    An unknown field is ignored rather than rejected, so sending `message`
+    returned 201 with an empty acknowledgement — the seeded "acknowledged"
+    state looked right in the ledger and rendered as an empty quotation mark
+    on Us. Caught by reading the words back out, not by the status code.
+    """
     return ok(*call("POST", f"/v1/occurrences/{occurrence_id}/acknowledgements",
-                    {"message": message}, token=token, idem=True), "acknowledge")
+                    {"type": "COMMENT", "text": message},
+                    token=token, idem=True), "acknowledge")
 
 
 # --- states -----------------------------------------------------------------
