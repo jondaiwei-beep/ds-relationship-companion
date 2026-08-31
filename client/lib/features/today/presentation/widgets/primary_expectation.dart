@@ -114,10 +114,8 @@ class PrimaryExpectation extends StatelessWidget {
                         height: todaySupportHeight,
                       ),
                     ),
-                    // Only what the server says this person may do. An item
-                    // with an open adjustment permits `withdraw` and nothing
-                    // this card offers, so it correctly shows no buttons
-                    // rather than a Complete that would be refused.
+                    // Only what the server says this person may do. Nothing
+                    // is offered that would be refused.
                     if (item.allowedActions.contains(
                       TodayAction.complete.wire,
                     )) ...[
@@ -213,6 +211,10 @@ class _AdjustmentActions extends StatelessWidget {
     ('Discuss', TodayAction.discuss),
     ('New time', TodayAction.requestNewTime),
     ("Can't do", TodayAction.cantDo),
+    // Last, and only ever alone: the server permits `withdraw` exactly when
+    // an adjustment is open, which is when it permits nothing else. Before it
+    // was implemented this card showed such an item with no action at all.
+    ('Take it back', TodayAction.withdraw),
   ];
 
   @override

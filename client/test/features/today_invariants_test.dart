@@ -473,6 +473,10 @@ void main() {
       // item, and the state is what tells the person where it stands.
       expect(find.textContaining('Prepare the evening space'), findsOneWidget);
       expect(find.textContaining('Being discussed'), findsOneWidget);
+      // And the one action the server DOES permit is offered. Until withdraw
+      // was implemented this card showed no action at all, so the person who
+      // asked to discuss something could only wait for the other to answer.
+      expect(find.text('Take it back'), findsOneWidget);
     });
 
     testWidgets('what the server did not say is not invented', (tester) async {
@@ -542,4 +546,5 @@ void main() {
       expect(find.textContaining('2:30 PM'), findsOneWidget);
     });
   });
+
 }
