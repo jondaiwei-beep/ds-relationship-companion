@@ -6,47 +6,42 @@ import '../../../today/presentation/widgets/today_layout.dart';
 
 /// The two people, side by side: who you are here, and who they are.
 ///
+/// Both are passed in already resolved. Working out which row is the viewer
+/// needs the session token, and deciding it here from the list's order was
+/// exactly the bug that showed a person their own name on both sides.
+///
 /// A role preset is a self-description and grants nothing (Notion 03 §2), so
 /// it is set in quiet secondary type beneath the name rather than styled as a
 /// rank. A member who has not named a role shows no role line at all — an
 /// invented "Unassigned" would read as a status the product does not have.
 class MemberPair extends StatelessWidget {
-  const MemberPair({
-    super.key,
-    required this.members,
-    required this.viewerIsCreator,
-  });
+  const MemberPair({super.key, required this.me, required this.partner});
 
-  final List<MemberView> members;
-  final bool viewerIsCreator;
+  /// The viewer's own membership. Null when the session could not be read.
+  final MemberView? me;
+
+  /// The other person, or null in a Solo Dynamic and before anyone joins.
+  final MemberView? partner;
 
   @override
   Widget build(BuildContext context) {
-    if (members.isEmpty) return const SizedBox.shrink();
-
-    final you = members.firstWhere(
-      (m) => viewerIsCreator
-          ? m.roleContext == 'CREATOR'
-          : m.roleContext == 'PARTNER',
-      orElse: () => members.first,
-    );
-    final other = members.where((m) => m.userId != you.userId).firstOrNull;
+    if (me == null && partner == null) return const SizedBox.shrink();
 
     return Padding(
       padding: todayInset,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _Member(label: 'YOU', role: you.rolePreset)),
+          Expanded(child: _Member(label: 'YOU', role: me?.rolePreset)),
           const SizedBox(width: DsSpacing.space4),
           Expanded(
-            child: other == null
+            child: partner == null
                 // Before anyone joins there is no second person to name, and
                 // a placeholder silhouette would imply someone is there.
                 ? const _Member(label: 'NO ONE YET', role: null, muted: true)
                 : _Member(
-                    label: (other.displayName ?? 'PARTNER').toUpperCase(),
-                    role: other.rolePreset,
+                    label: (partner!.displayName ?? 'PARTNER').toUpperCase(),
+                    role: partner!.rolePreset,
                     alignEnd: true,
                   ),
           ),

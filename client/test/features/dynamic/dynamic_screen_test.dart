@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/features/dynamic/presentation/dynamic_screen.dart';
+import 'package:dsapp/platform/session/session.dart';
+import 'package:dsapp/platform/session/session_controller.dart';
 
 class _FakeDynamicRepository implements DynamicRepository {
   _FakeDynamicRepository(this._result);
@@ -77,7 +81,30 @@ DynamicDetail _detail({
   structure: structure ?? const [],
 );
 
-Future<_FakeDynamicRepository> _pump(WidgetTester tester, Object result) async {
+/// An access token whose `sub` is [userId]. Only the payload is read, so the
+/// header and signature can be anything.
+String _tokenFor(String userId) {
+  String seg(String s) =>
+      base64Url.encode(utf8.encode(s)).replaceAll('=', '');
+  return '${seg('{"alg":"none"}')}.${seg('{"sub":"$userId"}')}.x';
+}
+
+class _FixedSession extends SessionController {
+  _FixedSession(this._userId);
+
+  final String? _userId;
+
+  @override
+  Session build() => _userId == null
+      ? const SignedOut()
+      : Authenticated(accessToken: _tokenFor(_userId));
+}
+
+Future<_FakeDynamicRepository> _pump(
+  WidgetTester tester,
+  Object result, {
+  String? viewer = 'u-creator',
+}) async {
   // Assert against the reference viewport, not the 800x600 test default: the
   // bug this caught — Pause below the fold — only exists at phone height.
   tester.view.physicalSize = const Size(390, 844);
@@ -87,7 +114,10 @@ Future<_FakeDynamicRepository> _pump(WidgetTester tester, Object result) async {
   final repo = _FakeDynamicRepository(result);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [dynamicRepositoryProvider.overrideWithValue(repo)],
+      overrides: [
+        dynamicRepositoryProvider.overrideWithValue(repo),
+        sessionProvider.overrideWith(() => _FixedSession(viewer)),
+      ],
       child: MaterialApp(
         theme: DsTheme.ritual(),
         home: const DynamicScreen(dynamicId: 'dyn-1'),
@@ -181,6 +211,41 @@ void main() {
     );
     expect(find.textContaining('could not be confirmed'), findsOneWidget);
     expect(find.text('Pause this Dynamic'), findsNothing);
+  });
+
+  testWidgets('the partner sees the creator opposite, not themselves', (
+    tester,
+  ) async {
+    // Reported from a device: signed in as the partner, the header read
+    // "<myself> is present" and both halves of the pair showed the same name.
+    // The members list is CREATOR-first whatever the caller's role, so reading
+    // members.first as "me" made the viewer their own partner.
+    await _pump(tester, _detail(), viewer: 'u-partner');
+
+    expect(find.text('ALEX'), findsOneWidget, reason: 'the other person');
+    expect(find.text('Alex is present'), findsOneWidget);
+    expect(find.textContaining('MORGAN'), findsNothing,
+        reason: 'the viewer is YOU, never named opposite themselves');
+    expect(find.text('Dominant'), findsOneWidget, reason: "the viewer's role");
+  });
+
+  testWidgets('the creator sees the partner opposite', (tester) async {
+    await _pump(tester, _detail(), viewer: 'u-creator');
+    expect(find.text('MORGAN'), findsOneWidget);
+    expect(find.text('Morgan is present'), findsOneWidget);
+  });
+
+  testWidgets('an unreadable session claims no presence at all', (
+    tester,
+  ) async {
+    // The router does not route a signed-out person here, so this is the
+    // degenerate case rather than a designed state. What matters is only that
+    // no name is claimed: naming the wrong person as your partner is worse
+    // than naming nobody, and worse than showing nothing.
+    await _pump(tester, _detail(), viewer: null);
+    expect(find.textContaining('is present'), findsNothing);
+    expect(find.text('ALEX'), findsNothing);
+    expect(find.text('MORGAN'), findsNothing);
   });
 
   testWidgets('a partner who has not joined is not implied to be there', (

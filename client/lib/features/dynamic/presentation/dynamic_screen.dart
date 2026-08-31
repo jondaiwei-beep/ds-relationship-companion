@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../platform/session/session.dart';
+import '../../../platform/session/session_controller.dart';
 import '../../../domain_client/models/dynamic_view.dart';
 import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
@@ -131,26 +133,40 @@ class _LoadedState extends ConsumerState<_Loaded> {
 
   bool get _paused => view.pausedAt != null || view.state == 'PAUSED';
 
-  /// The member who is not the viewer. Null in a Solo Dynamic, and null while
-  /// the partner has not joined — in both cases there is no presence to claim.
-  MemberView? get _partner {
+  /// Which row is the viewer, by their own id from the session token.
+  ///
+  /// Not by position. The members list comes back in a fixed order — CREATOR
+  /// first — whatever the caller's own role is, so reading `members.first` as
+  /// "me" showed the partner their *own* name in both halves of the screen
+  /// and in the presence line. There is no `isMine` on this model and the
+  /// server states no vantage here, so the token's `sub` is the only thing
+  /// that actually answers the question.
+  String? get _viewerId {
+    final session = ref.watch(sessionProvider);
+    return session is Authenticated ? session.userId : null;
+  }
+
+  MemberView? get _me {
+    final id = _viewerId;
+    if (id == null) return null;
     for (final m in view.members) {
-      if (m.roleContext == 'PARTNER' && !_viewerIsPartner) return m;
-      if (m.roleContext == 'CREATOR' && _viewerIsPartner) return m;
+      if (m.userId == id) return m;
     }
     return null;
   }
 
-  /// The server marks the viewer's own row; `isMine` is not on this model, so
-  /// the viewer is identified by which role has an active access state and a
-  /// counterpart. With two members exactly one is the other person.
-  bool get _viewerIsPartner => view.members.length > 1 && !_viewerIsCreator;
-
-  bool get _viewerIsCreator {
-    // Role context on the detail is the viewer's own vantage on the Dynamic:
-    // the server composes members with the caller's row first.
-    final first = view.members.isEmpty ? null : view.members.first;
-    return first?.roleContext == 'CREATOR';
+  /// The member who is not the viewer. Null in a Solo Dynamic and while the
+  /// partner has not joined — in both cases there is no presence to claim.
+  ///
+  /// Also null when the viewer cannot be identified: naming an arbitrary
+  /// member "your partner" is worse than naming nobody.
+  MemberView? get _partner {
+    final id = _viewerId;
+    if (id == null) return null;
+    for (final m in view.members) {
+      if (m.userId != id) return m;
+    }
+    return null;
   }
 
   Future<void> _run(DynamicAction action) async {
@@ -178,7 +194,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
       children: [
         TodayHeader(title: 'Dynamic', partnerName: partner?.displayName),
 
-        MemberPair(members: view.members, viewerIsCreator: _viewerIsCreator),
+        MemberPair(me: _me, partner: _partner),
 
         // The orbit is the screen's one piece of visual weight. It carries no
         // information the rows do not also state, so it is decorative and
