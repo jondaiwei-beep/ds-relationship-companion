@@ -146,13 +146,36 @@ class PrimaryExpectation extends StatelessWidget {
   }
 }
 
+/// The vertical thread beside the first priority.
+///
+/// A gradient rather than a flat rule. In the approved composition this line
+/// is the one piece of drawn light on the page — it emerges, holds through the
+/// title, and fades again, which is what keeps a screen this dark from reading
+/// as an empty box with text in it. A uniform hairline at full strength
+/// terminates in two hard ends and looks like a table border instead.
 class _AuthorityRule extends StatelessWidget {
   const _AuthorityRule();
 
   @override
-  Widget build(BuildContext context) => const SizedBox(
+  Widget build(BuildContext context) => SizedBox(
     width: DsBorderWidths.hairline,
-    child: ColoredBox(color: DsColors.borderOnRitualStrong),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            DsColors.borderOnRitualStrong.withValues(alpha: 0),
+            DsColors.borderOnRitualStrong,
+            DsColors.borderOnRitualStrong,
+            DsColors.borderOnRitualStrong.withValues(alpha: 0),
+          ],
+          // Full strength across the title and the action, fading only at the
+          // two ends.
+          stops: const [0.0, 0.18, 0.72, 1.0],
+        ),
+      ),
+    ),
   );
 }
 
