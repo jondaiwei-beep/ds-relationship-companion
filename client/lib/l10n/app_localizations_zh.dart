@@ -1840,4 +1840,73 @@ class LZh extends L {
   @override
   String get settingsLanguageNote =>
       '这个 app 用的词本身就是它的一部分意思。某个词读起来别扭的话，可以换另一种语言看看。';
+
+  @override
+  String get pauseConfirming => '正在确认现在是不是暂停中。';
+
+  @override
+  String get pauseCouldNotConfirm => '没能确认现在是不是暂停中。什么都没有改动。';
+
+  @override
+  String get pauseTitle => '暂停这段关系';
+
+  @override
+  String get pauseFactNothingExpected => '你们谁都不需要做什么。';
+
+  @override
+  String get pauseFactNothingDeleted => '已经约定好的事不会被删掉。';
+
+  @override
+  String get pauseFactNoBacklog => '暂停期间不会堆积待办 —— 回来的时候不会有一堆没做的事等着你。';
+
+  @override
+  String get pauseFactEitherCan => '你们任何一个人都可以暂停，不需要对方同意。';
+
+  @override
+  String get pauseAction => '暂停';
+
+  @override
+  String get pauseBusy => '正在暂停…';
+
+  @override
+  String get pauseNotNow => '先不了';
+
+  @override
+  String get resumeTitle => '回来';
+
+  @override
+  String get resumeNothingWaiting => '暂停这几天的事不会等着你。你没有落下什么。';
+
+  @override
+  String get resumeHowMuch => '回来多少';
+
+  @override
+  String get resumeLighter => '轻一点';
+
+  @override
+  String get resumeLighterSupport => '大约是你暂停时的一半。';
+
+  @override
+  String get resumeSame => '和之前一样';
+
+  @override
+  String get resumeSameSupport => '原来有什么，就还是什么。';
+
+  @override
+  String get resumeAction => '回来';
+
+  @override
+  String get resumeBusy => '正在恢复…';
+
+  @override
+  String get resumeStayPaused => '先继续暂停';
+
+  @override
+  String get pauseFailed => '没能发到服务端。什么都没有改动 —— 再试一次。';
+
+  @override
+  String get resumeFailed => '没能发到服务端。还是暂停中 —— 再试一次。';
+
+  @override
+  String get dynamicPartnerFallback => '对方';
 }

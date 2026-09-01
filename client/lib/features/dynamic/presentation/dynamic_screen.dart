@@ -204,7 +204,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: 'Dynamic', partnerName: partner?.displayName),
+        TodayHeader(title: l.dynamicTitle, partnerName: partner?.displayName),
 
         MemberPair(me: _me, partner: _partner),
 
@@ -371,7 +371,7 @@ class _Loading extends StatelessWidget {
     final l = L.of(context);
     return RecoveryScaffold(
       context_: l.recoveryConfirmingContext,
-      title: 'Dynamic',
+      title: l.dynamicTitle,
       children: [
         DsSkeletonPulse(
           child: Column(
@@ -437,7 +437,7 @@ class _Offline extends StatelessWidget {
     final l = L.of(context);
     return RecoveryScaffold(
       context_: l.recoveryOffline,
-      title: 'Dynamic',
+      title: l.dynamicTitle,
       children: [
         const SizedBox(height: DsSpacing.space8),
         RecoveryMessage(
@@ -468,7 +468,7 @@ class _Unavailable extends StatelessWidget {
     final l = L.of(context);
     return RecoveryScaffold(
       context_: l.recoveryNotConfirmed,
-      title: 'Dynamic',
+      title: l.dynamicTitle,
       children: [
         const SizedBox(height: DsSpacing.space8),
         RecoveryMessage(
@@ -498,7 +498,7 @@ class _AuthorizationLost extends StatelessWidget {
     final l = L.of(context);
     return RecoveryScaffold(
       context_: l.recoveryConfirmingContext,
-      title: 'Dynamic',
+      title: l.dynamicTitle,
       children: [
         Padding(
           padding: todayInset,

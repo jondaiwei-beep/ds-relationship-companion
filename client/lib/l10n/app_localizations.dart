@@ -3480,6 +3480,144 @@ abstract class L {
   /// In en, this message translates to:
   /// **'The words this app uses are part of what it means. If a term reads oddly in one language, try the other.'**
   String get settingsLanguageNote;
+
+  /// No description provided for @pauseConfirming.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming whether this is paused.'**
+  String get pauseConfirming;
+
+  /// No description provided for @pauseCouldNotConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Whether this is paused could not be confirmed. Nothing was changed.'**
+  String get pauseCouldNotConfirm;
+
+  /// No description provided for @pauseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause this Dynamic'**
+  String get pauseTitle;
+
+  /// No description provided for @pauseFactNothingExpected.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing will be expected of either of you.'**
+  String get pauseFactNothingExpected;
+
+  /// No description provided for @pauseFactNothingDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing already agreed is deleted.'**
+  String get pauseFactNothingDeleted;
+
+  /// No description provided for @pauseFactNoBacklog.
+  ///
+  /// In en, this message translates to:
+  /// **'No backlog builds up while you are paused — you will not come back to a pile of missed days.'**
+  String get pauseFactNoBacklog;
+
+  /// No description provided for @pauseFactEitherCan.
+  ///
+  /// In en, this message translates to:
+  /// **'Either of you can pause. Neither needs the other to agree.'**
+  String get pauseFactEitherCan;
+
+  /// No description provided for @pauseAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get pauseAction;
+
+  /// No description provided for @pauseBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Pausing…'**
+  String get pauseBusy;
+
+  /// No description provided for @pauseNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get pauseNotNow;
+
+  /// No description provided for @resumeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Come back'**
+  String get resumeTitle;
+
+  /// No description provided for @resumeNothingWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing from the paused days is waiting. You are not behind.'**
+  String get resumeNothingWaiting;
+
+  /// No description provided for @resumeHowMuch.
+  ///
+  /// In en, this message translates to:
+  /// **'HOW MUCH TO COME BACK TO'**
+  String get resumeHowMuch;
+
+  /// No description provided for @resumeLighter.
+  ///
+  /// In en, this message translates to:
+  /// **'Lighter'**
+  String get resumeLighter;
+
+  /// No description provided for @resumeLighterSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'About half the structure you paused under.'**
+  String get resumeLighterSupport;
+
+  /// No description provided for @resumeSame.
+  ///
+  /// In en, this message translates to:
+  /// **'The same as before'**
+  String get resumeSame;
+
+  /// No description provided for @resumeSameSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you had, exactly as it was.'**
+  String get resumeSameSupport;
+
+  /// No description provided for @resumeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get resumeAction;
+
+  /// No description provided for @resumeBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Resuming…'**
+  String get resumeBusy;
+
+  /// No description provided for @resumeStayPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay paused'**
+  String get resumeStayPaused;
+
+  /// No description provided for @pauseFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not reach the server. Nothing changed — try again.'**
+  String get pauseFailed;
+
+  /// No description provided for @resumeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not reach the server. Still paused — try again.'**
+  String get resumeFailed;
+
+  /// No description provided for @dynamicPartnerFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'PARTNER'**
+  String get dynamicPartnerFallback;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

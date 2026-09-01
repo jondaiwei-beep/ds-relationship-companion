@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain_client/models/dynamic_view.dart';
@@ -26,21 +27,25 @@ class MemberPair extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (me == null && partner == null) return const SizedBox.shrink();
+    final l = L.of(context);
 
     return Padding(
       padding: todayInset,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _Member(label: 'YOU', role: me?.rolePreset)),
+          Expanded(
+            child: _Member(label: l.dynamicYou, role: me?.rolePreset),
+          ),
           const SizedBox(width: DsSpacing.space4),
           Expanded(
             child: partner == null
                 // Before anyone joins there is no second person to name, and
                 // a placeholder silhouette would imply someone is there.
-                ? const _Member(label: 'NO ONE YET', role: null, muted: true)
+                ? _Member(label: l.dynamicNoOneYet, role: null, muted: true)
                 : _Member(
-                    label: (partner!.displayName ?? 'PARTNER').toUpperCase(),
+                    label: (partner!.displayName ?? l.dynamicPartnerFallback)
+                        .toUpperCase(),
                     role: partner!.rolePreset,
                     alignEnd: true,
                   ),
@@ -107,7 +112,7 @@ class _Member extends StatelessWidget {
         if (role != null) ...[
           const SizedBox(height: DsSpacing.space1),
           Text(
-            _humanRole(role!),
+            _humanRole(L.of(context), role!),
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: todaySupportSize,
@@ -120,10 +125,12 @@ class _Member extends StatelessWidget {
   }
 }
 
-String _humanRole(String preset) => switch (preset) {
-  'DOMINANT' => 'Dominant',
-  'SUBMISSIVE' => 'Submissive',
-  'SWITCH' => 'Switch',
-  'CUSTOM' => 'Their own words',
+String _humanRole(L l, String preset) => switch (preset) {
+  'DOMINANT' => l.rolePresetDominant,
+  'SUBMISSIVE' => l.rolePresetSubmissive,
+  'SWITCH' => l.rolePresetSwitch,
+  'CUSTOM' => l.rolePresetCustom,
+  // An unrecognised preset falls through to the server's own word rather than
+  // asserting a role this build does not know about.
   _ => preset,
 };

@@ -1965,4 +1965,81 @@ class LEn extends L {
   @override
   String get settingsLanguageNote =>
       'The words this app uses are part of what it means. If a term reads oddly in one language, try the other.';
+
+  @override
+  String get pauseConfirming => 'Confirming whether this is paused.';
+
+  @override
+  String get pauseCouldNotConfirm =>
+      'Whether this is paused could not be confirmed. Nothing was changed.';
+
+  @override
+  String get pauseTitle => 'Pause this Dynamic';
+
+  @override
+  String get pauseFactNothingExpected =>
+      'Nothing will be expected of either of you.';
+
+  @override
+  String get pauseFactNothingDeleted => 'Nothing already agreed is deleted.';
+
+  @override
+  String get pauseFactNoBacklog =>
+      'No backlog builds up while you are paused — you will not come back to a pile of missed days.';
+
+  @override
+  String get pauseFactEitherCan =>
+      'Either of you can pause. Neither needs the other to agree.';
+
+  @override
+  String get pauseAction => 'Pause';
+
+  @override
+  String get pauseBusy => 'Pausing…';
+
+  @override
+  String get pauseNotNow => 'Not now';
+
+  @override
+  String get resumeTitle => 'Come back';
+
+  @override
+  String get resumeNothingWaiting =>
+      'Nothing from the paused days is waiting. You are not behind.';
+
+  @override
+  String get resumeHowMuch => 'HOW MUCH TO COME BACK TO';
+
+  @override
+  String get resumeLighter => 'Lighter';
+
+  @override
+  String get resumeLighterSupport =>
+      'About half the structure you paused under.';
+
+  @override
+  String get resumeSame => 'The same as before';
+
+  @override
+  String get resumeSameSupport => 'Everything you had, exactly as it was.';
+
+  @override
+  String get resumeAction => 'Resume';
+
+  @override
+  String get resumeBusy => 'Resuming…';
+
+  @override
+  String get resumeStayPaused => 'Stay paused';
+
+  @override
+  String get pauseFailed =>
+      'That did not reach the server. Nothing changed — try again.';
+
+  @override
+  String get resumeFailed =>
+      'That did not reach the server. Still paused — try again.';
+
+  @override
+  String get dynamicPartnerFallback => 'PARTNER';
 }

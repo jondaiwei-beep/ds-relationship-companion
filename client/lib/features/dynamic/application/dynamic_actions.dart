@@ -16,9 +16,17 @@ class DynamicSucceeded extends DynamicOutcome {
   const DynamicSucceeded();
 }
 
-class DynamicFailed extends DynamicOutcome {
-  const DynamicFailed(this.message);
+/// Which action failed. The words belong to the screen: this layer has no
+/// BuildContext, and a sentence built here would be in whichever language the
+/// build was compiled with rather than the reader's.
+enum DynamicFailureReason { pause, resume }
 
+class DynamicFailed extends DynamicOutcome {
+  const DynamicFailed(this.reason, this.message);
+
+  final DynamicFailureReason reason;
+
+  /// English, for logs and the walking skeleton. No screen renders it.
   final String message;
 }
 
@@ -66,11 +74,15 @@ class DynamicActions {
       return const DynamicSucceeded();
     } on Object {
       // The key is deliberately kept so a retry is the same attempt.
-      return DynamicFailed(
-        action == DynamicAction.pause
-            ? 'That did not reach the server. Nothing changed — try again.'
-            : 'That did not reach the server. Still paused — try again.',
-      );
+      return action == DynamicAction.pause
+          ? const DynamicFailed(
+              DynamicFailureReason.pause,
+              'That did not reach the server. Nothing changed — try again.',
+            )
+          : const DynamicFailed(
+              DynamicFailureReason.resume,
+              'That did not reach the server. Still paused — try again.',
+            );
     }
   }
 }

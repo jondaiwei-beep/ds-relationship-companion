@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../app/shell/ds_skeleton.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 import '../application/dynamic_actions.dart';
@@ -54,16 +56,33 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
     switch (outcome) {
       case DynamicSucceeded():
         widget.onDone?.call();
-      case DynamicFailed(:final message):
-        setState(() => _failure = message);
+      case DynamicFailed(:final reason):
+        setState(
+          () => _failure = switch (reason) {
+            DynamicFailureReason.pause => L.of(context).pauseFailed,
+            DynamicFailureReason.resume => L.of(context).resumeFailed,
+          },
+        );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
-    final paused = detail.hasValue &&
-        (detail.value!.pausedAt != null || detail.value!.state == 'PAUSED');
+
+    // Which half of this screen to show is a server fact, so it waits for one
+    // rather than assuming. Treating "not loaded yet" as "not paused" offered
+    // Pause to someone already paused — a state the client had invented, and
+    // an action the server would have refused (REQ-STATE-001).
+    final children = switch (detail) {
+      AsyncData(:final value)
+          when value.pausedAt != null || value.state == 'PAUSED' =>
+        _resume(context),
+      AsyncData() => _pause(context),
+      AsyncError() => _unavailable(l),
+      _ => _confirming(l),
+    };
 
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
@@ -73,12 +92,7 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
             children: [
               _TopBar(onCancel: widget.onDone),
               Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: paused
-                      ? _resume(context)
-                      : _pause(context),
-                ),
+                child: ListView(padding: EdgeInsets.zero, children: children),
               ),
             ],
           ),
@@ -87,11 +101,41 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
     );
   }
 
-  List<Widget> _pause(BuildContext context) => [
+  /// Neither half is safe to draw yet: the skeleton stands in for whichever
+  /// one arrives, so the page does not rearrange under a tap.
+  List<Widget> _confirming(L l) => [
+    const SizedBox(height: DsSpacing.space8),
+    DsSkeletonPulse(
+      child: Column(
+        children: [
+          Padding(
+            padding: todayInset,
+            child: DsSkeletonBar(widthFactor: 0.55, height: 20, emphasis: true),
+          ),
+          const SizedBox(height: DsSpacing.space6),
+          const Padding(
+            padding: todayInset,
+            child: DsSkeletonCard(lines: [0.9, 0.75, 0.85, 0.6]),
+          ),
+        ],
+      ),
+    ),
+    const SizedBox(height: DsSpacing.space6),
+    _Quiet(l.pauseConfirming),
+  ];
+
+  List<Widget> _unavailable(L l) => [
+    const SizedBox(height: DsSpacing.space10),
+    _Quiet(l.pauseCouldNotConfirm),
+  ];
+
+  List<Widget> _pause(BuildContext context) {
+    final l = L.of(context);
+    return [
     Padding(
       padding: todayInset,
       child: Text(
-        'Pause this Dynamic',
+        l.pauseTitle,
         style: DsTextStyles.displayRitual.copyWith(
           color: DsColors.textOnRitualPrimary,
           fontSize: 28,
@@ -100,13 +144,10 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
       ),
     ),
     const SizedBox(height: DsSpacing.space6),
-    const _Fact('Nothing will be expected of either of you.'),
-    const _Fact('Nothing already agreed is deleted.'),
-    const _Fact(
-      'No backlog builds up while you are paused — you will not come back to '
-      'a pile of missed days.',
-    ),
-    const _Fact('Either of you can pause. Neither needs the other to agree.'),
+    _Fact(l.pauseFactNothingExpected),
+    _Fact(l.pauseFactNothingDeleted),
+    _Fact(l.pauseFactNoBacklog),
+    _Fact(l.pauseFactEitherCan),
     const SizedBox(height: DsSpacing.space8),
     if (_failure != null) ...[
       Padding(
@@ -123,9 +164,9 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
     Padding(
       padding: todayInset,
       child: DsPrimaryButton(
-        label: 'Pause',
+        label: l.pauseAction,
         busy: _busy,
-        busyLabel: 'Pausing…',
+        busyLabel: l.pauseBusy,
         onPressed: _busy ? null : () => _run(DynamicAction.pause),
       ),
     ),
@@ -133,18 +174,21 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
     Padding(
       padding: todayInset,
       child: SecondaryButton(
-        label: 'Not now',
+        label: l.pauseNotNow,
         onTap: _busy ? () {} : (widget.onDone ?? () {}),
       ),
     ),
     const SizedBox(height: DsSpacing.space10),
-  ];
+    ];
+  }
 
-  List<Widget> _resume(BuildContext context) => [
+  List<Widget> _resume(BuildContext context) {
+    final l = L.of(context);
+    return [
     Padding(
       padding: todayInset,
       child: Text(
-        'Come back',
+        l.resumeTitle,
         style: DsTextStyles.displayRitual.copyWith(
           color: DsColors.textOnRitualPrimary,
           fontSize: 28,
@@ -153,8 +197,8 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
       ),
     ),
     const SizedBox(height: DsSpacing.space3),
-    const _Quiet(
-      'Nothing from the paused days is waiting. You are not behind.',
+    _Quiet(
+      l.resumeNothingWaiting,
     ),
     const SizedBox(height: DsSpacing.space8),
     Padding(
@@ -162,21 +206,21 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
         const EdgeInsets.only(bottom: DsSpacing.space4),
       ),
       child: Text(
-        'HOW MUCH TO COME BACK TO',
+        l.resumeHowMuch,
         style: DsTextStyles.labelRitual.copyWith(
           color: DsColors.textOnRitualMuted,
         ),
       ),
     ),
     _Option(
-      label: 'Lighter',
-      support: 'About half the structure you paused under.',
+      label: l.resumeLighter,
+      support: l.resumeLighterSupport,
       selected: _lighter,
       onTap: _busy ? null : () => setState(() => _lighter = true),
     ),
     _Option(
-      label: 'The same as before',
-      support: 'Everything you had, exactly as it was.',
+      label: l.resumeSame,
+      support: l.resumeSameSupport,
       selected: !_lighter,
       onTap: _busy ? null : () => setState(() => _lighter = false),
     ),
@@ -196,9 +240,9 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
     Padding(
       padding: todayInset,
       child: DsPrimaryButton(
-        label: 'Resume',
+        label: l.resumeAction,
         busy: _busy,
-        busyLabel: 'Resuming…',
+        busyLabel: l.resumeBusy,
         onPressed: _busy ? null : () => _run(DynamicAction.resume),
       ),
     ),
@@ -206,12 +250,13 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
     Padding(
       padding: todayInset,
       child: SecondaryButton(
-        label: 'Stay paused',
+        label: l.resumeStayPaused,
         onTap: _busy ? () {} : (widget.onDone ?? () {}),
       ),
     ),
     const SizedBox(height: DsSpacing.space10),
-  ];
+    ];
+  }
 }
 
 /// One plain statement about what pausing does. Not a warning: pausing is a
