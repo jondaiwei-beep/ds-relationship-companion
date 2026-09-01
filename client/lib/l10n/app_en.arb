@@ -863,5 +863,6 @@
   "resumeStayPaused": "Stay paused",
   "pauseFailed": "That did not reach the server. Nothing changed — try again.",
   "resumeFailed": "That did not reach the server. Still paused — try again.",
-  "dynamicPartnerFallback": "PARTNER"
+  "dynamicPartnerFallback": "PARTNER",
+  "detailClose": "Close"
 }

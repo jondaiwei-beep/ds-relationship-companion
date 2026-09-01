@@ -1,5 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
+
+import '../../../app/shell/ds_glyph.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/bottom_navigation.dart';
@@ -471,11 +473,7 @@ class _Row extends StatelessWidget {
               ),
             ),
             const SizedBox(width: DsSpacing.space3),
-            const Icon(
-              Icons.arrow_forward_ios,
-              size: 14,
-              color: DsColors.textOnRitualSecondary,
-            ),
+            const DsGlyphIcon(DsGlyph.forward),
           ],
         ),
       ),

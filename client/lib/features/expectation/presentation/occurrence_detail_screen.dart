@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
+
+import '../../../app/shell/ds_glyph.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
@@ -404,12 +406,10 @@ class _Frame extends StatelessWidget {
               GestureDetector(
                 onTap: onClose,
                 behavior: HitTestBehavior.opaque,
-                child: Icon(
-                  Icons.close,
-                  size: 22,
-                  color: DsColors.textOnRitualMuted,
-                  semanticLabel: 'Close',
-                ),
+                child: DsGlyphIcon(
+                DsGlyph.close,
+                semanticLabel: L.of(context).detailClose,
+              ),
               ),
             ],
           ),

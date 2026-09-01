@@ -586,5 +586,6 @@
   "resumeStayPaused": "先继续暂停",
   "pauseFailed": "没能发到服务端。什么都没有改动 —— 再试一次。",
   "resumeFailed": "没能发到服务端。还是暂停中 —— 再试一次。",
-  "dynamicPartnerFallback": "对方"
+  "dynamicPartnerFallback": "对方",
+  "detailClose": "关闭"
 }

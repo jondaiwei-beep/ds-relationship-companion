@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/shell/ds_glyph.dart';
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../l10n/app_localizations.dart';
@@ -398,12 +399,7 @@ class _TopBar extends StatelessWidget {
           GestureDetector(
             onTap: onCancel,
             behavior: HitTestBehavior.opaque,
-            child: Icon(
-              Icons.close,
-              size: 22,
-              color: DsColors.textOnRitualMuted,
-              semanticLabel: 'Close',
-            ),
+            child: DsGlyphIcon(DsGlyph.close, semanticLabel: L.of(context).detailClose),
           ),
         ],
       ),

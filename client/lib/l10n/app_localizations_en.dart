@@ -2042,4 +2042,7 @@ class LEn extends L {
 
   @override
   String get dynamicPartnerFallback => 'PARTNER';
+
+  @override
+  String get detailClose => 'Close';
 }

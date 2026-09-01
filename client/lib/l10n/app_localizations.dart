@@ -3618,6 +3618,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'PARTNER'**
   String get dynamicPartnerFallback;
+
+  /// No description provided for @detailClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get detailClose;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

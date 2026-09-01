@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/shell/ds_glyph.dart';
+
 import '../../../../app/shell/ds_primary_button.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -179,10 +181,7 @@ class _Top extends StatelessWidget {
                 minWidth: DsLayoutSizes.touchTarget,
                 minHeight: DsLayoutSizes.touchTarget,
               ),
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
-                color: DsColors.textOnRitualSecondary,
-              ),
+              icon: const DsGlyphIcon(DsGlyph.back),
             ),
           const Spacer(),
           Flexible(

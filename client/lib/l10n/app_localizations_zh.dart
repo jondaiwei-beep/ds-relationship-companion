@@ -1909,4 +1909,7 @@ class LZh extends L {
 
   @override
   String get dynamicPartnerFallback => '对方';
+
+  @override
+  String get detailClose => '关闭';
 }
