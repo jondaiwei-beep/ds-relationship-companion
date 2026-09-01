@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../app/shell/ds_skeleton.dart';
 import '../../../platform/session/session.dart';
 import '../../../platform/session/session_controller.dart';
 import '../../../domain_client/models/dynamic_view.dart';
@@ -351,17 +352,65 @@ class _PausedNotice extends StatelessWidget {
   }
 }
 
+/// The shape of the screen while it resolves: the two members, the figure,
+/// and the structure rows beneath. No names and no role words — those are the
+/// protected content, and a skeleton that outlined them would leak their
+/// lengths.
 class _Loading extends StatelessWidget {
   const _Loading();
 
   @override
   Widget build(BuildContext context) {
-    return const RecoveryScaffold(
+    return RecoveryScaffold(
       context_: 'Confirming context',
       title: 'Dynamic',
       children: [
-        SizedBox(height: DsSpacing.space8),
-        RecoveryMessage('Confirming the current structure with the server.'),
+        DsSkeletonPulse(
+          child: Column(
+            children: [
+              Padding(
+                padding: todayInset,
+                child: Row(
+                  children: const [
+                    Expanded(child: DsSkeletonBar(widthFactor: 0.5)),
+                    SizedBox(width: DsSpacing.space4),
+                    Expanded(child: DsSkeletonBar(widthFactor: 0.6)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: DsSpacing.space5),
+              // Where the orbit will be, at the height it actually renders —
+              // a share of the viewport, same as the figure itself, so the
+              // rows below do not move when it arrives.
+              Center(
+                child: Container(
+                  width: 150,
+                  height:
+                      (MediaQuery.sizeOf(context).height * 0.26)
+                          .clamp(140.0, 260.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: DsColors.decorativeRitualLine),
+                  ),
+                ),
+              ),
+              const SizedBox(height: DsSpacing.space6),
+              const Padding(
+                padding: todayInset,
+                child: DsSkeletonCard(lines: [0.3, 0.75]),
+              ),
+              const SizedBox(height: DsSpacing.space3),
+              const Padding(
+                padding: todayInset,
+                child: DsSkeletonCard(lines: [0.28, 0.66]),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space8),
+        const RecoveryMessage(
+          'Nothing about the two of you is shown until the server confirms it.',
+        ),
       ],
     );
   }

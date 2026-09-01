@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../application/today_actions.dart';
 
@@ -291,16 +292,60 @@ class _NothingExpected extends StatelessWidget {
 
 /// Authorization, membership and the read model resolve before any content
 /// appears. Stale partner content must never show while confirming.
+///
+/// The shape of the day, not a sentence about waiting. The approved rev-2
+/// loading state draws one prominent card and two compact rows in the
+/// proportions of the real list, so the page does not rearrange itself when
+/// the content lands — and says plainly why it is blank, which "loading…"
+/// never does.
 class _Loading extends StatelessWidget {
   const _Loading();
 
   @override
   Widget build(BuildContext context) {
-    return const RecoveryScaffold(
+    return RecoveryScaffold(
       context_: 'Confirming context',
       children: [
-        SizedBox(height: DsSpacing.space8),
-        RecoveryMessage('Confirming today with the server.'),
+        const SectionLabel('RESOLVING TODAY'),
+        Padding(
+          padding: todayInset,
+          child: Text(
+            'Confirming your private context…',
+            style: DsTextStyles.bodyPrimary.copyWith(
+              color: DsColors.textOnRitualPrimary,
+            ),
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space6),
+        const DsSkeletonPulse(
+          child: Column(
+            children: [
+              Padding(
+                padding: todayInset,
+                child: DsSkeletonCard(
+                  lines: [0.35, 0.92, 0.7, 0.28],
+                  emphasis: true,
+                ),
+              ),
+              SizedBox(height: DsSpacing.space3),
+              Padding(
+                padding: todayInset,
+                child: DsSkeletonCard(lines: [0.6, 0.38]),
+              ),
+              SizedBox(height: DsSpacing.space3),
+              Padding(
+                padding: todayInset,
+                child: DsSkeletonCard(lines: [0.55, 0.34]),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space8),
+        const SectionLabel('PRIVATE BY DEFAULT'),
+        const RecoveryMessage(
+          'Partner details stay hidden until membership and the current '
+          'relationship day are confirmed.',
+        ),
       ],
     );
   }

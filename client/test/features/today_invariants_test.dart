@@ -243,7 +243,15 @@ void main() {
       );
       // A rejected Future reaches the provider on the next microtask drain,
       // so a single pump still shows the loading state.
-      await tester.pumpAndSettle();
+      //
+      // Loading is pumped rather than settled: its skeleton pulses for as long
+      // as it is on screen, which is the point, and `pumpAndSettle` waits for
+      // an animation that is never meant to end.
+      if (state == TodayFixtureState.loading) {
+        await tester.pump();
+      } else {
+        await tester.pumpAndSettle();
+      }
     }
 
     testWidgets('no partner is named until access is confirmed', (

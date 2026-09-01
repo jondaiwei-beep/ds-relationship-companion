@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/explore_view.dart';
 import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
@@ -67,8 +68,40 @@ class ExploreScreen extends ConsumerWidget {
                     context_: 'Reading',
                     title: 'Explore',
                     children: [
-                      SizedBox(height: DsSpacing.space8),
-                      RecoveryMessage('Fetching the library.'),
+                      DsSkeletonPulse(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: todayInset,
+                              child: DsSkeletonBar(
+                                widthFactor: 0.5,
+                                height: 18,
+                                emphasis: true,
+                              ),
+                            ),
+                            SizedBox(height: DsSpacing.space3),
+                            Padding(
+                              padding: todayInset,
+                              child: DsSkeletonBar(widthFactor: 0.8),
+                            ),
+                            SizedBox(height: DsSpacing.space6),
+                            Padding(
+                              padding: todayInset,
+                              child: DsSkeletonCard(lines: [0.3, 0.85, 0.6]),
+                            ),
+                            SizedBox(height: DsSpacing.space3),
+                            Padding(
+                              padding: todayInset,
+                              child: DsSkeletonCard(lines: [0.32, 0.7, 0.55]),
+                            ),
+                            SizedBox(height: DsSpacing.space3),
+                            Padding(
+                              padding: todayInset,
+                              child: DsSkeletonCard(lines: [0.28, 0.78, 0.5]),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                   error: (error, _) => _isAuthLoss(error)

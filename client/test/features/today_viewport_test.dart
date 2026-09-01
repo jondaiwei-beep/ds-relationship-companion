@@ -30,7 +30,13 @@ void main() {
           ),
         ),
       );
-      await tester.pumpAndSettle();
+      // The loading state pulses forever by design, so it never "settles".
+      // One frame is enough to measure a layout.
+      if (s == TodayFixtureState.loading) {
+        await tester.pump();
+      } else {
+        await tester.pumpAndSettle();
+      }
       final wide = <String>[];
       void walk(Element e) {
         final ro = e.renderObject;
