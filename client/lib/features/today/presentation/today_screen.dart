@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../application/today_actions.dart';
@@ -21,7 +22,14 @@ import 'widgets/section_label.dart';
 import 'widgets/today_header.dart';
 import 'widgets/today_layout.dart';
 
-final todayProvider = FutureProvider.autoDispose.family<TodayView, String>((
+/// Kept alive across tab switches: `autoDispose` meant leaving this surface
+/// destroyed its data, so coming back always refetched. Four tabs each
+/// reloading on every visit made the app feel like it kept forgetting where
+/// you were, for no reason but navigation.
+///
+/// Fetching is now something a person asks for — pull to refresh — or
+/// something a command causes, because the server decides what changed.
+final todayProvider = FutureProvider.family<TodayView, String>((
   ref,
   dynamicId,
 ) async {
@@ -66,6 +74,11 @@ class TodayScreen extends ConsumerWidget {
     final today = ref.watch(todayProvider(dynamicId));
     void reload() => ref.invalidate(todayProvider(dynamicId));
 
+    // Pull to ask again. Wrapping `when` rather than only the loaded state so
+    // a failed load can be retried by the same gesture — otherwise the one
+    // case where a person most wants to retry is the one without the gesture.
+    Future<void> refresh() => ref.refresh(todayProvider(dynamicId).future);
+
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -74,26 +87,29 @@ class TodayScreen extends ConsumerWidget {
           child: Column(
             children: [
               Expanded(
-                child: today.when(
-                  // An AsyncValue can be loading *and* carry the error from a
-                  // previous attempt. Without this the screen shows a spinner
-                  // forever after a failed refresh instead of saying what went
-                  // wrong.
-                  skipLoadingOnReload: true,
-                  skipLoadingOnRefresh: true,
-                  loading: () => const _Loading(),
-                  error: (error, _) => switch (_classify(error)) {
-                    _Failure.authorizationLost => _AuthorizationLost(
-                      onSignIn: onSignIn,
+                child: DsRefreshable(
+                  onRefresh: refresh,
+                  child: today.when(
+                    // An AsyncValue can be loading *and* carry the error from a
+                    // previous attempt. Without this the screen shows a spinner
+                    // forever after a failed refresh instead of saying what went
+                    // wrong.
+                    skipLoadingOnReload: true,
+                    skipLoadingOnRefresh: true,
+                    loading: () => const _Loading(),
+                    error: (error, _) => switch (_classify(error)) {
+                      _Failure.authorizationLost => _AuthorizationLost(
+                        onSignIn: onSignIn,
+                      ),
+                      _Failure.offline => _Offline(onRetry: reload),
+                      _Failure.unknown => _Unavailable(onRetry: reload),
+                    },
+                    data: (view) => _Loaded(
+                      view: view,
+                      dynamicId: dynamicId,
+                      onOpenOccurrence: onOpenOccurrence,
+                      onCheckIn: onCheckIn,
                     ),
-                    _Failure.offline => _Offline(onRetry: reload),
-                    _Failure.unknown => _Unavailable(onRetry: reload),
-                  },
-                  data: (view) => _Loaded(
-                    view: view,
-                    dynamicId: dynamicId,
-                    onOpenOccurrence: onOpenOccurrence,
-                    onCheckIn: onCheckIn,
                   ),
                 ),
               ),
@@ -255,7 +271,6 @@ class _LoadedState extends ConsumerState<_Loaded> {
     }
     return view.recentResponse?.senderDisplayName;
   }
-
 }
 
 /// Nothing actionable for the relationship day. No invented urgency, and the
@@ -345,9 +360,7 @@ class _Loading extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.todayPrivateByDefault),
-        RecoveryMessage(
-          l.todayPrivateByDefaultBody,
-        ),
+        RecoveryMessage(l.todayPrivateByDefaultBody),
       ],
     );
   }
@@ -397,13 +410,14 @@ class _Offline extends StatelessWidget {
         const SizedBox(height: DsSpacing.space8),
         RecoveryMessage(l.todayActionsPaused, prominent: true),
         const SizedBox(height: DsSpacing.space3),
-        RecoveryMessage(
-          l.todayActionsReturn,
-        ),
+        RecoveryMessage(l.todayActionsReturn),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: SecondaryButton(label: l.recoveryTryToReconnect, onTap: onRetry),
+          child: SecondaryButton(
+            label: l.recoveryTryToReconnect,
+            onTap: onRetry,
+          ),
         ),
         const SizedBox(height: DsSpacing.space6),
         RecoveryMessage(l.todayCachedNeverNew),

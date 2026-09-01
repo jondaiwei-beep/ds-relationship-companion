@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../platform/session/session.dart';
 import '../../../platform/session/session_controller.dart';
@@ -19,11 +20,16 @@ import 'widgets/member_pair.dart';
 import 'widgets/orbit_figure.dart';
 import 'widgets/structure_row.dart';
 
-final dynamicDetailProvider = FutureProvider.autoDispose
-    .family<DynamicDetail, String>(
-      (ref, dynamicId) =>
-          ref.watch(dynamicRepositoryProvider).detail(dynamicId),
-    );
+/// Kept alive across tab switches: `autoDispose` meant leaving this surface
+/// destroyed its data, so coming back always refetched. Four tabs each
+/// reloading on every visit made the app feel like it kept forgetting where
+/// you were, for no reason but navigation.
+///
+/// Fetching is now something a person asks for — pull to refresh — or
+/// something a command causes, because the server decides what changed.
+final dynamicDetailProvider = FutureProvider.family<DynamicDetail, String>(
+  (ref, dynamicId) => ref.watch(dynamicRepositoryProvider).detail(dynamicId),
+);
 
 /// Who the viewer is, from the `sub` in their own session token.
 ///
@@ -88,6 +94,11 @@ class DynamicScreen extends ConsumerWidget {
     final detail = ref.watch(dynamicDetailProvider(dynamicId));
     void reload() => ref.invalidate(dynamicDetailProvider(dynamicId));
 
+    // Pull to ask again. Wraps `when` rather than only the loaded state so a
+    // failed load can be retried by the same gesture.
+    Future<void> refresh() =>
+        ref.refresh(dynamicDetailProvider(dynamicId).future);
+
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -96,26 +107,29 @@ class DynamicScreen extends ConsumerWidget {
           child: Column(
             children: [
               Expanded(
-                child: detail.when(
-                  // An AsyncValue can be loading *and* carry the previous
-                  // error. Without this a failed refresh spins forever instead
-                  // of saying what went wrong.
-                  skipLoadingOnReload: true,
-                  skipLoadingOnRefresh: true,
-                  loading: () => const _Loading(),
-                  error: (error, _) => switch (_classify(error)) {
-                    _Failure.authorizationLost => _AuthorizationLost(
-                      onSignIn: onSignIn,
+                child: DsRefreshable(
+                  onRefresh: refresh,
+                  child: detail.when(
+                    // An AsyncValue can be loading *and* carry the previous
+                    // error. Without this a failed refresh spins forever instead
+                    // of saying what went wrong.
+                    skipLoadingOnReload: true,
+                    skipLoadingOnRefresh: true,
+                    loading: () => const _Loading(),
+                    error: (error, _) => switch (_classify(error)) {
+                      _Failure.authorizationLost => _AuthorizationLost(
+                        onSignIn: onSignIn,
+                      ),
+                      _Failure.offline => _Offline(onRetry: reload),
+                      _Failure.unknown => _Unavailable(onRetry: reload),
+                    },
+                    data: (view) => _Loaded(
+                      view: view,
+                      dynamicId: dynamicId,
+                      onAsk: onAsk,
+                      onPause: onPause,
+                      onWeekly: onWeekly,
                     ),
-                    _Failure.offline => _Offline(onRetry: reload),
-                    _Failure.unknown => _Unavailable(onRetry: reload),
-                  },
-                  data: (view) => _Loaded(
-                    view: view,
-                    dynamicId: dynamicId,
-                    onAsk: onAsk,
-                    onPause: onPause,
-                    onWeekly: onWeekly,
                   ),
                 ),
               ),
@@ -221,7 +235,10 @@ class _LoadedState extends ConsumerState<_Loaded> {
         // an agency action that has to be scrolled for is not the inviolable
         // one Notion 04 §4 describes.
         OrbitFigure(
-          height: (MediaQuery.sizeOf(context).height * 0.26).clamp(140.0, 260.0),
+          height: (MediaQuery.sizeOf(context).height * 0.26).clamp(
+            140.0,
+            260.0,
+          ),
         ),
 
         if (_paused) ...[
@@ -291,9 +308,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
         ),
         const SizedBox(height: DsSpacing.space4),
         RecoveryMessage(
-          _paused
-              ? l.dynamicNothingWaitingAfterPause
-              : l.dynamicEitherMayPause,
+          _paused ? l.dynamicNothingWaitingAfterPause : l.dynamicEitherMayPause,
         ),
         const SizedBox(height: DsSpacing.space10),
       ],
@@ -397,9 +412,10 @@ class _Loading extends StatelessWidget {
               Center(
                 child: Container(
                   width: 150,
-                  height:
-                      (MediaQuery.sizeOf(context).height * 0.26)
-                          .clamp(140.0, 260.0),
+                  height: (MediaQuery.sizeOf(context).height * 0.26).clamp(
+                    140.0,
+                    260.0,
+                  ),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: DsColors.decorativeRitualLine),
@@ -420,9 +436,7 @@ class _Loading extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space8),
-        RecoveryMessage(
-          l.dynamicConfirmingStructure,
-        ),
+        RecoveryMessage(l.dynamicConfirmingStructure),
       ],
     );
   }
@@ -444,18 +458,16 @@ class _Offline extends StatelessWidget {
       title: l.dynamicTitle,
       children: [
         const SizedBox(height: DsSpacing.space8),
-        RecoveryMessage(
-          l.dynamicCouldNotConfirm,
-          prominent: true,
-        ),
+        RecoveryMessage(l.dynamicCouldNotConfirm, prominent: true),
         const SizedBox(height: DsSpacing.space3),
-        RecoveryMessage(
-          l.dynamicPauseUnavailable,
-        ),
+        RecoveryMessage(l.dynamicPauseUnavailable),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: SecondaryButton(label: l.recoveryTryToReconnect, onTap: onRetry),
+          child: SecondaryButton(
+            label: l.recoveryTryToReconnect,
+            onTap: onRetry,
+          ),
         ),
       ],
     );
@@ -475,10 +487,7 @@ class _Unavailable extends StatelessWidget {
       title: l.dynamicTitle,
       children: [
         const SizedBox(height: DsSpacing.space8),
-        RecoveryMessage(
-          l.dynamicCouldNotLoad,
-          prominent: true,
-        ),
+        RecoveryMessage(l.dynamicCouldNotLoad, prominent: true),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/explore_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -13,7 +14,14 @@ import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
-final exploreProvider = FutureProvider.autoDispose<ExploreLibraryView>(
+/// Kept alive across tab switches: `autoDispose` meant leaving this surface
+/// destroyed its data, so coming back always refetched. Four tabs each
+/// reloading on every visit made the app feel like it kept forgetting where
+/// you were, for no reason but navigation.
+///
+/// Fetching is now something a person asks for — pull to refresh — or
+/// something a command causes, because the server decides what changed.
+final exploreProvider = FutureProvider<ExploreLibraryView>(
   (ref) => ref.watch(exploreRepositoryProvider).library(),
 );
 
@@ -55,6 +63,10 @@ class ExploreScreen extends ConsumerWidget {
     final l = L.of(context);
     final library = ref.watch(exploreProvider);
 
+    // Pull to ask again. Wraps `when` rather than only the loaded state so a
+    // failed load can be retried by the same gesture.
+    Future<void> refresh() => ref.refresh(exploreProvider.future);
+
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -63,90 +75,93 @@ class ExploreScreen extends ConsumerWidget {
           child: Column(
             children: [
               Expanded(
-                child: library.when(
-                  skipLoadingOnReload: true,
-                  skipLoadingOnRefresh: true,
-                  loading: () => RecoveryScaffold(
-                    context_: l.exploreContextReading,
-                    title: l.exploreTitle,
-                    children: const [
-                      DsSkeletonPulse(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonBar(
-                                widthFactor: 0.5,
-                                height: 18,
-                                emphasis: true,
+                child: DsRefreshable(
+                  onRefresh: refresh,
+                  child: library.when(
+                    skipLoadingOnReload: true,
+                    skipLoadingOnRefresh: true,
+                    loading: () => RecoveryScaffold(
+                      context_: l.exploreContextReading,
+                      title: l.exploreTitle,
+                      children: const [
+                        DsSkeletonPulse(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonBar(
+                                  widthFactor: 0.5,
+                                  height: 18,
+                                  emphasis: true,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: DsSpacing.space3),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonBar(widthFactor: 0.8),
-                            ),
-                            SizedBox(height: DsSpacing.space6),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonCard(lines: [0.3, 0.85, 0.6]),
-                            ),
-                            SizedBox(height: DsSpacing.space3),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonCard(lines: [0.32, 0.7, 0.55]),
-                            ),
-                            SizedBox(height: DsSpacing.space3),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonCard(lines: [0.28, 0.78, 0.5]),
-                            ),
-                          ],
+                              SizedBox(height: DsSpacing.space3),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonBar(widthFactor: 0.8),
+                              ),
+                              SizedBox(height: DsSpacing.space6),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonCard(lines: [0.3, 0.85, 0.6]),
+                              ),
+                              SizedBox(height: DsSpacing.space3),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonCard(lines: [0.32, 0.7, 0.55]),
+                              ),
+                              SizedBox(height: DsSpacing.space3),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonCard(lines: [0.28, 0.78, 0.5]),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    error: (error, _) => _isAuthLoss(error)
+                        ? RecoveryScaffold(
+                            context_: l.exploreContextConfirming,
+                            title: l.exploreTitle,
+                            children: [
+                              const SizedBox(height: DsSpacing.space8),
+                              RecoveryMessage(
+                                l.exploreSessionLost,
+                                prominent: true,
+                              ),
+                              const SizedBox(height: DsSpacing.space6),
+                              Padding(
+                                padding: todayInset,
+                                child: SecondaryButton(
+                                  label: l.exploreSignInAgain,
+                                  onTap: onSignIn ?? () {},
+                                  filled: true,
+                                ),
+                              ),
+                            ],
+                          )
+                        : RecoveryScaffold(
+                            context_: l.exploreContextNotLoaded,
+                            title: l.exploreTitle,
+                            children: [
+                              const SizedBox(height: DsSpacing.space8),
+                              RecoveryMessage(
+                                l.exploreLoadFailed,
+                                prominent: true,
+                              ),
+                              const SizedBox(height: DsSpacing.space6),
+                              Padding(
+                                padding: todayInset,
+                                child: SecondaryButton(
+                                  label: l.exploreTryAgain,
+                                  onTap: () => ref.invalidate(exploreProvider),
+                                ),
+                              ),
+                            ],
+                          ),
+                    data: (view) => _Library(view: view, onUse: onUse),
                   ),
-                  error: (error, _) => _isAuthLoss(error)
-                      ? RecoveryScaffold(
-                          context_: l.exploreContextConfirming,
-                          title: l.exploreTitle,
-                          children: [
-                            const SizedBox(height: DsSpacing.space8),
-                            RecoveryMessage(
-                              l.exploreSessionLost,
-                              prominent: true,
-                            ),
-                            const SizedBox(height: DsSpacing.space6),
-                            Padding(
-                              padding: todayInset,
-                              child: SecondaryButton(
-                                label: l.exploreSignInAgain,
-                                onTap: onSignIn ?? () {},
-                                filled: true,
-                              ),
-                            ),
-                          ],
-                        )
-                      : RecoveryScaffold(
-                          context_: l.exploreContextNotLoaded,
-                          title: l.exploreTitle,
-                          children: [
-                            const SizedBox(height: DsSpacing.space8),
-                            RecoveryMessage(
-                              l.exploreLoadFailed,
-                              prominent: true,
-                            ),
-                            const SizedBox(height: DsSpacing.space6),
-                            Padding(
-                              padding: todayInset,
-                              child: SecondaryButton(
-                                label: l.exploreTryAgain,
-                                onTap: () => ref.invalidate(exploreProvider),
-                              ),
-                            ),
-                          ],
-                        ),
-                  data: (view) => _Library(view: view, onUse: onUse),
                 ),
               ),
               DsBottomNavigation(
@@ -293,9 +308,7 @@ class _IdeaState extends State<_Idea> {
     final idea = widget.idea;
 
     return Container(
-      margin: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space3),
-      ),
+      margin: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space3)),
       decoration: BoxDecoration(
         color: DsColors.surfaceRitualRaised,
         borderRadius: BorderRadius.circular(DsRadii.card),

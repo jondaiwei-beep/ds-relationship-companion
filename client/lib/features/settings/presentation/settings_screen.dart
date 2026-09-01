@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import '../../../app/locale_controller.dart';
 import '../../../app/providers.dart';
+import '../../../app/shell/ds_refreshable.dart';
 import '../../../domain_client/models/dynamic_view.dart';
 import '../../../domain_client/models/notification_settings.dart';
 import '../../../l10n/app_localizations.dart';
@@ -14,10 +15,9 @@ import '../../dynamic/presentation/dynamic_screen.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
-final notificationSettingsProvider =
-    FutureProvider.autoDispose<NotificationSettings>(
-      (ref) => ref.watch(settingsRepositoryProvider).notifications(),
-    );
+final notificationSettingsProvider = FutureProvider<NotificationSettings>(
+  (ref) => ref.watch(settingsRepositoryProvider).notifications(),
+);
 
 /// SCR-28 Account settings, holding SCR-29 (delivery rhythm) and SCR-34
 /// (timezone and day boundary).
@@ -97,9 +97,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       ref.invalidate(notificationSettingsProvider);
     } on Object {
       if (!mounted) return;
-      setState(
-        () => _failure = L.of(context).settingsSaveFailed,
-      );
+      setState(() => _failure = L.of(context).settingsSaveFailed);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -119,73 +117,78 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               _TopBar(onClose: widget.onClose),
               Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    _Language(
-                      chosen: switch (ref.watch(localeProvider)) {
-                        AsyncData(:final value) => value,
-                        _ => null,
-                      },
-                      onChoose: (locale) =>
-                          ref.read(localeProvider.notifier).choose(locale),
-                    ),
-                    const SizedBox(height: DsSpacing.space10),
-
-                    // SCR-29.
-                    settings.when(
-                      loading: () => _Quiet(l.settingsLoading),
-                      error: (_, _) => _Quiet(
-                        l.settingsLoadFailed,
-                        prominent: true,
+                // Settings reads once and keeps it. Notification preferences
+                // do not change behind your back, so re-reading them because
+                // you opened the page again was pure cost.
+                child: DsRefreshable(
+                  onRefresh: () =>
+                      ref.refresh(notificationSettingsProvider.future),
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: [
+                      _Language(
+                        chosen: switch (ref.watch(localeProvider)) {
+                          AsyncData(:final value) => value,
+                          _ => null,
+                        },
+                        onChoose: (locale) =>
+                            ref.read(localeProvider.notifier).choose(locale),
                       ),
-                      data: (value) => _Notifications(
-                        value: value,
-                        busy: _busy,
-                        onPreview: (p) => _update(preview: p),
-                        onQuietHours: (start, end) => start == null
-                            ? _update(clearQuietHours: true)
-                            : _update(startMin: start, endMin: end),
-                      ),
-                    ),
+                      const SizedBox(height: DsSpacing.space10),
 
-                    if (_failure != null) ...[
-                      const SizedBox(height: DsSpacing.space4),
-                      _Quiet(_failure!, prominent: true),
+                      // SCR-29.
+                      settings.when(
+                        loading: () => _Quiet(l.settingsLoading),
+                        error: (_, _) =>
+                            _Quiet(l.settingsLoadFailed, prominent: true),
+                        data: (value) => _Notifications(
+                          value: value,
+                          busy: _busy,
+                          onPreview: (p) => _update(preview: p),
+                          onQuietHours: (start, end) => start == null
+                              ? _update(clearQuietHours: true)
+                              : _update(startMin: start, endMin: end),
+                        ),
+                      ),
+
+                      if (_failure != null) ...[
+                        const SizedBox(height: DsSpacing.space4),
+                        _Quiet(_failure!, prominent: true),
+                      ],
+
+                      const SizedBox(height: DsSpacing.space10),
+
+                      // SCR-34, read-only.
+                      if (detail.hasValue) _Time(view: detail.value!),
+
+                      const SizedBox(height: DsSpacing.space10),
+                      _Section(l.settingsPairingSection),
+                      if (widget.onLeave != null)
+                        Padding(
+                          padding: todayInset,
+                          child: SecondaryButton(
+                            label: l.settingsLeaveOrBlock,
+                            onTap: widget.onLeave!,
+                          ),
+                        ),
+                      const SizedBox(height: DsSpacing.space3),
+                      _Quiet(l.settingsLeaveNeedsNoAgreement),
+
+                      const SizedBox(height: DsSpacing.space10),
+                      _Section(l.settingsDeviceSection),
+                      if (widget.onSignOut != null)
+                        Padding(
+                          padding: todayInset,
+                          child: SecondaryButton(
+                            label: l.settingsSignOut,
+                            onTap: widget.onSignOut!,
+                          ),
+                        ),
+                      const SizedBox(height: DsSpacing.space3),
+                      _Quiet(l.settingsSignOutSupport),
+                      const SizedBox(height: DsSpacing.space10),
                     ],
-
-                    const SizedBox(height: DsSpacing.space10),
-
-                    // SCR-34, read-only.
-                    if (detail.hasValue) _Time(view: detail.value!),
-
-                    const SizedBox(height: DsSpacing.space10),
-                    _Section(l.settingsPairingSection),
-                    if (widget.onLeave != null)
-                      Padding(
-                        padding: todayInset,
-                        child: SecondaryButton(
-                          label: l.settingsLeaveOrBlock,
-                          onTap: widget.onLeave!,
-                        ),
-                      ),
-                    const SizedBox(height: DsSpacing.space3),
-                    _Quiet(l.settingsLeaveNeedsNoAgreement),
-
-                    const SizedBox(height: DsSpacing.space10),
-                    _Section(l.settingsDeviceSection),
-                    if (widget.onSignOut != null)
-                      Padding(
-                        padding: todayInset,
-                        child: SecondaryButton(
-                          label: l.settingsSignOut,
-                          onTap: widget.onSignOut!,
-                        ),
-                      ),
-                    const SizedBox(height: DsSpacing.space3),
-                    _Quiet(l.settingsSignOutSupport),
-                    const SizedBox(height: DsSpacing.space10),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -268,9 +271,9 @@ class _Time extends StatelessWidget {
     // Rendered with the reader's own clock convention: "10:00 PM" in English,
     // "下午10:00" in Chinese. Hard-coding AM/PM would leak English into a
     // sentence that is otherwise translated.
-    final label = intl.DateFormat.jm(l.localeName).format(
-      DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60),
-    );
+    final label = intl.DateFormat.jm(
+      l.localeName,
+    ).format(DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -372,9 +375,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space4),
-      ),
+      padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space4)),
       child: Text(
         text,
         style: DsTextStyles.labelRitual.copyWith(
@@ -394,6 +395,7 @@ class _Choice extends StatelessWidget {
   });
 
   final String label;
+
   /// Optional: the language rows are self-explanatory, and an empty line
   /// would still reserve its height and leave a gap under each one.
   final String? support;
@@ -403,9 +405,7 @@ class _Choice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space3),
-      ),
+      padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space3)),
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
@@ -501,9 +501,9 @@ class _TopBar extends StatelessWidget {
             onTap: onClose,
             behavior: HitTestBehavior.opaque,
             child: DsGlyphIcon(
-                DsGlyph.close,
-                semanticLabel: L.of(context).settingsClose,
-              ),
+              DsGlyph.close,
+              semanticLabel: L.of(context).settingsClose,
+            ),
           ),
         ],
       ),

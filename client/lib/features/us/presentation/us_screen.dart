@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/us_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -15,7 +16,14 @@ import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
-final usProvider = FutureProvider.autoDispose.family<UsView, String>(
+/// Kept alive across tab switches: `autoDispose` meant leaving this surface
+/// destroyed its data, so coming back always refetched. Four tabs each
+/// reloading on every visit made the app feel like it kept forgetting where
+/// you were, for no reason but navigation.
+///
+/// Fetching is now something a person asks for — pull to refresh — or
+/// something a command causes, because the server decides what changed.
+final usProvider = FutureProvider.family<UsView, String>(
   (ref, dynamicId) => ref.watch(dynamicRepositoryProvider).us(dynamicId),
 );
 
@@ -64,6 +72,10 @@ class UsScreen extends ConsumerWidget {
     final us = ref.watch(usProvider(dynamicId));
     void reload() => ref.invalidate(usProvider(dynamicId));
 
+    // Pull to ask again. Wraps `when` rather than only the loaded state so a
+    // failed load can be retried by the same gesture.
+    Future<void> refresh() => ref.refresh(usProvider(dynamicId).future);
+
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -72,74 +84,77 @@ class UsScreen extends ConsumerWidget {
           child: Column(
             children: [
               Expanded(
-                child: us.when(
-                  skipLoadingOnReload: true,
-                  skipLoadingOnRefresh: true,
-                  loading: () => RecoveryScaffold(
-                    context_: l.usConfirmingContext,
-                    title: l.navUs,
-                    children: const [
-                      DsSkeletonPulse(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonBar(
-                                widthFactor: 0.62,
-                                height: 20,
-                                emphasis: true,
+                child: DsRefreshable(
+                  onRefresh: refresh,
+                  child: us.when(
+                    skipLoadingOnReload: true,
+                    skipLoadingOnRefresh: true,
+                    loading: () => RecoveryScaffold(
+                      context_: l.usConfirmingContext,
+                      title: l.navUs,
+                      children: const [
+                        DsSkeletonPulse(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonBar(
+                                  widthFactor: 0.62,
+                                  height: 20,
+                                  emphasis: true,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: DsSpacing.space3),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonBar(widthFactor: 0.85),
-                            ),
-                            SizedBox(height: DsSpacing.space10),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonCard(lines: [0.45, 0.8]),
-                            ),
-                            SizedBox(height: DsSpacing.space3),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonCard(lines: [0.4, 0.72, 0.5]),
-                            ),
-                            SizedBox(height: DsSpacing.space3),
-                            Padding(
-                              padding: todayInset,
-                              child: DsSkeletonCard(lines: [0.42, 0.6]),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  error: (error, _) => _isAuthLoss(error)
-                      ? _AuthorizationLost(onSignIn: onSignIn)
-                      : RecoveryScaffold(
-                          context_: l.usNotConfirmed,
-                          title: l.navUs,
-                          children: [
-                            const SizedBox(height: DsSpacing.space8),
-                            RecoveryMessage(
-                              l.usCouldNotBeLoaded,
-                              prominent: true,
-                            ),
-                            const SizedBox(height: DsSpacing.space6),
-                            Padding(
-                              padding: todayInset,
-                              child: SecondaryButton(
-                                label: l.usTryAgain,
-                                onTap: reload,
+                              SizedBox(height: DsSpacing.space3),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonBar(widthFactor: 0.85),
                               ),
-                            ),
-                          ],
+                              SizedBox(height: DsSpacing.space10),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonCard(lines: [0.45, 0.8]),
+                              ),
+                              SizedBox(height: DsSpacing.space3),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonCard(lines: [0.4, 0.72, 0.5]),
+                              ),
+                              SizedBox(height: DsSpacing.space3),
+                              Padding(
+                                padding: todayInset,
+                                child: DsSkeletonCard(lines: [0.42, 0.6]),
+                              ),
+                            ],
+                          ),
                         ),
-                  data: (view) => _Loaded(
-                    view: view,
-                    onWeekly: onWeekly,
-                    onSettings: onSettings,
+                      ],
+                    ),
+                    error: (error, _) => _isAuthLoss(error)
+                        ? _AuthorizationLost(onSignIn: onSignIn)
+                        : RecoveryScaffold(
+                            context_: l.usNotConfirmed,
+                            title: l.navUs,
+                            children: [
+                              const SizedBox(height: DsSpacing.space8),
+                              RecoveryMessage(
+                                l.usCouldNotBeLoaded,
+                                prominent: true,
+                              ),
+                              const SizedBox(height: DsSpacing.space6),
+                              Padding(
+                                padding: todayInset,
+                                child: SecondaryButton(
+                                  label: l.usTryAgain,
+                                  onTap: reload,
+                                ),
+                              ),
+                            ],
+                          ),
+                    data: (view) => _Loaded(
+                      view: view,
+                      onWeekly: onWeekly,
+                      onSettings: onSettings,
+                    ),
                   ),
                 ),
               ),
@@ -183,7 +198,10 @@ class _Loaded extends StatelessWidget {
                 child: GestureDetector(
                   onTap: onSettings,
                   behavior: HitTestBehavior.opaque,
-                  child: DsGlyphIcon(DsGlyph.settings, semanticLabel: l.usSettings),
+                  child: DsGlyphIcon(
+                    DsGlyph.settings,
+                    semanticLabel: l.usSettings,
+                  ),
                 ),
               ),
           ],
@@ -259,8 +277,11 @@ class _Moment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final line = _describe(L.of(context), moment.eventType,
-        moment.actorDisplayName);
+    final line = _describe(
+      L.of(context),
+      moment.eventType,
+      moment.actorDisplayName,
+    );
 
     // A ruled entry on the bare canvas, not a raised card.
     //
