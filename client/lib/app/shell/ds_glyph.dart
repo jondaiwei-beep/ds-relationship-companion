@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 /// recognisable as Google's — which is the kind of detail that quietly tells
 /// someone this screen was assembled rather than drawn. These match the frozen
 /// navigation geometry instead: a 1.25–1.5 stroke on a 32×32 box, round caps.
-enum DsGlyph { close, back, forward, settings }
+enum DsGlyph { close, back, forward, settings, check }
 
 class DsGlyphIcon extends StatelessWidget {
   const DsGlyphIcon(
@@ -85,6 +85,11 @@ class _GlyphPainter extends CustomPainter {
         canvas
           ..drawLine(p(13, 8), p(20, 16), paint)
           ..drawLine(p(20, 16), p(13, 24), paint);
+
+      case DsGlyph.check:
+        canvas
+          ..drawLine(p(7, 16), p(13, 22), paint)
+          ..drawLine(p(13, 22), p(25, 10), paint);
 
       // Three sliders, not a cogwheel. The cog's teeth are the loudest shape
       // in Material's set and the most obviously borrowed; four marks around a

@@ -19,9 +19,17 @@ class DsPrimaryButton extends StatelessWidget {
     required this.onPressed,
     this.busy = false,
     this.busyLabel,
+    this.icon,
   });
 
   final String label;
+
+  /// A frozen mark inside the control, ahead of the label.
+  ///
+  /// The design draws the invite screen's primary action with one; a bare
+  /// label there reads as a generic button where the reference reads as a
+  /// specific act. Absent on every other caller, which is the default.
+  final DsAssetId? icon;
 
   /// Null renders the button unavailable. The button never explains why —
   /// the form says what is missing, next to the field that is missing it.
@@ -79,6 +87,19 @@ class DsPrimaryButton extends StatelessWidget {
                           DsColors.actionPrimaryDisabledForeground,
                         ),
                       ),
+                    ),
+                    const SizedBox(width: DsSpacing.space3),
+                  ] else if (icon case final icon?) ...[
+                    // 20dp is the smallest size the freeze licenses for these
+                    // action icons, which is the one that sits under a 16dp
+                    // label without competing with it. The spinner replaces
+                    // the mark rather than joining it — two glyphs in one
+                    // control is a busier button than the design draws.
+                    DsSvg(
+                      asset: icon,
+                      tone: DsAssetTone.primary,
+                      width: 20,
+                      height: 20,
                     ),
                     const SizedBox(width: DsSpacing.space3),
                   ],

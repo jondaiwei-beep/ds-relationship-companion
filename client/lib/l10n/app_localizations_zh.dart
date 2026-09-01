@@ -1912,4 +1912,7 @@ class LZh extends L {
 
   @override
   String get detailClose => '关闭';
+
+  @override
+  String get shellBack => '返回';
 }

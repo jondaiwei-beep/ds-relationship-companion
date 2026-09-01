@@ -473,7 +473,7 @@ class _Row extends StatelessWidget {
               ),
             ),
             const SizedBox(width: DsSpacing.space3),
-            const DsGlyphIcon(DsGlyph.forward),
+            const DsGlyphIcon(DsGlyph.forward, color: DsColors.textOnRitualMuted),
           ],
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
+
+import '../../../app/shell/ds_glyph.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
@@ -278,8 +280,8 @@ class _AgeConfirmation extends StatelessWidget {
                           : DsColors.canvasRitual,
                     ),
                     child: checked
-                        ? const Icon(
-                            Icons.check,
+                        ? const DsGlyphIcon(
+                            DsGlyph.check,
                             size: 15,
                             color: DsColors.actionPrimaryForeground,
                           )

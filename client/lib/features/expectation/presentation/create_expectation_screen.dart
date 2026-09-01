@@ -122,7 +122,6 @@ class _CreateExpectationScreenState
 
   @override
   Widget build(BuildContext context) {
-    final l = L.of(context);
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
 
     return Scaffold(

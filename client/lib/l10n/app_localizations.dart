@@ -3624,6 +3624,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Close'**
   String get detailClose;
+
+  /// No description provided for @shellBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get shellBack;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

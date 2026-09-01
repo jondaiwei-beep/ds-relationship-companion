@@ -864,5 +864,6 @@
   "pauseFailed": "That did not reach the server. Nothing changed — try again.",
   "resumeFailed": "That did not reach the server. Still paused — try again.",
   "dynamicPartnerFallback": "PARTNER",
-  "detailClose": "Close"
+  "detailClose": "Close",
+  "shellBack": "Back"
 }

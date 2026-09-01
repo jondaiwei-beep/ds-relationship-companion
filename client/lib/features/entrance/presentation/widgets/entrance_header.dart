@@ -1,6 +1,9 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/shell/ds_glyph.dart';
+import '../../../../l10n/app_localizations.dart';
+
 /// Back, mark, eyebrow, headline — the top of every entrance surface below
 /// SCR-04 itself.
 ///
@@ -13,7 +16,23 @@ class EntranceHeader extends StatelessWidget {
     required this.eyebrow,
     required this.headline,
     this.onBack,
+    this.markSize = markSmall,
   });
+
+  /// The sizes `mark.authority` is frozen at, of which this header uses two.
+  ///
+  /// SVG Freeze v1 licenses 32/40/64dp and nothing else. The renderer throws
+  /// on any other value; `DsSvg` only checks the tone, so an unfrozen size
+  /// reaches the screen silently — which is how this header was drawing the
+  /// mark at 26dp on a short viewport. Stroke weight is drawn at the frozen
+  /// sizes and stops matching the rest of the product at any other.
+  static const markMedium = 40.0;
+  static const markSmall = 32.0;
+
+  /// Which frozen size this surface takes. SCR-05 is drawn at 40dp and SCR-06
+  /// at 32dp — the entrance renderer composes all three together, and the two
+  /// forms are not the same size in it.
+  final double markSize;
 
   /// Below this the composition is decoration a person has to scroll past to
   /// reach a form. The design is drawn at 844dp; a Samsung in gesture mode
@@ -47,17 +66,21 @@ class EntranceHeader extends StatelessWidget {
               minWidth: DsLayoutSizes.touchTarget,
               minHeight: DsLayoutSizes.touchTarget,
             ),
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
+            icon: DsGlyphIcon(
+              DsGlyph.back,
               color: DsColors.textOnRitualSecondary,
+              semanticLabel: L.of(context).shellBack,
             ),
           ),
         ),
+        // A short viewport steps the mark down to the next frozen size rather
+        // than scaling it to fit. 26dp was neither frozen nor a step — it was
+        // the ornament shrinking to buy space the spacing below should give.
         DsSvg(
           asset: DsAssets.markAuthority,
           tone: DsAssetTone.primary,
-          width: compact ? 26 : 32,
-          height: compact ? 26 : 32,
+          width: compact ? markSmall : markSize,
+          height: compact ? markSmall : markSize,
         ),
         SizedBox(height: compact ? DsSpacing.space4 : DsSpacing.space8),
         Text(

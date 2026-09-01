@@ -206,7 +206,10 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('Continue'));
     await tester.pump();
-    await tester.tap(find.byIcon(Icons.arrow_back_ios_new));
+    // Found by what the control means, not by a Material codepoint: the icon
+    // is drawn now, and a test that binds to an icon font breaks whenever the
+    // picture changes without the behaviour changing.
+    await tester.tap(find.bySemanticsLabel('Back'));
     await tester.pump();
 
     // Nothing was written, so nothing needs undoing — but the answer is still

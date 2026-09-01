@@ -204,7 +204,11 @@ class _LoadedState extends ConsumerState<_Loaded> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: l.dynamicTitle, partnerName: partner?.displayName),
+        TodayHeader(
+          title: l.dynamicTitle,
+          partnerName: partner?.displayName,
+          editorialTitle: true,
+        ),
 
         MemberPair(me: _me, partner: _partner),
 

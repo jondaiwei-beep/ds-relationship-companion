@@ -181,7 +181,13 @@ class _Top extends StatelessWidget {
                 minWidth: DsLayoutSizes.touchTarget,
                 minHeight: DsLayoutSizes.touchTarget,
               ),
-              icon: const DsGlyphIcon(DsGlyph.back),
+              // Named explicitly: a Material icon carried an implicit
+              // accessible name, and a drawn one does not.
+              icon: DsGlyphIcon(
+                DsGlyph.back,
+                color: DsColors.textOnRitualSecondary,
+                semanticLabel: L.of(context).shellBack,
+              ),
             ),
           const Spacer(),
           Flexible(

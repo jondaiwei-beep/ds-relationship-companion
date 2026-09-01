@@ -71,6 +71,15 @@ class _Member extends StatelessWidget {
   /// Quietens the label for the slot that has no one in it yet.
   final bool muted;
 
+  /// Mark, then label — in that order on both sides.
+  ///
+  /// The partner column used to reverse them so its mark hugged the screen
+  /// edge, which looked like a mirrored pair but is not what the preview does:
+  /// there, both rings sit to the *left* of their word. Mirroring made the two
+  /// members read as opposing each other across the figure rather than as two
+  /// entries in the same list.
+  static const _markSize = 14.0;
+
   @override
   Widget build(BuildContext context) {
     final children = [
@@ -80,8 +89,8 @@ class _Member extends StatelessWidget {
       const DsSvg(
         asset: DsAssets.markPartnerBond,
         tone: DsAssetTone.primary,
-        width: 18,
-        height: 18,
+        width: _markSize,
+        height: _markSize,
       ),
       const SizedBox(width: DsSpacing.space2),
       Flexible(
@@ -107,16 +116,30 @@ class _Member extends StatelessWidget {
           mainAxisAlignment: alignEnd
               ? MainAxisAlignment.end
               : MainAxisAlignment.start,
-          children: alignEnd ? children.reversed.toList() : children,
+          children: children,
         ),
         if (role != null) ...[
           const SizedBox(height: DsSpacing.space1),
-          Text(
-            _humanRole(L.of(context), role!),
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: todaySupportSize,
-              height: todaySupportHeight,
+          // Indented past the mark so the role hangs under the *word*, not
+          // under the ring — in the preview "Submissive" starts exactly where
+          // "YOU" starts, which is what ties the role to its own name instead
+          // of letting it float against the figure.
+          //
+          // Only the start-aligned column needs the indent. The partner column
+          // is already flush to the far edge, so its role lands under its name
+          // without one, and adding it there would push the text off the edge
+          // it is aligned to.
+          Padding(
+            padding: EdgeInsets.only(
+              left: alignEnd ? 0 : _markSize + DsSpacing.space2,
+            ),
+            child: Text(
+              _humanRole(L.of(context), role!),
+              style: DsTextStyles.bodySecondary.copyWith(
+                color: DsColors.textOnRitualMuted,
+                fontSize: todaySupportSize,
+                height: todaySupportHeight,
+              ),
             ),
           ),
         ],

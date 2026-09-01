@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
+
+import '../../../app/shell/ds_glyph.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
@@ -181,12 +183,7 @@ class _Loaded extends StatelessWidget {
                 child: GestureDetector(
                   onTap: onSettings,
                   behavior: HitTestBehavior.opaque,
-                  child: Icon(
-                    Icons.settings_outlined,
-                    size: 22,
-                    color: DsColors.textOnRitualMuted,
-                    semanticLabel: l.usSettings,
-                  ),
+                  child: DsGlyphIcon(DsGlyph.settings, semanticLabel: l.usSettings),
                 ),
               ),
           ],
@@ -265,53 +262,69 @@ class _Moment extends StatelessWidget {
     final line = _describe(L.of(context), moment.eventType,
         moment.actorDisplayName);
 
-    return Container(
-      margin: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space3),
-      ),
-      padding: const EdgeInsets.all(DsSpacing.space4),
-      decoration: BoxDecoration(
-        color: DsColors.surfaceRitualRaised,
-        borderRadius: BorderRadius.circular(DsRadii.card),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            line,
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualSecondary,
-            ),
+    // A ruled entry on the bare canvas, not a raised card.
+    //
+    // The screen package says in as many words: "do not force it into a
+    // generic card template". The preview never boxes anything on this screen
+    // — every row of it is separated by a single inset hairline and sits
+    // directly on the ritual ground. Three stacked `surfaceRitualRaised`
+    // rectangles with 12dp corners turned a quiet history into a feed of
+    // notification chips, and gave the darkest, most reserved screen in the
+    // product more visible chrome than any other.
+    //
+    // The rule is inset to the gutter rather than full-bleed. That is SCR-17's
+    // own system and it differs from SCR-13 on purpose: Dynamic's structure
+    // rows run their rules edge to edge because each is a band across the
+    // whole page, where these are entries in a list that the gutter contains.
+    return Padding(
+      padding: todayInset,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: DsSpacing.space4),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: DsColors.borderOnRitualHairline),
           ),
-          if (moment.title != null) ...[
-            const SizedBox(height: DsSpacing.space2),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              moment.title!,
-              style: DsTextStyles.displayRitual.copyWith(
-                color: DsColors.textOnRitualPrimary,
-                fontSize: 19,
-                height: 25 / 19,
+              line,
+              style: DsTextStyles.bodySecondary.copyWith(
+                color: DsColors.textOnRitualSecondary,
               ),
             ),
-          ],
-          // Only an acknowledgement carries text, and it is a person's own
-          // words. Quoted so it cannot be mistaken for the app talking.
-          //
-          // Empty is checked as well as null: `text` defaults to "" on the
-          // server for an acknowledgement sent without words, and an empty
-          // pair of quotation marks reads as something having gone missing.
-          if (moment.text != null && moment.text!.isNotEmpty) ...[
-            const SizedBox(height: DsSpacing.space3),
-            Text(
-              '“${moment.text}”',
-              style: DsTextStyles.displayRitual.copyWith(
-                color: DsColors.textOnRitualRelationshipLarge,
-                fontSize: 19,
-                height: 25 / 19,
+            if (moment.title != null) ...[
+              const SizedBox(height: DsSpacing.space2),
+              Text(
+                moment.title!,
+                style: DsTextStyles.displayRitual.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                  fontSize: 19,
+                  height: 25 / 19,
+                ),
               ),
-            ),
+            ],
+            // Only an acknowledgement carries text, and it is a person's own
+            // words. Quoted so it cannot be mistaken for the app talking.
+            //
+            // Empty is checked as well as null: `text` defaults to "" on the
+            // server for an acknowledgement sent without words, and an empty
+            // pair of quotation marks reads as something having gone missing.
+            if (moment.text != null && moment.text!.isNotEmpty) ...[
+              const SizedBox(height: DsSpacing.space3),
+              Text(
+                '“${moment.text}”',
+                style: DsTextStyles.displayRitual.copyWith(
+                  color: DsColors.textOnRitualRelationshipLarge,
+                  fontSize: 19,
+                  height: 25 / 19,
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

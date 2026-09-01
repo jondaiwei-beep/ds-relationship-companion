@@ -1,5 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
+
+import '../../../app/shell/ds_glyph.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -123,24 +125,46 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space5),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _Header(
-                  status: _statusLabel(L.of(context)),
-                  onBack: _busy ? null : widget.onBack,
-                ),
-                const SizedBox(height: DsSpacing.space8),
-                _body(),
-                const SizedBox(height: DsSpacing.space8),
-                LifecycleTrack(current: _link != null ? 0 : null),
-                const SizedBox(height: DsSpacing.space6),
-              ],
+        // `motif.botanical.invite-branch` is approved, frozen at 160/220dp,
+        // and registered `used_by: ["SCR-09"]` — and nothing painted it, so
+        // the right edge of this screen was empty where the reference has the
+        // branch. Behind the content and clipped to the page: it is framing,
+        // never something to reach for.
+        child: Stack(
+          children: [
+            // Anchored where the reference has it: entering beside the
+            // headline and running off the bottom edge, with its stem past the
+            // right margin so the page frames the branch rather than
+            // containing it.
+            const Positioned(
+              right: -DsSpacing.space16,
+              // Level with the headline, so the branch enters beside the words
+              // rather than beside the mark above them.
+              top: DsSpacing.space24 + DsSpacing.space24 + DsSpacing.space12,
+              child: _InviteBranch(),
             ),
-          ),
+            SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: DsSpacing.space5,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _Header(
+                      status: _statusLabel(L.of(context)),
+                      onBack: _busy ? null : widget.onBack,
+                    ),
+                    const SizedBox(height: DsSpacing.space8),
+                    _body(),
+                    const SizedBox(height: DsSpacing.space8),
+                    LifecycleTrack(current: _link != null ? 0 : null),
+                    const SizedBox(height: DsSpacing.space6),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -177,6 +201,36 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
   }
 }
 
+/// The editorial branch the contract calls "low-contrast editorial branch
+/// framing the invitation lifecycle".
+///
+/// 220dp is one of the two sizes the freeze licenses, and `decorative` is the
+/// only tone it licenses. `opacity.botanical` was frozen at 0.18 for exactly
+/// this and had never been read by any code — at full strength Warm Gray on
+/// the ritual canvas is 9.78:1, which would make a background motif louder
+/// than the copy in front of it.
+class _InviteBranch extends StatelessWidget {
+  const _InviteBranch();
+
+  @override
+  Widget build(BuildContext context) => const IgnorePointer(
+        child: ExcludeSemantics(
+          child: Opacity(
+            opacity: DsOpacity.botanical,
+            // The artwork's viewBox is 220 × 520. Height follows that ratio so
+            // the branch is drawn at its frozen 220dp width rather than
+            // letterboxed inside a square and silently shrunk.
+            child: DsSvg(
+              asset: DsAssets.motifBotanicalInviteBranch,
+              tone: DsAssetTone.decorative,
+              width: 220,
+              height: 220 * 520 / 220,
+            ),
+          ),
+        ),
+      );
+}
+
 class _Header extends StatelessWidget {
   const _Header({required this.status, required this.onBack});
 
@@ -195,9 +249,10 @@ class _Header extends StatelessWidget {
             child: IconButton(
               onPressed: onBack,
               iconSize: 18,
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
+              icon: DsGlyphIcon(
+                DsGlyph.back,
                 color: DsColors.textOnRitualSecondary,
+                semanticLabel: L.of(context).shellBack,
               ),
             ),
           ),
@@ -210,13 +265,40 @@ class _Header extends StatelessWidget {
           if (status case final status?)
             Align(
               alignment: Alignment.centerRight,
-              child: Text(
-                status.text,
-                style: DsTextStyles.labelRitual.copyWith(
-                  color: status.live
-                      ? DsPrimitiveColors.terracotta
-                      : DsColors.textOnRitualMuted,
-                ),
+              // A Terracotta dot beside Stone text, not Terracotta text.
+              // `label.ritual` is 12px and Terracotta is 4.02:1 on this
+              // canvas — B-2 §2 allows it only at 24sp regular or 19sp bold,
+              // and §3 says small partner-status labels take Stone with a
+              // Terracotta presence mark. State is never carried by colour
+              // alone, so the live invitation gets a mark the word can be
+              // read without.
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (status.live) ...[
+                    Container(
+                      width: DsSpacing.space2,
+                      height: DsSpacing.space2,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: DsColors.relationshipPresence,
+                      ),
+                    ),
+                    const SizedBox(width: DsSpacing.space2),
+                  ],
+                  Flexible(
+                    child: Text(
+                      status.text,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: DsTextStyles.labelRitual.copyWith(
+                        color: status.live
+                            ? DsColors.textOnRitualSecondary
+                            : DsColors.textOnRitualMuted,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
         ],
@@ -297,12 +379,18 @@ class _Live extends StatelessWidget {
         const SizedBox(height: DsSpacing.space6),
         Row(
           children: [
+            // The dot carries the Terracotta; the sentence does not.
+            // `body.secondary` is 14px and Terracotta is 4.02:1 on the ritual
+            // canvas — B-2 §2 permits Terracotta text only at 24sp regular or
+            // 19sp bold. The presence mark beside Stone copy is the treatment
+            // §3 names for exactly this, and it keeps the state legible
+            // without relying on colour.
             Container(
-              width: 8,
-              height: 8,
+              width: DsSpacing.space2,
+              height: DsSpacing.space2,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: DsPrimitiveColors.terracotta,
+                color: DsColors.relationshipPresence,
               ),
             ),
             const SizedBox(width: DsSpacing.space3),
@@ -310,7 +398,7 @@ class _Live extends StatelessWidget {
               child: Text(
                 l.inviteWaitingForThem,
                 style: DsTextStyles.bodySecondary.copyWith(
-                  color: DsPrimitiveColors.terracotta,
+                  color: DsColors.textOnRitualSecondary,
                 ),
               ),
             ),
@@ -381,6 +469,12 @@ class _Live extends StatelessWidget {
         // control; the link is equally shareable either way.
         DsPrimaryButton(
           label: l.inviteCopyLink,
+          // The design puts a mark inside this button. `icon.share` is the one
+          // it draws, and it is registered to this screen — but the action
+          // here is a copy, not a share, so the mark follows the action rather
+          // than the picture. `icon.share` becomes correct when the share
+          // sheet does.
+          icon: DsAssets.iconCopy,
           busy: busy,
           onPressed: () => _copy(context, invite.url),
         ),
@@ -580,11 +674,7 @@ class _Row extends StatelessWidget {
                     ),
                   ),
                 ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: DsColors.textOnRitualSecondary,
-                ),
+                DsGlyphIcon(DsGlyph.forward, color: DsColors.textOnRitualMuted),
               ],
             ),
           ),

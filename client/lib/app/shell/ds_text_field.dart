@@ -63,43 +63,54 @@ class DsTextField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space2),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: controller,
-                enabled: enabled,
-                obscureText: obscure,
-                keyboardType: keyboardType,
-                textInputAction: textInputAction,
-                autofillHints: autofillHints,
-                onSubmitted: onSubmitted,
-                style: DsTextStyles.bodyPrimary.copyWith(
-                  color: DsColors.textOnRitualPrimary,
-                ),
-                cursorColor: DsColors.textOnRitualPrimary,
-                decoration: InputDecoration(
-                  isDense: true,
-                  hintText: hint,
-                  hintStyle: DsTextStyles.bodyPrimary.copyWith(
-                    color: DsColors.textOnRitualMuted,
+        // One height for the value row whether or not the field can be
+        // revealed, so two fields in the same form put their hairlines on the
+        // same rhythm. The design draws every field as one block — label,
+        // value, line — and the reveal sits on the value's baseline inside it.
+        // Before this the reveal's 48dp target set the row, which pushed the
+        // password hairline 8dp below the email one in the same form. Sized to
+        // the target rather than the text so the reveal keeps its full 48dp.
+        SizedBox(
+          height: DsControlSizes.iconButton,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  enabled: enabled,
+                  obscureText: obscure,
+                  keyboardType: keyboardType,
+                  textInputAction: textInputAction,
+                  autofillHints: autofillHints,
+                  onSubmitted: onSubmitted,
+                  style: DsTextStyles.bodyPrimary.copyWith(
+                    color: DsColors.textOnRitualPrimary,
                   ),
-                  // The line is drawn below, spanning the reveal control too,
-                  // so the field's own borders are removed rather than
-                  // restyled — two hairlines would sit a pixel apart.
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: DsSpacing.space2,
+                  cursorColor: DsColors.textOnRitualPrimary,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: hint,
+                    hintStyle: DsTextStyles.bodyPrimary.copyWith(
+                      color: DsColors.textOnRitualMuted,
+                    ),
+                    // The line is drawn below, spanning the reveal control too,
+                    // so the field's own borders are removed rather than
+                    // restyled — two hairlines would sit a pixel apart.
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: DsSpacing.space2,
+                    ),
                   ),
                 ),
               ),
-            ),
-            if (onToggleObscure != null)
-              _RevealToggle(hidden: obscure, onTap: onToggleObscure!),
-          ],
+              if (onToggleObscure != null)
+                _RevealToggle(hidden: obscure, onTap: onToggleObscure!),
+            ],
+          ),
         ),
         Container(
           height: DsBorderWidths.hairline,

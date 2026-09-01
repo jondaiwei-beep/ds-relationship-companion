@@ -2045,4 +2045,7 @@ class LEn extends L {
 
   @override
   String get detailClose => 'Close';
+
+  @override
+  String get shellBack => 'Back';
 }

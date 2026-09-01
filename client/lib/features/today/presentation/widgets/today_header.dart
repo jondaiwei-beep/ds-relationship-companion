@@ -17,10 +17,23 @@ class TodayHeader extends StatelessWidget {
     required this.title,
     this.partnerName,
     this.context_,
+    this.editorialTitle = false,
   });
 
   /// The surface name shown at the left.
   final String title;
+
+  /// Sets the surface name in Cormorant at display size instead of the
+  /// operational Inter title.
+  ///
+  /// Off by default, and on for exactly one surface. SCR-01 and SCR-17 set
+  /// "Today" and "Us" in small Inter semibold; SCR-13 sets "Dynamic" in
+  /// Cormorant at roughly three times the cap height — measured off the
+  /// approved previews, not guessed. The B-2 rule that Cormorant is
+  /// "selective editorial/ritual typography" is what makes this a per-surface
+  /// choice rather than a global one: Dynamic opens on the shape of the
+  /// relationship, and its own name is part of that statement in a way a
+  /// task list's is not.
 
   /// Null when no partner presence may be shown — a Solo Dynamic, or a session
   /// whose authorization has not been confirmed.
@@ -28,6 +41,8 @@ class TodayHeader extends StatelessWidget {
 
   /// Replaces the presence line while the server is still being consulted.
   final String? context_;
+
+  final bool editorialTitle;
 
   /// A named context wins over presence: while access is unconfirmed the
   /// header must say so rather than imply a partner is there.
@@ -42,14 +57,19 @@ class TodayHeader extends StatelessWidget {
         const EdgeInsets.only(top: DsSpacing.space5, bottom: DsSpacing.space6),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             title,
-            style: DsTextStyles.titlePage.copyWith(
-              color: DsColors.textOnRitualPrimary,
-              fontSize: 23,
-              fontWeight: FontWeight.w600,
-            ),
+            style: editorialTitle
+                ? DsTextStyles.displayRitual.copyWith(
+                    color: DsColors.textOnRitualPrimary,
+                  )
+                : DsTextStyles.titlePage.copyWith(
+                    color: DsColors.textOnRitualPrimary,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w600,
+                  ),
           ),
           const SizedBox(width: DsSpacing.space4),
           // Presence is a mark plus neutral copy. Terracotta carries the mark

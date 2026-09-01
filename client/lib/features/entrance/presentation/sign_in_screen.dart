@@ -256,6 +256,9 @@ class _Form extends StatelessWidget {
       children: [
         EntranceHeader(
           onBack: onBack,
+          // 40dp, not the 32dp default: the entrance renderer draws SCR-05's
+          // mark one frozen step larger than SCR-06's.
+          markSize: EntranceHeader.markMedium,
           // The eyebrow is dropped when a notice explains the visit instead:
           // "Welcome back" above "Please sign in to continue" says the same
           // thing twice, and the second one is the true one.
@@ -369,6 +372,7 @@ class _LinkSent extends StatelessWidget {
       children: [
         EntranceHeader(
           onBack: onBack,
+          markSize: EntranceHeader.markMedium,
           eyebrow: l.entranceLinkSentEyebrow,
           headline: l.entranceLinkSentHeadline,
         ),
