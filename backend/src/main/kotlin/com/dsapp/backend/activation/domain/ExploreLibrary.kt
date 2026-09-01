@@ -10,11 +10,40 @@ package com.dsapp.backend.activation.domain
  * or judgement first. Distribution depends on someone deciding this is good
  * enough to share, and nothing was there to be convinced by.
  *
- * Every entry is written to the same rules as the Starter Rhythm content:
- * low to moderate intensity, low privacy sensitivity, completable in
- * minutes, and never hinting at punishment, proof, or points. Nothing here
- * is explicit, and nothing describes a scene — these are ways two people pay
- * attention to each other.
+ * ## Why this file was rewritten
+ *
+ * The first version demonstrated taste, but not *this product's* taste. Its
+ * sixteen entries — send a message that isn't logistics, twenty minutes with
+ * the phone away, make one thing easier for them tomorrow — were true things
+ * about couples, and a reader could not tell from any of them that this app
+ * is for D/s. A person arriving with a dynamic they are trying to maintain
+ * read them and correctly concluded the product did not know what they were
+ * doing here.
+ *
+ * The product definition is not vague about this: "a private companion that
+ * helps consensual adult D/s couples keep their dynamic present". The generic
+ * register was an execution drift, not the spec.
+ *
+ * So every entry now assumes the thing the product assumes — that these two
+ * people have agreed one of them gives direction and the other receives it —
+ * and is written to be useless to a couple who have not. That is the point.
+ * An idea that works equally well for anyone is an idea this library should
+ * not carry.
+ *
+ * ## What has NOT changed
+ *
+ * The safety rules are the same and are load-bearing, not decoration:
+ * low-to-moderate intensity, low privacy sensitivity, completable in minutes.
+ * Nothing hints at punishment, proof, or points (00-overview Non-goals bars
+ * automatic punishment and compliance scoring outright). Nothing is explicit
+ * and nothing describes a scene. Protocol here is the ordinary,
+ * daily-maintenance kind — how you speak, what you ask before, what you say
+ * after — which is where a dynamic is actually kept alive, and which no
+ * generic couples tool has any language for.
+ *
+ * Two of these collections carry the load a D/s tool cannot skip: negotiation
+ * before, and aftercare after. A library that taught the ritual without them
+ * would be teaching the dangerous half.
  *
  * Deliberately small. A large library would be a content product; this is
  * enough to prove the product has judgement, and no more until real couples
@@ -44,159 +73,194 @@ object ExploreLibrary {
 
     val collections = listOf(
         Collection(
-            "presence",
-            "Being present",
-            "Small ways to be reachable to each other in an ordinary week.",
+            "protocol",
+            "Everyday protocol",
+            "Small agreed forms that keep the dynamic present on an ordinary Tuesday.",
         ),
         Collection(
-            "care",
-            "Care, given and noticed",
-            "Acts that are small enough to keep doing and specific enough to feel.",
+            "service",
+            "Service that is felt",
+            "Acts done as service, where being told is part of what makes it one.",
         ),
         Collection(
-            "rhythm",
-            "A rhythm you can keep",
-            "Anchors in the day that hold without becoming a schedule.",
+            "authority",
+            "Holding authority well",
+            "The work on the giving side, which is mostly attention.",
         ),
         Collection(
-            "honesty",
-            "Saying the true thing",
-            "Prompts for what is easier to leave unsaid.",
+            "negotiation",
+            "Before, and how you'd stop",
+            "Agreeing the shape of things while everyone is calm.",
+        ),
+        Collection(
+            "aftercare",
+            "Afterwards",
+            "The part that gets skipped, and the part people leave over.",
         ),
         Collection(
             "beginning",
             "Just starting out",
-            "Where to begin if you have never done anything like this.",
+            "Where to begin if the two of you are new to this.",
         ),
     )
 
     val ideas = listOf(
-        // — Being present ————————————————————————————————
+        // — Everyday protocol ————————————————————————————
         Idea(
-            "one-message", Kind.EXPECTATION,
-            "Send one message that isn't logistics",
-            "Something that is only about the two of you.",
-            "No plans, no groceries, no scheduling. One line that would only "
-                + "make sense between you.",
-            "presence",
+            "greeting-form", Kind.RITUAL,
+            "A greeting that is only yours",
+            "A form of address is the cheapest way to step back into the dynamic.",
+            "Agree one word or gesture used at a set moment — arriving home, "
+                + "the first message of the day. It costs nothing and it marks "
+                + "that you are both here on purpose.",
+            "protocol",
         ),
         Idea(
-            "first-thought", Kind.EXPECTATION,
-            "Tell them the first thing you thought of them today",
-            "Being thought of is different from being managed.",
-            "Whenever it happened — waking up, on the train, mid-meeting. "
-                + "Say what it actually was.",
-            "presence",
+            "ask-before", Kind.EXPECTATION,
+            "Ask before, for one specific thing",
+            "Asking permission for something small keeps the agreement in daily use.",
+            "Pick one ordinary thing and agree it is asked about first. One is "
+                + "enough. A rule you actually keep beats five you quietly drop.",
+            "protocol",
         ),
         Idea(
-            "evening-checkin", Kind.CHECK_IN,
-            "Evening check-in",
-            "A pause for presence before the day closes.",
-            "How the day actually went, in as few words as you like. It is "
-                + "not a report and it can be one word.",
-            "presence",
+            "position-or-posture", Kind.RITUAL,
+            "One posture, held briefly",
+            "The body remembers the dynamic faster than conversation does.",
+            "A way of sitting or waiting, agreed in advance, held for a minute "
+                + "or two at a set time. Nothing strenuous, and nothing that "
+                + "needs more privacy than you have.",
+            "protocol",
         ),
         Idea(
-            "phone-down", Kind.EXPECTATION,
-            "Twenty minutes with the phone in another room",
-            "Attention is the thing being asked for, not the time.",
-            "Agree when. What matters is that it is deliberate, and that "
-                + "they know you chose it.",
-            "presence",
-        ),
-
-        // — Care ————————————————————————————————————————
-        Idea(
-            "evening-space", Kind.EXPECTATION,
-            "Prepare the evening space",
-            "A small act of care before you reconnect.",
-            "Whatever 'ready' means in your home — lights, a tidy surface, "
-                + "something warm. Small enough to repeat.",
-            "care",
-        ),
-        Idea(
-            "one-thing-easier", Kind.EXPECTATION,
-            "Make one thing easier for them tomorrow",
-            "Care that lands before it is asked for.",
-            "Something they would otherwise have to do. Do not announce it "
-                + "in advance.",
-            "care",
-        ),
-        Idea(
-            "notice-out-loud", Kind.RITUAL,
-            "Notice one thing out loud",
-            "What goes unsaid stops being felt.",
-            "Once a day, name one specific thing they did. Specific, not "
-                + "general — 'you handled that call well', not 'you're great'.",
-            "care",
+            "report-back", Kind.EXPECTATION,
+            "Report back when it is done",
+            "The reporting is the service, as much as the act is.",
+            "Not a receipt and not a log — a short line to the person who asked, "
+                + "saying it is finished. What makes it land is that it goes to "
+                + "them rather than into an app.",
+            "protocol",
         ),
 
-        // — Rhythm ——————————————————————————————————————
+        // — Service that is felt ————————————————————————
         Idea(
-            "morning-intention", Kind.RITUAL,
-            "Morning intention",
-            "One line about how you want today to feel.",
-            "Sent whenever you wake. It sets a tone rather than a task.",
-            "rhythm",
+            "standing-service", Kind.RITUAL,
+            "One standing act of service",
+            "A task becomes service when it is owed to someone by agreement.",
+            "Choose something ordinary and make it theirs. The difference from "
+                + "a chore is entirely that it was asked for and is done for "
+                + "them.",
+            "service",
         ),
         Idea(
-            "close-the-day", Kind.RITUAL,
-            "Close the day",
-            "Mark the end of the day together, however briefly.",
-            "A short, repeatable signal that the day is done. It matters "
-                + "more that it is reliable than that it is long.",
-            "rhythm",
+            "their-way-not-yours", Kind.EXPECTATION,
+            "Do it their way, not the efficient way",
+            "Following the instruction is what is being asked for, not the result.",
+            "Something with a specified manner — how it is folded, when it is "
+                + "done, which words are used. Doing it 'better' is not doing it.",
+            "service",
         ),
         Idea(
-            "one-standing-ask", Kind.EXPECTATION,
-            "One standing ask, no deadline",
-            "Not everything needs a time attached.",
-            "Something you would like whenever it happens. It stays open "
-                + "until they do it, and nothing goes wrong if today is not "
-                + "the day.",
-            "rhythm",
-        ),
-
-        // — Honesty —————————————————————————————————————
-        Idea(
-            "harder-to-say", Kind.CHECK_IN,
-            "The thing that was harder to say",
-            "The unsaid thing is usually the one that matters.",
-            "Say one thing you nearly did not. It can be small. It can be "
-                + "kept private if you are not ready to share it.",
-            "honesty",
-        ),
-        Idea(
-            "what-i-needed", Kind.CHECK_IN,
-            "What I needed today",
-            "Naming a need is not a complaint.",
-            "What would have helped, whether or not you got it. Useful even "
-                + "when the day went well.",
-            "honesty",
-        ),
-        Idea(
-            "ask-for-something", Kind.EXPECTATION,
-            "Ask for something you usually wouldn't",
-            "Asking is a skill, and it gets easier with practice.",
-            "Small on purpose. The asking is the thing, not what you ask for.",
-            "honesty",
+            "prepare-for-them", Kind.EXPECTATION,
+            "Prepare something before they arrive",
+            "Anticipation is a skill, and being anticipated is what it gives back.",
+            "Agree what 'ready' means once, then keep it. Small enough to "
+                + "repeat on a bad week.",
+            "service",
         ),
 
-        // — Beginning ———————————————————————————————————
+        // — Holding authority well ——————————————————————
         Idea(
-            "one-week-one-thing", Kind.RITUAL,
-            "One thing, once a day, for a week",
+            "one-clear-instruction", Kind.EXPECTATION,
+            "Give one instruction that is actually clear",
+            "Most expectations that go nowhere were unclear, not refused.",
+            "Say what, and say when. Vagueness reads as a test, and being "
+                + "tested is corrosive. If they had to guess, that is yours to fix.",
+            "authority",
+        ),
+        Idea(
+            "notice-the-effort", Kind.RITUAL,
+            "Name what they did, specifically",
+            "Unnoticed service stops being offered.",
+            "Once a day, name the actual thing — 'you asked first, and I saw "
+                + "that' — not general praise. Specific is what proves you were "
+                + "paying attention.",
+            "authority",
+        ),
+        Idea(
+            "hold-or-release", Kind.CHECK_IN,
+            "Decide what to lift this week",
+            "Authority includes deciding when less is right.",
+            "Look at what is standing and take something off deliberately, "
+                + "before it lapses on its own. Lifting a rule is a decision, "
+                + "not a concession.",
+            "authority",
+        ),
+
+        // — Before, and how you'd stop ——————————————————
+        Idea(
+            "name-a-limit", Kind.CHECK_IN,
+            "Name one limit out loud",
+            "A limit said in advance is worth more than one discovered mid-way.",
+            "One thing that is off the table, and one you are unsure about. "
+                + "The unsure one is the useful half — it is where the "
+                + "conversation actually is.",
+            "negotiation",
+        ),
+        Idea(
+            "how-youd-stop", Kind.CHECK_IN,
+            "Agree how either of you stops things",
+            "The word only works if it was agreed while calm.",
+            "Decide what is said, and what happens immediately after it is "
+                + "said. Both of you get one. Agreeing it is not pessimism, it "
+                + "is what makes the rest possible.",
+            "negotiation",
+        ),
+        Idea(
+            "whats-changed", Kind.CHECK_IN,
+            "What has changed since we agreed this",
+            "Consent is not a signature, it is a subscription.",
+            "Revisit one standing agreement and say plainly whether it still "
+                + "fits. Changing it is ordinary. Say so out loud so it stays "
+                + "ordinary.",
+            "negotiation",
+        ),
+
+        // — Afterwards ——————————————————————————————————
+        Idea(
+            "aftercare-ask", Kind.CHECK_IN,
+            "Ask what they need afterwards",
+            "Aftercare is not a mood, it is a question with an answer.",
+            "Ask directly — quiet, contact, food, being left alone for ten "
+                + "minutes. Guessing wrong is common and asking costs nothing.",
+            "aftercare",
+        ),
+        Idea(
+            "aftercare-for-the-other-one", Kind.CHECK_IN,
+            "The one who gave direction needs it too",
+            "Drop happens on both sides, and only one side gets asked about.",
+            "Say how you are, honestly, to the person you were directing. "
+                + "Holding authority is work, and pretending otherwise is how "
+                + "people quietly stop wanting to do it.",
+            "aftercare",
+        ),
+        Idea(
+            "next-day", Kind.CHECK_IN,
+            "Check in the next day, not just after",
+            "The dip often lands a day late.",
+            "One line the following day. It is the cheapest thing in this "
+                + "library and the most often skipped.",
+            "aftercare",
+        ),
+
+        // — Just starting out ———————————————————————————
+        Idea(
+            "one-rule-one-week", Kind.RITUAL,
+            "One agreement, for one week",
             "Start smaller than feels worthwhile.",
-            "Pick the least ambitious thing on this list and keep it for "
-                + "seven days. Most people start too big and stop.",
-            "beginning",
-        ),
-        Idea(
-            "how-is-this-going", Kind.CHECK_IN,
-            "How is this going?",
-            "Ask early, before it becomes a bigger conversation.",
-            "After a few days, say plainly what is working and what is not. "
-                + "Changing it is part of it.",
+            "Pick the least ambitious thing here and keep it for seven days. "
+                + "Most people begin with a whole protocol and abandon it by "
+                + "Thursday.",
             "beginning",
         ),
         Idea(
@@ -205,6 +269,14 @@ object ExploreLibrary {
             "A yes only means something if no is available.",
             "Agree in advance that this is expected. It makes the real no, "
                 + "when it comes, ordinary rather than a crisis.",
+            "beginning",
+        ),
+        Idea(
+            "how-is-this-going", Kind.CHECK_IN,
+            "How is this going?",
+            "Ask early, before it becomes a bigger conversation.",
+            "After a few days, say plainly what is working and what is not. "
+                + "Changing it is part of it.",
             "beginning",
         ),
     )

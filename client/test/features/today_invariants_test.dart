@@ -180,7 +180,7 @@ void main() {
         tester,
         todayFixture(priority: const [], later: const [], response: null),
       );
-      expect(find.text('Nothing is expected of you today.'), findsOneWidget);
+      expect(find.text('Nothing has been asked of you today.'), findsOneWidget);
       // No invented urgency, and the optional check-in stays optional.
       expect(allText(tester).toLowerCase().contains('should'), isFalse);
       expect(allText(tester).toLowerCase().contains('must'), isFalse);

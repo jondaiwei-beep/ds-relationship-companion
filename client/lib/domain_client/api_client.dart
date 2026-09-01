@@ -140,6 +140,16 @@ class ApiClient {
     );
   }
 
+  /// DELETE a resource.
+  ///
+  /// No idempotency key: deleting the same thing twice is not a duplicate
+  /// command, and the server answers a second attempt as not-found rather
+  /// than removing anything else.
+  Future<void> delete(String path) async {
+    _requireSession(path);
+    await _dio.delete<void>(path, options: _authed);
+  }
+
   /// POST a command. [idempotencyKey] must be stable across retries of the
   /// SAME user action, and different for a new one.
   Future<Map<String, dynamic>> post(

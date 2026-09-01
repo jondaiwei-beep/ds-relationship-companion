@@ -14,6 +14,15 @@ enum class DesiredOutcome { CLOSER, STRUCTURE, SERVICE, ACCOUNTABILITY, EXPLORE 
  * Notion 05 §5 asks for 8–12 Expectation candidates, 4–6 Rituals and 3
  * Check-in framings — not a 50-item library. Content depth waits until real
  * couples show us what they actually use.
+ *
+ * The outcomes a couple can pick are D/s outcomes, and the seeds must answer
+ * the question that was actually asked. SERVICE previously offered "tidy one
+ * shared space" and "make them a drink the way they like it" — a chore list,
+ * which is what service looks like to someone who does not know what the word
+ * means here. What makes an act service is that it was asked for and is owed
+ * to someone by agreement, so the seeds carry that instead. Same for
+ * STRUCTURE, which is protocol rather than tidiness, and ACCOUNTABILITY,
+ * where reporting back to the person who asked is the substance of it.
  */
 object StarterContent {
 
@@ -23,19 +32,19 @@ object StarterContent {
     private val rituals: Map<DesiredOutcome, List<Candidate>> = mapOf(
         DesiredOutcome.CLOSER to listOf(
             Candidate("Evening check-in", "A pause for presence before the day closes."),
-            Candidate("Morning intention", "One line about how you want today to feel."),
+            Candidate("A greeting that is only yours", "One agreed word that says you are both here on purpose."),
         ),
         DesiredOutcome.STRUCTURE to listOf(
-            Candidate("Evening check-in", "A steady point in the day you can both rely on."),
+            Candidate("A greeting that is only yours", "A small agreed form to step back into the dynamic."),
             Candidate("Close the day", "Mark the end of the day together, however briefly."),
         ),
         DesiredOutcome.SERVICE to listOf(
-            Candidate("Prepare the evening space", "A small act of care before you reconnect."),
+            Candidate("One standing act of service", "Ordinary on its own; service because it was asked for."),
             Candidate("Evening check-in", "A moment to notice what the other needs."),
         ),
         DesiredOutcome.ACCOUNTABILITY to listOf(
+            Candidate("Report back when it is done", "A short line to the person who asked, not a log."),
             Candidate("Evening check-in", "A regular place to say how the day actually went."),
-            Candidate("Morning intention", "Name one thing you are giving attention to today."),
         ),
         DesiredOutcome.EXPLORE to listOf(
             Candidate("Evening check-in", "A calm place to say what you are curious about."),
@@ -49,16 +58,19 @@ object StarterContent {
             Candidate("Send one message that isn't logistics",
                 "Something that is only about the two of you."),
             Candidate("Say one thing you noticed about them today",
-                "Being seen is the point."),
+                "Being seen is what it is for."),
         ),
         DesiredOutcome.STRUCTURE to listOf(
-            Candidate("Tidy one shared space", "Small, visible, and finished in minutes."),
-            Candidate("Set out what tomorrow needs", "Make the morning easier for both of you."),
+            Candidate("Ask before, for one specific thing",
+                "One ordinary thing that gets asked about first."),
+            Candidate("Set out what tomorrow needs",
+                "Make the morning easier for both of you."),
         ),
         DesiredOutcome.SERVICE to listOf(
-            Candidate("Prepare the evening space", "A small act of care before you reconnect."),
-            Candidate("Make them a drink the way they like it",
-                "Attention to a detail you already know."),
+            Candidate("Prepare something before they arrive",
+                "Agree once what 'ready' means, then keep it."),
+            Candidate("Do it their way, not the efficient way",
+                "Following the instruction is what is asked for, not the result."),
         ),
         DesiredOutcome.ACCOUNTABILITY to listOf(
             Candidate("Name one thing you are avoiding", "Naming it is the whole task."),
@@ -66,8 +78,8 @@ object StarterContent {
                 "Five minutes, not a project."),
         ),
         DesiredOutcome.EXPLORE to listOf(
-            Candidate("Share one thing you're curious about",
-                "No commitment attached to saying it."),
+            Candidate("Name one limit out loud",
+                "One thing off the table, and one you are unsure about."),
             Candidate("Ask them one question you haven't asked",
                 "Curiosity, not an interview."),
         ),
@@ -77,7 +89,7 @@ object StarterContent {
     val checkInFramings = listOf(
         "How is your energy today?",
         "What would help right now?",
-        "What kind of day has this been?",
+        "What do you need afterwards?",
     )
 
     fun ritualFor(outcome: DesiredOutcome): Candidate = rituals.getValue(outcome).first()

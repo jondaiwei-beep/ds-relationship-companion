@@ -13,7 +13,7 @@
     "description": "Withdrawing an adjustment you asked for yourself."
   },
   "activationContinue": "Continue",
-  "activationStepOf": "{step} of 4",
+  "activationStepOf": "{step} of 5",
   "@activationStepOf": {
     "placeholders": {
       "step": {
@@ -328,7 +328,7 @@
   "dynamicCurrentStructure": "CURRENT STRUCTURE",
   "dynamicCurrentRhythm": "CURRENT RHYTHM",
   "dynamicCurrentRhythms": "CURRENT RHYTHMS",
-  "dynamicAskOneThing": "Ask one thing",
+  "dynamicAskOneThing": "Set one expectation",
   "dynamicThisWeek": "This week",
   "dynamicPauseThis": "Pause this Dynamic",
   "dynamicComeBack": "Come back",
@@ -526,12 +526,12 @@
   "inviteLifecycleAccepted": "Accepted",
   "inviteLifecycleExpired": "Expired",
   "inviteLifecycleRevoked": "Revoked",
-  "askTitle": "Ask one thing",
+  "askTitle": "Set one expectation",
   "askCancel": "Cancel",
   "askForWhom": "For {name}",
   "askYourPartnerFallback": "your partner",
-  "askWhatStep": "WHAT YOU ARE ASKING",
-  "askWhatHint": "Prepare the room before 8:00 PM",
+  "askWhatStep": "WHAT YOU ARE ASKING OF THEM",
+  "askWhatHint": "Have the room ready before 8:00 PM",
   "askWhatMissing": "Say what you are asking for.",
   "askWhenStep": "WHEN",
   "askWhyStep": "WHY IT MATTERS (OPTIONAL)",
@@ -548,7 +548,7 @@
   "whenToday": "Today",
   "detailDue": "DUE",
   "detailSetBy": "Set by {name}",
-  "detailIntention": "INTENTION",
+  "detailIntention": "WHY YOU ASKED FOR IT",
   "detailPrivateNote": "PRIVATE NOTE · ONLY YOU",
   "detailCompletionNote": "COMPLETION NOTE (OPTIONAL)",
   "detailCompletionHint": "What did you attend to?",
@@ -563,7 +563,7 @@
   "detailConfirming": "Confirming this with the server.",
   "detailSessionEnded": "Your private session needs to be restored. Nothing about this is shown until it is.",
   "detailCouldNotLoad": "This could not be loaded. Nothing was changed.",
-  "nothingWaitingAck": "Done, and waiting for a human response.",
+  "nothingWaitingAck": "Done, and waiting for them to respond.",
   "nothingAcknowledged": "Answered. Nothing more is needed here.",
   "nothingDiscussing": "You asked to talk about this.",
   "nothingRescheduling": "You asked for another time.",
@@ -798,7 +798,7 @@
   "todayLaterOptional": "LATER / OPTIONAL",
   "todayDayEndsAt": "Relationship day ends at {clock}",
   "todayFrom": "From {name}",
-  "todayNothingExpected": "Nothing is expected of you today.",
+  "todayNothingExpected": "Nothing has been asked of you today.",
   "todayCheckInOffer": "A check-in is here if you want one.",
   "todayCheckIn": "Check in",
   "stateOnToday": "Today",
@@ -826,7 +826,7 @@
       }
     }
   },
-  "todayPriorityHeadingNone": "NOTHING MATTERS TODAY",
+  "todayPriorityHeadingNone": "NOTHING ASKED TODAY",
   "todayPrimaryEyebrow": "01 · NOW · {kind}",
   "@todayPrimaryEyebrow": {
     "placeholders": {
@@ -865,5 +865,48 @@
   "resumeFailed": "That did not reach the server. Still paused — try again.",
   "dynamicPartnerFallback": "PARTNER",
   "detailClose": "Close",
-  "shellBack": "Back"
+  "shellBack": "Back",
+  "activationBoundaryEyebrow": "WHAT IS NOT ON THE TABLE",
+  "activationBoundaryQuestion": "Name anything that is off the table.",
+  "activationBoundarySupport": "Only you can write or change your own. Your partner sees them and cannot edit them.",
+  "activationBoundaryFootnote": "You can skip this and add limits at any time.",
+  "activationBoundaryAdd": "Add a limit",
+  "activationBoundaryHint": "Anything in front of other people",
+  "activationBoundaryNoteHint": "Anything you want them to know (optional)",
+  "activationBoundaryEmpty": "Nothing named yet.",
+  "activationBoundarySave": "Add",
+  "activationBoundaryRemove": "Remove {label}",
+  "activationBoundaryNeedsLabel": "Say what it is first.",
+  "activationBoundarySkip": "Skip for now",
+  "boundaryStanceOff": "Not this",
+  "boundaryStanceAsk": "Ask me first",
+  "boundaryStanceCurious": "Curious",
+  "boundaryStanceOffDetail": "A no. It does not need a reason.",
+  "boundaryStanceAskDetail": "Possible, but talk to me before.",
+  "boundaryStanceCuriousDetail": "Open to discussing it. Not a yes.",
+  "boundaryTitle": "Limits",
+  "boundaryYours": "YOURS",
+  "boundaryTheirs": "{name}'s",
+  "boundaryTheirsFallback": "YOUR PARTNER'S",
+  "boundaryEmptyYours": "You have not named any limits yet.",
+  "boundaryEmptyTheirs": "They have not named any yet.",
+  "boundaryTheirsReadOnly": "Only they can change these.",
+  "boundaryLoadFailed": "Limits could not be loaded.",
+  "@activationBoundaryRemove": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "@boundaryTheirs": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBoundariesSection": "LIMITS",
+  "settingsBoundariesOpen": "Limits",
+  "settingsBoundariesSupport": "Only you can change your own. Your partner sees them and cannot edit them."
 }

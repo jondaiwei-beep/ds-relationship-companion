@@ -223,7 +223,7 @@ void main() {
       _view(state: OccurrenceState.waitingAck, allowed: const []),
     );
     expect(
-      find.text('Done, and waiting for a human response.'),
+      find.text('Done, and waiting for them to respond.'),
       findsOneWidget,
     );
   });

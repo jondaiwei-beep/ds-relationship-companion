@@ -92,7 +92,7 @@ class StarterRhythmAndOverdueIT {
         val p = starter.propose(creator, dynamicId)
 
         // SERVICE was chosen in setup.
-        assertEquals("Prepare the evening space", p.expectationTitle)
+        assertEquals("Prepare something before they arrive", p.expectationTitle)
         assertTrue(p.checkInFraming.isNotBlank())
         // Nothing persisted by proposing.
         assertEquals(0, dsl.fetchOne(

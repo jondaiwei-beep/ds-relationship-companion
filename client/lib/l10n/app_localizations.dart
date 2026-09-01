@@ -160,7 +160,7 @@ abstract class L {
   /// No description provided for @activationStepOf.
   ///
   /// In en, this message translates to:
-  /// **'{step} of 4'**
+  /// **'{step} of 5'**
   String activationStepOf(int step);
 
   /// No description provided for @activationChooseOneToContinue.
@@ -1090,7 +1090,7 @@ abstract class L {
   /// No description provided for @dynamicAskOneThing.
   ///
   /// In en, this message translates to:
-  /// **'Ask one thing'**
+  /// **'Set one expectation'**
   String get dynamicAskOneThing;
 
   /// No description provided for @dynamicThisWeek.
@@ -2020,7 +2020,7 @@ abstract class L {
   /// No description provided for @askTitle.
   ///
   /// In en, this message translates to:
-  /// **'Ask one thing'**
+  /// **'Set one expectation'**
   String get askTitle;
 
   /// No description provided for @askCancel.
@@ -2044,13 +2044,13 @@ abstract class L {
   /// No description provided for @askWhatStep.
   ///
   /// In en, this message translates to:
-  /// **'WHAT YOU ARE ASKING'**
+  /// **'WHAT YOU ARE ASKING OF THEM'**
   String get askWhatStep;
 
   /// No description provided for @askWhatHint.
   ///
   /// In en, this message translates to:
-  /// **'Prepare the room before 8:00 PM'**
+  /// **'Have the room ready before 8:00 PM'**
   String get askWhatHint;
 
   /// No description provided for @askWhatMissing.
@@ -2152,7 +2152,7 @@ abstract class L {
   /// No description provided for @detailIntention.
   ///
   /// In en, this message translates to:
-  /// **'INTENTION'**
+  /// **'WHY YOU ASKED FOR IT'**
   String get detailIntention;
 
   /// No description provided for @detailPrivateNote.
@@ -2242,7 +2242,7 @@ abstract class L {
   /// No description provided for @nothingWaitingAck.
   ///
   /// In en, this message translates to:
-  /// **'Done, and waiting for a human response.'**
+  /// **'Done, and waiting for them to respond.'**
   String get nothingWaitingAck;
 
   /// No description provided for @nothingAcknowledged.
@@ -3310,7 +3310,7 @@ abstract class L {
   /// No description provided for @todayNothingExpected.
   ///
   /// In en, this message translates to:
-  /// **'Nothing is expected of you today.'**
+  /// **'Nothing has been asked of you today.'**
   String get todayNothingExpected;
 
   /// No description provided for @todayCheckInOffer.
@@ -3436,7 +3436,7 @@ abstract class L {
   /// No description provided for @todayPriorityHeadingNone.
   ///
   /// In en, this message translates to:
-  /// **'NOTHING MATTERS TODAY'**
+  /// **'NOTHING ASKED TODAY'**
   String get todayPriorityHeadingNone;
 
   /// No description provided for @todayPrimaryEyebrow.
@@ -3630,6 +3630,180 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Back'**
   String get shellBack;
+
+  /// No description provided for @activationBoundaryEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'WHAT IS NOT ON THE TABLE'**
+  String get activationBoundaryEyebrow;
+
+  /// No description provided for @activationBoundaryQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Name anything that is off the table.'**
+  String get activationBoundaryQuestion;
+
+  /// No description provided for @activationBoundarySupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can write or change your own. Your partner sees them and cannot edit them.'**
+  String get activationBoundarySupport;
+
+  /// No description provided for @activationBoundaryFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'You can skip this and add limits at any time.'**
+  String get activationBoundaryFootnote;
+
+  /// No description provided for @activationBoundaryAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a limit'**
+  String get activationBoundaryAdd;
+
+  /// No description provided for @activationBoundaryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything in front of other people'**
+  String get activationBoundaryHint;
+
+  /// No description provided for @activationBoundaryNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything you want them to know (optional)'**
+  String get activationBoundaryNoteHint;
+
+  /// No description provided for @activationBoundaryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing named yet.'**
+  String get activationBoundaryEmpty;
+
+  /// No description provided for @activationBoundarySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get activationBoundarySave;
+
+  /// No description provided for @activationBoundaryRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {label}'**
+  String activationBoundaryRemove(String label);
+
+  /// No description provided for @activationBoundaryNeedsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Say what it is first.'**
+  String get activationBoundaryNeedsLabel;
+
+  /// No description provided for @activationBoundarySkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip for now'**
+  String get activationBoundarySkip;
+
+  /// No description provided for @boundaryStanceOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Not this'**
+  String get boundaryStanceOff;
+
+  /// No description provided for @boundaryStanceAsk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me first'**
+  String get boundaryStanceAsk;
+
+  /// No description provided for @boundaryStanceCurious.
+  ///
+  /// In en, this message translates to:
+  /// **'Curious'**
+  String get boundaryStanceCurious;
+
+  /// No description provided for @boundaryStanceOffDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'A no. It does not need a reason.'**
+  String get boundaryStanceOffDetail;
+
+  /// No description provided for @boundaryStanceAskDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible, but talk to me before.'**
+  String get boundaryStanceAskDetail;
+
+  /// No description provided for @boundaryStanceCuriousDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Open to discussing it. Not a yes.'**
+  String get boundaryStanceCuriousDetail;
+
+  /// No description provided for @boundaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits'**
+  String get boundaryTitle;
+
+  /// No description provided for @boundaryYours.
+  ///
+  /// In en, this message translates to:
+  /// **'YOURS'**
+  String get boundaryYours;
+
+  /// No description provided for @boundaryTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s'**
+  String boundaryTheirs(String name);
+
+  /// No description provided for @boundaryTheirsFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR PARTNER\'S'**
+  String get boundaryTheirsFallback;
+
+  /// No description provided for @boundaryEmptyYours.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not named any limits yet.'**
+  String get boundaryEmptyYours;
+
+  /// No description provided for @boundaryEmptyTheirs.
+  ///
+  /// In en, this message translates to:
+  /// **'They have not named any yet.'**
+  String get boundaryEmptyTheirs;
+
+  /// No description provided for @boundaryTheirsReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only they can change these.'**
+  String get boundaryTheirsReadOnly;
+
+  /// No description provided for @boundaryLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits could not be loaded.'**
+  String get boundaryLoadFailed;
+
+  /// No description provided for @settingsBoundariesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'LIMITS'**
+  String get settingsBoundariesSection;
+
+  /// No description provided for @settingsBoundariesOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits'**
+  String get settingsBoundariesOpen;
+
+  /// No description provided for @settingsBoundariesSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can change your own. Your partner sees them and cannot edit them.'**
+  String get settingsBoundariesSupport;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

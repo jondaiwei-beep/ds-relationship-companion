@@ -111,10 +111,16 @@ void main() {
   Future<void> walkToLastStep(WidgetTester tester) async {
     await tester.tap(find.text('Closer'));
     await tester.pump();
+    // Goal -> role.
     await tester.tap(find.text('Continue'));
     await tester.pump();
+    // Role -> limits.
     await tester.tap(find.text('Continue'));
     await tester.pump();
+    // Limits, named nothing: the action offers to skip rather than continue.
+    await tester.tap(find.text('Skip for now'));
+    await tester.pump();
+    // Structure -> rhythm.
     await tester.tap(find.text('Continue'));
     await tester.pump();
   }
@@ -163,7 +169,7 @@ void main() {
       await tester.pump();
 
       expect(find.text('Choose one to continue.'), findsOneWidget);
-      expect(find.text('1 of 4'), findsOneWidget);
+      expect(find.text('1 of 5'), findsOneWidget);
     });
   });
 
@@ -191,6 +197,8 @@ void main() {
       await tester.pump();
       await tester.tap(find.text('Continue'));
       await tester.pump();
+      await tester.tap(find.text('Skip for now'));
+      await tester.pump();
       await tester.tap(find.text('Continue'));
       await tester.pump();
       await tester.tap(find.text('Start this rhythm'));
@@ -214,10 +222,10 @@ void main() {
 
     // Nothing was written, so nothing needs undoing — but the answer is still
     // there, because retyping an answer you already gave is its own friction.
-    expect(find.text('1 of 4'), findsOneWidget);
+    expect(find.text('1 of 5'), findsOneWidget);
     await tester.tap(find.text('Continue'));
     await tester.pump();
-    expect(find.text('2 of 4'), findsOneWidget);
+    expect(find.text('2 of 5'), findsOneWidget);
   });
 
   testWidgets('the timezone travels as the IANA name', (tester) async {
@@ -241,6 +249,8 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('Continue'));
     await tester.pump();
+    await tester.tap(find.text('Skip for now'));
+    await tester.pump();
     await tester.tap(find.text('Continue'));
     await tester.pump();
 
@@ -257,10 +267,99 @@ void main() {
     expect(tester.takeException(), isNull);
     await tester.tap(find.text('Closer'));
     await tester.pump();
-    for (var i = 0; i < 3; i++) {
-      await tester.tap(find.text('Continue'));
+
+    for (final (i, label) in [
+      'Continue', // -> role
+      'Continue', // -> limits
+      'Skip for now', // -> structure
+      'Continue', // -> rhythm
+    ].indexed) {
+      await tester.tap(find.text(label));
       await tester.pump();
       expect(tester.takeException(), isNull, reason: 'step ${i + 2} overflowed');
     }
+  });
+
+  group('boundaries lite', () {
+    // REQ-ACT-002 always asked for this and it was the one clause never
+    // built. What it must not become is a form that has to be filled before
+    // anyone may begin.
+    Future<void> toLimits(WidgetTester tester) async {
+      await tester.tap(find.text('Closer'));
+      await tester.pump();
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+    }
+
+    testWidgets('naming nothing still starts a Dynamic', (tester) async {
+      await pump(tester);
+      await walkToLastStep(tester);
+      await tester.tap(find.text('Start this rhythm'));
+      await tester.pumpAndSettle();
+
+      expect(dynamics.created, hasLength(1));
+    });
+
+    testWidgets('a named limit is listed and can be taken back off', (
+      tester,
+    ) async {
+      await pump(tester);
+      await toLimits(tester);
+
+      await tester.enterText(find.byType(TextField).first, 'Being filmed');
+      await tester.tap(find.text('Add a limit'));
+      await tester.pump();
+      expect(find.text('Being filmed'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Remove Being filmed'));
+      await tester.pump();
+      expect(find.text('Being filmed'), findsNothing);
+    });
+
+    testWidgets('Add with an empty field says what is missing, and is not dead', (
+      tester,
+    ) async {
+      // Red line: send is never disabled; pressing it with nothing to send
+      // says what is missing.
+      await pump(tester);
+      await toLimits(tester);
+
+      await tester.tap(find.text('Add a limit'));
+      await tester.pump();
+
+      expect(find.text('Say what it is first.'), findsOneWidget);
+    });
+
+    testWidgets('naming one changes the action from skip to continue', (
+      tester,
+    ) async {
+      await pump(tester);
+      await toLimits(tester);
+      expect(find.text('Skip for now'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField).first, 'Rope');
+      await tester.tap(find.text('Add a limit'));
+      await tester.pump();
+
+      expect(find.text('Skip for now'), findsNothing);
+      expect(find.text('Continue'), findsOneWidget);
+    });
+
+    testWidgets('going back from limits keeps what was named', (tester) async {
+      await pump(tester);
+      await toLimits(tester);
+      await tester.enterText(find.byType(TextField).first, 'Rope');
+      await tester.tap(find.text('Add a limit'));
+      await tester.pump();
+
+      await tester.tap(find.bySemanticsLabel('Back'));
+      await tester.pump();
+      await tester.tap(find.text('Continue'));
+      await tester.pump();
+
+      expect(find.text('Rope'), findsOneWidget);
+    });
   });
 }

@@ -40,7 +40,7 @@ class LZh extends L {
 
   @override
   String activationStepOf(int step) {
-    return '第 $step 步，共 4 步';
+    return '第 $step 步，共 5 步';
   }
 
   @override
@@ -553,7 +553,7 @@ class LZh extends L {
   String get dynamicCurrentRhythms => '现在的日常';
 
   @override
-  String get dynamicAskOneThing => '说一件想请对方做的事';
+  String get dynamicAskOneThing => '交代一件事';
 
   @override
   String get dynamicThisWeek => '这一周';
@@ -1035,7 +1035,7 @@ class LZh extends L {
   String get inviteLifecycleRevoked => '已收回';
 
   @override
-  String get askTitle => '说一件想请对方做的事';
+  String get askTitle => '交代一件事';
 
   @override
   String get askCancel => '取消';
@@ -1049,10 +1049,10 @@ class LZh extends L {
   String get askYourPartnerFallback => '对方';
 
   @override
-  String get askWhatStep => '你想请对方做什么';
+  String get askWhatStep => '你要对方做什么';
 
   @override
-  String get askWhatHint => '八点前把房间收拾好';
+  String get askWhatHint => '八点前把房间准备好';
 
   @override
   String get askWhatMissing => '说说你想请对方做什么。';
@@ -1107,7 +1107,7 @@ class LZh extends L {
   }
 
   @override
-  String get detailIntention => '为什么想请你做这件事';
+  String get detailIntention => '为什么交代这件事';
 
   @override
   String get detailPrivateNote => '私密笔记 · 只有你看得到';
@@ -1737,7 +1737,7 @@ class LZh extends L {
   }
 
   @override
-  String get todayNothingExpected => '今天没有需要你做的事。';
+  String get todayNothingExpected => '今天没有交代你的事。';
 
   @override
   String get todayCheckInOffer => '想说说今天的话，随时可以。';
@@ -1770,7 +1770,7 @@ class LZh extends L {
   String get kindRitual => '日常';
 
   @override
-  String get kindExpectation => '心意';
+  String get kindExpectation => '约定';
 
   @override
   String get kindOnToday => '今天';
@@ -1815,7 +1815,7 @@ class LZh extends L {
   }
 
   @override
-  String get todayPriorityHeadingNone => '今天没有要紧的事';
+  String get todayPriorityHeadingNone => '今天没有交代的事';
 
   @override
   String todayPrimaryEyebrow(String kind) {
@@ -1915,4 +1915,95 @@ class LZh extends L {
 
   @override
   String get shellBack => '返回';
+
+  @override
+  String get activationBoundaryEyebrow => '哪些事不做';
+
+  @override
+  String get activationBoundaryQuestion => '有哪些事是不做的？';
+
+  @override
+  String get activationBoundarySupport => '只有你能写、能改自己这一份。对方看得到，但改不了。';
+
+  @override
+  String get activationBoundaryFootnote => '现在可以跳过，之后随时能加。';
+
+  @override
+  String get activationBoundaryAdd => '加一条';
+
+  @override
+  String get activationBoundaryHint => '当着别人的面做任何事';
+
+  @override
+  String get activationBoundaryNoteHint => '想让对方知道的话（可不填）';
+
+  @override
+  String get activationBoundaryEmpty => '还没写。';
+
+  @override
+  String get activationBoundarySave => '加上';
+
+  @override
+  String activationBoundaryRemove(String label) {
+    return '删掉 $label';
+  }
+
+  @override
+  String get activationBoundaryNeedsLabel => '先写清楚是哪件事。';
+
+  @override
+  String get activationBoundarySkip => '先跳过';
+
+  @override
+  String get boundaryStanceOff => '不做';
+
+  @override
+  String get boundaryStanceAsk => '先问我';
+
+  @override
+  String get boundaryStanceCurious => '可以聊聊';
+
+  @override
+  String get boundaryStanceOffDetail => '就是不做，不需要给理由。';
+
+  @override
+  String get boundaryStanceAskDetail => '可以，但要先跟我说。';
+
+  @override
+  String get boundaryStanceCuriousDetail => '愿意聊聊，但不等于答应。';
+
+  @override
+  String get boundaryTitle => '界限';
+
+  @override
+  String get boundaryYours => '你写的';
+
+  @override
+  String boundaryTheirs(String name) {
+    return '$name 写的';
+  }
+
+  @override
+  String get boundaryTheirsFallback => '对方写的';
+
+  @override
+  String get boundaryEmptyYours => '你还没写过。';
+
+  @override
+  String get boundaryEmptyTheirs => '对方还没写过。';
+
+  @override
+  String get boundaryTheirsReadOnly => '这些只有对方能改。';
+
+  @override
+  String get boundaryLoadFailed => '界限没加载出来。';
+
+  @override
+  String get settingsBoundariesSection => '界限';
+
+  @override
+  String get settingsBoundariesOpen => '界限';
+
+  @override
+  String get settingsBoundariesSupport => '只有你能改自己写的。对方看得到，但改不了。';
 }

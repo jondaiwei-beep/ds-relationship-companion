@@ -40,7 +40,7 @@ class LEn extends L {
 
   @override
   String activationStepOf(int step) {
-    return '$step of 4';
+    return '$step of 5';
   }
 
   @override
@@ -580,7 +580,7 @@ class LEn extends L {
   String get dynamicCurrentRhythms => 'CURRENT RHYTHMS';
 
   @override
-  String get dynamicAskOneThing => 'Ask one thing';
+  String get dynamicAskOneThing => 'Set one expectation';
 
   @override
   String get dynamicThisWeek => 'This week';
@@ -1104,7 +1104,7 @@ class LEn extends L {
   String get inviteLifecycleRevoked => 'Revoked';
 
   @override
-  String get askTitle => 'Ask one thing';
+  String get askTitle => 'Set one expectation';
 
   @override
   String get askCancel => 'Cancel';
@@ -1118,10 +1118,10 @@ class LEn extends L {
   String get askYourPartnerFallback => 'your partner';
 
   @override
-  String get askWhatStep => 'WHAT YOU ARE ASKING';
+  String get askWhatStep => 'WHAT YOU ARE ASKING OF THEM';
 
   @override
-  String get askWhatHint => 'Prepare the room before 8:00 PM';
+  String get askWhatHint => 'Have the room ready before 8:00 PM';
 
   @override
   String get askWhatMissing => 'Say what you are asking for.';
@@ -1178,7 +1178,7 @@ class LEn extends L {
   }
 
   @override
-  String get detailIntention => 'INTENTION';
+  String get detailIntention => 'WHY YOU ASKED FOR IT';
 
   @override
   String get detailPrivateNote => 'PRIVATE NOTE · ONLY YOU';
@@ -1230,7 +1230,7 @@ class LEn extends L {
       'This could not be loaded. Nothing was changed.';
 
   @override
-  String get nothingWaitingAck => 'Done, and waiting for a human response.';
+  String get nothingWaitingAck => 'Done, and waiting for them to respond.';
 
   @override
   String get nothingAcknowledged => 'Answered. Nothing more is needed here.';
@@ -1859,7 +1859,7 @@ class LEn extends L {
   }
 
   @override
-  String get todayNothingExpected => 'Nothing is expected of you today.';
+  String get todayNothingExpected => 'Nothing has been asked of you today.';
 
   @override
   String get todayCheckInOffer => 'A check-in is here if you want one.';
@@ -1939,7 +1939,7 @@ class LEn extends L {
   }
 
   @override
-  String get todayPriorityHeadingNone => 'NOTHING MATTERS TODAY';
+  String get todayPriorityHeadingNone => 'NOTHING ASKED TODAY';
 
   @override
   String todayPrimaryEyebrow(String kind) {
@@ -2048,4 +2048,100 @@ class LEn extends L {
 
   @override
   String get shellBack => 'Back';
+
+  @override
+  String get activationBoundaryEyebrow => 'WHAT IS NOT ON THE TABLE';
+
+  @override
+  String get activationBoundaryQuestion =>
+      'Name anything that is off the table.';
+
+  @override
+  String get activationBoundarySupport =>
+      'Only you can write or change your own. Your partner sees them and cannot edit them.';
+
+  @override
+  String get activationBoundaryFootnote =>
+      'You can skip this and add limits at any time.';
+
+  @override
+  String get activationBoundaryAdd => 'Add a limit';
+
+  @override
+  String get activationBoundaryHint => 'Anything in front of other people';
+
+  @override
+  String get activationBoundaryNoteHint =>
+      'Anything you want them to know (optional)';
+
+  @override
+  String get activationBoundaryEmpty => 'Nothing named yet.';
+
+  @override
+  String get activationBoundarySave => 'Add';
+
+  @override
+  String activationBoundaryRemove(String label) {
+    return 'Remove $label';
+  }
+
+  @override
+  String get activationBoundaryNeedsLabel => 'Say what it is first.';
+
+  @override
+  String get activationBoundarySkip => 'Skip for now';
+
+  @override
+  String get boundaryStanceOff => 'Not this';
+
+  @override
+  String get boundaryStanceAsk => 'Ask me first';
+
+  @override
+  String get boundaryStanceCurious => 'Curious';
+
+  @override
+  String get boundaryStanceOffDetail => 'A no. It does not need a reason.';
+
+  @override
+  String get boundaryStanceAskDetail => 'Possible, but talk to me before.';
+
+  @override
+  String get boundaryStanceCuriousDetail => 'Open to discussing it. Not a yes.';
+
+  @override
+  String get boundaryTitle => 'Limits';
+
+  @override
+  String get boundaryYours => 'YOURS';
+
+  @override
+  String boundaryTheirs(String name) {
+    return '$name\'s';
+  }
+
+  @override
+  String get boundaryTheirsFallback => 'YOUR PARTNER\'S';
+
+  @override
+  String get boundaryEmptyYours => 'You have not named any limits yet.';
+
+  @override
+  String get boundaryEmptyTheirs => 'They have not named any yet.';
+
+  @override
+  String get boundaryTheirsReadOnly => 'Only they can change these.';
+
+  @override
+  String get boundaryLoadFailed => 'Limits could not be loaded.';
+
+  @override
+  String get settingsBoundariesSection => 'LIMITS';
+
+  @override
+  String get settingsBoundariesOpen => 'Limits';
+
+  @override
+  String get settingsBoundariesSupport =>
+      'Only you can change your own. Your partner sees them and cannot edit them.';
 }

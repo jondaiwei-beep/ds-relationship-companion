@@ -45,6 +45,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
     this.onClose,
     this.onSignOut,
     this.onLeave,
+    this.onBoundaries,
   });
 
   final String dynamicId;
@@ -54,6 +55,11 @@ class SettingsScreen extends ConsumerStatefulWidget {
   /// Opens SCR-30. Leaving and blocking are consequential enough to deserve
   /// their own screen rather than a row that acts on one tap.
   final VoidCallback? onLeave;
+
+  /// Opens the limits both people have named (REQ-ACT-002). Reachable for the
+  /// life of the Dynamic: a limit named once during setup and never seen
+  /// again would be worse than not having asked.
+  final VoidCallback? onBoundaries;
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -160,6 +166,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
                       // SCR-34, read-only.
                       if (detail.hasValue) _Time(view: detail.value!),
+
+                      const SizedBox(height: DsSpacing.space10),
+                      _Section(l.settingsBoundariesSection),
+                      if (widget.onBoundaries != null)
+                        Padding(
+                          padding: todayInset,
+                          child: SecondaryButton(
+                            label: l.settingsBoundariesOpen,
+                            onTap: widget.onBoundaries!,
+                          ),
+                        ),
+                      const SizedBox(height: DsSpacing.space3),
+                      _Quiet(l.settingsBoundariesSupport),
 
                       const SizedBox(height: DsSpacing.space10),
                       _Section(l.settingsPairingSection),

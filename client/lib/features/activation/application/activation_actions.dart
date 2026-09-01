@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../domain_client/api_client.dart';
+import '../../../domain_client/models/boundary.dart';
 import '../../../domain_client/models/starter_rhythm_view.dart';
 
 /// What a person wants more of. Asked before role or configuration, because
@@ -63,6 +64,7 @@ class ActivationDraft {
     this.structure = StructureLevel.steady,
     this.longDistance = false,
     this.timezone,
+    this.boundaries = const [],
   });
 
   final DesiredOutcome? outcome;
@@ -82,6 +84,14 @@ class ActivationDraft {
   /// offset silently moves someone's relationship day across a DST boundary.
   final String? timezone;
 
+  /// Limits named during setup — REQ-ACT-002 "boundaries lite".
+  ///
+  /// Held here like every other answer so backing out of the step writes
+  /// nothing, then posted once the Dynamic exists (they key on its id). Each
+  /// is the author's own; the server takes the author from the session, so
+  /// nothing in this list can name anyone else.
+  final List<DraftBoundary> boundaries;
+
   bool get isComplete => outcome != null && timezone != null;
 
   ActivationDraft copyWith({
@@ -92,6 +102,7 @@ class ActivationDraft {
     StructureLevel? structure,
     bool? longDistance,
     String? timezone,
+    List<DraftBoundary>? boundaries,
   }) =>
       ActivationDraft(
         outcome: outcome ?? this.outcome,
@@ -100,7 +111,17 @@ class ActivationDraft {
         structure: structure ?? this.structure,
         longDistance: longDistance ?? this.longDistance,
         timezone: timezone ?? this.timezone,
+        boundaries: boundaries ?? this.boundaries,
       );
+}
+
+/// One limit as it exists before anything is written.
+class DraftBoundary {
+  const DraftBoundary(this.label, this.stance, {this.note});
+
+  final String label;
+  final BoundaryStance stance;
+  final String? note;
 }
 
 sealed class ActivationOutcome {
@@ -108,9 +129,13 @@ sealed class ActivationOutcome {
 }
 
 class DynamicCreated extends ActivationOutcome {
-  const DynamicCreated(this.dynamicId);
+  const DynamicCreated(this.dynamicId, {this.boundariesSaved = true});
 
   final String dynamicId;
+
+  /// False when the Dynamic was created but a named limit did not save.
+  /// Activation still succeeded; the surface says what to do about it.
+  final bool boundariesSaved;
 }
 
 /// Why an activation attempt did not land, in terms the UI can translate.
@@ -196,13 +221,40 @@ class ActivationActions {
             rolePreset: draft.rolePreset?.wire,
             idempotencyKey: key,
           );
+      // Limits are written only once the Dynamic they belong to exists.
+      //
+      // A failure here does not fail activation. Someone who has just named
+      // what is off the table should not be dropped back into a wizard —
+      // the Dynamic is real, and Settings offers the same list to finish.
+      // Silence would be wrong the other way round, so what did not save is
+      // reported by `boundariesSaved` rather than swallowed.
+      final saved = await _writeBoundaries(id, draft.boundaries);
+
       // Not cleared: a success whose response was lost is exactly the case a
       // retry has to survive, and the server replays rather than duplicating.
-      return DynamicCreated(id);
+      return DynamicCreated(id, boundariesSaved: saved);
     } on DioException catch (e) {
       // The key is kept: the next attempt is the same attempt.
       return _failure(e);
     }
+  }
+
+  /// Returns false if any limit did not reach the server.
+  Future<bool> _writeBoundaries(
+    String dynamicId,
+    List<DraftBoundary> drafts,
+  ) async {
+    if (drafts.isEmpty) return true;
+    final repo = _ref.read(boundaryRepositoryProvider);
+    var ok = true;
+    for (final b in drafts) {
+      try {
+        await repo.add(dynamicId, label: b.label, stance: b.stance, note: b.note);
+      } on DioException {
+        ok = false;
+      }
+    }
+    return ok;
   }
 
   /// What the server suggests to begin with. Writes nothing.

@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain_client/api_client.dart';
+import '../domain_client/models/boundary.dart';
+import '../domain_client/repositories/boundary_repository.dart';
 import '../domain_client/repositories/attention_repository.dart';
 import '../domain_client/repositories/adjustment_repository.dart';
 import '../domain_client/repositories/auth_repository.dart';
@@ -53,6 +55,16 @@ final todayRepositoryProvider = Provider<TodayRepository>(
 final dynamicRepositoryProvider = Provider<DynamicRepository>(
   (ref) => DynamicRepository(ref.watch(apiClientProvider)),
 );
+
+final boundaryRepositoryProvider = Provider<BoundaryRepository>(
+  (ref) => BoundaryRepository(ref.watch(apiClientProvider)),
+);
+
+/// Both members' limits. Kept alive like every other surface — see
+/// `DsRefreshable`: this reads once and then only when asked.
+final boundariesProvider =
+    FutureProvider.family<List<Boundary>, String>((ref, dynamicId) =>
+        ref.watch(boundaryRepositoryProvider).forDynamic(dynamicId));
 
 final adjustmentRepositoryProvider = Provider<AdjustmentRepository>(
   (ref) => AdjustmentRepository(ref.watch(apiClientProvider)),

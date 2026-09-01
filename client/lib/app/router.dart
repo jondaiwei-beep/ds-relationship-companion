@@ -10,6 +10,7 @@ import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
 import '../features/dynamic/presentation/pause_screen.dart';
 import '../features/settings/presentation/leave_screen.dart';
+import '../features/boundary/presentation/boundaries_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/us/presentation/us_screen.dart';
 import '../features/weekly/presentation/weekly_screen.dart';
@@ -65,6 +66,9 @@ abstract final class Routes {
   /// Settings (SCR-28/29/34), and ending the pairing (SCR-30).
   static const settings = '/dynamics/:id/settings';
   static const leave = '/dynamics/:id/leave';
+
+  /// Boundaries lite (REQ-ACT-002), reachable after activation.
+  static const boundaries = '/dynamics/:id/boundaries';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -193,6 +197,8 @@ GoRouter createRouter(Ref ref) {
             onSignOut: () =>
                 ref.read(sessionProvider.notifier).signOut(),
             onLeave: () => context.go('/dynamics/$dynamicId/leave'),
+            onBoundaries: () =>
+                context.go('/dynamics/$dynamicId/boundaries'),
           );
         },
       ),
@@ -319,6 +325,16 @@ GoRouter createRouter(Ref ref) {
       // placeholder that renders something plausible is worse than one that
       // says what it is: it gets screenshotted, demoed, and mistaken for
       // progress. See `progress/MASTER-PLAN.md` for which sprint opens each.
+      GoRoute(
+        path: Routes.boundaries,
+        builder: (context, state) {
+          final dynamicId = state.pathParameters['id']!;
+          return BoundariesScreen(
+            dynamicId: dynamicId,
+            onBack: () => context.go('/dynamics/$dynamicId/settings'),
+          );
+        },
+      ),
       GoRoute(
         path: Routes.holding,
         builder: (_, _) => const SessionResolving(),
