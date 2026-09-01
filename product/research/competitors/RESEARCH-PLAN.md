@@ -2,9 +2,12 @@
 
 Status: **proposal, not yet approved.** Written 2026-09-01.
 
-Inputs available: BeMoreKinky (9 screens) and Obedience (8 screens), filed
-under this directory. A third product, Kneel, is expected and has a slot
-reserved but has not been captured yet.
+Inputs available: BeMoreKinky (9 screens), Obedience (8 screens) and Kneel
+(5 screens), filed under this directory.
+
+Coverage is uneven and that shapes what can be concluded: every Obedience
+screen is the unpaired state, two of five Kneel screens are paywalls, and one
+tab root is missing from each of the three (`Explore`, none, `Home`).
 
 ## The problem with the obvious version of this question
 
@@ -18,7 +21,11 @@ counts **day streaks** and gates stages behind completed sessions;
 its Habits tool is described in its own copy as "protocol tracker for service
 with **rewards, points and discipline**".
 
-So at least half of what these two products do is not a feature we have
+Kneel is the same story in a quieter voice: a `Consequences` tab whose
+sub-tabs are Rewards / Punish / **Verify**, with BALANCE (points) and STREAK
+(consecutive days) counters rendering even while the feature is locked.
+
+So at least half of what all three products do is not a feature we have
 failed to build. It is a design we ruled out, in writing, before building.
 
 That makes the useful research question a different one:
@@ -60,10 +67,13 @@ The current material is thin in a way that matters:
   product is entirely about.
 - **BeMoreKinky's `Explore` tab was never captured**, and it is the tab whose
   name matches our own weakest surface.
-- **Kneel has not been captured at all.**
+- **Kneel's `Home` tab is missing**, two of its five screens are paywalls,
+  and the task-creation wizard was captured at step 1 of 3 — so the fields
+  that decide the product (deadline? proof? consequence?) are unseen.
 
 Needed before analysis is worth doing: the paired state of Obedience (or an
-explicit note that we cannot get it), BeMoreKinky's Explore tab, and Kneel.
+explicit note that we cannot get it), BeMoreKinky's Explore tab, Kneel's Home
+tab, and steps 2–3 of Kneel's task wizard.
 
 Owner action, since I cannot install or drive these apps.
 
@@ -121,7 +131,19 @@ assumed):
   have nothing that gives a couple a sense of progression. Progression
   without scoring is the hard version of that problem, and it is worth
   asking whether it is solvable within our rules.
-- Both ship a **journal/private notes** surface. We have none.
+- Both Obedience and BeMoreKinky ship a **journal/private notes** surface.
+  We have none.
+- Kneel's Ideas library has a **Long-Distance** collection of 9 ideas. LDR is
+  a documented design pressure case for us (`00-overview.md` names Android
+  Dom + iPhone sub + LDR + different timezones as the case the product is
+  designed against), and our own library has no content addressing it. This
+  is the cleanest GAP candidate in the whole capture: it needs no new data
+  model, and the requirement is already ours.
+- Kneel's `Verify` sub-tab and the "proof-based" wording in its Discipline &
+  Structure blurb point at a real question we answer only implicitly: how
+  does the person giving direction know something happened? Our answer is
+  human acknowledgement. Theirs appears to be evidence. Worth stating ours
+  deliberately rather than by omission.
 
 ### Pass 4 — Decide, and write it down
 
@@ -142,6 +164,13 @@ time.
      compliance scoring, mandatory streaks, reward economy) actually open for
      reconsideration? If they are all closed, Pass 3 gets much shorter and I
      should know that before starting.
+
+     Worth knowing: all three products ship points, all three ship
+     punishment, and two of three put a streak counter on a main surface.
+     That is not proof they are right — three products can share one bad
+     idea, and none of their retention numbers are visible to us — but it
+     does mean our position is the unusual one in this category, and holding
+     it should be a decision rather than an oversight.
 
 ## Estimated effort
 
