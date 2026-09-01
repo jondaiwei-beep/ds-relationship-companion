@@ -1945,4 +1945,24 @@ class LEn extends L {
   String todayPrimaryEyebrow(String kind) {
     return '01 · NOW · $kind';
   }
+
+  @override
+  String get settingsLanguageSection => 'LANGUAGE';
+
+  @override
+  String get settingsLanguageFollowDevice => 'Follow my phone';
+
+  @override
+  String get settingsLanguageFollowDeviceSupport =>
+      'Changes with your phone\'s language setting.';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageChinese => '中文';
+
+  @override
+  String get settingsLanguageNote =>
+      'The words this app uses are part of what it means. If a term reads oddly in one language, try the other.';
 }

@@ -557,5 +557,11 @@
   "todayResponseHeading": "{name} 回应了 · {age}",
   "todayPriorityHeading": "{count, plural, other{今天有 {count} 件事}}",
   "todayPriorityHeadingNone": "今天没有要紧的事",
-  "todayPrimaryEyebrow": "01 · 现在 · {kind}"
+  "todayPrimaryEyebrow": "01 · 现在 · {kind}",
+  "settingsLanguageSection": "语言",
+  "settingsLanguageFollowDevice": "跟随手机设置",
+  "settingsLanguageFollowDeviceSupport": "手机语言变了，这里也跟着变。",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageChinese": "中文",
+  "settingsLanguageNote": "这个 app 用的词本身就是它的一部分意思。某个词读起来别扭的话，可以换另一种语言看看。"
 }

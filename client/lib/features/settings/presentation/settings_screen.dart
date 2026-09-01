@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' as intl;
 
+import '../../../app/locale_controller.dart';
 import '../../../app/providers.dart';
 import '../../../domain_client/models/dynamic_view.dart';
 import '../../../domain_client/models/notification_settings.dart';
@@ -119,6 +120,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
+                    _Language(
+                      chosen: switch (ref.watch(localeProvider)) {
+                        AsyncData(:final value) => value,
+                        _ => null,
+                      },
+                      onChoose: (locale) =>
+                          ref.read(localeProvider.notifier).choose(locale),
+                    ),
+                    const SizedBox(height: DsSpacing.space10),
+
                     // SCR-29.
                     settings.when(
                       loading: () => _Quiet(l.settingsLoading),
@@ -293,6 +304,64 @@ class _Time extends StatelessWidget {
   }
 }
 
+/// Choosing a language, or following the phone.
+///
+/// Not part of SCR-28's approved package — that screen predates the app having
+/// more than one language. It belongs here because it is an account-level
+/// preference like the others, and it goes first because it is the one setting
+/// that decides whether the rest of the page can be read.
+///
+/// Each option is labelled in its own language in every locale. Someone who
+/// has landed in a language they cannot read has to be able to find their way
+/// out, and "English" rendered in Chinese would not help them do it.
+class _Language extends StatelessWidget {
+  const _Language({required this.chosen, required this.onChoose});
+
+  /// Null means following the device, which is the default and a real choice
+  /// rather than an absent one.
+  final Locale? chosen;
+  final ValueChanged<Locale?> onChoose;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Section(l.settingsLanguageSection),
+        _Choice(
+          label: l.settingsLanguageFollowDevice,
+          support: l.settingsLanguageFollowDeviceSupport,
+          selected: chosen == null,
+          onTap: () => onChoose(null),
+        ),
+        _Choice(
+          label: l.settingsLanguageEnglish,
+          selected: chosen?.languageCode == 'en',
+          onTap: () => onChoose(const Locale('en')),
+        ),
+        _Choice(
+          label: l.settingsLanguageChinese,
+          selected: chosen?.languageCode == 'zh',
+          onTap: () => onChoose(const Locale('zh')),
+        ),
+        const SizedBox(height: DsSpacing.space2),
+        Padding(
+          padding: todayInset,
+          child: Text(
+            l.settingsLanguageNote,
+            style: DsTextStyles.bodySecondary.copyWith(
+              color: DsColors.textOnRitualMuted,
+              fontSize: todaySupportSize,
+              height: todaySupportHeight,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _Section extends StatelessWidget {
   const _Section(this.text);
 
@@ -317,13 +386,15 @@ class _Section extends StatelessWidget {
 class _Choice extends StatelessWidget {
   const _Choice({
     required this.label,
-    required this.support,
+    this.support,
     required this.selected,
     required this.onTap,
   });
 
   final String label;
-  final String support;
+  /// Optional: the language rows are self-explanatory, and an empty line
+  /// would still reserve its height and leave a gap under each one.
+  final String? support;
   final bool selected;
   final VoidCallback? onTap;
 
@@ -358,15 +429,17 @@ class _Choice extends StatelessWidget {
                       : DsColors.textOnRitualSecondary,
                 ),
               ),
-              const SizedBox(height: DsSpacing.space1),
-              Text(
-                support,
-                style: DsTextStyles.bodySecondary.copyWith(
-                  color: DsColors.textOnRitualMuted,
-                  fontSize: todaySupportSize,
-                  height: todaySupportHeight,
+              if (support case final s? when s.isNotEmpty) ...[
+                const SizedBox(height: DsSpacing.space1),
+                Text(
+                  s,
+                  style: DsTextStyles.bodySecondary.copyWith(
+                    color: DsColors.textOnRitualMuted,
+                    fontSize: todaySupportSize,
+                    height: todaySupportHeight,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),

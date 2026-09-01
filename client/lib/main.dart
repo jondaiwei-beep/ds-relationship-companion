@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import 'app/locale_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -103,10 +104,19 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
       title: 'Companion',
       debugShowCheckedModeBanner: false,
       theme: DsTheme.ritual(),
-      // The phone's language decides, with English as the fallback. This
-      // product's vocabulary is its meaning — a person reading "expectation"
-      // or "acknowledgement" in a second language is not getting the product,
-      // they are guessing at it.
+      // A chosen language wins; otherwise the phone decides. Null while the
+      // stored choice is still being read, which is also what MaterialApp
+      // wants for "follow the device" — so the first frame is never wrong,
+      // it just starts out following the phone.
+      //
+      // This product's vocabulary is its meaning: a person reading
+      // "expectation" or "acknowledgement" in a second language is guessing
+      // at the product rather than using it, which is why the choice exists
+      // at all.
+      locale: switch (ref.watch(localeProvider)) {
+        AsyncData(:final value) => value,
+        _ => null,
+      },
       localizationsDelegates: L.localizationsDelegates,
       supportedLocales: L.supportedLocales,
       routerConfig: ref.watch(routerProvider),

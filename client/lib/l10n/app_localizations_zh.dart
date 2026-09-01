@@ -1821,4 +1821,23 @@ class LZh extends L {
   String todayPrimaryEyebrow(String kind) {
     return '01 · 现在 · $kind';
   }
+
+  @override
+  String get settingsLanguageSection => '语言';
+
+  @override
+  String get settingsLanguageFollowDevice => '跟随手机设置';
+
+  @override
+  String get settingsLanguageFollowDeviceSupport => '手机语言变了，这里也跟着变。';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageChinese => '中文';
+
+  @override
+  String get settingsLanguageNote =>
+      '这个 app 用的词本身就是它的一部分意思。某个词读起来别扭的话，可以换另一种语言看看。';
 }

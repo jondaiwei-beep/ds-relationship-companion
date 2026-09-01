@@ -834,5 +834,11 @@
         "type": "String"
       }
     }
-  }
+  },
+  "settingsLanguageSection": "LANGUAGE",
+  "settingsLanguageFollowDevice": "Follow my phone",
+  "settingsLanguageFollowDeviceSupport": "Changes with your phone's language setting.",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageChinese": "中文",
+  "settingsLanguageNote": "The words this app uses are part of what it means. If a term reads oddly in one language, try the other."
 }

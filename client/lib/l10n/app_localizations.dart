@@ -3444,6 +3444,42 @@ abstract class L {
   /// In en, this message translates to:
   /// **'01 · NOW · {kind}'**
   String todayPrimaryEyebrow(String kind);
+
+  /// No description provided for @settingsLanguageSection.
+  ///
+  /// In en, this message translates to:
+  /// **'LANGUAGE'**
+  String get settingsLanguageSection;
+
+  /// No description provided for @settingsLanguageFollowDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow my phone'**
+  String get settingsLanguageFollowDevice;
+
+  /// No description provided for @settingsLanguageFollowDeviceSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes with your phone\'s language setting.'**
+  String get settingsLanguageFollowDeviceSupport;
+
+  /// No description provided for @settingsLanguageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglish;
+
+  /// No description provided for @settingsLanguageChinese.
+  ///
+  /// In en, this message translates to:
+  /// **'中文'**
+  String get settingsLanguageChinese;
+
+  /// No description provided for @settingsLanguageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The words this app uses are part of what it means. If a term reads oddly in one language, try the other.'**
+  String get settingsLanguageNote;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

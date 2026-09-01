@@ -189,6 +189,11 @@ void main() {
     testWidgets('quiet hours travel as a pair', (tester) async {
       // Half a window would suppress nothing while looking set.
       final (settings, _) = await _pumpSettings(tester);
+      // The language section sits above these now, so they start below the
+      // fold; ensureVisible scrolls them fully in rather than just far enough
+      // to be found.
+      await tester.ensureVisible(find.text('10:00 PM — 7:00 AM'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('10:00 PM — 7:00 AM'));
       await tester.pumpAndSettle();
 
@@ -233,6 +238,14 @@ void main() {
 
     testWidgets('the shared day is stated in its own timezone', (tester) async {
       await _pumpSettings(tester);
+      // The list is lazy, so the row does not exist until scrolled to — hence
+      // scrollUntilVisible rather than ensureVisible, which needs the element
+      // to already be built.
+      await tester.scrollUntilVisible(
+        find.text('Asia/Shanghai'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Asia/Shanghai'), findsOneWidget);
       // The clock is formatted through intl for the reader's locale, so the
       // assertion is on the sentence around it rather than a hardcoded render.
