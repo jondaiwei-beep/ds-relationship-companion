@@ -66,6 +66,7 @@ class _FakeAdjustments implements AdjustmentRepository {
   dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
 }
 
+// ignore: library_private_types_in_public_api
 late _FakeAdjustments lastAdjustments;
 
 Future<_FakeOccurrenceRepository> _pump(

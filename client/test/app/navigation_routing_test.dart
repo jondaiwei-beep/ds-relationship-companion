@@ -1,11 +1,12 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
-import 'package:dsapp/app/coming_surface.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/app/router.dart';
 import 'package:dsapp/app/shell/bottom_navigation.dart';
 import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
+import 'package:dsapp/domain_client/models/explore_view.dart';
+import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/models/us_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/today_repository.dart';
@@ -36,6 +37,7 @@ void main() {
           FixtureTodayRepository(todayFixture()) as TodayRepository,
         ),
         dynamicRepositoryProvider.overrideWithValue(_StubDynamic()),
+        exploreRepositoryProvider.overrideWithValue(_StubExplore()),
       ],
     );
     addTearDown(container.dispose);
@@ -72,31 +74,25 @@ void main() {
     final router = await pump(tester, '/dynamics/d-1/today');
     expect(find.byType(TodayScreen), findsOneWidget);
 
-    // The invariant is that a tap always lands somewhere — not that it lands
-    // on a placeholder. Dynamic (SCR-13) and Us (SCR-17) are built; Explore is
-    // Public MVP and still ComingSurface.
-    for (final (label, path, built) in const [
-      ('Dynamic', '/dynamics/d-1/dynamic', true),
-      ('Explore', '/dynamics/d-1/explore', false),
-      ('Us', '/dynamics/d-1/us', true),
+    // Every surface is built now, so the invariant is simply that a tap
+    // lands where it says it will. `ComingSurface` is gone: it existed to
+    // make an unbuilt tab respond honestly, and there are no unbuilt tabs.
+    for (final (label, path) in const [
+      ('Dynamic', '/dynamics/d-1/dynamic'),
+      ('Explore', '/dynamics/d-1/explore'),
+      ('Us', '/dynamics/d-1/us'),
     ]) {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
       expect(where(router), path, reason: '$label must go somewhere');
-      expect(
-        find.byType(ComingSurface),
-        built ? findsNothing : findsOneWidget,
-        reason: built ? '$label is built' : '$label is not built yet',
-      );
     }
   });
 
   testWidgets('the way back to Today is always one tap', (tester) async {
     final router = await pump(tester, '/dynamics/d-1/explore');
-    expect(find.byType(ComingSurface), findsOneWidget);
 
-    // The bar is on the unbuilt surface too. Without it, tapping Explore would
-    // be a one-way trip on a device with gesture navigation.
+    // The bar is on every surface. Without it, tapping Explore would be a
+    // one-way trip on a device with gesture navigation.
     await tester.tap(find.text('Today'));
     await tester.pumpAndSettle();
 
@@ -104,27 +100,21 @@ void main() {
     expect(find.byType(TodayScreen), findsOneWidget);
   });
 
-  testWidgets('an unbuilt surface says so without reading as an error', (
-    tester,
-  ) async {
-    await pump(tester, '/dynamics/d-1/explore');
-
-    expect(find.textContaining('Not open yet'), findsOneWidget);
-    for (final wrong in ['Error', "couldn't", 'failed', 'Something went']) {
-      expect(find.textContaining(wrong), findsNothing);
-    }
-  });
-
   testWidgets('the tab you are on is not re-selectable', (tester) async {
     final router = await pump(tester, '/dynamics/d-1/explore');
 
     // Re-entering the route you are reading rebuilds it and loses the scroll
     // position, for a tap that meant "I am already here".
+    // Scoped to the bar: the surfaces themselves now contain InkWells too,
+    // so an unscoped finder matches the tab and the page's own controls.
     final tab = tester.widget<InkWell>(
       find.descendant(
-        of: find.ancestor(
-          of: find.text('Explore'),
-          matching: find.byType(Expanded),
+        of: find.descendant(
+          of: find.byType(DsBottomNavigation),
+          matching: find.ancestor(
+            of: find.text('Explore'),
+            matching: find.byType(Expanded),
+          ),
         ),
         matching: find.byType(InkWell),
       ),
@@ -172,6 +162,14 @@ void main() {
 /// timer that outlives the test — which surfaces as "pending timers", not as
 /// a routing failure. These tests are about navigation, so the reads simply
 /// have to resolve.
+class _StubExplore implements ExploreRepository {
+  @override
+  Future<ExploreLibraryView> library() async => const ExploreLibraryView();
+
+  @override
+  dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
+}
+
 class _StubDynamic implements DynamicRepository {
   @override
   Future<DynamicDetail> detail(String id) async => const DynamicDetail(

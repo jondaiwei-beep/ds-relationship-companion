@@ -15,8 +15,8 @@ import '../features/us/presentation/us_screen.dart';
 import '../features/weekly/presentation/weekly_screen.dart';
 import '../features/checkin/presentation/check_in_screen.dart';
 import '../features/expectation/presentation/create_expectation_screen.dart';
+import '../features/explore/presentation/explore_screen.dart';
 import '../features/expectation/presentation/occurrence_detail_screen.dart';
-import 'coming_surface.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
@@ -68,8 +68,8 @@ abstract final class Routes {
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
-  /// Dynamic (SCR-13) and Us (SCR-17) are built. Explore is routed but not
-  /// yet built, so the bottom bar still responds — see `ComingSurface`.
+  /// All four nav surfaces are built: Today (SCR-01), Dynamic (SCR-13),
+  /// Explore (SCR-18, the restrained Core Beta version) and Us (SCR-17).
   static const dynamicHome = '/dynamics/:id/dynamic';
   static const dynamicExplore = '/dynamics/:id/explore';
   static const dynamicUs = '/dynamics/:id/us';
@@ -256,6 +256,8 @@ GoRouter createRouter(Ref ref) {
           final dynamicId = s.pathParameters['id']!;
           return CreateExpectationScreen(
             dynamicId: dynamicId,
+            initialTitle: s.uri.queryParameters['title'],
+            initialPurpose: s.uri.queryParameters['purpose'],
             onCancel: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
             // Back to Today, where the thing that was just asked now lives for
             // the other person — and where the asker sees it waiting.
@@ -290,17 +292,26 @@ GoRouter createRouter(Ref ref) {
           );
         },
       ),
-      for (final surface in const [NavSurface.explore])
-        GoRoute(
-          path: _navPath(':id', surface),
-          builder: (context, s) {
-            final dynamicId = s.pathParameters['id']!;
-            return ComingSurface(
-              surface: surface,
-              onSelect: (next) => context.go(_navPath(dynamicId, next)),
-            );
-          },
-        ),
+      GoRoute(
+        path: _navPath(':id', NavSurface.explore),
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return ExploreScreen(
+            dynamicId: dynamicId,
+            onSignIn: () => context.go(Routes.signIn),
+            onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
+            onUse: (idea) => context.go(
+              Uri(
+                path: '/dynamics/$dynamicId/ask',
+                queryParameters: {
+                  'title': idea.title,
+                  'purpose': idea.purpose,
+                },
+              ).toString(),
+            ),
+          );
+        },
+      ),
 
       // Named, not stubbed.
       //

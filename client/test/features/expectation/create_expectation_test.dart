@@ -113,7 +113,6 @@ Future<_FakeExpectationRepository> _pump(
   WidgetTester tester, {
   DynamicDetail detail = _paired,
   String viewer = 'u-creator',
-  String? doneWith,
 }) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;

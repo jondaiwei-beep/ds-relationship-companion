@@ -38,9 +38,16 @@ class CreateExpectationScreen extends ConsumerStatefulWidget {
     required this.dynamicId,
     this.onDone,
     this.onCancel,
+    this.initialTitle,
+    this.initialPurpose,
   });
 
   final String dynamicId;
+
+  /// Prefilled when arriving from Explore. Editable, and nothing is sent
+  /// until Send: an idea is a starting point, not a script.
+  final String? initialTitle;
+  final String? initialPurpose;
 
   /// Where to go once it is sent. The screen does not decide.
   final void Function(String occurrenceId)? onDone;
@@ -67,6 +74,8 @@ class _CreateExpectationScreenState
   @override
   void initState() {
     super.initState();
+    if (widget.initialTitle != null) _title.text = widget.initialTitle!;
+    if (widget.initialPurpose != null) _purpose.text = widget.initialPurpose!;
     // The action's availability follows the title, so the button has to
     // rebuild as it is typed.
     _title.addListener(() => setState(() {}));
