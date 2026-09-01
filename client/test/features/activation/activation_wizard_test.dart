@@ -29,6 +29,7 @@ class _FakeDynamics implements DynamicRepository {
     required String referenceTimezone,
     int dayBoundaryMinutes = 0,
     String? rolePreset,
+    bool longDistance = false,
     required String idempotencyKey,
   }) async {
     created.add({
@@ -37,6 +38,7 @@ class _FakeDynamics implements DynamicRepository {
       'structureLevel': structureLevel,
       'referenceTimezone': referenceTimezone,
       'rolePreset': rolePreset,
+      'longDistance': longDistance,
     });
     return 'dyn-1';
   }
@@ -260,6 +262,29 @@ void main() {
     await tester.tap(find.text('Start this rhythm'));
     await tester.pumpAndSettle();
     expect(dynamics.created.single['mode'], 'SOLO');
+  });
+
+  testWidgets('saying you are apart reaches the server', (tester) async {
+    // The wizard has always drawn this choice and always discarded it, so the
+    // starter rhythm offered an apart couple "prepare the evening space".
+    await pump(tester);
+    await tester.tap(find.text('Closer'));
+    await tester.pump();
+    await tester.tap(find.text('Continue'));
+    await tester.pump();
+    await tester.tap(find.text('Continue'));
+    await tester.pump();
+    await tester.tap(find.text('Skip for now'));
+    await tester.pump();
+
+    await tester.tap(find.text('Long-distance'));
+    await tester.pump();
+    await tester.tap(find.text('Continue'));
+    await tester.pump();
+    await tester.tap(find.text('Start this rhythm'));
+    await tester.pumpAndSettle();
+
+    expect(dynamics.created.single['longDistance'], true);
   });
 
   testWidgets('every step fits 390x844', (tester) async {

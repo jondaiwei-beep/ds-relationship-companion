@@ -229,6 +229,7 @@ class _FakeDynamics implements DynamicRepository {
     required String referenceTimezone,
     int dayBoundaryMinutes = 0,
     String? rolePreset,
+    bool longDistance = false,
     required String idempotencyKey,
   }) async {
     calls++;

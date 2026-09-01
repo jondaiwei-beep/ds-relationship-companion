@@ -219,6 +219,7 @@ class ActivationActions {
             structureLevel: draft.structure.wire,
             referenceTimezone: timezone,
             rolePreset: draft.rolePreset?.wire,
+            longDistance: draft.longDistance,
             idempotencyKey: key,
           );
       // Limits are written only once the Dynamic they belong to exists.

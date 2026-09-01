@@ -24,6 +24,8 @@ class DynamicRepository {
     int dayBoundaryMinutes = 0,
     /// Optional self-description (Notion 03 §2). Grants nothing.
     String? rolePreset,
+    /// Couple is apart. Changes what is seeded, never what is permitted.
+    bool longDistance = false,
     required String idempotencyKey,
   }) async {
     final r = await _api.post(
@@ -35,6 +37,7 @@ class DynamicRepository {
         'referenceTimezone': referenceTimezone,
         'dayBoundaryMinutes': dayBoundaryMinutes,
         'rolePreset': rolePreset,
+        'longDistance': longDistance,
       },
       idempotencyKey: idempotencyKey,
     );

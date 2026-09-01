@@ -49,10 +49,11 @@ class StarterRhythmService(
     fun propose(actorUserId: UUID, dynamicId: UUID): Proposed {
         authorizer.requireRead(authorizer.contextForDynamic(actorUserId, dynamicId))
         val outcome = outcomeOf(dynamicId)
+        val apart = apartOf(dynamicId)
 
-        val ritual = StarterContent.ritualFor(outcome)
-        val expectation = StarterContent.expectationFor(outcome)
-        val second = StarterContent.optionalSecondExpectation(outcome)
+        val ritual = StarterContent.ritualFor(outcome, apart)
+        val expectation = StarterContent.expectationFor(outcome, apart)
+        val second = StarterContent.optionalSecondExpectation(outcome, apart)
 
         return Proposed(
             ritualTitle = ritual.title,
@@ -92,8 +93,9 @@ class StarterRhythmService(
         check(!alreadyStarted(dynamicId)) { "this dynamic already has a rhythm" }
 
         val outcome = outcomeOf(dynamicId)
-        val ritual = StarterContent.ritualFor(outcome)
-        val expectation = StarterContent.expectationFor(outcome)
+        val apart = apartOf(dynamicId)
+        val ritual = StarterContent.ritualFor(outcome, apart)
+        val expectation = StarterContent.expectationFor(outcome, apart)
 
         val ritualId = insertDefinition(
             dynamicId, "RITUAL", ritualTitle ?: ritual.title, ritual.purpose,
@@ -121,7 +123,7 @@ class StarterRhythmService(
         ).execute()
 
         if (includeSecondExpectation) {
-            val second = StarterContent.optionalSecondExpectation(outcome)
+            val second = StarterContent.optionalSecondExpectation(outcome, apart)
             insertDefinition(dynamicId, "TASK", second.title, second.purpose,
                 actorUserId, assigneeUserId)
         }
@@ -144,6 +146,10 @@ class StarterRhythmService(
         )!!.get("desired_outcome", String::class.java)
         return runCatching { DesiredOutcome.valueOf(raw) }.getOrDefault(DesiredOutcome.CLOSER)
     }
+
+    private fun apartOf(dynamicId: UUID): Boolean = dsl.fetchOne(
+        "SELECT long_distance FROM dynamics WHERE id = {0}", dynamicId,
+    )!!.get("long_distance", Boolean::class.java)
 
     private fun insertDefinition(
         dynamicId: UUID, kind: String, title: String, purpose: String,

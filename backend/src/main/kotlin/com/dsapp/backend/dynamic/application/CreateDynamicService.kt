@@ -35,6 +35,8 @@ class CreateDynamicService(
          * role_context, never this.
          */
         rolePreset: String? = null,
+        /** Couple is apart. Changes what is seeded, never what is permitted. */
+        longDistance: Boolean = false,
     ): Created {
         if (rolePreset != null &&
             rolePreset !in setOf("DOMINANT", "SUBMISSIVE", "SWITCH", "CUSTOM")
@@ -50,11 +52,11 @@ class CreateDynamicService(
         dsl.query(
             """
             INSERT INTO dynamics (id, mode, desired_outcome, structure_level, state,
-                                  reference_timezone, day_boundary_minutes)
-            VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})
+                                  reference_timezone, day_boundary_minutes, long_distance)
+            VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7})
             """.trimIndent(),
             dynamicId, mode, desiredOutcome, structureLevel, initialState,
-            referenceTimezone, dayBoundaryMinutes,
+            referenceTimezone, dayBoundaryMinutes, longDistance,
         ).execute()
 
         dsl.query(

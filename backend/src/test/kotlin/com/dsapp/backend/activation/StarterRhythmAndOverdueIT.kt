@@ -77,6 +77,32 @@ class StarterRhythmAndOverdueIT {
     }
 
     @Test
+    fun `an apart couple is seeded content that works across timezones`() {
+        // LDR is the design pressure case named in 00-overview, the wizard has
+        // always asked the question, and until now the answer was dropped
+        // before the request was sent. "Prepare something before they arrive"
+        // assumes a shared room; offered to a couple in different timezones it
+        // reads as written for somebody else.
+        dsl.query(
+            "UPDATE dynamics SET long_distance = true WHERE id = {0}", dynamicId,
+        ).execute()
+
+        val p = starter.propose(creator, dynamicId)
+
+        assertEquals("Say goodnight to the timezone you are not in", p.expectationTitle)
+        assertEquals("One hour you both keep", p.ritualTitle)
+    }
+
+    @Test
+    fun `a couple who live together are unaffected by the distance content`() {
+        // The column defaults to false, so every dynamic that existed before
+        // the flag keeps the rhythm it would have had.
+        val p = starter.propose(creator, dynamicId)
+
+        assertEquals("Prepare something before they arrive", p.expectationTitle)
+    }
+
+    @Test
     fun `the second Expectation is opt-in, never a default`() {
         starter.start(creator, dynamicId, assigneeUserId = partner, includeSecondExpectation = true)
 

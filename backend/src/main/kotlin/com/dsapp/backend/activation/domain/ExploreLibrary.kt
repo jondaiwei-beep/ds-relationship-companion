@@ -88,6 +88,11 @@ object ExploreLibrary {
             "The work on the giving side, which is mostly attention.",
         ),
         Collection(
+            "distance",
+            "When you are apart",
+            "Keeping a dynamic real across timezones and empty evenings.",
+        ),
+        Collection(
             "negotiation",
             "Before, and how you'd stop",
             "Agreeing the shape of things while everyone is calm.",
@@ -195,6 +200,72 @@ object ExploreLibrary {
                 + "before it lapses on its own. Lifting a rule is a decision, "
                 + "not a concession.",
             "authority",
+        ),
+
+        // — When you are apart ——————————————————————————
+        //
+        // LDR is the design pressure case in 00-overview — Android giving
+        // member, iPhone receiving member, different timezones — and until
+        // now the library had nothing for it. Distance does not weaken a
+        // dynamic by removing contact; it weakens it by removing the small
+        // unplanned moments that carry it, which is why every idea here is
+        // something that survives being scheduled.
+        Idea(
+            "same-hour", Kind.RITUAL,
+            "One hour you both keep",
+            "A shared hour beats a shared minute you both keep missing.",
+            "Work out one window that is reasonable in both timezones and "
+                + "keep it. It matters more that it is the same hour than "
+                + "that it is a convenient one.",
+            "distance",
+        ),
+        Idea(
+            "before-you-sleep", Kind.EXPECTATION,
+            "Say goodnight to the timezone you are not in",
+            "Whoever sleeps first should not be the one who feels forgotten.",
+            "The earlier evening sends first, and the later one answers when "
+                + "they get there. Neither of you waits up.",
+            "distance",
+        ),
+        Idea(
+            "asked-for-in-advance", Kind.EXPECTATION,
+            "Ask for something that lands while you are asleep",
+            "Direction does not need both of you awake at once.",
+            "Set it before you go to bed so it is waiting when their day "
+                + "starts. Being thought of ahead of time is what it gives.",
+            "distance",
+        ),
+        Idea(
+            "one-thing-you-cannot-see", Kind.EXPECTATION,
+            "Something you will never witness",
+            "Distance makes trust the substance rather than the setting.",
+            "Ask for something you have no way of checking, and say plainly "
+                + "that you are not going to check. That is the whole of it.",
+            "distance",
+        ),
+        Idea(
+            "the-empty-evening", Kind.CHECK_IN,
+            "Name the evening that was hard",
+            "The distance is worst at a predictable hour, and it is rarely said.",
+            "Most people apart have one time of day that is heaviest. Say "
+                + "which one yours was this week.",
+            "distance",
+        ),
+        Idea(
+            "something-with-your-hands", Kind.RITUAL,
+            "An object that stays with them",
+            "A dynamic that lives only in text has nothing to hold.",
+            "Something small, chosen by one and kept by the other. Worn, "
+                + "carried, or left where it is seen daily.",
+            "distance",
+        ),
+        Idea(
+            "next-time-we-are-together", Kind.CHECK_IN,
+            "One thing for when you are next in the same room",
+            "Anticipation is the version of presence distance allows.",
+            "Add to it whenever you think of something. It is not a plan and "
+                + "nothing has to happen on the day.",
+            "distance",
         ),
 
         // — Before, and how you'd stop ——————————————————

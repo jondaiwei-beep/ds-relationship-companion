@@ -57,6 +57,15 @@ data class CreateDynamicRequest(
     val dayBoundaryMinutes: Int = 0,
 
     /**
+     * Whether the couple is apart (REQ-ACT-002).
+     *
+     * Defaulted rather than required: an older client that does not send it
+     * must keep working, and "Together" is the answer the wizard shows
+     * selected.
+     */
+    val longDistance: Boolean = false,
+
+    /**
      * Optional self-description. Grants nothing (Notion 03 §2), and a couple
      * that does not want to name it must never be blocked — hence nullable.
      */
@@ -115,6 +124,7 @@ class DynamicController(
             structureLevel = body.structureLevel,
             referenceTimezone = body.referenceTimezone,
             dayBoundaryMinutes = body.dayBoundaryMinutes,
+            longDistance = body.longDistance,
         )
         201 to CreateDynamicResponse(c.dynamicId, c.membershipId)
     }

@@ -16,9 +16,18 @@ class ExploreLibraryTest {
     fun `there is enough to browse and not so much it becomes a content product`() {
         assertTrue(ExploreLibrary.ideas.size >= 12,
             "too thin to prove judgement: ${ExploreLibrary.ideas.size}")
-        assertTrue(ExploreLibrary.ideas.size <= 24,
+        // Raised from 24/6 when the distance collection was added. The cap is
+        // an editorial guard against becoming a content product, not a
+        // technical limit, so it moves only for a reason that is written
+        // down: LDR is the design pressure case named in 00-overview
+        // (Android giving member, iPhone receiving member, different
+        // timezones) and the library had nothing for it.
+        //
+        // It should keep taking a stated reason to move. A competitor ships
+        // 46 ideas; matching that number is not a goal.
+        assertTrue(ExploreLibrary.ideas.size <= 30,
             "this is a companion, not a library: ${ExploreLibrary.ideas.size}")
-        assertTrue(ExploreLibrary.collections.size in 4..6)
+        assertTrue(ExploreLibrary.collections.size in 4..7)
     }
 
     @Test

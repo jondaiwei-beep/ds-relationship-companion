@@ -92,17 +92,53 @@ object StarterContent {
         "What do you need afterwards?",
     )
 
-    fun ritualFor(outcome: DesiredOutcome): Candidate = rituals.getValue(outcome).first()
+    /**
+     * What an apart couple gets instead, whatever they chose as an outcome.
+     *
+     * Distance changes the first day more than the outcome does. "Prepare the
+     * evening space" and "one standing act of service" assume a shared room;
+     * offered to a couple in different timezones they read as written for
+     * somebody else, which is exactly the impression this product cannot
+     * afford on day one. LDR is the design pressure case in 00-overview and
+     * the wizard has always asked the question — it just never sent the
+     * answer.
+     *
+     * Deliberately outcome-independent. A second full matrix of five outcomes
+     * would double the content for a distinction most couples would not
+     * notice on their first day; the thing they will notice is whether the
+     * app knows they are apart.
+     */
+    private val distanceRitual = Candidate(
+        "One hour you both keep",
+        "A shared hour beats a shared minute you both keep missing.",
+    )
 
-    fun expectationFor(outcome: DesiredOutcome): Candidate = expectations.getValue(outcome).first()
+    private val distanceExpectation = Candidate(
+        "Say goodnight to the timezone you are not in",
+        "Whoever sleeps first should not be the one who feels forgotten.",
+    )
+
+    private val distanceSecond = Candidate(
+        "Ask for something that lands while you are asleep",
+        "Direction does not need both of you awake at once.",
+    )
+
+    fun ritualFor(outcome: DesiredOutcome, longDistance: Boolean = false): Candidate =
+        if (longDistance) distanceRitual else rituals.getValue(outcome).first()
+
+    fun expectationFor(outcome: DesiredOutcome, longDistance: Boolean = false): Candidate =
+        if (longDistance) distanceExpectation else expectations.getValue(outcome).first()
 
     /**
      * The optional second Expectation — a SUGGESTION, never part of the default.
      *
      * Notion 05 §4: the first day must not arrive already full.
      */
-    fun optionalSecondExpectation(outcome: DesiredOutcome): Candidate =
-        expectations.getValue(outcome)[1]
+    fun optionalSecondExpectation(
+        outcome: DesiredOutcome,
+        longDistance: Boolean = false,
+    ): Candidate =
+        if (longDistance) distanceSecond else expectations.getValue(outcome)[1]
 
     /** Everything on offer, for a "replace anything that doesn't fit" picker. */
     fun allRituals(outcome: DesiredOutcome): List<Candidate> = rituals.getValue(outcome)
