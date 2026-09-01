@@ -36,6 +36,44 @@ North Star: **Connected Dynamic Days / Active Couple / Week**.
 
 Dating/discovery, community feed, AI Dom/Sub persona, automated partner praise, automatic punishment, compliance scoring, mandatory streaks, explicit-content discovery, emergency safety service, and treating a contract as consent certification are not part of this product.
 
+### Why we refuse points, automatic punishment and streaks
+
+Reviewed 2026-09-01 against three shipped competitors (see
+`product/research/competitors/`). Every task-managing product in this
+category ships points and punishment, and two of three put a streak counter
+on a main surface. Obedience holds 4.7 stars across 2,800+ ratings, so these
+mechanics demonstrably work for a large audience. We are the unusual ones,
+and that is a decision, not an oversight.
+
+- **Points** do a real job — "that counted", instantly, without needing the
+  dominant to be awake. They beat our human response on latency,
+  reliability, legibility and dominant effort. We refuse them because the
+  documented cost is the overjustification effect: expected external rewards
+  crowd out intrinsic motivation, and research on gamified intimacy finds it
+  "reduces intimacy to a transactional loop of inputs and outputs". Our
+  product test is to reduce the work of maintaining a Dynamic *without
+  automating away the human attention that gives it meaning*; a points
+  balance is precisely that automation. **Refusing them obliges us to compete
+  on those four axes instead** — cheap acknowledgement, visible bounded
+  waiting, prompting the dominant that someone is waiting.
+- **Automatic punishment** stays refused; **agreed, human-issued consequence
+  does not**. The erotic and structural content this audience wants from
+  punishment survives being decided by the couple in advance and issued by a
+  person. What does not survive is the machine deciding, which is what red
+  line #3 and this list actually bar.
+- **Streaks** are refused on the strongest evidence of the three. A streak's
+  motive force is making a gap feel like failure — the exact inverse of red
+  line #3 — and breaking one is documented to cause all-at-once abandonment
+  rather than a gradual decline. The underlying job (continuity, "we are
+  keeping this up") is real and should be served by accumulated history,
+  which does not reset to zero. The test for any such feature: **does a gap
+  in it feel like a loss?** If yes, it is a streak wearing a different hat.
+
+None of this is settled by review data, because the failure mode is silent
+churn rather than complaints. The instrument that can settle it is our own
+North Star — Connected Dynamic Days per Active Couple per Week — which counts
+bilateral events and would stay flat if we inflated task completion.
+
 ## Sources
 
 - [CURRENT — Developer Handoff v2](https://app.notion.com/p/3c8f73841f3d81f4ae0ac63bb8767993)
