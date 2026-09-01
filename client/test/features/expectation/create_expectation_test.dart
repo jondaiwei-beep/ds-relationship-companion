@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:dsapp/l10n/app_localizations.dart';
+
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
@@ -129,6 +131,8 @@ Future<_FakeExpectationRepository> _pump(
         sessionProvider.overrideWith(() => _FixedSession(viewer)),
       ],
       child: MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: const CreateExpectationScreen(dynamicId: 'dyn-1'),
       ),

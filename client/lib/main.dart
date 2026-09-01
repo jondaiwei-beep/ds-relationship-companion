@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
+
+import 'l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -101,6 +103,12 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
       title: 'Companion',
       debugShowCheckedModeBanner: false,
       theme: DsTheme.ritual(),
+      // The phone's language decides, with English as the fallback. This
+      // product's vocabulary is its meaning — a person reading "expectation"
+      // or "acknowledgement" in a second language is not getting the product,
+      // they are guessing at it.
+      localizationsDelegates: L.localizationsDelegates,
+      supportedLocales: L.supportedLocales,
       routerConfig: ref.watch(routerProvider),
     );
   }

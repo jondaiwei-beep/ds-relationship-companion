@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../platform/session/session.dart';
 import '../../../platform/session/session_controller.dart';
@@ -196,6 +197,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final partner = _partner;
     final rituals = view.structure.where((s) => s.active).toList();
 
@@ -227,14 +229,16 @@ class _LoadedState extends ConsumerState<_Loaded> {
 
         StructureRow(
           asset: DsAssets.markAuthority,
-          label: 'CURRENT STRUCTURE',
-          value: _structureLine(view),
+          label: l.dynamicCurrentStructure,
+          value: _structureLine(l, view),
         ),
 
         if (rituals.isNotEmpty)
           StructureRow(
             asset: DsAssets.markCheckIn,
-            label: rituals.length == 1 ? 'CURRENT RHYTHM' : 'CURRENT RHYTHMS',
+            label: rituals.length == 1
+                ? l.dynamicCurrentRhythm
+                : l.dynamicCurrentRhythms,
             value: rituals.map((r) => r.title).join(' · '),
           ),
 
@@ -247,7 +251,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
           Padding(
             padding: todayInset,
             child: SecondaryButton(
-              label: 'Ask one thing',
+              label: l.dynamicAskOneThing,
               onTap: widget.onAsk!,
               filled: true,
             ),
@@ -261,7 +265,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
           Padding(
             padding: todayInset,
             child: SecondaryButton(
-              label: 'This week',
+              label: l.dynamicThisWeek,
               onTap: widget.onWeekly!,
             ),
           ),
@@ -277,15 +281,15 @@ class _LoadedState extends ConsumerState<_Loaded> {
         Padding(
           padding: todayInset,
           child: SecondaryButton(
-            label: _paused ? 'Come back' : 'Pause this Dynamic',
+            label: _paused ? l.dynamicComeBack : l.dynamicPauseThis,
             onTap: widget.onPause ?? () {},
           ),
         ),
         const SizedBox(height: DsSpacing.space4),
         RecoveryMessage(
           _paused
-              ? 'Nothing from the paused days is waiting for you.'
-              : 'Either of you may pause. Nothing is lost while paused.',
+              ? l.dynamicNothingWaitingAfterPause
+              : l.dynamicEitherMayPause,
         ),
         const SizedBox(height: DsSpacing.space10),
       ],
@@ -296,22 +300,24 @@ class _LoadedState extends ConsumerState<_Loaded> {
 /// "Service-led · mutually held" in the preview. Both halves come from the
 /// server: the outcome the couple chose, and how much structure they asked
 /// for. Neither is inferred.
-String _structureLine(DynamicDetail view) {
+String _structureLine(L l, DynamicDetail view) {
+  // An unrecognised value falls through to the server's own word rather than
+  // asserting one this build does not know about.
   final outcome = switch (view.desiredOutcome) {
-    'CLOSER' => 'Closeness-led',
-    'STRUCTURE' => 'Structure-led',
-    'SERVICE' => 'Service-led',
-    'ACCOUNTABILITY' => 'Accountability-led',
-    'EXPLORE' => 'Exploration-led',
+    'CLOSER' => l.outcomeCloser,
+    'STRUCTURE' => l.outcomeStructure,
+    'SERVICE' => l.outcomeService,
+    'ACCOUNTABILITY' => l.outcomeAccountability,
+    'EXPLORE' => l.outcomeExplore,
     _ => view.desiredOutcome,
   };
   final level = switch (view.structureLevel) {
-    'LIGHT' => 'lightly held',
-    'STEADY' => 'mutually held',
-    'DEFINED' => 'clearly defined',
+    'LIGHT' => l.levelLight,
+    'STEADY' => l.levelSteady,
+    'DEFINED' => l.levelDefined,
     _ => view.structureLevel,
   };
-  return '$outcome · $level';
+  return l.structureLine(level, outcome);
 }
 
 /// Paused is a state to be stated plainly, never a warning. Pausing is a
@@ -321,6 +327,7 @@ class _PausedNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: todayInset,
       child: Container(
@@ -333,14 +340,14 @@ class _PausedNotice extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'PAUSED',
+              l.dynamicPaused,
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
             ),
             const SizedBox(height: DsSpacing.space2),
             Text(
-              'Nothing is expected of either of you while this is paused.',
+              l.dynamicPausedNothingExpected,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualSecondary,
               ),
@@ -361,8 +368,9 @@ class _Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Confirming context',
+      context_: l.recoveryConfirmingContext,
       title: 'Dynamic',
       children: [
         DsSkeletonPulse(
@@ -408,8 +416,8 @@ class _Loading extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space8),
-        const RecoveryMessage(
-          'Nothing about the two of you is shown until the server confirms it.',
+        RecoveryMessage(
+          l.dynamicConfirmingStructure,
         ),
       ],
     );
@@ -426,24 +434,24 @@ class _Offline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Offline',
+      context_: l.recoveryOffline,
       title: 'Dynamic',
       children: [
         const SizedBox(height: DsSpacing.space8),
-        const RecoveryMessage(
-          'The current structure could not be confirmed.',
+        RecoveryMessage(
+          l.dynamicCouldNotConfirm,
           prominent: true,
         ),
         const SizedBox(height: DsSpacing.space3),
-        const RecoveryMessage(
-          'Pause and Resume need the server, so they are unavailable until it '
-          'reconnects. Whatever was already agreed still stands.',
+        RecoveryMessage(
+          l.dynamicPauseUnavailable,
         ),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: SecondaryButton(label: 'Try to reconnect', onTap: onRetry),
+          child: SecondaryButton(label: l.recoveryTryToReconnect, onTap: onRetry),
         ),
       ],
     );
@@ -457,19 +465,20 @@ class _Unavailable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Not confirmed',
+      context_: l.recoveryNotConfirmed,
       title: 'Dynamic',
       children: [
         const SizedBox(height: DsSpacing.space8),
-        const RecoveryMessage(
-          'The Dynamic could not be loaded. Nothing was changed.',
+        RecoveryMessage(
+          l.dynamicCouldNotLoad,
           prominent: true,
         ),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: SecondaryButton(label: 'Try again', onTap: onRetry),
+          child: SecondaryButton(label: l.recoveryTryAgain, onTap: onRetry),
         ),
       ],
     );
@@ -486,14 +495,15 @@ class _AuthorizationLost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Confirming context',
+      context_: l.recoveryConfirmingContext,
       title: 'Dynamic',
       children: [
         Padding(
           padding: todayInset,
           child: Text(
-            'PRIVATE SESSION ENDED',
+            l.recoverySessionEnded,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -514,7 +524,7 @@ class _AuthorizationLost extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Your private session\nneeds to be restored.',
+                l.recoverySessionRestore,
                 textAlign: TextAlign.center,
                 style: DsTextStyles.displayRitual.copyWith(
                   color: DsColors.textOnRitualPrimary,
@@ -524,8 +534,7 @@ class _AuthorizationLost extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space5),
               Text(
-                'Partner, roles and current structure have been hidden.\n'
-                'Sign in again to confirm current access.',
+                l.dynamicHiddenDetails,
                 textAlign: TextAlign.center,
                 style: DsTextStyles.bodySecondary.copyWith(
                   color: DsColors.textOnRitualMuted,
@@ -533,7 +542,7 @@ class _AuthorizationLost extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space8),
               SecondaryButton(
-                label: 'Sign in again',
+                label: l.recoverySignInAgain,
                 onTap: onSignIn ?? () {},
                 filled: true,
               ),
@@ -541,7 +550,7 @@ class _AuthorizationLost extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space6),
-        const RecoveryMessage('No protected content remains on this screen.'),
+        RecoveryMessage(l.recoveryNoProtectedContent),
       ],
     );
   }

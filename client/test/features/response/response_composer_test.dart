@@ -3,6 +3,7 @@ import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/repositories/occurrence_repository.dart';
 import 'package:dsapp/features/response/application/response_actions.dart';
 import 'package:dsapp/features/response/presentation/response_composer.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -55,6 +56,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: ResponseComposer(
             occurrenceId: 'occ-1',
             partnerName: 'Morgan',
@@ -226,9 +229,15 @@ void main() {
   testWidgets('it fits 390x844 in every type', (tester) async {
     for (final type in HumanResponse.values) {
       await pump(tester);
-      await tester.tap(find.text(type.label));
+      // The label is a translation now, not a field on the enum: the type is
+      // what the server stores, and the words belong to the reader's locale.
+      final label = responseTypeLabel(
+        await L.delegate.load(const Locale('en')),
+        type,
+      );
+      await tester.tap(find.text(label));
       await tester.pump();
-      expect(tester.takeException(), isNull, reason: '${type.label} overflowed');
+      expect(tester.takeException(), isNull, reason: '$label overflowed');
     }
   });
 }

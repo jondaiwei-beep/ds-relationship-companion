@@ -4,6 +4,7 @@ import 'package:dsapp/domain_client/repositories/starter_rhythm_repository.dart'
 import 'package:dsapp/features/activation/presentation/activation_wizard.dart';
 import 'package:dsapp/platform/session/session.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -93,6 +94,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: ActivationWizard(
             timezone: timezone,
             onStarted: started.add,

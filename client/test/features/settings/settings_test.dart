@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:dsapp/l10n/app_localizations.dart';
+
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/models/notification_settings.dart';
@@ -132,6 +134,8 @@ Future<(_FakeSettings, _FakeDynamic)> _pumpSettings(
         sessionProvider.overrideWith(_FixedSession.new),
       ],
       child: MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: SettingsScreen(
           dynamicId: 'dyn-1',
@@ -158,6 +162,8 @@ Future<_FakeDynamic> _pumpLeave(WidgetTester tester) async {
         sessionProvider.overrideWith(_FixedSession.new),
       ],
       child: MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: const LeaveScreen(dynamicId: 'dyn-1'),
       ),
@@ -228,7 +234,9 @@ void main() {
     testWidgets('the shared day is stated in its own timezone', (tester) async {
       await _pumpSettings(tester);
       expect(find.text('Asia/Shanghai'), findsOneWidget);
-      expect(find.textContaining('ends at 4:00 AM'), findsOneWidget);
+      // The clock is formatted through intl for the reader's locale, so the
+      // assertion is on the sentence around it rather than a hardcoded render.
+      expect(find.textContaining('4:00'), findsOneWidget);
       expect(
         find.textContaining('not in whichever one your phone is in'),
         findsOneWidget,

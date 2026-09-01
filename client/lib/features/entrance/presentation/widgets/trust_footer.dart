@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Facts, not promises.
 ///
 /// An earlier draft said "Your space stays between you." That both exposed the
@@ -24,9 +26,7 @@ class TrustFooter extends StatelessWidget {
         Opacity(
           opacity: 0.72,
           child: Text(
-            'For adults 18+. Use of this service is subject to our Terms.\n'
-            'See how we handle data in our Privacy Policy.\n'
-            'Accounts are private by default.',
+            L.of(context).entranceTrustFooter,
             textAlign: TextAlign.center,
             style: DsTextStyles.navLabel.copyWith(
               color: DsColors.textOnRitualMuted,

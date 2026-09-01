@@ -6,6 +6,7 @@ import '../../../app/providers.dart';
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/dynamic_view.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../dynamic/presentation/dynamic_screen.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
@@ -64,7 +65,7 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
         if (partner == null) {
           setState(() {
             _busy = false;
-            _failure = 'There is no one here to block.';
+            _failure = L.of(context).settingsNoOneToBlock;
           });
           return;
         }
@@ -82,13 +83,14 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
       if (!mounted) return;
       setState(() {
         _busy = false;
-        _failure = 'That did not reach the server. Nothing has changed.';
+        _failure = L.of(context).settingsLeaveFailed;
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
     final viewer = ref.watch(dynamicViewerIdProvider);
     MemberView? partner;
@@ -109,34 +111,35 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: switch (_confirming) {
-                    _Intent.none => _choices(partner),
+                    _Intent.none => _choices(l, partner),
                     _Intent.leave => _confirm(
-                      title: 'Leave this Dynamic',
-                      facts: const [
-                        'It ends for both of you.',
-                        'Neither of you will be asked for anything here again.',
-                        'Your partner is not asked to agree, and cannot stop '
-                            'it.',
-                        'This cannot be undone from the app.',
+                      title: l.settingsLeaveConfirmTitle,
+                      facts: [
+                        l.settingsLeaveFactEndsForBoth,
+                        l.settingsLeaveFactNothingAskedAgain,
+                        l.settingsLeaveFactNoAgreementNeeded,
+                        l.settingsLeaveFactCannotUndo,
                       ],
-                      action: 'Leave',
-                      busyLabel: 'Leaving…',
+                      action: l.settingsLeaveAction,
+                      busyLabel: l.settingsLeaveBusy,
                       onConfirm: () => _run(_Intent.leave, partner),
                     ),
                     _Intent.block => _confirm(
                       title: partner == null
-                          ? 'Block'
-                          : 'Block ${partner.displayName ?? 'your partner'}',
-                      facts: const [
-                        'It ends for both of you.',
-                        'They will not be able to reach you here again.',
-                        'Neither of you can read the shared history '
-                            'afterwards.',
-                        'They are not told who did it.',
-                        'This cannot be undone from the app.',
+                          ? l.settingsBlockConfirmTitle
+                          : l.settingsBlockConfirmTitleNamed(
+                              partner.displayName ??
+                                  l.settingsBlockPartnerFallbackName,
+                            ),
+                      facts: [
+                        l.settingsBlockFactEndsForBoth,
+                        l.settingsBlockFactNoContact,
+                        l.settingsBlockFactNoHistory,
+                        l.settingsBlockFactNotTold,
+                        l.settingsBlockFactCannotUndo,
                       ],
-                      action: 'Block',
-                      busyLabel: 'Blocking…',
+                      action: l.settingsBlockAction,
+                      busyLabel: l.settingsBlockBusy,
                       onConfirm: () => _run(_Intent.block, partner),
                     ),
                   },
@@ -149,11 +152,11 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
     );
   }
 
-  List<Widget> _choices(MemberView? partner) => [
+  List<Widget> _choices(L l, MemberView? partner) => [
     Padding(
       padding: todayInset,
       child: Text(
-        'Ending this',
+        l.settingsLeaveHeadline,
         style: DsTextStyles.displayRitual.copyWith(
           color: DsColors.textOnRitualPrimary,
           fontSize: 28,
@@ -162,25 +165,22 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
       ),
     ),
     const SizedBox(height: DsSpacing.space3),
-    const _Quiet(
-      'Both of these end the Dynamic for both of you. Nothing happens until '
-      'you confirm.',
-    ),
+    _Quiet(l.settingsLeaveIntro),
     const SizedBox(height: DsSpacing.space8),
     Padding(
       padding: todayInset,
       child: SecondaryButton(
-        label: 'Leave',
+        label: l.settingsLeaveAction,
         onTap: () => setState(() => _confirming = _Intent.leave),
       ),
     ),
     const SizedBox(height: DsSpacing.space3),
-    const _Quiet('You stop taking part. No approval is needed.'),
+    _Quiet(l.settingsLeaveActionSupport),
     const SizedBox(height: DsSpacing.space6),
     Padding(
       padding: todayInset,
       child: SecondaryButton(
-        label: 'Block',
+        label: l.settingsBlockAction,
         onTap: partner == null
             ? () {}
             : () => setState(() => _confirming = _Intent.block),
@@ -189,8 +189,8 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
     const SizedBox(height: DsSpacing.space3),
     _Quiet(
       partner == null
-          ? 'There is no one here to block yet.'
-          : 'You leave, and they cannot reach you here again.',
+          ? l.settingsBlockActionSupportNoPartner
+          : l.settingsBlockActionSupport,
     ),
     if (_failure != null) ...[
       const SizedBox(height: DsSpacing.space6),
@@ -237,7 +237,7 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
     Padding(
       padding: todayInset,
       child: SecondaryButton(
-        label: 'Go back',
+        label: L.of(context).settingsGoBack,
         onTap: _busy ? () {} : () => setState(() => _confirming = _Intent.none),
       ),
     ),
@@ -329,7 +329,7 @@ class _TopBar extends StatelessWidget {
               Icons.close,
               size: 22,
               color: DsColors.textOnRitualMuted,
-              semanticLabel: 'Close',
+              semanticLabel: L.of(context).settingsClose,
             ),
           ),
         ],

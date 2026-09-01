@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// The one action a screen is asking for.
 ///
 /// Promoted from `SecondaryButton(filled: true)` once three entrance screens
@@ -41,7 +43,9 @@ class DsPrimaryButton extends StatelessWidget {
       enabled: enabled,
       // Without this a screen reader announces a working button as an
       // ordinary one, and the person taps again.
-      label: busy ? '${busyLabel ?? label}, working' : label,
+      label: busy
+          ? L.of(context).shellButtonWorking(busyLabel ?? label)
+          : label,
       excludeSemantics: true,
       child: SizedBox(
         height: DsControlSizes.button,

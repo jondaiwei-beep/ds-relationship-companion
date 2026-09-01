@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 /// Where this invitation stands: Pending → Accepted → Expired → Revoked.
 ///
 /// The contract calls this the screen's "lifecycle geometry" and asks that it
@@ -21,10 +23,21 @@ class LifecycleTrack extends StatelessWidget {
   /// A last-known position, shown as an outline.
   final int? cached;
 
-  static const _labels = ['Pending', 'Accepted', 'Expired', 'Revoked'];
+  /// The four positions, in order. Read from the locale rather than held as
+  /// a constant: the track's geometry is fixed, its words are not.
+  static List<String> _labelsOf(BuildContext context) {
+    final l = L.of(context);
+    return [
+      l.inviteLifecyclePending,
+      l.inviteLifecycleAccepted,
+      l.inviteLifecycleExpired,
+      l.inviteLifecycleRevoked,
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final labels = _labelsOf(context);
     return Column(
       children: [
         SizedBox(
@@ -42,7 +55,7 @@ class LifecycleTrack extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  for (final i in List.generate(_labels.length, (i) => i))
+                  for (final i in List.generate(labels.length, (i) => i))
                     _Node(
                       filled: i == current,
                       outlined: i == cached,
@@ -58,7 +71,7 @@ class LifecycleTrack extends StatelessWidget {
         // push each other off the 390dp viewport.
         Row(
           children: [
-            for (final (i, label) in _labels.indexed)
+            for (final (i, label) in labels.indexed)
               Expanded(
                 child: Text(
                   label,

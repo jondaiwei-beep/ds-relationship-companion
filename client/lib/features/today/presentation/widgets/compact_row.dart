@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain_client/models/today_view.dart';
@@ -84,7 +85,7 @@ class CompactRow extends StatelessWidget {
                   ),
                   const SizedBox(height: DsSpacing.space1),
                   Text(
-                    itemMeta(item, zone: zone),
+                    itemMeta(L.of(context), item, zone: zone),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(

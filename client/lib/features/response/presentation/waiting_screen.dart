@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../domain_client/models/occurrence_view.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// SCR-02 and SCR-03 — the two ends of one moment.
 ///
@@ -30,7 +31,9 @@ class WaitingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final partner = occurrence.partnerDisplayName ?? 'your partner';
+    final l = L.of(context);
+    final partner =
+        occurrence.partnerDisplayName ?? l.responseWaitingYourPartner;
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -41,13 +44,15 @@ class WaitingScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _Header(
-                  title: _answered ? 'Acknowledgement' : occurrence.title,
+                  title: _answered
+                      ? l.responseWaitingHeaderAnswered
+                      : occurrence.title,
                   // Present tense, not a promise. "$partner will respond"
                   // commits another human to an action they have not taken,
                   // which is the app speaking for them.
                   presence: _answered
-                      ? '$partner is present'
-                      : 'Waiting for $partner',
+                      ? l.responsePartnerPresent(partner)
+                      : l.responseWaitingPresenceWaiting(partner),
                 ),
                 const SizedBox(height: DsSpacing.space6),
                 const Center(
@@ -80,7 +85,9 @@ class WaitingScreen extends StatelessWidget {
                   ),
                 const SizedBox(height: DsSpacing.space10),
                 DsPrimaryButton(
-                  label: _answered ? 'Close ritual' : 'Return to Today',
+                  label: _answered
+                      ? l.responseWaitingCloseRitual
+                      : l.responseWaitingReturnToToday,
                   onPressed: onClose,
                 ),
                 const SizedBox(height: DsSpacing.space6),
@@ -107,12 +114,13 @@ class _Waiting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Center(
           child: Text(
-            'Your service\nis recorded.',
+            l.responseWaitingRecorded,
             textAlign: TextAlign.center,
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
@@ -123,7 +131,7 @@ class _Waiting extends StatelessWidget {
           const SizedBox(height: DsSpacing.space4),
           Center(
             child: Text(
-              'COMPLETED AT ${_clock(at.toLocal())}',
+              l.responseWaitingCompletedAt(_clock(at.toLocal())),
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
                 fontSize: 10,
@@ -139,8 +147,7 @@ class _Waiting extends StatelessWidget {
           child: Text(
             // Says the moment is unfinished, and says who finishes it. Never
             // "done", never a tick, never anything that reads as closure.
-            'Your part is complete.\n'
-            "$partner has not responded yet.",
+            l.responseWaitingNotYetAnswered(partner),
             textAlign: TextAlign.center,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualSecondary,
@@ -168,6 +175,7 @@ class _Progress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       children: [
         SizedBox(
@@ -201,7 +209,7 @@ class _Progress extends StatelessWidget {
           children: [
             Flexible(
               child: Text(
-                'COMPLETED',
+                l.responseWaitingNodeCompleted,
                 style: DsTextStyles.labelRitual.copyWith(
                   color: DsColors.textOnRitualMuted,
                   fontSize: 10,
@@ -211,7 +219,7 @@ class _Progress extends StatelessWidget {
             ),
             Flexible(
               child: Text(
-                'WAITING FOR ${partner.toUpperCase()}',
+                l.responseWaitingNodeWaitingFor(partner.toUpperCase()),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.right,
@@ -266,6 +274,7 @@ class _Answered extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final words = acknowledgement.text.trim();
     // The sender on the acknowledgement itself, not whoever the occurrence
     // calls the partner. `ui-invariants.md`: "received screen attributes the
@@ -278,7 +287,7 @@ class _Answered extends StatelessWidget {
       children: [
         Center(
           child: Text(
-            'You are seen.',
+            l.responseAnsweredTitle,
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
             ),
@@ -300,8 +309,8 @@ class _Answered extends StatelessWidget {
               const SizedBox(height: DsSpacing.space5),
               Text(
                 sender == null
-                    ? 'This was acknowledged.'
-                    : '$sender acknowledged this.',
+                    ? l.responseAnsweredWordlessAnonymous
+                    : l.responseAnsweredWordlessNamed(sender),
                 textAlign: TextAlign.center,
                 style: DsTextStyles.bodyPrimary.copyWith(
                   color: DsColors.textOnRitualSecondary,
@@ -323,7 +332,7 @@ class _Answered extends StatelessWidget {
         const SizedBox(height: DsSpacing.space8),
         Center(
           child: Text(
-            'RECEIVED AT ${_clock(acknowledgement.sentAt.toLocal())}',
+            l.responseReceivedAt(_clock(acknowledgement.sentAt.toLocal())),
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 10,
@@ -349,7 +358,7 @@ class _PrivateNote extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'PRIVATE NOTE · ONLY YOU',
+          L.of(context).responsePrivateNoteLabel,
           style: DsTextStyles.labelRitual.copyWith(
             color: DsColors.textOnRitualMuted,
             fontSize: 10,

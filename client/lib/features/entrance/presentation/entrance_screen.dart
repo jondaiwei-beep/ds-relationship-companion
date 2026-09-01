@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../l10n/app_localizations.dart';
 import 'widgets/descending_thread.dart';
 import 'widgets/trust_footer.dart';
 
@@ -86,14 +87,23 @@ class EntranceScreen extends StatelessWidget {
 /// Deliberately not an error type: an ended session is not a failure, and the
 /// entrance never accuses. Each carries the exact line the design specifies.
 enum EntranceNotice {
-  checking("Checking your session…"),
-  sessionEnded('Your session ended. Enter again when you are ready.'),
-  offline("You're offline. Connect to continue."),
-  unreachable("We couldn't reach the server. Try again.");
+  checking,
+  sessionEnded,
+  offline,
+  unreachable;
 
-  const EntranceNotice(this.line);
-
-  final String line;
+  /// The sentence, in the reader's language. The enum names the situation and
+  /// the locale supplies the words, so the entrance speaks the language of the
+  /// person who reached it rather than the one it was written in.
+  String line(BuildContext context) {
+    final l = L.of(context);
+    return switch (this) {
+      EntranceNotice.checking => l.entranceNoticeChecking,
+      EntranceNotice.sessionEnded => l.entranceNoticeSessionEnded,
+      EntranceNotice.offline => l.entranceNoticeOffline,
+      EntranceNotice.unreachable => l.entranceNoticeUnreachable,
+    };
+  }
 
   /// Only a genuine failure is coloured as one. Offline and an ended session
   /// are facts about the world, not mistakes anyone made.
@@ -130,6 +140,7 @@ class _EntranceBody extends StatelessWidget {
     //
     // Only the breathing room yields — never type, targets or the mark.
 
+    final l = L.of(context);
     return Container(
       constraints: BoxConstraints(minHeight: minHeight),
       padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space6),
@@ -150,7 +161,7 @@ class _EntranceBody extends StatelessWidget {
           // composition 46dp up against the design — measured, not guessed.
           const Spacer(flex: 26),
           Text(
-            'Companion',
+            l.entranceWordmark,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -168,7 +179,7 @@ class _EntranceBody extends StatelessWidget {
           const DescendingThread(height: 130),
           const Spacer(flex: 32),
           Text(
-            'A private space,\non your terms.',
+            l.entranceHeadline,
             textAlign: TextAlign.center,
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
@@ -176,7 +187,7 @@ class _EntranceBody extends StatelessWidget {
           ),
           const Spacer(flex: 26),
           Text(
-            'Private. Considered. Yours.',
+            l.entranceTagline,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
               letterSpacing: 2.6,
@@ -188,8 +199,8 @@ class _EntranceBody extends StatelessWidget {
             const SizedBox(height: DsSpacing.space5),
           ],
           DsPrimaryButton(
-            label: 'Continue',
-            busyLabel: 'Opening',
+            label: l.entranceContinue,
+            busyLabel: l.entranceContinueBusy,
             busy: busy,
             onPressed: onContinue,
           ),
@@ -197,7 +208,7 @@ class _EntranceBody extends StatelessWidget {
           TextButton(
             onPressed: busy ? null : onSignIn,
             child: Text(
-              'I already have an account',
+              l.entranceHaveAccount,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualSecondary,
                 fontWeight: FontWeight.w500,
@@ -231,7 +242,7 @@ class _Notice extends StatelessWidget {
         borderRadius: BorderRadius.circular(DsRadii.medium),
       ),
       child: Text(
-        notice.line,
+        notice.line(context),
         textAlign: TextAlign.center,
         style: DsTextStyles.bodySecondary.copyWith(
           color: notice.isFailure

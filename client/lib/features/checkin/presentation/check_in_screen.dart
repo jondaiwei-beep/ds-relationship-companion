@@ -8,6 +8,7 @@ import '../../../app/shell/ds_text_field.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/check_in_view.dart';
 import '../../../domain_client/models/dynamic_view.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../dynamic/presentation/dynamic_screen.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
@@ -57,9 +58,11 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
     super.dispose();
   }
 
-  /// The chip that is lit, from the stored domain value.
-  String? get _energyLabel {
-    for (final e in _energies) {
+  /// The chip that is lit, from the stored domain value. The value in state
+  /// is always the wire constant, so switching language relights the same
+  /// chip rather than losing the answer.
+  String? _energyLabel(L l) {
+    for (final e in _energies(l)) {
       if (e.value == _energy) return e.label;
     }
     return null;
@@ -104,8 +107,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
       if (!mounted) return;
       setState(() {
         _busy = false;
-        _failure = 'That did not reach the server. Nothing was saved — try '
-            'again.';
+        _failure = L.of(context).checkInSaveFailed;
       });
     }
   }
@@ -116,6 +118,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
     // stay writable while the Dynamic detail is still loading or failed —
     // being unable to say "I am running low" because a name did not resolve
     // would be the wrong failure entirely.
+    final l = L.of(context);
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
     final partner = detail.hasValue ? _partnerIn(detail.value!) : null;
 
@@ -133,7 +136,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                     Padding(
                       padding: todayInset,
                       child: Text(
-                        'How are you, right now?',
+                        l.checkInHeadline,
                         style: DsTextStyles.displayRitual.copyWith(
                           color: DsColors.textOnRitualPrimary,
                           fontSize: 28,
@@ -145,7 +148,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                     Padding(
                       padding: todayInset,
                       child: Text(
-                        'Answer as much or as little as you want.',
+                        l.checkInSupport,
                         style: DsTextStyles.bodySecondary.copyWith(
                           color: DsColors.textOnRitualMuted,
                           fontSize: todaySupportSize,
@@ -156,28 +159,28 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                     const SizedBox(height: DsSpacing.space8),
 
                     _Choice(
-                      label: 'MOOD',
-                      options: _moods,
+                      label: l.checkInMoodSection,
+                      options: _moods(l),
                       value: _mood,
                       enabled: !_busy,
                       onChanged: (v) => setState(() => _mood = v),
                     ),
                     _Choice(
-                      label: 'ENERGY',
-                      options: [for (final e in _energies) e.label],
-                      value: _energyLabel,
+                      label: l.checkInEnergySection,
+                      options: [for (final e in _energies(l)) e.label],
+                      value: _energyLabel(l),
                       enabled: !_busy,
                       onChanged: (v) => setState(() {
                         _energy = v == null
                             ? null
-                            : _energies
+                            : _energies(l)
                                   .firstWhere((e) => e.label == v)
                                   .value;
                       }),
                     ),
                     _Choice(
-                      label: 'WHAT WOULD HELP',
-                      options: _needs,
+                      label: l.checkInNeedSection,
+                      options: _needs(l),
                       value: _need,
                       enabled: !_busy,
                       onChanged: (v) => setState(() => _need = v),
@@ -187,7 +190,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                     Padding(
                       padding: todayInset,
                       child: Text(
-                        'ANYTHING ELSE (OPTIONAL)',
+                        l.checkInNoteSection,
                         style: DsTextStyles.labelRitual.copyWith(
                           color: DsColors.textOnRitualMuted,
                         ),
@@ -199,7 +202,7 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                       child: DsTextField(
                         label: '',
                         controller: _note,
-                        hint: 'In your own words',
+                        hint: l.checkInNoteHint,
                         enabled: !_busy,
                       ),
                     ),
@@ -244,9 +247,9 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
                   ),
                 ),
                 child: DsPrimaryButton(
-                  label: 'Save',
+                  label: l.checkInSave,
                   busy: _busy,
-                  busyLabel: 'Saving…',
+                  busyLabel: l.checkInSaving,
                   onPressed: (!_hasAnything || _busy) ? null : _save,
                 ),
               ),
@@ -274,14 +277,28 @@ class _CheckInScreenState extends ConsumerState<CheckInScreen> {
 // Mood and need are free text on the server. Energy is not — the column has a
 // CHECK constraint of LOW/STEADY/HIGH, so anything else is a 500 at save
 // time, which is what "Full"/"Running low"/"Empty" produced against staging.
-// The label is what a person reads; the value is what the domain allows.
-const _moods = ['Good', 'Steady', 'Low', 'Tender', 'Raw'];
-const _needs = ['Nothing', 'Closeness', 'Space', 'Structure', 'To be asked'];
+// The label is what a person reads; the value is what the domain allows, and
+// only the label is translated.
+List<String> _moods(L l) => [
+  l.checkInMoodGood,
+  l.checkInMoodSteady,
+  l.checkInMoodLow,
+  l.checkInMoodTender,
+  l.checkInMoodRaw,
+];
 
-const _energies = <({String label, String value})>[
-  (label: 'High', value: 'HIGH'),
-  (label: 'Steady', value: 'STEADY'),
-  (label: 'Running low', value: 'LOW'),
+List<String> _needs(L l) => [
+  l.checkInNeedNothing,
+  l.checkInNeedCloseness,
+  l.checkInNeedSpace,
+  l.checkInNeedStructure,
+  l.checkInNeedToBeAsked,
+];
+
+List<({String label, String value})> _energies(L l) => [
+  (label: l.checkInEnergyHigh, value: 'HIGH'),
+  (label: l.checkInEnergySteady, value: 'STEADY'),
+  (label: l.checkInEnergyLow, value: 'LOW'),
 ];
 
 class _Choice extends StatelessWidget {
@@ -380,9 +397,10 @@ class _Visibility extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final shareLabel = partnerName == null
-        ? 'Share'
-        : 'Share with $partnerName';
+        ? l.checkInVisibilityShare
+        : l.checkInVisibilityShareWith(partnerName!);
 
     return Padding(
       padding: todayInset,
@@ -390,7 +408,7 @@ class _Visibility extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'WHO CAN SEE THIS',
+            l.checkInVisibilitySection,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -404,7 +422,7 @@ class _Visibility extends StatelessWidget {
             runSpacing: DsSpacing.space3,
             children: [
               _Option(
-                label: 'Only me',
+                label: l.checkInVisibilityPrivate,
                 selected: value == CheckInVisibility.private,
                 onTap: enabled
                     ? () => onChanged(CheckInVisibility.private)
@@ -423,11 +441,10 @@ class _Visibility extends StatelessWidget {
           const SizedBox(height: DsSpacing.space3),
           Text(
             value == CheckInVisibility.private
-                ? 'Kept to yourself. Nothing about it reaches anyone else.'
+                ? l.checkInVisibilityPrivateSupport
                 : partnerName == null
-                ? 'There is no one to share with yet.'
-                : '$partnerName will be able to read this. It cannot be '
-                      'unshared afterwards.',
+                ? l.checkInVisibilityNoPartnerSupport
+                : l.checkInVisibilitySharedSupport(partnerName!),
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: todaySupportSize,
@@ -503,7 +520,7 @@ class _TopBar extends StatelessWidget {
             onTap: onCancel,
             behavior: HitTestBehavior.opaque,
             child: Text(
-              'Cancel',
+              L.of(context).checkInCancel,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
@@ -511,7 +528,7 @@ class _TopBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Check in',
+              L.of(context).checkInTitle,
               textAlign: TextAlign.center,
               style: DsTextStyles.bodyPrimary.copyWith(
                 color: DsColors.textOnRitualPrimary,

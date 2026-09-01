@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dsapp/app/providers.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/platform/storage/auth_flow_store.dart';
 import 'package:dsapp/features/entrance/presentation/sign_in_screen.dart';
@@ -76,6 +77,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: SignInScreen(
             onSignedIn: onSignedIn ?? () {},
             onCreateAccount: () {},

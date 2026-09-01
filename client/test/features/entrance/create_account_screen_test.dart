@@ -1,4 +1,5 @@
 import 'package:dsapp/app/providers.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/features/entrance/presentation/create_account_screen.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: CreateAccountScreen(
             onCreated: onCreated ?? () {},
             onSignIn: () {},

@@ -3,6 +3,7 @@ import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/attention_view.dart';
 import 'package:dsapp/domain_client/repositories/occurrence_repository.dart';
 import 'package:dsapp/features/response/presentation/attention_screen.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -61,6 +62,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: AttentionScreen(
             view: view,
             partnerName: 'Morgan',

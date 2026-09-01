@@ -14,6 +14,8 @@ import 'package:dsapp/platform/session/session_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 /// The journey a real person takes on their first run, through the real
@@ -59,6 +61,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp.router(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           theme: DsTheme.ritual(),
           routerConfig: router,
         ),

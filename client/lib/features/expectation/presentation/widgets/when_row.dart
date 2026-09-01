@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../today/presentation/widgets/today_layout.dart';
@@ -61,7 +62,7 @@ class WhenRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  value == null ? 'Anytime' : _label(value!),
+                  value == null ? L.of(context).whenAnytime : _label(value!, L.of(context).whenToday),
                   style: DsTextStyles.displayRitual.copyWith(
                     color: value == null
                         ? DsColors.textOnRitualMuted
@@ -93,7 +94,7 @@ class WhenRow extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: DsSpacing.space4),
               child: Text(
-                'Clear',
+                L.of(context).whenClear,
                 style: DsTextStyles.bodySecondary.copyWith(
                   color: DsColors.textOnRitualMuted,
                 ),
@@ -105,13 +106,13 @@ class WhenRow extends StatelessWidget {
   }
 }
 
-String _label(DateTime d) {
+String _label(DateTime d, String todayWord) {
   final now = DateTime.now();
   final sameDay = d.year == now.year && d.month == now.month && d.day == now.day;
   final hh = d.hour % 12 == 0 ? 12 : d.hour % 12;
   final mm = d.minute.toString().padLeft(2, '0');
   final ampm = d.hour < 12 ? 'AM' : 'PM';
-  final when = sameDay ? 'Today' : '${d.year}-${_two(d.month)}-${_two(d.day)}';
+  final when = sameDay ? todayWord : '${d.year}-${_two(d.month)}-${_two(d.day)}';
   return '$when · $hh:$mm $ampm';
 }
 

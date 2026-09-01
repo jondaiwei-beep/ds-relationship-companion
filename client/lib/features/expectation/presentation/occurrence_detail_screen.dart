@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../app/shell/ds_text_field.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../domain_client/models/occurrence.dart';
 import '../../../domain_client/models/occurrence_view.dart';
 import '../../today/application/today_actions.dart';
@@ -99,6 +100,7 @@ class _OccurrenceDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final occurrence = ref.watch(occurrenceProvider(widget.occurrenceId));
 
     return Scaffold(
@@ -109,9 +111,9 @@ class _OccurrenceDetailScreenState
             skipLoadingOnReload: true,
             loading: () => _Frame(
               onClose: widget.onClose,
-              children: const [
-                SizedBox(height: DsSpacing.space10),
-                _Quiet('Confirming this with the server.'),
+              children: [
+                const SizedBox(height: DsSpacing.space10),
+                _Quiet(l.detailConfirming),
               ],
             ),
             error: (error, _) => _Frame(
@@ -120,9 +122,8 @@ class _OccurrenceDetailScreenState
                 const SizedBox(height: DsSpacing.space10),
                 _Quiet(
                   _isAuthLoss(error)
-                      ? 'Your private session needs to be restored. Nothing '
-                            'about this is shown until it is.'
-                      : 'This could not be loaded. Nothing was changed.',
+                      ? l.detailSessionEnded
+                      : l.detailCouldNotLoad,
                   prominent: true,
                 ),
                 const SizedBox(height: DsSpacing.space6),
@@ -130,7 +131,7 @@ class _OccurrenceDetailScreenState
                   Padding(
                     padding: todayInset,
                     child: SecondaryButton(
-                      label: 'Try again',
+                      label: l.recoveryTryAgain,
                       onTap: () => ref.invalidate(
                         occurrenceProvider(widget.occurrenceId),
                       ),
@@ -146,6 +147,7 @@ class _OccurrenceDetailScreenState
   }
 
   Widget _loaded(OccurrenceView view) {
+    final l = L.of(context);
     final actions = view.allowedActions;
     final canComplete = actions.contains('complete');
     final adjustments = [
@@ -163,7 +165,7 @@ class _OccurrenceDetailScreenState
       onClose: widget.onClose,
       children: [
         if (view.dueAt != null) ...[
-          _Label('DUE'),
+          _Label(l.detailDue),
           Padding(
             padding: todayInset,
             child: Text(
@@ -203,7 +205,7 @@ class _OccurrenceDetailScreenState
                 const SizedBox(width: DsSpacing.space2),
                 Flexible(
                   child: Text(
-                    'Set by ${view.partnerDisplayName}',
+                    l.detailSetBy(view.partnerDisplayName!),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(
@@ -218,7 +220,7 @@ class _OccurrenceDetailScreenState
 
         if (view.purpose != null) ...[
           const SizedBox(height: DsSpacing.space8),
-          _Label('INTENTION'),
+          _Label(l.detailIntention),
           Padding(
             padding: todayInset,
             child: Text(
@@ -237,7 +239,7 @@ class _OccurrenceDetailScreenState
         // anywhere the other person can see.
         if (view.privateNote != null) ...[
           const SizedBox(height: DsSpacing.space8),
-          _Label('PRIVATE NOTE · ONLY YOU'),
+          _Label(l.detailPrivateNote),
           Padding(
             padding: todayInset,
             child: Text(
@@ -257,13 +259,13 @@ class _OccurrenceDetailScreenState
         const SizedBox(height: DsSpacing.space8),
 
         if (canComplete) ...[
-          _Label('COMPLETION NOTE (OPTIONAL)'),
+          _Label(l.detailCompletionNote),
           Padding(
             padding: todayInset,
             child: DsTextField(
               label: '',
               controller: _note,
-              hint: 'What did you attend to?',
+              hint: l.detailCompletionHint,
               enabled: _busy == null,
             ),
           ),
@@ -271,9 +273,9 @@ class _OccurrenceDetailScreenState
           Padding(
             padding: todayInset,
             child: DsPrimaryButton(
-              label: 'Mark complete',
+              label: l.detailMarkComplete,
               busy: _busy == TodayAction.complete,
-              busyLabel: 'Completing…',
+              busyLabel: l.detailCompleting,
               onPressed: _busy != null
                   ? null
                   : () => _run(TodayAction.complete),
@@ -281,7 +283,7 @@ class _OccurrenceDetailScreenState
           ),
           if (view.partnerDisplayName != null) ...[
             const SizedBox(height: DsSpacing.space3),
-            _Quiet('${view.partnerDisplayName} will see this.'),
+            _Quiet(l.detailPartnerWillSee(view.partnerDisplayName!)),
           ],
         ],
 
@@ -304,7 +306,7 @@ class _OccurrenceDetailScreenState
                         vertical: DsSpacing.space2,
                       ),
                       child: Text(
-                        _busy == a ? '…' : _adjustmentLabel(a),
+                        _busy == a ? '…' : _adjustmentLabel(l, a),
                         style: DsTextStyles.bodySecondary.copyWith(
                           color: DsColors.textOnRitualSecondary,
                         ),
@@ -317,26 +319,25 @@ class _OccurrenceDetailScreenState
         ],
 
         if (canWithdraw) ...[
-          _Quiet(_nothingToDo(view.state), prominent: true),
+          _Quiet(_nothingToDo(l, view.state), prominent: true),
           const SizedBox(height: DsSpacing.space5),
           Padding(
             padding: todayInset,
             child: SecondaryButton(
               label: _busy == TodayAction.withdraw
-                  ? 'Taking it back…'
-                  : 'Never mind, take it back',
+                  ? l.detailTakingItBack
+                  : l.detailTakeItBack,
               onTap: _busy != null
                   ? () {}
                   : () => _run(TodayAction.withdraw),
             ),
           ),
           const SizedBox(height: DsSpacing.space3),
-          const _Quiet(
-            'It goes back to how it was. Nothing is recorded as agreed or '
-            'refused.',
+          _Quiet(
+            l.detailTakeItBackNote,
           ),
         ] else if (!canComplete && adjustments.isEmpty) ...[
-          _Quiet(_nothingToDo(view.state), prominent: true),
+          _Quiet(_nothingToDo(l, view.state), prominent: true),
         ],
 
         if (_failure != null) ...[
@@ -352,24 +353,24 @@ class _OccurrenceDetailScreenState
 
 /// What the state means when there is nothing for this person to do — said
 /// plainly, and never as a fault.
-String _nothingToDo(OccurrenceState state) => switch (state) {
-  OccurrenceState.waitingAck => 'Done, and waiting for a human response.',
-  OccurrenceState.acknowledged => 'Answered. Nothing more is needed here.',
-  OccurrenceState.needToDiscuss => 'You asked to talk about this.',
-  OccurrenceState.rescheduleRequested => 'You asked for another time.',
-  OccurrenceState.excuseRequested => 'You said you could not do this.',
-  OccurrenceState.cancelled => 'This was cancelled.',
-  _ => 'Nothing is waiting on you here.',
+String _nothingToDo(L l, OccurrenceState state) => switch (state) {
+  OccurrenceState.waitingAck => l.nothingWaitingAck,
+  OccurrenceState.acknowledged => l.nothingAcknowledged,
+  OccurrenceState.needToDiscuss => l.nothingDiscussing,
+  OccurrenceState.rescheduleRequested => l.nothingRescheduling,
+  OccurrenceState.excuseRequested => l.nothingExcusing,
+  OccurrenceState.cancelled => l.nothingCancelled,
+  _ => l.nothingDefault,
 };
 
-String _adjustmentLabel(TodayAction a) => switch (a) {
-  TodayAction.discuss => 'Discuss',
-  TodayAction.requestNewTime => 'New time',
-  TodayAction.cantDo => "Can't do",
-  TodayAction.complete => 'Complete',
+String _adjustmentLabel(L l, TodayAction a) => switch (a) {
+  TodayAction.discuss => l.actionDiscuss,
+  TodayAction.requestNewTime => l.actionNewTime,
+  TodayAction.cantDo => l.actionCantDo,
+  TodayAction.complete => l.actionComplete,
   // Never rendered in the adjustment row: withdrawing is offered on its own,
   // because it is the only thing available when it is available at all.
-  TodayAction.withdraw => 'Take it back',
+  TodayAction.withdraw => l.actionTakeItBack,
 };
 
 bool _isAuthLoss(Object error) =>
@@ -476,6 +477,7 @@ class _Acknowledgement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: todayInset,
       child: Container(
@@ -489,8 +491,10 @@ class _Acknowledgement extends StatelessWidget {
           children: [
             Text(
               value.senderDisplayName == null
-                  ? 'THEIR WORDS'
-                  : '${value.senderDisplayName!.toUpperCase()} WROTE',
+                  ? l.detailTheirWords
+                  : l.detailPersonWrote(
+                      value.senderDisplayName!.toUpperCase(),
+                    ),
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualRelationshipLarge,
               ),

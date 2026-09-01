@@ -5,6 +5,7 @@ import 'package:dsapp/app/home_resolver.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/dynamic_summary.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -64,6 +65,8 @@ void main() {
       ProviderScope(
         overrides: [dynamicRepositoryProvider.overrideWithValue(repo)],
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: HomeResolver(
             onDynamic: opened.add,
             onNoDynamic: () => noDynamic.add(null),
@@ -151,6 +154,8 @@ void main() {
         ProviderScope(
           overrides: [dynamicRepositoryProvider.overrideWithValue(never)],
           child: MaterialApp(
+            localizationsDelegates: L.localizationsDelegates,
+            supportedLocales: L.supportedLocales,
             home: HomeResolver(
               onDynamic: (_) {},
               onNoDynamic: () {},

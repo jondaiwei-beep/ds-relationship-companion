@@ -18,18 +18,19 @@ enum HumanResponse {
   /// Two taps, no words. The floor `REQ-ACK-001` sets: a person who has
   /// nothing to add must still be able to answer, because silence and
   /// acknowledgement are different things and only one of them closes a loop.
-  acknowledge('ACKNOWLEDGE', 'Acknowledge', wordsRequired: false),
-  praise('PRAISE', 'Praise', wordsRequired: false),
+  acknowledge('ACKNOWLEDGE', wordsRequired: false),
+  praise('PRAISE', wordsRequired: false),
 
   /// Words by definition. An empty comment is not a quiet comment, it is
   /// nothing — and the server refuses it with `TEXT_REQUIRED`.
-  comment('COMMENT', 'Comment', wordsRequired: true),
-  review('REVIEW', 'Review', wordsRequired: true);
+  comment('COMMENT', wordsRequired: true),
+  review('REVIEW', wordsRequired: true);
 
-  const HumanResponse(this.wire, this.label, {required this.wordsRequired});
+  const HumanResponse(this.wire, {required this.wordsRequired});
 
+  /// The value the server stores. Never shown to anyone.
   final String wire;
-  final String label;
+
   final bool wordsRequired;
 }
 
@@ -54,9 +55,17 @@ class ResponseNeedsWords extends ResponseOutcome {
   const ResponseNeedsWords();
 }
 
-class ResponseFailed extends ResponseOutcome {
-  const ResponseFailed(this.message);
+/// Why a send did not land, in terms the UI can translate. This layer has no
+/// `BuildContext`, so the reason travels and the screen chooses the words.
+enum ResponseFailureReason { offline, unknown }
 
+class ResponseFailed extends ResponseOutcome {
+  const ResponseFailed(this.reason, this.message);
+
+  final ResponseFailureReason reason;
+
+  /// The English sentence, kept for logs and tests. Screens render `reason`
+  /// through the localisations instead.
   final String message;
 }
 
@@ -108,6 +117,7 @@ class ResponseActions {
       return _classify(e);
     } catch (_) {
       return const ResponseFailed(
+        ResponseFailureReason.unknown,
         "We couldn't send that just now. Try again.",
       );
     }
@@ -116,6 +126,7 @@ class ResponseActions {
   ResponseOutcome _classify(DioException e) {
     if (_isOffline(e)) {
       return const ResponseFailed(
+        ResponseFailureReason.offline,
         "You're offline. Connect to the internet, then try again.",
       );
     }
@@ -132,7 +143,10 @@ class ResponseActions {
       'OCCURRENCE_NOT_WAITING_ACK' ||
       'OCCURRENCE_NOT_ACTIVE' =>
         const ResponseAlreadySent(),
-      _ => const ResponseFailed("We couldn't send that just now. Try again."),
+      _ => const ResponseFailed(
+          ResponseFailureReason.unknown,
+          "We couldn't send that just now. Try again.",
+        ),
     };
   }
 

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../app/shell/ds_text_field.dart';
+import '../../../l10n/app_localizations.dart';
 import '../application/auth_actions.dart';
 import 'widgets/descending_thread.dart';
 import 'widgets/entrance_header.dart';
@@ -40,12 +41,18 @@ class SignInScreen extends ConsumerStatefulWidget {
 /// How the person got here.
 enum SignInNotice {
   /// A protected destination sent them. Stated as a request, not a refusal.
-  authorizationLost('Please sign in to continue.'),
-  offline("You're offline. Connect, then try again.");
+  authorizationLost,
+  offline;
 
-  const SignInNotice(this.line);
-
-  final String line;
+  /// The sentence, in the reader's language.
+  String line(BuildContext context) {
+    final l = L.of(context);
+    return switch (this) {
+      SignInNotice.authorizationLost =>
+        l.entranceSignInNoticeAuthorizationLost,
+      SignInNotice.offline => l.entranceSignInNoticeOffline,
+    };
+  }
 }
 
 enum _Mode { password, link, linkSent }
@@ -58,7 +65,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   bool _busy = false;
   bool _reveal = false;
   AuthField? _failedField;
-  String? _message;
+
+  /// The sentence the last outcome named, held as a key so it re-resolves
+  /// against the current locale rather than freezing English into state.
+  AuthMessage? _message;
 
   @override
   void dispose() {
@@ -101,21 +111,21 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     switch (outcome) {
       case AuthSucceeded():
         widget.onSignedIn();
-      case AuthFailed(:final message, :final field):
+      case AuthFailed(:final key, :final field):
         setState(() {
-          _message = message;
+          _message = key;
           _failedField = field;
           _forgetPassword();
         });
-      case AuthUncertain(:final message):
+      case AuthUncertain(:final key):
         setState(() {
-          _message = message;
+          _message = key;
           _forgetPassword();
         });
       case AuthLinkSent():
         // A password sign-in never sends a link.
         setState(() {
-          _message = 'Something unexpected happened. Try again.';
+          _message = AuthMessage.unexpected;
           _forgetPassword();
         });
     }
@@ -140,9 +150,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         // Always, whether or not the address has an account. Saying "no such
         // account" here would let anyone test who has one.
         setState(() => _mode = _Mode.linkSent);
-      case AuthFailed(:final message, :final field):
+      case AuthFailed(:final key, :final field):
         setState(() {
-          _message = message;
+          _message = key;
           _failedField = field;
         });
       case AuthUncertain():
@@ -152,7 +162,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         setState(() => _mode = _Mode.linkSent);
       case AuthSucceeded():
         // Not reachable: requesting a link never authenticates.
-        setState(() => _message = 'Something unexpected happened. Try again.');
+        setState(() => _message = AuthMessage.unexpected);
     }
   }
 
@@ -228,7 +238,7 @@ class _Form extends StatelessWidget {
   final bool busy;
   final bool reveal;
   final SignInNotice? notice;
-  final String? message;
+  final AuthMessage? message;
   final AuthField? failedField;
   final VoidCallback onToggleReveal;
   final VoidCallback onSubmit;
@@ -238,7 +248,9 @@ class _Form extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final linkMode = mode == _Mode.link;
+    final error = message == null ? null : entranceMessage(l, message!);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -247,32 +259,32 @@ class _Form extends StatelessWidget {
           // The eyebrow is dropped when a notice explains the visit instead:
           // "Welcome back" above "Please sign in to continue" says the same
           // thing twice, and the second one is the true one.
-          eyebrow: notice == null ? 'Welcome back' : '',
-          headline: 'Return to your space.',
+          eyebrow: notice == null ? l.entranceSignInEyebrow : '',
+          headline: l.entranceSignInHeadline,
         ),
         if (notice case final notice?) ...[
-          _Notice(notice.line),
+          _Notice(notice.line(context)),
           const SizedBox(height: DsSpacing.space4),
         ],
         const Center(child: DescendingThread(height: 96)),
         const SizedBox(height: DsSpacing.space6),
 
         DsTextField(
-          label: 'EMAIL',
+          label: l.entranceFieldEmail,
           controller: email,
-          hint: 'you@example.com',
+          hint: l.entranceFieldEmailHint,
           enabled: !busy,
           keyboardType: TextInputType.emailAddress,
           textInputAction: linkMode ? TextInputAction.done : TextInputAction.next,
           autofillHints: const [AutofillHints.email],
-          error: failedField == AuthField.email ? message : null,
+          error: failedField == AuthField.email ? error : null,
           onSubmitted: linkMode ? (_) => onSubmit() : null,
         ),
 
         if (linkMode) ...[
           const SizedBox(height: DsSpacing.space5),
           Text(
-            "We'll send a one-time sign-in link\nto the email you enter.",
+            l.entranceLinkModeExplainer,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -280,24 +292,24 @@ class _Form extends StatelessWidget {
         ] else ...[
           const SizedBox(height: DsSpacing.space6),
           DsTextField(
-            label: 'PASSWORD',
+            label: l.entranceFieldPassword,
             controller: password,
             obscure: !reveal,
             onToggleObscure: onToggleReveal,
             enabled: !busy,
             textInputAction: TextInputAction.done,
             autofillHints: const [AutofillHints.password],
-            error: failedField == AuthField.password ? message : null,
+            error: failedField == AuthField.password ? error : null,
             onSubmitted: (_) => onSubmit(),
           ),
         ],
 
         // A refusal that belongs to neither field: the pair was not accepted,
         // and the screen never says which half was wrong.
-        if (message != null && failedField == null) ...[
+        if (error != null && failedField == null) ...[
           const SizedBox(height: DsSpacing.space4),
           Text(
-            message!,
+            error,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.stateError,
             ),
@@ -306,8 +318,8 @@ class _Form extends StatelessWidget {
 
         const SizedBox(height: DsSpacing.space6),
         DsPrimaryButton(
-          label: linkMode ? 'Send sign-in link' : 'Sign in',
-          busyLabel: linkMode ? 'Sending link' : 'Signing in',
+          label: linkMode ? l.entranceSendLink : l.entranceSignIn,
+          busyLabel: linkMode ? l.entranceSendLinkBusy : l.entranceSignInBusy,
           busy: busy,
           onPressed: onSubmit,
         ),
@@ -316,11 +328,14 @@ class _Form extends StatelessWidget {
         // Not "Forgot password?" — there is no password reset in this product.
         // The link is a way in, not an admission of failure (decision D8).
         _TextLink(
-          linkMode ? 'Use password instead' : 'Use an email sign-in link',
+          linkMode ? l.entranceUsePasswordInstead : l.entranceUseEmailLink,
           onPressed: busy ? null : onSwitchMode,
         ),
         if (!linkMode)
-          _TextLink('Create an account', onPressed: busy ? null : onCreateAccount),
+          _TextLink(
+            l.entranceCreateAccountLink,
+            onPressed: busy ? null : onCreateAccount,
+          ),
 
         const SizedBox(height: DsSpacing.space5),
         const TrustFooter(),
@@ -348,13 +363,14 @@ class _LinkSent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         EntranceHeader(
           onBack: onBack,
-          eyebrow: 'Check your email',
-          headline: 'A link is on its way.',
+          eyebrow: l.entranceLinkSentEyebrow,
+          headline: l.entranceLinkSentHeadline,
         ),
         // No glow: the light arrives when the link does, not now.
         const Center(child: DescendingThread(height: 78, glow: false)),
@@ -363,7 +379,7 @@ class _LinkSent extends StatelessWidget {
           // Conditional on purpose. Confirming that an address has an account
           // would let anyone check who is a member of this product, which on
           // this product is a disclosure about someone's private life.
-          "If this email can be used to sign in,\nwe'll send a link. Check your inbox\nand spam folder.",
+          l.entranceLinkSentBody,
           textAlign: TextAlign.center,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualSecondary,
@@ -373,14 +389,20 @@ class _LinkSent extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space10),
         DsPrimaryButton(
-          label: 'Resend link',
-          busyLabel: 'Sending link',
+          label: l.entranceResendLink,
+          busyLabel: l.entranceSendLinkBusy,
           busy: busy,
           onPressed: onResend,
         ),
         const SizedBox(height: DsSpacing.space4),
-        _TextLink('Use a different email', onPressed: busy ? null : onDifferentEmail),
-        _TextLink('Use password instead', onPressed: busy ? null : onUsePassword),
+        _TextLink(
+          l.entranceUseDifferentEmail,
+          onPressed: busy ? null : onDifferentEmail,
+        ),
+        _TextLink(
+          l.entranceUsePasswordInstead,
+          onPressed: busy ? null : onUsePassword,
+        ),
         const SizedBox(height: DsSpacing.space5),
         const TrustFooter(),
         const SizedBox(height: DsSpacing.space5),

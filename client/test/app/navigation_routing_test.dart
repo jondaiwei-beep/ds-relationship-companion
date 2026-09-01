@@ -14,6 +14,7 @@ import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -58,6 +59,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp.router(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           theme: DsTheme.ritual(),
           routerConfig: router,
         ),
@@ -130,6 +133,8 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: const MediaQuery(
           // A Samsung's navigation bar, which is where the labels landed.

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../platform/deeplink/callback_params.dart';
 import '../application/auth_actions.dart';
 import 'widgets/descending_thread.dart';
@@ -39,7 +40,11 @@ class AuthCallbackScreen extends ConsumerStatefulWidget {
 }
 
 class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
-  String? _failure;
+  /// The sentence to show, named rather than written: this screen may be the
+  /// first thing a person sees, opened from a mail client in whatever locale
+  /// their device is set to.
+  AuthMessage? _failure;
+
   bool _done = false;
 
   @override
@@ -56,7 +61,7 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
       // A callback with no token is a link that was truncated, rewritten by a
       // mail client, or opened from history after the fragment was dropped.
       setState(() {
-        _failure = 'That link is incomplete. Request a new one.';
+        _failure = AuthMessage.incompleteLink;
         _done = true;
       });
       return;
@@ -72,14 +77,14 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
       case AuthSucceeded():
         setState(() => _done = true);
         widget.onSignedIn();
-      case AuthFailed(:final message) || AuthUncertain(:final message):
+      case AuthFailed(:final key) || AuthUncertain(:final key):
         setState(() {
-          _failure = message;
+          _failure = key;
           _done = true;
         });
       case AuthLinkSent():
         setState(() {
-          _failure = "We couldn't complete that sign-in. Request a new link.";
+          _failure = AuthMessage.unexpectedLinkSent;
           _done = true;
         });
     }
@@ -87,6 +92,8 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
+    final failure = _failure == null ? null : entranceMessage(l, _failure!);
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -105,7 +112,9 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
                 ),
                 const SizedBox(height: DsSpacing.space5),
                 Text(
-                  _failure == null ? 'Signing you in' : 'Sign in',
+                  failure == null
+                      ? l.entranceCallbackEyebrowBusy
+                      : l.entranceCallbackEyebrowDone,
                   textAlign: TextAlign.center,
                   style: DsTextStyles.labelRitual.copyWith(
                     color: DsColors.textOnRitualMuted,
@@ -113,9 +122,9 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
                 ),
                 const SizedBox(height: DsSpacing.space5),
                 Text(
-                  _failure == null
-                      ? 'One moment.'
-                      : 'This link is finished.',
+                  failure == null
+                      ? l.entranceCallbackHeadlineBusy
+                      : l.entranceCallbackHeadlineDone,
                   textAlign: TextAlign.center,
                   style: DsTextStyles.displayRitual.copyWith(
                     color: DsColors.textOnRitualPrimary,
@@ -127,7 +136,7 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
                 ),
                 const SizedBox(height: DsSpacing.space8),
 
-                if (_failure case final failure?) ...[
+                if (failure != null) ...[
                   Text(
                     failure,
                     textAlign: TextAlign.center,
@@ -138,7 +147,7 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
                   ),
                   const SizedBox(height: DsSpacing.space8),
                   DsPrimaryButton(
-                    label: 'Request a new link',
+                    label: l.entranceRequestNewLink,
                     onPressed: widget.onRequestNewLink,
                   ),
                 ],

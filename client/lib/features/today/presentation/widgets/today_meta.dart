@@ -2,31 +2,36 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../../../domain_client/models/today_view.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Backend state names never reach a person. Every state a screen can receive
 /// has copy here; an unmapped one falls back to something neutral rather than
 /// leaking its identifier.
-String stateLabel(String state) => switch (state) {
-  'ACTIVE' => 'Today',
-  'WAITING_ACK' => 'Waiting for a reply',
-  'NEEDS_REVIEW' => 'Needs review',
-  'NEED_TO_DISCUSS' => 'Being discussed',
-  'RESCHEDULE_REQUESTED' => 'New time requested',
-  'EXCUSE_REQUESTED' => "Can't do — sent",
-  _ => 'Scheduled',
+///
+/// Takes [l] rather than a BuildContext: these are pure mappings from a server
+/// enum to a sentence, and keeping them context-free lets the callers that are
+/// not widgets keep using them.
+String stateLabel(L l, String state) => switch (state) {
+  'ACTIVE' => l.stateOnToday,
+  'WAITING_ACK' => l.stateWaitingForReply,
+  'NEEDS_REVIEW' => l.stateNeedsReview,
+  'NEED_TO_DISCUSS' => l.stateBeingDiscussed,
+  'RESCHEDULE_REQUESTED' => l.stateNewTimeRequested,
+  'EXCUSE_REQUESTED' => l.stateCantDoSent,
+  _ => l.stateScheduled,
 };
 
 /// Source, then time, then state — the order the design reads in. A row that
 /// says only its state has lost the two facts a person scans for.
-String itemMeta(TodayItem item, {String? zone}) {
+String itemMeta(L l, TodayItem item, {String? zone}) {
   final parts = <String>[
-    if (item.fromDisplayName != null) 'From ${item.fromDisplayName}',
+    if (item.fromDisplayName != null) l.todayFrom(item.fromDisplayName!),
     if (item.dueAt != null) _clock(_inZone(item.dueAt!, zone)),
     if (item.purpose?.isNotEmpty ?? false) item.purpose!,
   ];
   // The state is worth saying when it is not simply "on the list today".
   if (item.state != 'ACTIVE' || parts.isEmpty) {
-    parts.add(stateLabel(item.state));
+    parts.add(stateLabel(l, item.state));
   }
   return parts.join(' · ');
 }
@@ -41,10 +46,10 @@ String itemMeta(TodayItem item, {String? zone}) {
 /// fallback rather than silently the common kind — the failure this whole fix
 /// is about. An unknown kind says the neutral word instead of asserting one:
 /// as with [stateLabel], a backend identifier never reaches a person.
-String kindLabel(TodayItem item) => switch (item.kind) {
-  'RITUAL' => 'RITUAL',
-  'TASK' => 'EXPECTATION',
-  _ => 'ON TODAY',
+String kindLabel(L l, TodayItem item) => switch (item.kind) {
+  'RITUAL' => l.kindRitual,
+  'TASK' => l.kindExpectation,
+  _ => l.kindOnToday,
 };
 
 /// The registered master for this item's kind. SCR-01 §4: every mark states
@@ -60,17 +65,21 @@ DsAssetId assetFor(TodayItem item) => switch (item.kind) {
 };
 
 /// How long ago a person responded, in the coarse terms a person would use.
-String responseAge(DateTime sentAt) {
+String responseAge(L l, DateTime sentAt) {
   final elapsed = DateTime.now().difference(sentAt);
-  if (elapsed.inMinutes < 1) return 'JUST NOW';
-  if (elapsed.inMinutes < 60) return '${elapsed.inMinutes} MIN AGO';
-  if (elapsed.inHours < 24) return '${elapsed.inHours} HR AGO';
-  return '${elapsed.inDays} DAY AGO';
+  if (elapsed.inMinutes < 1) return l.ageJustNow;
+  if (elapsed.inMinutes < 60) return l.ageMinutes(elapsed.inMinutes);
+  if (elapsed.inHours < 24) return l.ageHours(elapsed.inHours);
+  return l.ageDays(elapsed.inDays);
 }
 
-String responseHeading(RecentResponse r) =>
-    '${r.senderDisplayName?.toUpperCase() ?? 'YOUR PARTNER'} RESPONDED'
-    ' · ${responseAge(r.sentAt)}';
+String responseHeading(L l, RecentResponse r) =>
+    // gen-l10n orders positional parameters alphabetically, not in the order
+    // they appear in the sentence: the signature is (age, name).
+    l.todayResponseHeading(
+      responseAge(l, r.sentAt),
+      r.senderDisplayName?.toUpperCase() ?? l.yourPartner,
+    );
 
 /// The due time as the Dynamic reads it.
 ///

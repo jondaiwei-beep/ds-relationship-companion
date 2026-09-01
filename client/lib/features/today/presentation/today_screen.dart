@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../application/today_actions.dart';
@@ -175,6 +176,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final view = widget.view;
     final priority = view.priorityItems;
     final later = view.laterItems;
@@ -183,11 +185,15 @@ class _LoadedState extends ConsumerState<_Loaded> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(partnerName: _partnerName(view)),
+        TodayHeader(title: l.todayTitle, partnerName: _partnerName(view)),
         if (priority.isEmpty && later.isEmpty)
           const _NothingExpected()
         else ...[
-          SectionLabel(_priorityHeading(priority.length)),
+          SectionLabel(
+            priority.isEmpty
+                ? l.todayPriorityHeadingNone
+                : l.todayPriorityHeading(priority.length),
+          ),
           for (final (index, item) in priority.indexed)
             if (index == 0)
               PrimaryExpectation(
@@ -230,7 +236,7 @@ class _LoadedState extends ConsumerState<_Loaded> {
           Padding(
             padding: todayInset,
             child: SecondaryButton(
-              label: 'Check in',
+              label: l.todayCheckIn,
               onTap: widget.onCheckIn!,
             ),
           ),
@@ -250,11 +256,6 @@ class _LoadedState extends ConsumerState<_Loaded> {
     return view.recentResponse?.senderDisplayName;
   }
 
-  static String _priorityHeading(int count) {
-    const words = ['NO', 'ONE', 'TWO', 'THREE'];
-    final word = count < words.length ? words[count] : '$count';
-    return count == 1 ? '$word THING MATTERS' : '$word THINGS MATTER';
-  }
 }
 
 /// Nothing actionable for the relationship day. No invented urgency, and the
@@ -264,20 +265,21 @@ class _NothingExpected extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: todayInset.add(const EdgeInsets.only(top: DsSpacing.space8)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nothing is expected of you today.',
+            l.todayNothingExpected,
             style: DsTextStyles.bodyPrimary.copyWith(
               color: DsColors.textOnRitualPrimary,
             ),
           ),
           const SizedBox(height: DsSpacing.space3),
           Text(
-            'A check-in is here if you want one.',
+            l.todayCheckInOffer,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: todaySupportSize,
@@ -303,14 +305,15 @@ class _Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Confirming context',
+      context_: l.recoveryConfirmingContext,
       children: [
-        const SectionLabel('RESOLVING TODAY'),
+        SectionLabel(l.todayResolving),
         Padding(
           padding: todayInset,
           child: Text(
-            'Confirming your private context…',
+            l.todayConfirmingPrivate,
             style: DsTextStyles.bodyPrimary.copyWith(
               color: DsColors.textOnRitualPrimary,
             ),
@@ -341,10 +344,9 @@ class _Loading extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space8),
-        const SectionLabel('PRIVATE BY DEFAULT'),
-        const RecoveryMessage(
-          'Partner details stay hidden until membership and the current '
-          'relationship day are confirmed.',
+        SectionLabel(l.todayPrivateByDefault),
+        RecoveryMessage(
+          l.todayPrivateByDefaultBody,
         ),
       ],
     );
@@ -360,8 +362,9 @@ class _Offline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Offline',
+      context_: l.recoveryOffline,
       children: [
         Padding(
           padding: todayInset,
@@ -375,14 +378,14 @@ class _Offline extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'OFFLINE',
+                  l.todayOffline,
                   style: DsTextStyles.labelRitual.copyWith(
                     color: DsColors.textOnRitualMuted,
                   ),
                 ),
                 const SizedBox(height: DsSpacing.space2),
                 Text(
-                  'Read-only until the server reconnects.',
+                  l.todayOfflineReadOnly,
                   style: DsTextStyles.bodySecondary.copyWith(
                     color: DsColors.textOnRitualSecondary,
                   ),
@@ -392,21 +395,18 @@ class _Offline extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space8),
-        const RecoveryMessage('Actions are paused offline', prominent: true),
+        RecoveryMessage(l.todayActionsPaused, prominent: true),
         const SizedBox(height: DsSpacing.space3),
-        const RecoveryMessage(
-          "Complete, Discuss, New Time and Can't Do will return after current "
-          'truth is confirmed.',
+        RecoveryMessage(
+          l.todayActionsReturn,
         ),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: SecondaryButton(label: 'Try to reconnect', onTap: onRetry),
+          child: SecondaryButton(label: l.recoveryTryToReconnect, onTap: onRetry),
         ),
         const SizedBox(height: DsSpacing.space6),
-        const RecoveryMessage(
-          'Cached content is never treated as a new state.',
-        ),
+        RecoveryMessage(l.todayCachedNeverNew),
       ],
     );
   }
@@ -420,18 +420,16 @@ class _Unavailable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Not confirmed',
+      context_: l.recoveryNotConfirmed,
       children: [
         const SizedBox(height: DsSpacing.space8),
-        const RecoveryMessage(
-          'Today could not be loaded. Nothing was lost.',
-          prominent: true,
-        ),
+        RecoveryMessage(l.todayCouldNotLoad, prominent: true),
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: SecondaryButton(label: 'Try again', onTap: onRetry),
+          child: SecondaryButton(label: l.recoveryTryAgain, onTap: onRetry),
         ),
       ],
     );
@@ -448,13 +446,14 @@ class _AuthorizationLost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Confirming context',
+      context_: l.recoveryConfirmingContext,
       children: [
         Padding(
           padding: todayInset,
           child: Text(
-            'PRIVATE SESSION ENDED',
+            l.recoverySessionEnded,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -475,7 +474,7 @@ class _AuthorizationLost extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Your private session\nneeds to be restored.',
+                l.recoverySessionRestore,
                 textAlign: TextAlign.center,
                 style: DsTextStyles.displayRitual.copyWith(
                   color: DsColors.textOnRitualPrimary,
@@ -485,8 +484,7 @@ class _AuthorizationLost extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space5),
               Text(
-                'Partner and Dynamic details have been hidden.\n'
-                'Sign in again to confirm current access.',
+                l.todayHiddenDetails,
                 textAlign: TextAlign.center,
                 style: DsTextStyles.bodySecondary.copyWith(
                   color: DsColors.textOnRitualMuted,
@@ -494,7 +492,7 @@ class _AuthorizationLost extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space8),
               SecondaryButton(
-                label: 'Sign in again',
+                label: l.recoverySignInAgain,
                 // Routes to SCR-05 Sign In, whose gate is still closed. Left
                 // deliberately inert rather than wired to a placeholder: a
                 // button that goes somewhere wrong is worse than one that
@@ -506,7 +504,7 @@ class _AuthorizationLost extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space6),
-        const RecoveryMessage('No protected content remains on this screen.'),
+        RecoveryMessage(l.recoveryNoProtectedContent),
       ],
     );
   }

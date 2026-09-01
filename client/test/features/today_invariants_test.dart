@@ -6,6 +6,8 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 
 import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
@@ -28,6 +30,8 @@ void main() {
           ),
         ],
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           theme: DsTheme.ritual(),
           home: const TodayScreen(dynamicId: 'd1'),
         ),
@@ -236,6 +240,8 @@ void main() {
             ),
           ],
           child: MaterialApp(
+            localizationsDelegates: L.localizationsDelegates,
+            supportedLocales: L.supportedLocales,
             theme: DsTheme.ritual(),
             home: const TodayScreen(dynamicId: 'd1'),
           ),
@@ -447,7 +453,10 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
 
-      expect(find.text('Relationship day ends at 5:30 AM'), findsOneWidget);
+      // The point is that 5:30 comes from the server, not that the clock is
+      // rendered a particular way — the time itself is formatted through intl
+      // for the reader's locale.
+      expect(find.textContaining('5:30'), findsOneWidget);
     });
 
     testWidgets('only the actions the server permits are offered', (

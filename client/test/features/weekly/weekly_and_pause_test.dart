@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:dsapp/l10n/app_localizations.dart';
+
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/models/weekly_reflection_view.dart';
@@ -67,6 +69,8 @@ Future<_FakeDynamicRepository> _pumpWeekly(
     ProviderScope(
       overrides: [dynamicRepositoryProvider.overrideWithValue(repo)],
       child: MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: WeeklyScreen(dynamicId: 'dyn-1', onPause: () {}),
       ),
@@ -89,6 +93,8 @@ Future<_FakeDynamicRepository> _pumpPause(
     ProviderScope(
       overrides: [dynamicRepositoryProvider.overrideWithValue(repo)],
       child: MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: const PauseScreen(dynamicId: 'dyn-1'),
       ),

@@ -3,6 +3,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
 import 'providers.dart';
 import 'shell/ds_primary_button.dart';
 
@@ -40,7 +41,6 @@ class HomeResolver extends ConsumerStatefulWidget {
 class _HomeResolverState extends ConsumerState<HomeResolver> {
   bool _resolving = true;
   bool _authorizationLost = false;
-  String? _failure;
 
   @override
   void initState() {
@@ -51,7 +51,6 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
   Future<void> _resolve() async {
     setState(() {
       _resolving = true;
-      _failure = null;
       _authorizationLost = false;
     });
 
@@ -71,9 +70,6 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
       setState(() {
         _resolving = false;
         _authorizationLost = _isAuthorizationLoss(error);
-        _failure = _authorizationLost
-            ? null
-            : "We couldn't reach your space just now.";
       });
     }
   }
@@ -87,6 +83,7 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -100,7 +97,7 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
                   // Nothing is claimed while the answer is unknown. No
                   // skeleton shaped like a day's expectations.
                   Text(
-                    'Opening your space…',
+                    l.shellOpeningYourSpace,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualMuted,
                     ),
@@ -108,8 +105,8 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
                 else ...[
                   Text(
                     _authorizationLost
-                        ? 'Sign in to continue.'
-                        : "We couldn't open\nyour space.",
+                        ? l.shellSignInToContinue
+                        : l.shellCouldNotOpenYourSpace,
                     textAlign: TextAlign.center,
                     style: DsTextStyles.displayRitual.copyWith(
                       color: DsColors.textOnRitualPrimary,
@@ -118,8 +115,8 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
                   const SizedBox(height: DsSpacing.space6),
                   Text(
                     _authorizationLost
-                        ? 'Your session ended. Nothing was lost.'
-                        : _failure!,
+                        ? l.shellSessionEndedNothingLost
+                        : l.shellCouldNotReachYourSpace,
                     textAlign: TextAlign.center,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualSecondary,
@@ -127,7 +124,7 @@ class _HomeResolverState extends ConsumerState<HomeResolver> {
                   ),
                   const SizedBox(height: DsSpacing.space10),
                   DsPrimaryButton(
-                    label: _authorizationLost ? 'Sign in' : 'Try again',
+                    label: _authorizationLost ? l.shellSignIn : l.shellTryAgain,
                     onPressed:
                         _authorizationLost ? widget.onSignIn : _resolve,
                   ),

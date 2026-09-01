@@ -1,10 +1,12 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' as intl;
 
 import '../../../app/providers.dart';
 import '../../../domain_client/models/dynamic_view.dart';
 import '../../../domain_client/models/notification_settings.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../dynamic/presentation/dynamic_screen.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
@@ -93,7 +95,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     } on Object {
       if (!mounted) return;
       setState(
-        () => _failure = 'That did not reach the server. Nothing changed.',
+        () => _failure = L.of(context).settingsSaveFailed,
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -102,6 +104,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final settings = ref.watch(notificationSettingsProvider);
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
 
@@ -118,9 +121,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   children: [
                     // SCR-29.
                     settings.when(
-                      loading: () => const _Quiet('Reading your settings.'),
-                      error: (_, _) => const _Quiet(
-                        'Your notification settings could not be loaded.',
+                      loading: () => _Quiet(l.settingsLoading),
+                      error: (_, _) => _Quiet(
+                        l.settingsLoadFailed,
                         prominent: true,
                       ),
                       data: (value) => _Notifications(
@@ -144,35 +147,30 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     if (detail.hasValue) _Time(view: detail.value!),
 
                     const SizedBox(height: DsSpacing.space10),
-                    _Section('THIS PAIRING'),
+                    _Section(l.settingsPairingSection),
                     if (widget.onLeave != null)
                       Padding(
                         padding: todayInset,
                         child: SecondaryButton(
-                          label: 'Leave or block',
+                          label: l.settingsLeaveOrBlock,
                           onTap: widget.onLeave!,
                         ),
                       ),
                     const SizedBox(height: DsSpacing.space3),
-                    const _Quiet(
-                      'Leaving never needs your partner to agree.',
-                    ),
+                    _Quiet(l.settingsLeaveNeedsNoAgreement),
 
                     const SizedBox(height: DsSpacing.space10),
-                    _Section('THIS DEVICE'),
+                    _Section(l.settingsDeviceSection),
                     if (widget.onSignOut != null)
                       Padding(
                         padding: todayInset,
                         child: SecondaryButton(
-                          label: 'Sign out',
+                          label: l.settingsSignOut,
                           onTap: widget.onSignOut!,
                         ),
                       ),
                     const SizedBox(height: DsSpacing.space3),
-                    const _Quiet(
-                      'Signing out ends this session here. Nothing about the '
-                      'relationship changes.',
-                    ),
+                    _Quiet(l.settingsSignOutSupport),
                     const SizedBox(height: DsSpacing.space10),
                   ],
                 ),
@@ -203,32 +201,29 @@ class _Notifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _Section('WHAT A NOTIFICATION MAY SAY'),
+        _Section(l.settingsNotificationContentSection),
         _Choice(
-          label: 'Nothing about the relationship',
-          support:
-              'A lockscreen shows only that the app has something for you. '
-              'This is the default.',
+          label: l.settingsPreviewNeutralLabel,
+          support: l.settingsPreviewNeutralSupport,
           selected: value.notificationPreview == 'NEUTRAL',
           onTap: busy ? null : () => onPreview('NEUTRAL'),
         ),
         _Choice(
-          label: 'Show the detail',
-          support:
-              'Titles and names may appear on your lockscreen, where anyone '
-              'holding your phone can read them.',
+          label: l.settingsPreviewRichLabel,
+          support: l.settingsPreviewRichSupport,
           selected: value.notificationPreview == 'RICH',
           onTap: busy ? null : () => onPreview('RICH'),
         ),
 
         const SizedBox(height: DsSpacing.space8),
-        const _Section('QUIET HOURS'),
+        _Section(l.settingsQuietHoursSection),
         _Choice(
-          label: 'Off',
-          support: 'Notifications arrive whenever they happen.',
+          label: l.settingsQuietHoursOffLabel,
+          support: l.settingsQuietHoursOffSupport,
           selected: !value.quietHoursOn,
           onTap: busy ? null : () => onQuietHours(null, null),
         ),
@@ -236,10 +231,8 @@ class _Notifications extends StatelessWidget {
         // almost everyone who wants one, and a two-field time picker for a
         // setting this ordinary is more work than it saves.
         _Choice(
-          label: '10:00 PM — 7:00 AM',
-          support:
-              'Anything arriving in this window waits, and comes as one '
-              'update rather than a replay.',
+          label: l.settingsQuietHoursPresetLabel,
+          support: l.settingsQuietHoursPresetSupport,
           selected: value.quietHoursOn,
           onTap: busy ? null : () => onQuietHours(22 * 60, 7 * 60),
         ),
@@ -257,17 +250,19 @@ class _Time extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final minutes = view.dayBoundaryMinutes;
-    final hh = (minutes ~/ 60) % 24;
-    final mm = minutes % 60;
-    final label =
-        '${hh % 12 == 0 ? 12 : hh % 12}:${mm.toString().padLeft(2, '0')} '
-        '${hh < 12 ? 'AM' : 'PM'}';
+    // Rendered with the reader's own clock convention: "10:00 PM" in English,
+    // "下午10:00" in Chinese. Hard-coding AM/PM would leak English into a
+    // sentence that is otherwise translated.
+    final label = intl.DateFormat.jm(l.localeName).format(
+      DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _Section('THE DAY YOU SHARE'),
+        _Section(l.settingsSharedDaySection),
         Padding(
           padding: todayInset,
           child: Column(
@@ -283,9 +278,7 @@ class _Time extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space2),
               Text(
-                'Your relationship day ends at $label, in this timezone — not '
-                'in whichever one your phone is in. Nothing moves when you '
-                'travel, and daylight saving does not shift the day.',
+                l.settingsDayBoundaryExplain(label),
                 style: DsTextStyles.bodySecondary.copyWith(
                   color: DsColors.textOnRitualMuted,
                   fontSize: todaySupportSize,
@@ -423,7 +416,7 @@ class _TopBar extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'Settings',
+              L.of(context).settingsTitle,
               style: DsTextStyles.bodyPrimary.copyWith(
                 color: DsColors.textOnRitualPrimary,
               ),
@@ -436,7 +429,7 @@ class _TopBar extends StatelessWidget {
               Icons.close,
               size: 22,
               color: DsColors.textOnRitualMuted,
-              semanticLabel: 'Close',
+              semanticLabel: L.of(context).settingsClose,
             ),
           ),
         ],

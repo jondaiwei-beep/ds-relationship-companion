@@ -113,9 +113,34 @@ class DynamicCreated extends ActivationOutcome {
   final String dynamicId;
 }
 
-class ActivationFailed extends ActivationOutcome {
-  const ActivationFailed(this.message);
+/// Why an activation attempt did not land, in terms the UI can translate.
+///
+/// The reason travels rather than the sentence: this layer has no
+/// `BuildContext`, and a screen that shows English to a Chinese reader has
+/// failed the person as surely as a wrong error.
+enum ActivationFailureReason {
+  /// The wizard let a draft through without an outcome. Not a person's fault
+  /// to fix, but it must not be sent.
+  outcomeMissing,
 
+  /// The device offered something that is not an IANA zone name.
+  timezoneUnreadable,
+
+  offline,
+
+  /// The client sent something the server does not accept.
+  invalidRequest,
+
+  unknown,
+}
+
+class ActivationFailed extends ActivationOutcome {
+  const ActivationFailed(this.reason, this.message);
+
+  final ActivationFailureReason reason;
+
+  /// The English sentence, kept for logs, QA surfaces and tests. Screens
+  /// render `reason` through the localisations instead.
   final String message;
 }
 
@@ -143,13 +168,17 @@ class ActivationActions {
     if (outcome == null || timezone == null) {
       // The wizard should not have allowed this; failing loudly beats
       // sending a half-formed command.
-      return const ActivationFailed('Choose what you want more of first.');
+      return const ActivationFailed(
+        ActivationFailureReason.outcomeMissing,
+        'Choose what you want more of first.',
+      );
     }
     if (!_looksLikeIanaZone(timezone)) {
       // REQ-TIME-001. A bare offset survives every type check and then moves
       // someone's relationship day when the clocks change — the failure
       // arrives months later and looks like a bug in scheduling.
       return const ActivationFailed(
+        ActivationFailureReason.timezoneUnreadable,
         "We couldn't read this device's timezone. Try again.",
       );
     }
@@ -172,7 +201,7 @@ class ActivationActions {
       return DynamicCreated(id);
     } on DioException catch (e) {
       // The key is kept: the next attempt is the same attempt.
-      return ActivationFailed(_message(e));
+      return _failure(e);
     }
   }
 
@@ -206,7 +235,7 @@ class ActivationActions {
       // must replay rather than start a second one.
       return DynamicCreated(dynamicId);
     } on DioException catch (e) {
-      return ActivationFailed(_message(e));
+      return _failure(e);
     }
   }
 
@@ -235,17 +264,26 @@ class ActivationActions {
       RegExp(r'^[A-Za-z_]+(/[A-Za-z0-9_+-]+){1,2}$').hasMatch(value) ||
       value == 'UTC';
 
-  static String _message(DioException e) {
+  static ActivationFailed _failure(DioException e) {
     if (_isOffline(e)) {
-      return "You're offline. Connect to the internet, then try again.";
+      return const ActivationFailed(
+        ActivationFailureReason.offline,
+        "You're offline. Connect to the internet, then try again.",
+      );
     }
     final data = e.response?.data;
     final code = data is Map ? data['code'] as String? : null;
     return switch (code) {
       // The client sent something the server does not accept. A person cannot
       // fix this, so it does not pretend they can.
-      'INVALID_REQUEST' => 'Something went wrong setting that up. Try again.',
-      _ => "We couldn't set that up right now. Try again.",
+      'INVALID_REQUEST' => const ActivationFailed(
+          ActivationFailureReason.invalidRequest,
+          'Something went wrong setting that up. Try again.',
+        ),
+      _ => const ActivationFailed(
+          ActivationFailureReason.unknown,
+          "We couldn't set that up right now. Try again.",
+        ),
     };
   }
 

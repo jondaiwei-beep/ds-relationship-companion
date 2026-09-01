@@ -15,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:dsapp/l10n/app_localizations.dart';
+
 /// The guard is the only thing standing between an unauthenticated visitor
 /// and relationship content. These tests state what it must do; each was
 /// checked by breaking the guard and confirming the test caught it.
@@ -55,6 +57,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp.router(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           theme: DsTheme.ritual(),
           routerConfig: router,
         ),

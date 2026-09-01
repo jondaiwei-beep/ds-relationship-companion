@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../platform/session/session.dart';
 import '../../../platform/session/session_controller.dart';
 import '../application/activation_actions.dart';
@@ -50,13 +51,22 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
   bool _roleNamed = false;
 
   bool _busy = false;
-  String? _unmet;
-  String? _failure;
+
+  /// What was missing when the action was last pressed. Held as a flag rather
+  /// than a sentence so the words come from the localisations at build time.
+  bool _unmetChoice = false;
+
+  ActivationFailureReason? _failure;
+
+  /// The one failure this screen produces itself rather than receiving from
+  /// the action layer: the session ended between the two commands.
+  bool _sessionEnded = false;
 
   void _back() {
     setState(() {
-      _unmet = null;
+      _unmetChoice = false;
       _failure = null;
+      _sessionEnded = false;
       if (_step == 1) {
         widget.onLeave();
       } else {
@@ -65,13 +75,13 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
     });
   }
 
-  void _advance({String? unmetReason, bool satisfied = true}) {
+  void _advance({bool satisfied = true}) {
     setState(() {
       if (!satisfied) {
-        _unmet = unmetReason;
+        _unmetChoice = true;
         return;
       }
-      _unmet = null;
+      _unmetChoice = false;
       _step++;
     });
   }
@@ -81,7 +91,8 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
     setState(() {
       _busy = true;
       _failure = null;
-      _unmet = null;
+      _sessionEnded = false;
+      _unmetChoice = false;
     });
 
     final draft = _draft.copyWith(timezone: widget.timezone);
@@ -91,10 +102,10 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
 
     if (!mounted) return;
     switch (created) {
-      case ActivationFailed(:final message):
+      case ActivationFailed(:final reason):
         setState(() {
           _busy = false;
-          _failure = message;
+          _failure = reason;
         });
       case DynamicCreated(:final dynamicId):
         final session = ref.read(sessionProvider);
@@ -102,9 +113,7 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
         if (me == null) {
           setState(() {
             _busy = false;
-            _failure =
-                'Your session ended. Sign in again to finish setting '
-                'this up.';
+            _sessionEnded = true;
           });
           return;
         }
@@ -118,10 +127,10 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
           case DynamicCreated():
             setState(() => _busy = false);
             widget.onStarted(dynamicId);
-          case ActivationFailed(:final message):
+          case ActivationFailed(:final reason):
             setState(() {
               _busy = false;
-              _failure = message;
+              _failure = reason;
             });
         }
     }
@@ -129,31 +138,42 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
 
   @override
   Widget build(BuildContext context) {
-    final notice = _failure == null ? null : _Notice(_failure!);
+    final l = L.of(context);
+    final line = _sessionEnded
+        ? l.activationErrorSessionEnded
+        : switch (_failure) {
+            null => null,
+            ActivationFailureReason.outcomeMissing =>
+              l.activationErrorChooseOutcome,
+            ActivationFailureReason.timezoneUnreadable =>
+              l.activationErrorTimezoneUnreadable,
+            ActivationFailureReason.offline => l.activationErrorOffline,
+            ActivationFailureReason.invalidRequest =>
+              l.activationErrorInvalidRequest,
+            ActivationFailureReason.unknown => l.activationErrorGeneric,
+          };
+    final notice = line == null ? null : _Notice(line);
     return switch (_step) {
       1 => _GoalStep(
         chosen: _draft.outcome,
-        unmet: _unmet,
+        unmet: _unmetChoice ? l.activationChooseOneToContinue : null,
         notice: notice,
         onChoose: (o) => setState(() {
           _draft = _draft.copyWith(outcome: o);
-          _unmet = null;
+          _unmetChoice = false;
         }),
         onBack: _back,
-        onContinue: () => _advance(
-          satisfied: _draft.outcome != null,
-          unmetReason: 'Choose one to continue.',
-        ),
+        onContinue: () => _advance(satisfied: _draft.outcome != null),
       ),
       2 => _RoleStep(
         solo: _draft.solo,
         role: _draft.rolePreset,
         named: _roleNamed,
-        unmet: _unmet,
+        unmet: _unmetChoice ? l.activationChooseOneToContinue : null,
         notice: notice,
         onSolo: (v) => setState(() {
           _draft = _draft.copyWith(solo: v);
-          _unmet = null;
+          _unmetChoice = false;
         }),
         onRole: (r) => setState(() {
           _draft = _draft.copyWith(rolePreset: r);
@@ -191,13 +211,23 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
 // ---------------------------------------------------------------------------
 // 1 · What do you want more of
 
-const _goals = <(DesiredOutcome, String)>[
-  (DesiredOutcome.closer, 'Closer'),
-  (DesiredOutcome.structure, 'Structure'),
-  (DesiredOutcome.service, 'Service & devotion'),
-  (DesiredOutcome.accountability, 'Accountability'),
-  (DesiredOutcome.explore, 'Explore together'),
+/// The order is the product's and does not vary by language; only the words
+/// do, which is why the labels are looked up rather than held in a const.
+const _goals = <DesiredOutcome>[
+  DesiredOutcome.closer,
+  DesiredOutcome.structure,
+  DesiredOutcome.service,
+  DesiredOutcome.accountability,
+  DesiredOutcome.explore,
 ];
+
+String _goalLabel(L l, DesiredOutcome outcome) => switch (outcome) {
+  DesiredOutcome.closer => l.activationGoalCloser,
+  DesiredOutcome.structure => l.activationGoalStructure,
+  DesiredOutcome.service => l.activationGoalService,
+  DesiredOutcome.accountability => l.activationGoalAccountability,
+  DesiredOutcome.explore => l.activationGoalExplore,
+};
 
 class _GoalStep extends StatelessWidget {
   const _GoalStep({
@@ -218,6 +248,7 @@ class _GoalStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return WizardFrame(
       step: 1,
       // No back arrow: this is the first question, and leaving is a different
@@ -229,15 +260,13 @@ class _GoalStep extends StatelessWidget {
         width: 32,
         height: 32,
       ),
-      eyebrow: 'BEGIN WITH INTENTION',
-      question: 'What would you\nlike more of now?',
-      support:
-          'Choose the feeling you want your\n'
-          'dynamic to hold. You can change this later.',
-      footnote: 'This shapes your starting rhythm—not your limits.',
+      eyebrow: l.activationGoalEyebrow,
+      question: l.activationGoalQuestion,
+      support: l.activationGoalSupport,
+      footnote: l.activationGoalFootnote,
       unmet: unmet,
       notice: notice,
-      actionLabel: 'Continue',
+      actionLabel: l.activationContinue,
       onAction: onContinue,
       child: Stack(
         children: [
@@ -258,9 +287,9 @@ class _GoalStep extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final (index, (outcome, label)) in _goals.indexed)
+              for (final (index, outcome) in _goals.indexed)
                 _Choice(
-                  label: label,
+                  label: _goalLabel(l, outcome),
                   selected: chosen == outcome,
                   // The rule joins the choices into one question rather than
                   // five: it stops at the last, which has nothing below it.
@@ -400,12 +429,23 @@ class _Radio extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // 2 · Who is beginning this
 
-const _roles = <(RolePreset, String)>[
-  (RolePreset.dominant, 'Dominant'),
-  (RolePreset.submissive, 'submissive'),
-  (RolePreset.switchRole, 'Switch'),
-  (RolePreset.custom, 'Custom'),
+const _roles = <RolePreset>[
+  RolePreset.dominant,
+  RolePreset.submissive,
+  RolePreset.switchRole,
+  RolePreset.custom,
 ];
+
+/// How someone describes themselves, in their own language. These name an
+/// identity and grant nothing — the server keeps `role_preset` apart from
+/// `role_context` for exactly that reason, and the words must not read as a
+/// rank or a permission in any locale.
+String _roleLabel(L l, RolePreset preset) => switch (preset) {
+  RolePreset.dominant => l.activationRoleDominant,
+  RolePreset.submissive => l.activationRoleSubmissive,
+  RolePreset.switchRole => l.activationRoleSwitch,
+  RolePreset.custom => l.activationRoleCustom,
+};
 
 class _RoleStep extends StatelessWidget {
   const _RoleStep({
@@ -434,16 +474,17 @@ class _RoleStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return WizardFrame(
       step: 2,
       onBack: onBack,
-      eyebrow: 'BEGIN TOGETHER',
-      question: 'Who is beginning\nthis with you?',
-      support: 'Start privately or open this space with a partner.',
-      footnote: 'A starting point, not a limit.\nYou can change this later.',
+      eyebrow: l.activationRoleEyebrow,
+      question: l.activationRoleQuestion,
+      support: l.activationRoleSupport,
+      footnote: l.activationRoleFootnote,
       unmet: unmet,
       notice: notice,
-      actionLabel: 'Continue',
+      actionLabel: l.activationContinue,
       onAction: onContinue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -454,7 +495,7 @@ class _RoleStep extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _Companion(
-                label: 'With a partner',
+                label: l.activationRoleWithPartner,
                 selected: !solo,
                 // `mark.partner-bond` licenses only primary and relationship
                 // — the freeze refusing to let the bond between two people be
@@ -466,7 +507,7 @@ class _RoleStep extends StatelessWidget {
                 onTap: () => onSolo(false),
               ),
               _Companion(
-                label: 'For myself',
+                label: l.activationRoleForMyself,
                 selected: solo,
                 asset: DsAssets.iconPrivateSpace,
                 tone: solo ? DsAssetTone.primary : DsAssetTone.muted,
@@ -477,7 +518,7 @@ class _RoleStep extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space8),
           Text(
-            'YOUR STARTING ROLE',
+            l.activationRoleSectionLabel,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 10,
@@ -489,7 +530,7 @@ class _RoleStep extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              for (final (preset, label) in _roles)
+              for (final preset in _roles)
                 Expanded(
                   child: InkWell(
                     onTap: () => onRole(preset),
@@ -498,7 +539,7 @@ class _RoleStep extends StatelessWidget {
                         _Radio(selected: named && role == preset, size: 18),
                         const SizedBox(height: DsSpacing.space3),
                         Text(
-                          label,
+                          _roleLabel(l, preset),
                           textAlign: TextAlign.center,
                           style: DsTextStyles.bodySecondary.copyWith(
                             fontSize: 11,
@@ -538,7 +579,7 @@ class _RoleStep extends StatelessWidget {
                 ),
               ),
               child: Text(
-                "I'd rather not name one",
+                l.activationRoleDecline,
                 style: DsTextStyles.bodySecondary.copyWith(
                   fontSize: 13,
                   color: named
@@ -622,11 +663,23 @@ class _Companion extends StatelessWidget {
 // ---------------------------------------------------------------------------
 // 3 · How much structure
 
-const _levels = <(StructureLevel, String, String)>[
-  (StructureLevel.light, 'Light', 'A gentle rhythm with plenty of room.'),
-  (StructureLevel.steady, 'Steady', 'Clear expectations with room to adjust.'),
-  (StructureLevel.defined, 'Defined', 'A firm shape you both agreed to.'),
+const _levels = <StructureLevel>[
+  StructureLevel.light,
+  StructureLevel.steady,
+  StructureLevel.defined,
 ];
+
+String _levelName(L l, StructureLevel level) => switch (level) {
+  StructureLevel.light => l.activationStructureLight,
+  StructureLevel.steady => l.activationStructureSteady,
+  StructureLevel.defined => l.activationStructureDefined,
+};
+
+String _levelDetail(L l, StructureLevel level) => switch (level) {
+  StructureLevel.light => l.activationStructureLightDetail,
+  StructureLevel.steady => l.activationStructureSteadyDetail,
+  StructureLevel.defined => l.activationStructureDefinedDetail,
+};
 
 class _StructureStep extends StatelessWidget {
   const _StructureStep({
@@ -651,18 +704,16 @@ class _StructureStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final current = _levels.firstWhere((l) => l.$1 == level);
+    final l = L.of(context);
     return WizardFrame(
       step: 3,
       onBack: onBack,
-      eyebrow: 'YOUR STRUCTURE',
-      question: 'How much structure\nfeels right?',
-      support:
-          "Choose a starting rhythm. Nothing here\n"
-          "removes either person's voice.",
-      footnote: 'You can refine this together later.',
+      eyebrow: l.activationStructureEyebrow,
+      question: l.activationStructureQuestion,
+      support: l.activationStructureSupport,
+      footnote: l.activationStructureFootnote,
       notice: notice,
-      actionLabel: 'Continue',
+      actionLabel: l.activationContinue,
       onAction: onContinue,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -670,12 +721,12 @@ class _StructureStep extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              for (final (l, _, _) in _levels)
+              for (final option in _levels)
                 InkWell(
-                  onTap: () => onLevel(l),
+                  onTap: () => onLevel(option),
                   child: Padding(
                     padding: const EdgeInsets.all(DsSpacing.space2),
-                    child: _Radio(selected: level == l, size: 18),
+                    child: _Radio(selected: level == option, size: 18),
                   ),
                 ),
             ],
@@ -683,7 +734,7 @@ class _StructureStep extends StatelessWidget {
           const SizedBox(height: DsSpacing.space4),
           Center(
             child: Text(
-              current.$2,
+              _levelName(l, level),
               style: DsTextStyles.displayRitual.copyWith(
                 color: DsColors.textOnRitualPrimary,
                 fontSize: 24,
@@ -693,7 +744,7 @@ class _StructureStep extends StatelessWidget {
           const SizedBox(height: DsSpacing.space3),
           Center(
             child: Text(
-              current.$3,
+              _levelDetail(l, level),
               textAlign: TextAlign.center,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualMuted,
@@ -703,7 +754,7 @@ class _StructureStep extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space8),
           Text(
-            'YOUR CONTEXT',
+            l.activationContextLabel,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 10,
@@ -715,13 +766,13 @@ class _StructureStep extends StatelessWidget {
           Row(
             children: [
               _ContextChoice(
-                label: 'Long-distance',
+                label: l.activationContextLongDistance,
                 selected: longDistance,
                 onTap: () => onLongDistance(true),
               ),
               const SizedBox(width: DsSpacing.space4),
               _ContextChoice(
-                label: 'Together',
+                label: l.activationContextTogether,
                 selected: !longDistance,
                 onTap: () => onLongDistance(false),
               ),
@@ -732,8 +783,10 @@ class _StructureStep extends StatelessWidget {
           // device already knows it; making someone pick from a list is a
           // question with one right answer.
           _ContextRow(
-            title: 'Timezone',
-            detail: '${timezone.replaceAll('_', ' ')} · detected',
+            title: l.activationContextTimezone,
+            detail: l.activationContextTimezoneDetected(
+              timezone.replaceAll('_', ' '),
+            ),
           ),
         ],
       ),
@@ -858,46 +911,47 @@ class _RhythmStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return WizardFrame(
       step: 4,
       onBack: onBack,
-      eyebrow: 'YOUR STARTING RHYTHM',
-      question: 'A small rhythm\nto begin.',
-      support: "Keep what feels right. Replace anything that doesn't.",
+      eyebrow: l.activationRhythmEyebrow,
+      question: l.activationRhythmQuestion,
+      support: l.activationRhythmSupport,
       // Solo has nobody to adjust *together* with.
       footnote: solo
-          ? 'Start light. Adjust as you go.'
-          : 'Start light. Adjust together.',
+          ? l.activationRhythmFootnoteSolo
+          : l.activationRhythmFootnoteCouple,
       notice: notice,
       busy: busy,
       // The only step whose action writes anything.
-      actionLabel: 'Start this rhythm',
+      actionLabel: l.activationRhythmStart,
       onAction: onStart,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _RhythmItem(
             index: '01',
-            kind: 'RITUAL',
-            title: 'Evening check-in',
-            detail: 'A pause for presence before the day closes.',
+            kind: l.activationRhythmKindRitual,
+            title: l.activationRhythmEveningTitle,
+            detail: l.activationRhythmEveningDetail,
             asset: DsAssets.emblemRitualEvening,
           ),
           _RhythmItem(
             index: '02',
-            kind: 'EXPECTATION',
-            title: 'One honest sentence',
+            kind: l.activationRhythmKindExpectation,
+            title: l.activationRhythmSentenceTitle,
             // Solo names it rather than shares it.
             detail: solo
-                ? 'Name what you need today.'
-                : 'Share what you need today.',
+                ? l.activationRhythmSentenceDetailSolo
+                : l.activationRhythmSentenceDetailCouple,
             asset: DsAssets.markGuidance,
           ),
           _RhythmItem(
             index: '03',
-            kind: 'CHECK-IN',
-            title: 'Daily check-in',
-            detail: 'Mood · Energy · Need',
+            kind: l.activationRhythmKindCheckIn,
+            title: l.activationRhythmCheckInTitle,
+            detail: l.activationRhythmCheckInDetail,
             asset: DsAssets.markCheckIn,
             last: true,
           ),

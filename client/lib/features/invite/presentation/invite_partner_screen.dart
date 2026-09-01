@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../l10n/app_localizations.dart';
 import '../application/invite_actions.dart';
 import 'widgets/lifecycle_track.dart';
 
@@ -42,7 +43,10 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
   InviteLinkReady? _link;
   bool _busy = true;
   bool _alreadyLive = false;
-  String? _failure;
+
+  /// Which sentence the last failure named. A key, not a string, so it speaks
+  /// the reader's language rather than the one this file was written in.
+  InviteMessage? _failure;
 
   @override
   void initState() {
@@ -75,9 +79,9 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           _alreadyLive = true;
           _busy = false;
         });
-      case InviteCreateFailed(:final message):
+      case InviteCreateFailed(:final key):
         setState(() {
-          _failure = message;
+          _failure = key;
           _busy = false;
         });
       case InviteRevoked():
@@ -104,9 +108,9 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           _link = null;
           _busy = false;
         });
-      case InviteCreateFailed(:final message):
+      case InviteCreateFailed(:final key):
         setState(() {
-          _failure = message;
+          _failure = key;
           _busy = false;
         });
       case InviteLinkReady() || InviteAlreadyExists():
@@ -126,7 +130,7 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _Header(
-                  status: _statusWord,
+                  status: _statusLabel(L.of(context)),
                   onBack: _busy ? null : widget.onBack,
                 ),
                 const SizedBox(height: DsSpacing.space8),
@@ -142,9 +146,16 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
     );
   }
 
-  String? get _statusWord {
-    if (_busy && _link == null) return 'CHECKING';
-    if (_link != null) return 'PENDING';
+  /// The word in the header's right corner, and whether it is the live one.
+  ///
+  /// `pending` is emphasised and `checking` is not, so the pair travels
+  /// together — reading the emphasis off the translated string would break
+  /// the moment the string is translated.
+  ({String text, bool live})? _statusLabel(L l) {
+    if (_busy && _link == null) {
+      return (text: l.inviteStatusChecking, live: false);
+    }
+    if (_link != null) return (text: l.inviteStatusPending, live: true);
     return null;
   }
 
@@ -169,7 +180,7 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
 class _Header extends StatelessWidget {
   const _Header({required this.status, required this.onBack});
 
-  final String? status;
+  final ({String text, bool live})? status;
   final VoidCallback? onBack;
 
   @override
@@ -191,7 +202,7 @@ class _Header extends StatelessWidget {
             ),
           ),
           Text(
-            'Private invitation',
+            L.of(context).inviteTitle,
             style: DsTextStyles.bodyPrimary.copyWith(
               color: DsColors.textOnRitualPrimary,
             ),
@@ -200,9 +211,9 @@ class _Header extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: Text(
-                status,
+                status.text,
                 style: DsTextStyles.labelRitual.copyWith(
-                  color: status == 'PENDING'
+                  color: status.live
                       ? DsPrimitiveColors.terracotta
                       : DsColors.textOnRitualMuted,
                 ),
@@ -221,18 +232,19 @@ class _Preparing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       children: [
         const SizedBox(height: DsSpacing.space10),
         Text(
-          'Preparing a private link…',
+          l.invitePreparing,
           style: DsTextStyles.bodyPrimary.copyWith(
             color: DsColors.textOnRitualSecondary,
           ),
         ),
         const SizedBox(height: DsSpacing.space4),
         Text(
-          'Nothing is sent until you share it.',
+          l.invitePreparingNote,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
@@ -253,7 +265,7 @@ class _Live extends StatelessWidget {
 
   final InviteLinkReady invite;
   final bool busy;
-  final String? failure;
+  final InviteMessage? failure;
   final VoidCallback onRevoke;
 
   /// The token, shown as something a person can read out. It is the same
@@ -263,6 +275,7 @@ class _Live extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -276,7 +289,7 @@ class _Live extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space8),
         Text(
-          'A private space\nis ready to share.',
+          l.inviteReadyHeadline,
           style: DsTextStyles.displayRitual.copyWith(
             color: DsColors.textOnRitualPrimary,
           ),
@@ -295,7 +308,7 @@ class _Live extends StatelessWidget {
             const SizedBox(width: DsSpacing.space3),
             Expanded(
               child: Text(
-                'Waiting for them to join',
+                l.inviteWaitingForThem,
                 style: DsTextStyles.bodySecondary.copyWith(
                   color: DsPrimitiveColors.terracotta,
                 ),
@@ -307,7 +320,7 @@ class _Live extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: Text(
-            'Nothing begins until both of you agree.',
+            l.inviteNothingBeginsYet,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 12,
@@ -317,7 +330,7 @@ class _Live extends StatelessWidget {
         const SizedBox(height: DsSpacing.space8),
 
         Text(
-          'PRIVATE LINK / CODE',
+          l.inviteLinkLabel,
           style: DsTextStyles.labelRitual.copyWith(
             color: DsColors.textOnRitualMuted,
             fontSize: 11,
@@ -343,7 +356,7 @@ class _Live extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space3),
         Text(
-          _expiry,
+          _expiry(l),
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualMuted,
             fontSize: 13,
@@ -353,7 +366,7 @@ class _Live extends StatelessWidget {
 
         if (failure case final failure?) ...[
           Text(
-            failure,
+            inviteMessage(l, failure),
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.stateError,
             ),
@@ -367,19 +380,19 @@ class _Live extends StatelessWidget {
         // Recorded as a follow-up rather than pulling in a dependency for one
         // control; the link is equally shareable either way.
         DsPrimaryButton(
-          label: 'Copy invitation link',
+          label: l.inviteCopyLink,
           busy: busy,
           onPressed: () => _copy(context, invite.url),
         ),
         const SizedBox(height: DsSpacing.space5),
         _Row(
           asset: DsAssets.iconCopy,
-          label: 'Copy code only',
+          label: l.inviteCopyCodeOnly,
           onTap: busy ? null : () => _copy(context, _code),
         ),
         _Row(
           asset: DsAssets.iconRevoke,
-          label: 'Revoke invitation',
+          label: l.inviteRevoke,
           onTap: busy ? null : onRevoke,
         ),
       ],
@@ -393,7 +406,7 @@ class _Live extends StatelessWidget {
     Clipboard.setData(ClipboardData(text: value));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Copied'),
+        content: Text(L.of(context).inviteCopied),
         backgroundColor: DsColors.surfaceRitualRaised,
         duration: const Duration(seconds: 2),
       ),
@@ -403,12 +416,12 @@ class _Live extends StatelessWidget {
   /// Stated from the server's `expiresAt`, in the coarse terms a person uses.
   /// Never invented: the design's "expires in 6 days" was a fixed string, and
   /// it was wrong for six of the seven days it described.
-  String get _expiry {
+  String _expiry(L l) {
     final left = invite.invite.expiresAt.difference(DateTime.now());
-    if (left.isNegative) return 'This link has expired.';
-    if (left.inHours < 1) return 'Expires within the hour';
-    if (left.inHours < 24) return 'Expires in ${left.inHours} hours';
-    return 'Expires in ${left.inDays} days';
+    if (left.isNegative) return l.inviteExpired;
+    if (left.inHours < 1) return l.inviteExpiresWithinHour;
+    if (left.inHours < 24) return l.inviteExpiresInHours(left.inHours);
+    return l.inviteExpiresInDays(left.inDays);
   }
 }
 
@@ -420,33 +433,33 @@ class _AlreadyLive extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: DsSpacing.space6),
         Text(
-          'An invitation is\nalready waiting.',
+          l.inviteAlreadyLiveHeadline,
           style: DsTextStyles.displayRitual.copyWith(
             color: DsColors.textOnRitualPrimary,
           ),
         ),
         const SizedBox(height: DsSpacing.space6),
         Text(
-          'Only one link can be live at a time, and a link is shown only once '
-          'when it is made.',
+          l.inviteAlreadyLiveDetail,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualSecondary,
           ),
         ),
         const SizedBox(height: DsSpacing.space4),
         Text(
-          'Withdraw the existing one from your Dynamic to make a new link.',
+          l.inviteAlreadyLiveGuidance,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
         ),
         const SizedBox(height: DsSpacing.space8),
-        DsPrimaryButton(label: 'Back to your Dynamic', onPressed: onBack),
+        DsPrimaryButton(label: l.inviteBackToDynamic, onPressed: onBack),
       ],
     );
   }
@@ -460,29 +473,31 @@ class _NoLink extends StatelessWidget {
     required this.onCreate,
   });
 
-  final String? failure;
+  final InviteMessage? failure;
   final bool busy;
   final VoidCallback onCreate;
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
+    final failure = this.failure;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: DsSpacing.space6),
         Text(
           failure == null
-              ? 'This invitation\nis closed.'
-              : "We couldn't make\na private link.",
+              ? l.inviteClosedHeadline
+              : l.inviteCreateFailedHeadline,
           style: DsTextStyles.displayRitual.copyWith(
             color: DsColors.textOnRitualPrimary,
           ),
         ),
         const SizedBox(height: DsSpacing.space6),
         Text(
-          failure ??
-              'The old link can no longer open your Dynamic. '
-                  'Nobody joined through it.',
+          failure == null
+              ? l.inviteClosedDetail
+              : inviteMessage(l, failure),
           style: DsTextStyles.bodySecondary.copyWith(
             color: failure == null
                 ? DsColors.textOnRitualSecondary
@@ -491,14 +506,14 @@ class _NoLink extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space8),
         DsPrimaryButton(
-          label: 'Create a new invitation',
+          label: l.inviteCreateNew,
           busy: busy,
           onPressed: onCreate,
         ),
         const SizedBox(height: DsSpacing.space5),
         Center(
           child: Text(
-            'Creating a new invitation makes a new private link.',
+            l.inviteCreateNewNote,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 12,
@@ -525,7 +540,7 @@ class _CopyButton extends StatelessWidget {
         width: 24,
         height: 24,
       ),
-      tooltip: 'Copy link',
+      tooltip: L.of(context).inviteCopyLinkTooltip,
     );
   }
 }

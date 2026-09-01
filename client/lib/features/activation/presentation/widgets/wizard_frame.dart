@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../app/shell/ds_primary_button.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// The frame every activation step shares: step counter, back, eyebrow,
 /// question, body, then one action.
@@ -186,7 +187,7 @@ class _Top extends StatelessWidget {
           const Spacer(),
           Flexible(
             child: Text(
-              '$step of 4',
+              L.of(context).activationStepOf(step),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: DsTextStyles.bodySecondary.copyWith(

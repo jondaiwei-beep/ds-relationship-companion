@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dsapp/app/providers.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:dsapp/domain_client/models/invite_view.dart';
 import 'package:dsapp/domain_client/repositories/invite_repository.dart';
 import 'package:dsapp/features/invite/presentation/join_screen.dart';
@@ -72,6 +73,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: JoinScreen(
             token: 'tok-1',
             onJoined: joined.add,

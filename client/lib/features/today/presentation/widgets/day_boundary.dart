@@ -1,4 +1,6 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:intl/intl.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'today_layout.dart';
@@ -17,7 +19,9 @@ class DayBoundary extends StatelessWidget {
         const EdgeInsets.only(top: DsSpacing.space2, bottom: DsSpacing.space4),
       ),
       child: Text(
-        'Relationship day ends at ${_boundaryClock(boundaryMinutes)}',
+        L.of(context).todayDayEndsAt(
+          _boundaryClock(boundaryMinutes, L.of(context).localeName),
+        ),
         style: DsTextStyles.bodySecondary.copyWith(
           color: DsColors.textOnRitualMuted,
         ),
@@ -26,12 +30,14 @@ class DayBoundary extends StatelessWidget {
   }
 }
 
-/// Minutes past midnight as a person reads a clock. Kept local to this widget
-/// because it formats a wall-clock offset, not a moment in time.
-String _boundaryClock(int minutes) {
+/// Minutes past midnight as a person reads a clock, in their own convention.
+///
+/// Formatted through `intl` rather than by hand: a hardcoded "AM"/"PM" leaves
+/// English inside an otherwise translated sentence, and Chinese reads 上午 /
+/// 下午 with the marker before the time rather than after it.
+String _boundaryClock(int minutes, String localeName) {
   final wrapped = minutes % (24 * 60);
-  final hour24 = wrapped ~/ 60;
-  final hour = hour24 % 12 == 0 ? 12 : hour24 % 12;
-  final minute = (wrapped % 60).toString().padLeft(2, '0');
-  return '$hour:$minute ${hour24 < 12 ? 'AM' : 'PM'}';
+  return DateFormat.jm(
+    localeName,
+  ).format(DateTime(2000, 1, 1, wrapped ~/ 60, wrapped % 60));
 }

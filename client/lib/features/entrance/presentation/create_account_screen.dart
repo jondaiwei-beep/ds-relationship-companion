@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../app/shell/ds_text_field.dart';
+import '../../../l10n/app_localizations.dart';
 import '../application/auth_actions.dart';
 import 'widgets/descending_thread.dart';
 import 'widgets/entrance_header.dart';
@@ -45,7 +46,11 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   /// Where the last failure belongs, so it is shown beside the thing that is
   /// wrong rather than as a banner about the whole form.
   AuthField? _failedField;
-  String? _message;
+
+  /// Which sentence the last outcome carried. Held as a key rather than a
+  /// finished string so it re-resolves if the locale changes while the screen
+  /// is up, and so the copy lives in the ARB rather than in this state.
+  AuthMessage? _message;
 
   /// A result the server could not confirm. Distinct from a failure: the
   /// account may exist, so the honest advice is to try signing in first.
@@ -79,26 +84,28 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
     switch (outcome) {
       case AuthSucceeded():
         widget.onCreated();
-      case AuthUncertain(:final message):
+      case AuthUncertain(:final key):
         setState(() {
           _uncertain = true;
-          _message = message;
+          _message = key;
         });
-      case AuthFailed(:final message, :final field):
+      case AuthFailed(:final key, :final field):
         setState(() {
-          _message = message;
+          _message = key;
           _failedField = field;
         });
       case AuthLinkSent():
         // Registration never sends a link; treating it as success would sign
         // someone in who has not been authenticated.
-        setState(() => _message = 'Something unexpected happened. Try again.');
+        setState(() => _message = AuthMessage.unexpected);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final fieldError = _failedField;
+    final message = _message == null ? null : entranceMessage(l, _message!);
     // On a short screen the ornament is what pushes the form below the fold.
     // The fields and the button keep their sizes; the decoration around them
     // gives way, because a person came here to make an account.
@@ -115,48 +122,47 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
               children: [
                 EntranceHeader(
                   onBack: _busy ? null : widget.onBack,
-                  eyebrow: 'Create an account',
-                  headline: 'Begin privately.',
+                  eyebrow: l.entranceCreateEyebrow,
+                  headline: l.entranceCreateHeadline,
                 ),
                 Center(child: DescendingThread(height: compact ? 40 : 82)),
                 SizedBox(height: gap),
 
                 if (_uncertain) ...[
-                  _Notice(
-                    _message ??
-                        "We couldn't confirm whether the account was created. "
-                            'Try signing in before creating it again.',
-                  ),
+                  _Notice(message ?? l.entranceCreateUncertainFallback),
                   const SizedBox(height: DsSpacing.space5),
-                ] else if (_message != null && fieldError == null) ...[
-                  _Notice(_message!, failure: true),
+                ] else if (message != null && fieldError == null) ...[
+                  _Notice(message, failure: true),
                   const SizedBox(height: DsSpacing.space5),
                 ],
 
                 DsTextField(
-                  label: 'EMAIL',
+                  label: l.entranceFieldEmail,
                   controller: _email,
-                  hint: 'you@example.com',
+                  hint: l.entranceFieldEmailHint,
                   enabled: !_busy,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.email],
-                  error: fieldError == AuthField.email ? _message : null,
+                  error: fieldError == AuthField.email ? message : null,
                 ),
                 SizedBox(height: gap),
                 DsTextField(
-                  label: 'CREATE PASSWORD',
+                  label: l.entranceFieldCreatePassword,
                   controller: _password,
                   // The server's real bound, not a rounded-down "at least 8".
                   // A field that understates the rule makes the person
                   // discover it by being refused.
-                  hint: '10–256 characters',
+                  hint: l.entranceFieldPasswordHint(
+                    minPasswordLength,
+                    maxPasswordLength,
+                  ),
                   obscure: !_reveal,
                   onToggleObscure: () => setState(() => _reveal = !_reveal),
                   enabled: !_busy,
                   textInputAction: TextInputAction.done,
                   autofillHints: const [AutofillHints.newPassword],
-                  error: fieldError == AuthField.password ? _message : null,
+                  error: fieldError == AuthField.password ? message : null,
                   onSubmitted: (_) => _submit(),
                 ),
                 SizedBox(height: gap),
@@ -164,7 +170,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                 _AgeConfirmation(
                   checked: _ageConfirmed,
                   enabled: !_busy,
-                  error: fieldError == AuthField.ageConfirmation ? _message : null,
+                  error:
+                      fieldError == AuthField.ageConfirmation ? message : null,
                   onChanged: (v) => setState(() => _ageConfirmed = v),
                 ),
                 SizedBox(height: gap),
@@ -173,8 +180,8 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                 // is missing; a silently dead control is unreachable for a
                 // screen-reader user and tells a sighted one nothing either.
                 DsPrimaryButton(
-                  label: 'Create account',
-                  busyLabel: 'Creating account',
+                  label: l.entranceCreateAccount,
+                  busyLabel: l.entranceCreateAccountBusy,
                   busy: _busy,
                   onPressed: _submit,
                 ),
@@ -182,8 +189,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                 Opacity(
                   opacity: 0.8,
                   child: Text(
-                    'By creating an account, you agree to the Terms\n'
-                    'and acknowledge the Privacy Policy.',
+                    l.entranceLegalConsent,
                     textAlign: TextAlign.center,
                     style: DsTextStyles.navLabel.copyWith(
                       color: DsColors.textOnRitualMuted,
@@ -196,7 +202,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                 TextButton(
                   onPressed: _busy ? null : widget.onSignIn,
                   child: Text(
-                    'Already have an account? Sign in',
+                    l.entranceAlreadyHaveAccount,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualSecondary,
                       fontWeight: FontWeight.w500,
@@ -282,7 +288,7 @@ class _AgeConfirmation extends StatelessWidget {
                   const SizedBox(width: DsSpacing.space3),
                   Expanded(
                     child: Text(
-                      'I confirm that I am 18 or older.',
+                      L.of(context).entranceAgeConfirm,
                       style: DsTextStyles.bodySecondary.copyWith(
                         color: DsColors.textOnRitualSecondary,
                       ),

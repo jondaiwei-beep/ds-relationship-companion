@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../domain_client/models/weekly_reflection_view.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
@@ -46,6 +47,7 @@ class WeeklyScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final weekly = ref.watch(weeklyProvider(dynamicId));
 
     return Scaffold(
@@ -58,21 +60,19 @@ class WeeklyScreen extends ConsumerWidget {
               Expanded(
                 child: weekly.when(
                   skipLoadingOnReload: true,
-                  loading: () => const _Message(
-                    'Gathering what actually happened this week.',
-                  ),
+                  loading: () => _Message(l.weeklyLoading),
                   error: (_, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const _Message(
-                        'This week could not be loaded. Nothing was changed.',
+                      _Message(
+                        l.weeklyLoadFailed,
                         prominent: true,
                       ),
                       const SizedBox(height: DsSpacing.space6),
                       Padding(
                         padding: todayInset,
                         child: SecondaryButton(
-                          label: 'Try again',
+                          label: l.weeklyTryAgain,
                           onTap: () =>
                               ref.invalidate(weeklyProvider(dynamicId)),
                         ),
@@ -99,16 +99,14 @@ class _TooEarly extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return ListView(
       padding: EdgeInsets.zero,
-      children: const [
-        SizedBox(height: DsSpacing.space10),
-        _Message('There is not a week to look back on yet.', prominent: true),
-        SizedBox(height: DsSpacing.space3),
-        _Message(
-          'This comes back once you have some days behind you. Nothing is '
-          'missing in the meantime.',
-        ),
+      children: [
+        const SizedBox(height: DsSpacing.space10),
+        _Message(l.weeklyTooEarlyHeadline, prominent: true),
+        const SizedBox(height: DsSpacing.space3),
+        _Message(l.weeklyTooEarlySupport),
       ],
     );
   }
@@ -123,13 +121,14 @@ class _Week extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return ListView(
       padding: EdgeInsets.zero,
       children: [
         Padding(
           padding: todayInset,
           child: Text(
-            _headline(view),
+            _headline(l, view),
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
               fontSize: 28,
@@ -138,7 +137,7 @@ class _Week extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space3),
-        _Message(_support(view)),
+        _Message(_support(l, view)),
 
         if (view.answeredMoments.isNotEmpty) ...[
           const SizedBox(height: DsSpacing.space8),
@@ -147,7 +146,7 @@ class _Week extends StatelessWidget {
               const EdgeInsets.only(bottom: DsSpacing.space4),
             ),
             child: Text(
-              'WHAT WAS ANSWERED',
+              l.weeklyAnsweredSection,
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
@@ -162,7 +161,7 @@ class _Week extends StatelessWidget {
             const EdgeInsets.only(bottom: DsSpacing.space4),
           ),
           child: Text(
-            'NEXT WEEK',
+            l.weeklyNextWeekSection,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -171,7 +170,7 @@ class _Week extends StatelessWidget {
         Padding(
           padding: todayInset,
           child: SecondaryButton(
-            label: 'Keep the current rhythm',
+            label: l.weeklyKeep,
             onTap: onClose ?? () {},
             filled: true,
           ),
@@ -180,13 +179,10 @@ class _Week extends StatelessWidget {
         if (onPause != null)
           Padding(
             padding: todayInset,
-            child: SecondaryButton(label: 'Pause instead', onTap: onPause!),
+            child: SecondaryButton(label: l.weeklyPauseInstead, onTap: onPause!),
           ),
         const SizedBox(height: DsSpacing.space4),
-        const _Message(
-          'Keeping is not a commitment. Either of you may pause at any time, '
-          'from Dynamic.',
-        ),
+        _Message(l.weeklyKeepSupport),
         const SizedBox(height: DsSpacing.space10),
       ],
     );
@@ -196,32 +192,35 @@ class _Week extends StatelessWidget {
 /// Described by what happened, never scored. `connectedDays` is a count of
 /// days with something real on them, not a rate or a streak — nothing here
 /// should read as a target that was missed.
-String _headline(WeeklyReflectionView view) => switch (view.connectedDays) {
-  0 => 'A quiet week.',
-  1 => 'One day had something on it.',
-  final n => '$n days had something on them.',
-};
+String _headline(L l, WeeklyReflectionView view) =>
+    switch (view.connectedDays) {
+      0 => l.weeklyHeadlineQuiet,
+      1 => l.weeklyHeadlineOneDay,
+      final n => l.weeklyHeadlineDays(n),
+    };
 
-String _support(WeeklyReflectionView view) {
+String _support(L l, WeeklyReflectionView view) {
   final answered = view.answeredMoments.length;
   final adjusted = view.adjustmentsResolved;
 
+  // The clauses are joined through a translated pattern rather than a literal
+  // ", and ": the separator and the trailing stop differ per language.
   final parts = <String>[
     if (answered == 1)
-      'One thing was answered by a person'
+      l.weeklyAnsweredOne
     else if (answered > 1)
-      '$answered things were answered by a person',
+      l.weeklyAnsweredMany(answered),
     if (adjusted == 1)
-      'one adjustment was worked out together'
+      l.weeklyAdjustedOne
     else if (adjusted > 1)
-      '$adjusted adjustments were worked out together',
+      l.weeklyAdjustedMany(adjusted),
   ];
 
-  if (parts.isEmpty) {
-    return 'Nothing was completed or answered. That is a fact about the '
-        'week, not about either of you.';
-  }
-  return '${parts.join(', and ')}.';
+  return switch (parts.length) {
+    0 => l.weeklySupportNothing,
+    1 => l.weeklySupportSingle(parts.first),
+    _ => l.weeklySupportJoin(parts.first, parts.last),
+  };
 }
 
 /// One person's actual words. Never paraphrased and never summarised — the
@@ -268,7 +267,7 @@ class _Moment extends StatelessWidget {
           if (moment.fromDisplayName != null) ...[
             const SizedBox(height: DsSpacing.space2),
             Text(
-              '— ${moment.fromDisplayName}',
+              L.of(context).weeklyMomentAttribution(moment.fromDisplayName!),
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualRelationshipLarge,
                 fontSize: todaySupportSize,
@@ -323,7 +322,7 @@ class _TopBar extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              'THIS WEEK',
+              L.of(context).weeklyTitle,
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
@@ -336,7 +335,7 @@ class _TopBar extends StatelessWidget {
               Icons.close,
               size: 22,
               color: DsColors.textOnRitualMuted,
-              semanticLabel: 'Close',
+              semanticLabel: L.of(context).weeklyClose,
             ),
           ),
         ],

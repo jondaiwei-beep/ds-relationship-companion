@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// A single line of input, as the entrance screens draw it: a small label, the
 /// value, and a hairline beneath.
 ///
@@ -138,9 +140,10 @@ class _RevealToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Semantics(
       button: true,
-      label: hidden ? 'Show password' : 'Hide password',
+      label: hidden ? l.shellShowPassword : l.shellHidePassword,
       excludeSemantics: true,
       child: InkResponse(
         onTap: onTap,
@@ -151,7 +154,7 @@ class _RevealToggle extends StatelessWidget {
           ),
           alignment: Alignment.centerRight,
           child: Text(
-            hidden ? 'Show' : 'Hide',
+            hidden ? l.shellShow : l.shellHide,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
             ),

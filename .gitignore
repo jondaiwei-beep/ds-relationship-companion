@@ -32,3 +32,6 @@ client/.dart_tool/
 client/build/
 client/.flutter-plugins
 client/.flutter-plugins-dependencies
+
+# Generated from lib/l10n/*.arb by `flutter gen-l10n`.
+client/lib/l10n/untranslated.json

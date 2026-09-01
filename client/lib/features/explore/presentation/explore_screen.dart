@@ -7,6 +7,7 @@ import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/explore_view.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
@@ -51,6 +52,7 @@ class ExploreScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final library = ref.watch(exploreProvider);
 
     return Scaffold(
@@ -64,10 +66,10 @@ class ExploreScreen extends ConsumerWidget {
                 child: library.when(
                   skipLoadingOnReload: true,
                   skipLoadingOnRefresh: true,
-                  loading: () => const RecoveryScaffold(
-                    context_: 'Reading',
-                    title: 'Explore',
-                    children: [
+                  loading: () => RecoveryScaffold(
+                    context_: l.exploreContextReading,
+                    title: l.exploreTitle,
+                    children: const [
                       DsSkeletonPulse(
                         child: Column(
                           children: [
@@ -106,19 +108,19 @@ class ExploreScreen extends ConsumerWidget {
                   ),
                   error: (error, _) => _isAuthLoss(error)
                       ? RecoveryScaffold(
-                          context_: 'Confirming context',
-                          title: 'Explore',
+                          context_: l.exploreContextConfirming,
+                          title: l.exploreTitle,
                           children: [
                             const SizedBox(height: DsSpacing.space8),
-                            const RecoveryMessage(
-                              'Your private session needs to be restored.',
+                            RecoveryMessage(
+                              l.exploreSessionLost,
                               prominent: true,
                             ),
                             const SizedBox(height: DsSpacing.space6),
                             Padding(
                               padding: todayInset,
                               child: SecondaryButton(
-                                label: 'Sign in again',
+                                label: l.exploreSignInAgain,
                                 onTap: onSignIn ?? () {},
                                 filled: true,
                               ),
@@ -126,20 +128,19 @@ class ExploreScreen extends ConsumerWidget {
                           ],
                         )
                       : RecoveryScaffold(
-                          context_: 'Not loaded',
-                          title: 'Explore',
+                          context_: l.exploreContextNotLoaded,
+                          title: l.exploreTitle,
                           children: [
                             const SizedBox(height: DsSpacing.space8),
-                            const RecoveryMessage(
-                              'The library could not be loaded. Nothing in '
-                              'your day depends on it.',
+                            RecoveryMessage(
+                              l.exploreLoadFailed,
                               prominent: true,
                             ),
                             const SizedBox(height: DsSpacing.space6),
                             Padding(
                               padding: todayInset,
                               child: SecondaryButton(
-                                label: 'Try again',
+                                label: l.exploreTryAgain,
                                 onTap: () => ref.invalidate(exploreProvider),
                               ),
                             ),
@@ -172,6 +173,7 @@ class _Library extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     // Collections the server actually sent ideas for. An empty heading would
     // read as something having failed to load.
     final populated = view.collections
@@ -179,16 +181,12 @@ class _Library extends StatelessWidget {
         .toList();
 
     if (populated.isEmpty) {
-      return const RecoveryScaffold(
-        context_: 'Nothing yet',
-        title: 'Explore',
+      return RecoveryScaffold(
+        context_: l.exploreContextNothingYet,
+        title: l.exploreTitle,
         children: [
-          SizedBox(height: DsSpacing.space8),
-          RecoveryMessage(
-            'There is nothing in the library yet. Today holds everything that '
-            'is waiting for you.',
-            prominent: true,
-          ),
+          const SizedBox(height: DsSpacing.space8),
+          RecoveryMessage(l.exploreEmpty, prominent: true),
         ],
       );
     }
@@ -196,12 +194,13 @@ class _Library extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        const TodayHeader(title: 'Explore', context_: 'Ideas'),
+        TodayHeader(title: l.exploreTitle, context_: l.exploreContextIdeas),
         Padding(
           padding: todayInset,
           child: Text(
-            'Things other people have found worth asking for. Nothing here is '
-            'a suggestion about you.',
+            // Never a recommendation about these two people: the library is
+            // what others found worth asking for, stated as such.
+            l.exploreIntro,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: todaySupportSize,
@@ -290,6 +289,7 @@ class _IdeaState extends State<_Idea> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final idea = widget.idea;
 
     return Container(
@@ -312,7 +312,7 @@ class _IdeaState extends State<_Idea> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _kindLabel(idea.kind),
+                  _kindLabel(l, idea.kind),
                   style: DsTextStyles.labelRitual.copyWith(
                     color: DsColors.textOnRitualMuted,
                   ),
@@ -351,7 +351,7 @@ class _IdeaState extends State<_Idea> {
                   if (widget.onUse != null && idea.kind == 'EXPECTATION') ...[
                     const SizedBox(height: DsSpacing.space4),
                     SecondaryButton(
-                      label: 'Ask for this',
+                      label: l.exploreAskForThis,
                       onTap: () => widget.onUse!(idea),
                     ),
                   ],
@@ -365,10 +365,10 @@ class _IdeaState extends State<_Idea> {
   }
 }
 
-String _kindLabel(String kind) => switch (kind) {
-  'EXPECTATION' => 'SOMETHING TO ASK FOR',
-  'RITUAL' => 'SOMETHING TO REPEAT',
-  'CHECK_IN' => 'SOMETHING TO SAY',
+String _kindLabel(L l, String kind) => switch (kind) {
+  'EXPECTATION' => l.exploreKindExpectation,
+  'RITUAL' => l.exploreKindRitual,
+  'CHECK_IN' => l.exploreKindCheckIn,
   // A new server kind must not put its enum in front of a person.
-  _ => 'AN IDEA',
+  _ => l.exploreKindOther,
 };

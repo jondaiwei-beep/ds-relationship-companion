@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../domain_client/models/attention_view.dart';
+import '../../../l10n/app_localizations.dart';
 import '../application/response_actions.dart';
 
 /// SCR-32 — Attention. The direction-giving side's daily entry.
@@ -45,7 +46,7 @@ class _AttentionScreenState extends ConsumerState<AttentionScreen> {
   /// sends and the rest of the list stays live.
   String? _sending;
 
-  String? _failure;
+  ResponseFailureReason? _failure;
 
   Future<void> _respond(AttentionItem item, HumanResponse type) async {
     if (_sending != null) return;
@@ -68,8 +69,8 @@ class _AttentionScreenState extends ConsumerState<AttentionScreen> {
       // edits itself is a list that can disagree with the truth.
       case ResponseSent() || ResponseAlreadySent():
         await widget.onRefresh();
-      case ResponseFailed(:final message):
-        setState(() => _failure = message);
+      case ResponseFailed(:final reason):
+        setState(() => _failure = reason);
       case ResponseNeedsWords():
         // Unreachable inline — only wordless types are offered here — but if
         // it ever happens, the full screen is where words are written.
@@ -122,12 +123,13 @@ class _List extends StatelessWidget {
   final AttentionView view;
   final String partnerName;
   final String? sending;
-  final String? failure;
+  final ResponseFailureReason? failure;
   final void Function(AttentionItem, HumanResponse) onRespond;
   final void Function(AttentionItem) onOpen;
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     // Grouped by the server's own priority, never re-sorted here.
     final waiting = view.items.where((i) => i.priority == 1).toList();
     final toAnswer = view.items.where((i) => i.priority == 2).toList();
@@ -141,7 +143,10 @@ class _List extends StatelessWidget {
         if (failure case final failure?) ...[
           const SizedBox(height: DsSpacing.space4),
           Text(
-            failure,
+            switch (failure) {
+              ResponseFailureReason.offline => l.responseErrorOffline,
+              ResponseFailureReason.unknown => l.responseErrorGeneric,
+            },
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.stateError,
             ),
@@ -151,7 +156,9 @@ class _List extends StatelessWidget {
           _Section(
             // Named for the person, not the state. "$name is waiting" is what
             // is actually true; "NEED_TO_DISCUSS" is how the database says it.
-            label: '${partnerName.toUpperCase()} IS WAITING',
+            label: l.responseAttentionSectionWaiting(
+              partnerName.toUpperCase(),
+            ),
             count: waiting.length,
             accent: true,
             children: [
@@ -165,7 +172,7 @@ class _List extends StatelessWidget {
           ),
         if (toAnswer.isNotEmpty)
           _Section(
-            label: 'COMPLETIONS TO ANSWER',
+            label: l.responseAttentionSectionCompletions,
             count: toAnswer.length,
             children: [
               for (final (index, item) in toAnswer.indexed)
@@ -190,7 +197,7 @@ class _List extends StatelessWidget {
           _Section(
             // Never "overdue" or "missed". `REQ-REVIEW-001`: past due is a
             // prompt to look, and the software assigns no consequence.
-            label: 'LOOK BACK TOGETHER',
+            label: l.responseAttentionSectionLookBack,
             count: toRevisit.length,
             children: [
               for (final item in toRevisit)
@@ -214,6 +221,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: const EdgeInsets.only(
         top: DsSpacing.space4,
@@ -222,7 +230,7 @@ class _Header extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Attention',
+            l.responseAttention,
             style: DsTextStyles.titlePage.copyWith(
               color: DsColors.textOnRitualPrimary,
               fontSize: 23,
@@ -240,7 +248,7 @@ class _Header extends StatelessWidget {
           const SizedBox(width: DsSpacing.space3),
           Flexible(
             child: Text(
-              '$partnerName is present',
+              l.responsePartnerPresent(partnerName),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: DsTextStyles.bodySecondary.copyWith(
@@ -263,12 +271,13 @@ class _Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final moments = view.items.length;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'WHAT NEEDS YOUR ANSWER',
+          l.responseAttentionSummaryLabel,
           style: DsTextStyles.labelRitual.copyWith(
             color: DsColors.textOnRitualMuted,
             fontSize: 10,
@@ -280,7 +289,7 @@ class _Summary extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '$moments ${moments == 1 ? 'moment' : 'moments'}',
+              l.responseAttentionMoments(moments),
               style: DsTextStyles.bodyPrimary.copyWith(
                 color: DsColors.textOnRitualPrimary,
                 fontSize: 17,
@@ -291,9 +300,9 @@ class _Summary extends StatelessWidget {
               child: Text(
                 [
                   if (view.needsResponseCount > 0)
-                    '${view.needsResponseCount} awaiting your answer',
+                    l.responseAttentionAwaiting(view.needsResponseCount),
                   if (view.needsReviewCount > 0)
-                    '${view.needsReviewCount} to revisit',
+                    l.responseAttentionToRevisit(view.needsReviewCount),
                 ].join(' · '),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -450,7 +459,7 @@ class _Row extends StatelessWidget {
                   ),
                   const SizedBox(height: DsSpacing.space2),
                   Text(
-                    _lineFor(item, partnerName),
+                    _lineFor(L.of(context), item, partnerName),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(
@@ -495,6 +504,7 @@ class _InlineRespond extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: DsSpacing.space3),
       padding: const EdgeInsets.all(DsSpacing.space4),
@@ -517,7 +527,7 @@ class _InlineRespond extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space2),
           Text(
-            _lineFor(item, partnerName),
+            _lineFor(l, item, partnerName),
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 12,
@@ -525,7 +535,7 @@ class _InlineRespond extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space5),
           Text(
-            'RESPOND TO ${partnerName.toUpperCase()}',
+            l.responseAttentionRespondTo(partnerName.toUpperCase()),
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: 9,
@@ -538,7 +548,7 @@ class _InlineRespond extends StatelessWidget {
               Expanded(
                 child: _InlineButton(
                   asset: DsAssets.stateAcknowledged,
-                  label: 'Acknowledge',
+                  label: l.responseTypeAcknowledge,
                   busy: busy,
                   onTap: () => onRespond(HumanResponse.acknowledge),
                 ),
@@ -550,7 +560,7 @@ class _InlineRespond extends StatelessWidget {
                   // screen's. Presence is the registered mark here, and the
                   // label carries the meaning.
                   asset: DsAssets.markPresence,
-                  label: 'Praise',
+                  label: l.responseTypePraise,
                   busy: busy,
                   onTap: () => onRespond(HumanResponse.praise),
                 ),
@@ -628,6 +638,7 @@ class _Empty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: DsSpacing.space5),
       children: [
@@ -635,7 +646,7 @@ class _Empty extends StatelessWidget {
         const SizedBox(height: DsSpacing.space10),
         Center(
           child: Text(
-            'Nothing is waiting\non you.',
+            l.responseAttentionEmptyTitle,
             textAlign: TextAlign.center,
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
@@ -647,7 +658,7 @@ class _Empty extends StatelessWidget {
           child: Text(
             // No "all caught up", no tick, no streak. An empty list is a fact
             // about now, not a reward for clearing one.
-            "You'll find anything that needs\nyour answer here.",
+            l.responseAttentionEmptyDetail,
             textAlign: TextAlign.center,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
@@ -661,16 +672,16 @@ class _Empty extends StatelessWidget {
 }
 
 /// Backend state names never reach a person.
-String _lineFor(AttentionItem item, String partner) {
+String _lineFor(L l, AttentionItem item, String partner) {
   final who = item.actorDisplayName ?? partner;
-  final when = item.occurredAt == null ? null : _ago(item.occurredAt!);
+  final when = item.occurredAt == null ? null : _ago(l, item.occurredAt!);
   final what = switch (item.state) {
-    'NEED_TO_DISCUSS' => 'asked to discuss',
-    'RESCHEDULE_REQUESTED' => 'asked for a new time',
-    'EXCUSE_REQUESTED' => "said they can't do this",
-    'WAITING_ACK' => 'completed',
-    'NEEDS_REVIEW' => 'is still open',
-    _ => 'is waiting',
+    'NEED_TO_DISCUSS' => l.responseStateAskedToDiscuss,
+    'RESCHEDULE_REQUESTED' => l.responseStateAskedForNewTime,
+    'EXCUSE_REQUESTED' => l.responseStateCantDoThis,
+    'WAITING_ACK' => l.responseStateCompleted,
+    'NEEDS_REVIEW' => l.responseStateStillOpen,
+    _ => l.responseStateWaiting,
   };
   return [who, what, ?when].join(' · ');
 }
@@ -692,10 +703,10 @@ DsAssetTone _toneFor(String state) => switch (state) {
 
 /// Elapsed time, in the coarse terms a person uses. Formatting only: it
 /// decides no state, ordering or affordance (REQ-STATE-001).
-String _ago(DateTime at) {
+String _ago(L l, DateTime at) {
   final elapsed = DateTime.now().difference(at.toLocal());
-  if (elapsed.inMinutes < 60) return '${elapsed.inMinutes}m ago';
-  if (elapsed.inHours < 24) return '${elapsed.inHours}h ago';
-  if (elapsed.inDays == 1) return 'yesterday';
-  return '${elapsed.inDays}d ago';
+  if (elapsed.inMinutes < 60) return l.responseAgoMinutes(elapsed.inMinutes);
+  if (elapsed.inHours < 24) return l.responseAgoHours(elapsed.inHours);
+  if (elapsed.inDays == 1) return l.responseAgoYesterday;
+  return l.responseAgoDays(elapsed.inDays);
 }

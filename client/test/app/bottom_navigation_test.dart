@@ -1,5 +1,6 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:dsapp/app/shell/bottom_navigation.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,6 +16,8 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: Scaffold(
           backgroundColor: DsColors.canvasRitual,
@@ -33,12 +36,15 @@ void main() {
   testWidgets('is exactly four surfaces, in the product order', (tester) async {
     await pump(tester, current: NavSurface.today);
 
+    final l = L.of(
+      tester.element(find.byType(DsBottomNavigation)),
+    );
     expect(
-      NavSurface.values.map((s) => s.label),
+      NavSurface.values.map((s) => s.label(l)),
       ['Today', 'Dynamic', 'Explore', 'Us'],
     );
     for (final surface in NavSurface.values) {
-      expect(find.text(surface.label), findsOneWidget);
+      expect(find.text(surface.label(l)), findsOneWidget);
     }
   });
 

@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'today_header.dart';
@@ -15,7 +16,7 @@ class RecoveryScaffold extends StatelessWidget {
     super.key,
     required this.context_,
     required this.children,
-    this.title = 'Today',
+    this.title,
   });
 
   /// Replaces partner presence in the header. Protected content is never shown
@@ -23,8 +24,9 @@ class RecoveryScaffold extends StatelessWidget {
   final String context_;
 
   /// The surface this recovery state belongs to. A person who cannot load
-  /// Dynamic should still be told which screen they are on.
-  final String title;
+  /// Dynamic should still be told which screen they are on. Null means Today,
+  /// resolved through [L] rather than defaulting to an English literal.
+  final String? title;
 
   final List<Widget> children;
 
@@ -33,7 +35,11 @@ class RecoveryScaffold extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: title, partnerName: null, context_: context_),
+        TodayHeader(
+          title: title ?? L.of(context).todayTitle,
+          partnerName: null,
+          context_: context_,
+        ),
         ...children,
       ],
     );

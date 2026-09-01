@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain_client/models/today_view.dart';
@@ -38,12 +39,13 @@ class PrimaryExpectation extends StatelessWidget {
   final VoidCallback? onOpen;
 
   /// The adjustment paths the server permits, in the order the design fixes.
-  List<(String, TodayAction)> get _adjustments => _AdjustmentActions._paths
-      .where((p) => item.allowedActions.contains(p.$2.wire))
+  List<TodayAction> get _adjustments => _AdjustmentActions._order
+      .where((a) => item.allowedActions.contains(a.wire))
       .toList();
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: DsSpacing.space5),
       child: IntrinsicHeight(
@@ -77,7 +79,7 @@ class PrimaryExpectation extends StatelessWidget {
                         const SizedBox(width: DsSpacing.space4),
                         Flexible(
                           child: Text(
-                            '01 · NOW · ${kindLabel(item)}',
+                            l.todayPrimaryEyebrow(kindLabel(l, item)),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: DsTextStyles.labelRitual.copyWith(
@@ -107,7 +109,7 @@ class PrimaryExpectation extends StatelessWidget {
                     ),
                     const SizedBox(height: DsSpacing.space4),
                     Text(
-                      itemMeta(item, zone: zone),
+                      itemMeta(l, item, zone: zone),
                       style: DsTextStyles.bodySecondary.copyWith(
                         color: DsColors.textOnRitualMuted,
                         fontSize: todaySupportSize,
@@ -173,7 +175,7 @@ class _CompleteButton extends StatelessWidget {
           onTap: busy ? null : onTap,
           child: Center(
             child: Text(
-              busy ? 'Sending' : 'Complete',
+              busy ? L.of(context).actionSending : L.of(context).actionComplete,
               style: DsTextStyles.labelAction.copyWith(
                 color: DsColors.actionPrimaryForeground,
               ),
@@ -202,26 +204,36 @@ class _AdjustmentActions extends StatelessWidget {
   final void Function(TodayAction) onAction;
   final bool busy;
 
-  /// Already filtered to what the server permits.
-  final List<(String, TodayAction)> paths;
+  /// Already filtered to what the server permits, in the order the design
+  /// fixes. Adjustment is never presented as a lesser choice than completing.
+  final List<TodayAction> paths;
 
-  /// Order and wording are fixed by the design; adjustment is never presented
-  /// as a lesser choice than completing.
-  static const _paths = <(String, TodayAction)>[
-    ('Discuss', TodayAction.discuss),
-    ('New time', TodayAction.requestNewTime),
-    ("Can't do", TodayAction.cantDo),
+  /// Labels are resolved at build time from [L]; only the actions are fixed
+  /// here.
+  static const _order = <TodayAction>[
+    TodayAction.discuss,
+    TodayAction.requestNewTime,
+    TodayAction.cantDo,
     // Last, and only ever alone: the server permits `withdraw` exactly when
     // an adjustment is open, which is when it permits nothing else. Before it
     // was implemented this card showed such an item with no action at all.
-    ('Take it back', TodayAction.withdraw),
+    TodayAction.withdraw,
   ];
+
+  static String labelFor(L l, TodayAction a) => switch (a) {
+    TodayAction.discuss => l.actionDiscuss,
+    TodayAction.requestNewTime => l.actionNewTime,
+    TodayAction.cantDo => l.actionCantDo,
+    TodayAction.withdraw => l.actionTakeItBack,
+    TodayAction.complete => l.actionComplete,
+  };
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Row(
       children: [
-        for (final (label, action) in paths)
+        for (final action in paths)
           Expanded(
             child: SizedBox(
               height: DsLayoutSizes.touchTarget,
@@ -229,7 +241,7 @@ class _AdjustmentActions extends StatelessWidget {
                 onTap: busy ? null : () => onAction(action),
                 child: Center(
                   child: Text(
-                    label,
+                    labelFor(l, action),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.fade,

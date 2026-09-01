@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../platform/time/device_timezone.dart';
 
 /// What activation does when the device will not say which zone it is in.
@@ -45,6 +46,7 @@ class _TimezoneUnavailableState extends State<TimezoneUnavailable> {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
@@ -58,7 +60,7 @@ class _TimezoneUnavailableState extends State<TimezoneUnavailable> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  "We could not read\nyour time zone.",
+                  l.activationTimezoneTitle,
                   textAlign: TextAlign.center,
                   style: DsTextStyles.displayRitual.copyWith(
                     color: DsColors.textOnRitualPrimary,
@@ -67,10 +69,8 @@ class _TimezoneUnavailableState extends State<TimezoneUnavailable> {
                 const SizedBox(height: DsSpacing.space6),
                 Text(
                   _retried
-                      ? 'Still nothing. Choosing it yourself works just as '
-                          'well — your day is measured in the zone you pick.'
-                      : 'Your day has to be measured somewhere, and guessing '
-                          'would move it later without saying so.',
+                      ? l.activationTimezoneWhyRetried
+                      : l.activationTimezoneWhyFirst,
                   textAlign: TextAlign.center,
                   style: DsTextStyles.bodySecondary.copyWith(
                     color: DsColors.textOnRitualSecondary,
@@ -78,10 +78,13 @@ class _TimezoneUnavailableState extends State<TimezoneUnavailable> {
                 ),
                 const SizedBox(height: DsSpacing.space10),
                 if (!_retried)
-                  DsPrimaryButton(label: 'Try again', onPressed: _retry),
+                  DsPrimaryButton(
+                    label: l.activationTimezoneTryAgain,
+                    onPressed: _retry,
+                  ),
                 if (_retried)
                   DsPrimaryButton(
-                    label: 'Choose it myself',
+                    label: l.activationTimezoneChooseMyself,
                     onPressed: () => _pick(context),
                   ),
                 const SizedBox(height: DsSpacing.space4),
@@ -89,7 +92,9 @@ class _TimezoneUnavailableState extends State<TimezoneUnavailable> {
                 TextButton(
                   onPressed: _retried ? _retry : () => _pick(context),
                   child: Text(
-                    _retried ? 'Try reading it again' : 'Choose it myself',
+                    _retried
+                        ? l.activationTimezoneTryReadingAgain
+                        : l.activationTimezoneChooseMyself,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualMuted,
                     ),
@@ -122,22 +127,42 @@ class _TimezoneUnavailableState extends State<TimezoneUnavailable> {
 class _ZonePicker extends StatelessWidget {
   const _ZonePicker();
 
+  /// IANA identifiers only. The name a person reads comes from the
+  /// localisations — the identifier itself is the value that travels.
   static const _zones = [
-    ('Asia/Shanghai', 'China'),
-    ('Asia/Tokyo', 'Japan'),
-    ('Asia/Singapore', 'Singapore'),
-    ('Asia/Kolkata', 'India'),
-    ('Europe/London', 'United Kingdom'),
-    ('Europe/Paris', 'Central Europe'),
-    ('America/New_York', 'US Eastern'),
-    ('America/Chicago', 'US Central'),
-    ('America/Denver', 'US Mountain'),
-    ('America/Los_Angeles', 'US Pacific'),
-    ('Australia/Sydney', 'Eastern Australia'),
+    'Asia/Shanghai',
+    'Asia/Tokyo',
+    'Asia/Singapore',
+    'Asia/Kolkata',
+    'Europe/London',
+    'Europe/Paris',
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'Australia/Sydney',
   ];
+
+  static String _zoneName(L l, String id) => switch (id) {
+        'Asia/Shanghai' => l.activationZoneChina,
+        'Asia/Tokyo' => l.activationZoneJapan,
+        'Asia/Singapore' => l.activationZoneSingapore,
+        'Asia/Kolkata' => l.activationZoneIndia,
+        'Europe/London' => l.activationZoneUnitedKingdom,
+        'Europe/Paris' => l.activationZoneCentralEurope,
+        'America/New_York' => l.activationZoneUsEastern,
+        'America/Chicago' => l.activationZoneUsCentral,
+        'America/Denver' => l.activationZoneUsMountain,
+        'America/Los_Angeles' => l.activationZoneUsPacific,
+        'Australia/Sydney' => l.activationZoneEasternAustralia,
+        // Every id in `_zones` is named above; the identifier is a truthful
+        // last resort rather than an empty row.
+        _ => id,
+      };
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return SafeArea(
       child: ListView(
         shrinkWrap: true,
@@ -145,16 +170,16 @@ class _ZonePicker extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(DsSpacing.space6),
             child: Text(
-              'WHERE YOUR DAY IS MEASURED',
+              l.activationTimezonePickerTitle,
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
             ),
           ),
-          for (final (id, name) in _zones)
+          for (final id in _zones)
             ListTile(
               title: Text(
-                name,
+                _zoneName(l, id),
                 style: DsTextStyles.bodyPrimary.copyWith(
                   color: DsColors.textOnRitualPrimary,
                 ),

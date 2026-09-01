@@ -1,0 +1,838 @@
+{
+  "@@locale": "en",
+  "navToday": "Today",
+  "navDynamic": "Dynamic",
+  "navExplore": "Explore",
+  "navUs": "Us",
+  "actionComplete": "Complete",
+  "actionDiscuss": "Discuss",
+  "actionNewTime": "New time",
+  "actionCantDo": "Can't do",
+  "actionTakeItBack": "Take it back",
+  "@actionTakeItBack": {
+    "description": "Withdrawing an adjustment you asked for yourself."
+  },
+  "activationContinue": "Continue",
+  "activationStepOf": "{step} of 4",
+  "@activationStepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      }
+    }
+  },
+  "activationChooseOneToContinue": "Choose one to continue.",
+  "activationGoalEyebrow": "BEGIN WITH INTENTION",
+  "activationGoalQuestion": "What would you\nlike more of now?",
+  "activationGoalSupport": "Choose the feeling you want your\ndynamic to hold. You can change this later.",
+  "activationGoalFootnote": "This shapes your starting rhythm—not your limits.",
+  "activationGoalCloser": "Closer",
+  "activationGoalStructure": "Structure",
+  "activationGoalService": "Service & devotion",
+  "activationGoalAccountability": "Accountability",
+  "activationGoalExplore": "Explore together",
+  "activationRoleEyebrow": "BEGIN TOGETHER",
+  "activationRoleQuestion": "Who is beginning\nthis with you?",
+  "activationRoleSupport": "Start privately or open this space with a partner.",
+  "activationRoleFootnote": "A starting point, not a limit.\nYou can change this later.",
+  "activationRoleWithPartner": "With a partner",
+  "activationRoleForMyself": "For myself",
+  "activationRoleSectionLabel": "YOUR STARTING ROLE",
+  "activationRoleDominant": "Dominant",
+  "activationRoleSubmissive": "submissive",
+  "activationRoleSwitch": "Switch",
+  "activationRoleCustom": "Custom",
+  "activationRoleDecline": "I'd rather not name one",
+  "activationStructureEyebrow": "YOUR STRUCTURE",
+  "activationStructureQuestion": "How much structure\nfeels right?",
+  "activationStructureSupport": "Choose a starting rhythm. Nothing here\nremoves either person's voice.",
+  "activationStructureFootnote": "You can refine this together later.",
+  "activationStructureLight": "Light",
+  "activationStructureLightDetail": "A gentle rhythm with plenty of room.",
+  "activationStructureSteady": "Steady",
+  "activationStructureSteadyDetail": "Clear expectations with room to adjust.",
+  "activationStructureDefined": "Defined",
+  "activationStructureDefinedDetail": "A firm shape you both agreed to.",
+  "activationContextLabel": "YOUR CONTEXT",
+  "activationContextLongDistance": "Long-distance",
+  "activationContextTogether": "Together",
+  "activationContextTimezone": "Timezone",
+  "activationContextTimezoneDetected": "{zone} · detected",
+  "@activationContextTimezoneDetected": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
+  "activationRhythmEyebrow": "YOUR STARTING RHYTHM",
+  "activationRhythmQuestion": "A small rhythm\nto begin.",
+  "activationRhythmSupport": "Keep what feels right. Replace anything that doesn't.",
+  "activationRhythmFootnoteSolo": "Start light. Adjust as you go.",
+  "activationRhythmFootnoteCouple": "Start light. Adjust together.",
+  "activationRhythmStart": "Start this rhythm",
+  "activationRhythmKindRitual": "RITUAL",
+  "activationRhythmKindExpectation": "EXPECTATION",
+  "activationRhythmKindCheckIn": "CHECK-IN",
+  "activationRhythmEveningTitle": "Evening check-in",
+  "activationRhythmEveningDetail": "A pause for presence before the day closes.",
+  "activationRhythmSentenceTitle": "One honest sentence",
+  "activationRhythmSentenceDetailSolo": "Name what you need today.",
+  "activationRhythmSentenceDetailCouple": "Share what you need today.",
+  "activationRhythmCheckInTitle": "Daily check-in",
+  "activationRhythmCheckInDetail": "Mood · Energy · Need",
+  "activationErrorChooseOutcome": "Choose what you want more of first.",
+  "activationErrorTimezoneUnreadable": "We couldn't read this device's timezone. Try again.",
+  "activationErrorOffline": "You're offline. Connect to the internet, then try again.",
+  "activationErrorInvalidRequest": "Something went wrong setting that up. Try again.",
+  "activationErrorGeneric": "We couldn't set that up right now. Try again.",
+  "activationErrorSessionEnded": "Your session ended. Sign in again to finish setting this up.",
+  "activationTimezoneTitle": "We could not read\nyour time zone.",
+  "activationTimezoneWhyFirst": "Your day has to be measured somewhere, and guessing would move it later without saying so.",
+  "activationTimezoneWhyRetried": "Still nothing. Choosing it yourself works just as well — your day is measured in the zone you pick.",
+  "activationTimezoneTryAgain": "Try again",
+  "activationTimezoneTryReadingAgain": "Try reading it again",
+  "activationTimezoneChooseMyself": "Choose it myself",
+  "activationTimezonePickerTitle": "WHERE YOUR DAY IS MEASURED",
+  "activationZoneChina": "China",
+  "activationZoneJapan": "Japan",
+  "activationZoneSingapore": "Singapore",
+  "activationZoneIndia": "India",
+  "activationZoneUnitedKingdom": "United Kingdom",
+  "activationZoneCentralEurope": "Central Europe",
+  "activationZoneUsEastern": "US Eastern",
+  "activationZoneUsCentral": "US Central",
+  "activationZoneUsMountain": "US Mountain",
+  "activationZoneUsPacific": "US Pacific",
+  "activationZoneEasternAustralia": "Eastern Australia",
+  "exploreTitle": "Explore",
+  "exploreContextIdeas": "Ideas",
+  "exploreContextReading": "Reading",
+  "exploreContextConfirming": "Confirming context",
+  "exploreContextNotLoaded": "Not loaded",
+  "exploreContextNothingYet": "Nothing yet",
+  "exploreSessionLost": "Your private session needs to be restored.",
+  "exploreSignInAgain": "Sign in again",
+  "exploreLoadFailed": "The library could not be loaded. Nothing in your day depends on it.",
+  "exploreTryAgain": "Try again",
+  "exploreEmpty": "There is nothing in the library yet. Today holds everything that is waiting for you.",
+  "exploreIntro": "Things other people have found worth asking for. Nothing here is a suggestion about you.",
+  "exploreAskForThis": "Ask for this",
+  "exploreKindExpectation": "SOMETHING TO ASK FOR",
+  "exploreKindRitual": "SOMETHING TO REPEAT",
+  "exploreKindCheckIn": "SOMETHING TO SAY",
+  "exploreKindOther": "AN IDEA",
+  "responseTypeAcknowledge": "Acknowledge",
+  "responseTypePraise": "Praise",
+  "responseTypeComment": "Comment",
+  "responseTypeReview": "Review",
+  "responseComposerTitle": "Respond to {name}",
+  "@responseComposerTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseYourWords": "YOUR WORDS",
+  "responseWordsHint": "Say what you noticed…",
+  "responseNeedsWords": "A {type} needs your words.",
+  "@responseNeedsWords": {
+    "description": "Shown beside the field when a Comment or Review was sent empty. {type} is the lowercased response type name.",
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "responseSendTo": "Send to {name}",
+  "@responseSendTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseSending": "Sending",
+  "responseNotNow": "Not now",
+  "responseAttention": "Attention",
+  "responsePartnerPresent": "{name} is present",
+  "@responsePartnerPresent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseCompletedAtBy": "{name} completed\nthis at {time}.",
+  "@responseCompletedAtBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "responseAlreadyAnsweredTitle": "This has already\nbeen answered.",
+  "responseAlreadyAnsweredDetail": "{name} has your response.",
+  "@responseAlreadyAnsweredDetail": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseClose": "Close",
+  "responseErrorOffline": "You're offline. Connect to the internet, then try again.",
+  "responseErrorGeneric": "We couldn't send that just now. Try again.",
+  "responseAttentionSummaryLabel": "WHAT NEEDS YOUR ANSWER",
+  "responseAttentionMoments": "{count, plural, =1{1 moment} other{{count} moments}}",
+  "@responseAttentionMoments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "responseAttentionAwaiting": "{count} awaiting your answer",
+  "@responseAttentionAwaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "responseAttentionToRevisit": "{count} to revisit",
+  "@responseAttentionToRevisit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "responseAttentionSectionWaiting": "{name} IS WAITING",
+  "@responseAttentionSectionWaiting": {
+    "description": "Section heading, rendered in upper case. {name} is the partner's display name, already upper-cased by the caller in English.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseAttentionSectionCompletions": "COMPLETIONS TO ANSWER",
+  "responseAttentionSectionLookBack": "LOOK BACK TOGETHER",
+  "responseAttentionRespondTo": "RESPOND TO {name}",
+  "@responseAttentionRespondTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseAttentionEmptyTitle": "Nothing is waiting\non you.",
+  "responseAttentionEmptyDetail": "You'll find anything that needs\nyour answer here.",
+  "responseStateAskedToDiscuss": "asked to discuss",
+  "responseStateAskedForNewTime": "asked for a new time",
+  "responseStateCantDoThis": "said they can't do this",
+  "responseStateCompleted": "completed",
+  "responseStateStillOpen": "is still open",
+  "responseStateWaiting": "is waiting",
+  "responseAgoMinutes": "{count}m ago",
+  "@responseAgoMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "responseAgoHours": "{count}h ago",
+  "@responseAgoHours": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "responseAgoYesterday": "yesterday",
+  "responseAgoDays": "{count}d ago",
+  "@responseAgoDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "responseWaitingYourPartner": "your partner",
+  "responseWaitingHeaderAnswered": "Acknowledgement",
+  "responseWaitingPresenceWaiting": "Waiting for {name}",
+  "@responseWaitingPresenceWaiting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseWaitingRecorded": "Your service\nis recorded.",
+  "responseWaitingCompletedAt": "COMPLETED AT {time}",
+  "@responseWaitingCompletedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "responseWaitingNodeCompleted": "COMPLETED",
+  "responseWaitingNodeWaitingFor": "WAITING FOR {name}",
+  "@responseWaitingNodeWaitingFor": {
+    "description": "Progress label under the second node. {name} is the partner's display name, upper-cased by the caller in English.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseWaitingNotYetAnswered": "Your part is complete.\n{name} has not responded yet.",
+  "@responseWaitingNotYetAnswered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseWaitingReturnToToday": "Return to Today",
+  "responseWaitingCloseRitual": "Close ritual",
+  "responseAnsweredTitle": "You are seen.",
+  "responseAnsweredWordlessNamed": "{name} acknowledged this.",
+  "@responseAnsweredWordlessNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "responseAnsweredWordlessAnonymous": "This was acknowledged.",
+  "responseReceivedAt": "RECEIVED AT {time}",
+  "@responseReceivedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "responsePrivateNoteLabel": "PRIVATE NOTE · ONLY YOU",
+  "dynamicTitle": "Dynamic",
+  "dynamicYou": "YOU",
+  "dynamicNoOneYet": "NO ONE YET",
+  "dynamicCurrentStructure": "CURRENT STRUCTURE",
+  "dynamicCurrentRhythm": "CURRENT RHYTHM",
+  "dynamicCurrentRhythms": "CURRENT RHYTHMS",
+  "dynamicAskOneThing": "Ask one thing",
+  "dynamicThisWeek": "This week",
+  "dynamicPauseThis": "Pause this Dynamic",
+  "dynamicComeBack": "Come back",
+  "dynamicPaused": "PAUSED",
+  "dynamicPausedNothingExpected": "Nothing is expected of either of you while this is paused.",
+  "dynamicEitherMayPause": "Either of you may pause. Nothing is lost while paused.",
+  "dynamicNothingWaitingAfterPause": "Nothing from the paused days is waiting for you.",
+  "outcomeCloser": "Closeness-led",
+  "outcomeStructure": "Structure-led",
+  "outcomeService": "Service-led",
+  "outcomeAccountability": "Accountability-led",
+  "outcomeExplore": "Exploration-led",
+  "levelLight": "lightly held",
+  "levelSteady": "mutually held",
+  "levelDefined": "clearly defined",
+  "structureLine": "{outcome} · {level}",
+  "rolePresetDominant": "Dominant",
+  "rolePresetSubmissive": "Submissive",
+  "rolePresetSwitch": "Switch",
+  "rolePresetCustom": "Their own words",
+  "entranceWordmark": "Companion",
+  "entranceHeadline": "A private space,\non your terms.",
+  "entranceTagline": "Private. Considered. Yours.",
+  "entranceContinue": "Continue",
+  "entranceContinueBusy": "Opening",
+  "entranceHaveAccount": "I already have an account",
+  "entranceNoticeChecking": "Checking your session…",
+  "entranceNoticeSessionEnded": "Your session ended. Enter again when you are ready.",
+  "entranceNoticeOffline": "You're offline. Connect to continue.",
+  "entranceNoticeUnreachable": "We couldn't reach the server. Try again.",
+  "entranceTrustFooter": "For adults 18+. Use of this service is subject to our Terms.\nSee how we handle data in our Privacy Policy.\nAccounts are private by default.",
+  "entranceCreateEyebrow": "Create an account",
+  "entranceCreateHeadline": "Begin privately.",
+  "entranceFieldEmail": "EMAIL",
+  "entranceFieldEmailHint": "you@example.com",
+  "entranceFieldCreatePassword": "CREATE PASSWORD",
+  "entranceFieldPasswordHint": "{min}–{max} characters",
+  "@entranceFieldPasswordHint": {
+    "description": "Placeholder under the new-password field, stating the server's real length bounds.",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "entranceAgeConfirm": "I confirm that I am 18 or older.",
+  "entranceCreateAccount": "Create account",
+  "entranceCreateAccountBusy": "Creating account",
+  "entranceLegalConsent": "By creating an account, you agree to the Terms\nand acknowledge the Privacy Policy.",
+  "entranceAlreadyHaveAccount": "Already have an account? Sign in",
+  "entranceCreateUncertainFallback": "We couldn't confirm whether the account was created. Try signing in before creating it again.",
+  "entranceSignInEyebrow": "Welcome back",
+  "entranceSignInHeadline": "Return to your space.",
+  "entranceFieldPassword": "PASSWORD",
+  "entranceSignIn": "Sign in",
+  "entranceSignInBusy": "Signing in",
+  "entranceSendLink": "Send sign-in link",
+  "entranceSendLinkBusy": "Sending link",
+  "entranceLinkModeExplainer": "We'll send a one-time sign-in link\nto the email you enter.",
+  "entranceUsePasswordInstead": "Use password instead",
+  "entranceUseEmailLink": "Use an email sign-in link",
+  "entranceCreateAccountLink": "Create an account",
+  "entranceSignInNoticeAuthorizationLost": "Please sign in to continue.",
+  "entranceSignInNoticeOffline": "You're offline. Connect, then try again.",
+  "entranceLinkSentEyebrow": "Check your email",
+  "entranceLinkSentHeadline": "A link is on its way.",
+  "entranceLinkSentBody": "If this email can be used to sign in,\nwe'll send a link. Check your inbox\nand spam folder.",
+  "entranceResendLink": "Resend link",
+  "entranceUseDifferentEmail": "Use a different email",
+  "entranceCallbackEyebrowBusy": "Signing you in",
+  "entranceCallbackEyebrowDone": "Sign in",
+  "entranceCallbackHeadlineBusy": "One moment.",
+  "entranceCallbackHeadlineDone": "This link is finished.",
+  "entranceCallbackIncompleteLink": "That link is incomplete. Request a new one.",
+  "entranceCallbackUnexpectedLink": "We couldn't complete that sign-in. Request a new link.",
+  "entranceRequestNewLink": "Request a new link",
+  "entranceErrorAgeNotConfirmed": "Confirm that you are 18 or older to create an account.",
+  "entranceErrorOffline": "You're offline. Connect to the internet, then try again.",
+  "entranceErrorGeneric": "Something went wrong. Try again.",
+  "entranceErrorUnexpected": "Something unexpected happened. Try again.",
+  "entranceErrorLinkWrongDevice": "Open the link on the device where you asked for it, or request a new one.",
+  "entranceErrorLinkExpired": "That link can no longer be used. Request a new one.",
+  "entranceErrorSignInUncertain": "We couldn't confirm the sign-in. Try again.",
+  "entranceErrorLinkSignInUncertain": "We couldn't confirm the sign-in. Try the link again.",
+  "entranceErrorSignInGeneric": "We couldn't sign you in right now. Try again.",
+  "entranceErrorInvalidCredentials": "We couldn't sign you in with those details. Check your email and password, or use an email sign-in link.",
+  "entranceErrorAccountNotActive": "We can't sign you in. Try an email sign-in link or contact support.",
+  "entranceErrorRegisterUncertain": "We couldn't confirm whether the account was created. Try signing in or request an email sign-in link before creating it again.",
+  "entranceErrorRegisterGeneric": "We couldn't create the account right now. Try again.",
+  "entranceErrorEmailInvalid": "Enter a valid email address.",
+  "entranceErrorPasswordMissing": "Enter your password.",
+  "entranceErrorCheckDetails": "Check the details and try again.",
+  "entranceErrorPasswordTooShort": "Use at least {min} characters.",
+  "@entranceErrorPasswordTooShort": {
+    "description": "Shown beside the password field when the server rejects it as too short.",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "entranceErrorPasswordTooLong": "Use no more than {max} characters.",
+  "@entranceErrorPasswordTooLong": {
+    "description": "Shown beside the password field when the server rejects it as too long.",
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteTitle": "Private invitation",
+  "inviteStatusChecking": "CHECKING",
+  "inviteStatusPending": "PENDING",
+  "invitePreparing": "Preparing a private link…",
+  "invitePreparingNote": "Nothing is sent until you share it.",
+  "inviteReadyHeadline": "A private space\nis ready to share.",
+  "inviteWaitingForThem": "Waiting for them to join",
+  "inviteNothingBeginsYet": "Nothing begins until both of you agree.",
+  "inviteLinkLabel": "PRIVATE LINK / CODE",
+  "inviteCopyLink": "Copy invitation link",
+  "inviteCopyCodeOnly": "Copy code only",
+  "inviteRevoke": "Revoke invitation",
+  "inviteCopyLinkTooltip": "Copy link",
+  "inviteCopied": "Copied",
+  "inviteExpired": "This link has expired.",
+  "inviteExpiresWithinHour": "Expires within the hour",
+  "inviteExpiresInHours": "Expires in {hours} hours",
+  "@inviteExpiresInHours": {
+    "description": "How long a live invitation link has left, in whole hours.",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteExpiresInDays": "Expires in {days} days",
+  "@inviteExpiresInDays": {
+    "description": "How long a live invitation link has left, in whole days.",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "inviteAlreadyLiveHeadline": "An invitation is\nalready waiting.",
+  "inviteAlreadyLiveDetail": "Only one link can be live at a time, and a link is shown only once when it is made.",
+  "inviteAlreadyLiveGuidance": "Withdraw the existing one from your Dynamic to make a new link.",
+  "inviteBackToDynamic": "Back to your Dynamic",
+  "inviteClosedHeadline": "This invitation\nis closed.",
+  "inviteCreateFailedHeadline": "We couldn't make\na private link.",
+  "inviteClosedDetail": "The old link can no longer open your Dynamic. Nobody joined through it.",
+  "inviteCreateNew": "Create a new invitation",
+  "inviteCreateNewNote": "Creating a new invitation makes a new private link.",
+  "inviteErrorOffline": "You're offline. Connect to the internet, then try again.",
+  "inviteErrorCreateFailed": "We couldn't create the link right now. Try again.",
+  "inviteErrorRevokeFailed": "We couldn't withdraw that link right now. Try again.",
+  "inviteErrorJoinRefused": "This invitation can no longer be used. Ask for a new one.",
+  "inviteErrorJoinFailed": "We couldn't complete that just now. Try again.",
+  "joinWordmark": "COMPANION",
+  "joinResolving": "Checking this invitation…",
+  "joinResolvingNote": "Nothing is shown until it is confirmed.",
+  "joinUnresolvedHeadline": "We couldn't check\nthis invitation.",
+  "joinUnresolvedDetail": "We couldn't determine its status.\nNo join was attempted.",
+  "joinTryAgain": "Try again",
+  "joinUnresolvedPrivacyNote": "This link is still here. Trying again is safe.",
+  "joinSomeone": "Someone",
+  "joinInvitedYou": "invited you to begin\na private dynamic.",
+  "joinYouChooseYourRole": "You choose your own role.",
+  "joinNotConsentToExpectations": "Joining is not consent to future expectations.",
+  "joinReviewAndJoin": "Review and join",
+  "joinBusy": "Joining",
+  "joinNotNow": "Not now",
+  "joinPrivacyNote": "You can pause or leave this dynamic at any time.",
+  "joinAlreadyJoined": "You've joined. Open the app to continue.",
+  "joinBoundaryIntentionLabel": "SHARED INTENTION",
+  "joinBoundaryIntention": "More structure and closeness.",
+  "joinBoundarySharedLabel": "SHARED TOGETHER",
+  "joinBoundarySharedItems": "Starter rhythm ·\nresponses ·\nagreed changes",
+  "joinBoundaryPrivateLabel": "STAYS YOURS",
+  "joinBoundaryPrivateItems": "Private notes ·\npersonal settings ·\nyour choice to leave",
+  "joinUsedHeadline": "This invitation\nhas been used.",
+  "joinExpiredHeadline": "This invitation\nhas expired.",
+  "joinUnavailableHeadline": "This invitation is\nno longer available.",
+  "joinClosedPrivacyDetail": "For privacy, no Dynamic\ndetails are shown here.",
+  "joinUnavailableDetail": "No invitation details are shown here.",
+  "joinNotJoinedAnything": "You have not joined anything.",
+  "joinAskForNewLink": "Ask the person who invited you\nto create a new private link.",
+  "joinAskSharer": "If you need a new invitation, ask the\nperson who shared this link.",
+  "joinReturnToEntrance": "Return to private entrance",
+  "joinClosedPrivacyNote": "This link cannot be used to join anything.",
+  "inviteLifecyclePending": "Pending",
+  "inviteLifecycleAccepted": "Accepted",
+  "inviteLifecycleExpired": "Expired",
+  "inviteLifecycleRevoked": "Revoked",
+  "askTitle": "Ask one thing",
+  "askCancel": "Cancel",
+  "askForWhom": "For {name}",
+  "askYourPartnerFallback": "your partner",
+  "askWhatStep": "WHAT YOU ARE ASKING",
+  "askWhatHint": "Prepare the room before 8:00 PM",
+  "askWhatMissing": "Say what you are asking for.",
+  "askWhenStep": "WHEN",
+  "askWhyStep": "WHY IT MATTERS (OPTIONAL)",
+  "askWhyHint": "Create a calm space for our evening ritual",
+  "askSend": "Send",
+  "askSending": "Sending…",
+  "askAgencyNote": "{name} can complete this, ask to discuss it, ask for another time, or say they cannot — always.",
+  "askNoOneYet": "There is no one to ask yet.",
+  "askNoOneYetBody": "Once your invitation is accepted, you can ask them for things here.",
+  "askFailed": "That did not reach the server. Nothing was sent — try again.",
+  "askCouldNotOpen": "This could not be opened. Nothing was sent.",
+  "whenAnytime": "Anytime",
+  "whenClear": "Clear",
+  "whenToday": "Today",
+  "detailDue": "DUE",
+  "detailSetBy": "Set by {name}",
+  "detailIntention": "INTENTION",
+  "detailPrivateNote": "PRIVATE NOTE · ONLY YOU",
+  "detailCompletionNote": "COMPLETION NOTE (OPTIONAL)",
+  "detailCompletionHint": "What did you attend to?",
+  "detailMarkComplete": "Mark complete",
+  "detailCompleting": "Completing…",
+  "detailPartnerWillSee": "{name} will see this.",
+  "detailTakeItBack": "Never mind, take it back",
+  "detailTakingItBack": "Taking it back…",
+  "detailTakeItBackNote": "It goes back to how it was. Nothing is recorded as agreed or refused.",
+  "detailTheirWords": "THEIR WORDS",
+  "detailPersonWrote": "{name} WROTE",
+  "detailConfirming": "Confirming this with the server.",
+  "detailSessionEnded": "Your private session needs to be restored. Nothing about this is shown until it is.",
+  "detailCouldNotLoad": "This could not be loaded. Nothing was changed.",
+  "nothingWaitingAck": "Done, and waiting for a human response.",
+  "nothingAcknowledged": "Answered. Nothing more is needed here.",
+  "nothingDiscussing": "You asked to talk about this.",
+  "nothingRescheduling": "You asked for another time.",
+  "nothingExcusing": "You said you could not do this.",
+  "nothingCancelled": "This was cancelled.",
+  "nothingDefault": "Nothing is waiting on you here.",
+  "recoveryConfirmingContext": "Confirming context",
+  "recoveryNotConfirmed": "Not confirmed",
+  "recoveryOffline": "Offline",
+  "recoveryReading": "Reading",
+  "recoverySessionEnded": "PRIVATE SESSION ENDED",
+  "recoverySessionRestore": "Your private session\nneeds to be restored.",
+  "recoverySignInAgain": "Sign in again",
+  "recoveryNoProtectedContent": "No protected content remains on this screen.",
+  "recoveryTryAgain": "Try again",
+  "recoveryTryToReconnect": "Try to reconnect",
+  "todayResolving": "RESOLVING TODAY",
+  "todayConfirmingPrivate": "Confirming your private context…",
+  "todayPrivateByDefault": "PRIVATE BY DEFAULT",
+  "todayPrivateByDefaultBody": "Partner details stay hidden until membership and the current relationship day are confirmed.",
+  "todayCouldNotLoad": "Today could not be loaded. Nothing was lost.",
+  "todayOfflineReadOnly": "Read-only until the server reconnects.",
+  "todayActionsPaused": "Actions are paused offline",
+  "todayActionsReturn": "Complete, Discuss, New Time and Can't Do will return after current truth is confirmed.",
+  "todayCachedNeverNew": "Cached content is never treated as a new state.",
+  "todayHiddenDetails": "Partner and Dynamic details have been hidden.\nSign in again to confirm current access.",
+  "todayOffline": "OFFLINE",
+  "dynamicConfirmingStructure": "Nothing about the two of you is shown until the server confirms it.",
+  "dynamicCouldNotConfirm": "The current structure could not be confirmed.",
+  "dynamicPauseUnavailable": "Pause and Resume need the server, so they are unavailable until it reconnects. Whatever was already agreed still stands.",
+  "dynamicCouldNotLoad": "The Dynamic could not be loaded. Nothing was changed.",
+  "dynamicHiddenDetails": "Partner, roles and current structure have been hidden.\nSign in again to confirm current access.",
+  "settingsTitle": "Settings",
+  "settingsClose": "Close",
+  "settingsLoading": "Reading your settings.",
+  "settingsLoadFailed": "Your notification settings could not be loaded.",
+  "settingsSaveFailed": "That did not reach the server. Nothing changed.",
+  "settingsNotificationContentSection": "WHAT A NOTIFICATION MAY SAY",
+  "settingsPreviewNeutralLabel": "Nothing about the relationship",
+  "settingsPreviewNeutralSupport": "A lockscreen shows only that the app has something for you. This is the default.",
+  "settingsPreviewRichLabel": "Show the detail",
+  "settingsPreviewRichSupport": "Titles and names may appear on your lockscreen, where anyone holding your phone can read them.",
+  "settingsQuietHoursSection": "QUIET HOURS",
+  "settingsQuietHoursOffLabel": "Off",
+  "settingsQuietHoursOffSupport": "Notifications arrive whenever they happen.",
+  "settingsQuietHoursPresetLabel": "10:00 PM — 7:00 AM",
+  "settingsQuietHoursPresetSupport": "Anything arriving in this window waits, and comes as one update rather than a replay.",
+  "settingsSharedDaySection": "THE DAY YOU SHARE",
+  "settingsDayBoundaryExplain": "Your relationship day ends at {time}, in this timezone — not in whichever one your phone is in. Nothing moves when you travel, and daylight saving does not shift the day.",
+  "settingsPairingSection": "THIS PAIRING",
+  "settingsLeaveOrBlock": "Leave or block",
+  "settingsLeaveNeedsNoAgreement": "Leaving never needs your partner to agree.",
+  "settingsDeviceSection": "THIS DEVICE",
+  "settingsSignOut": "Sign out",
+  "settingsSignOutSupport": "Signing out ends this session here. Nothing about the relationship changes.",
+  "settingsLeaveHeadline": "Ending this",
+  "settingsLeaveIntro": "Both of these end the Dynamic for both of you. Nothing happens until you confirm.",
+  "settingsLeaveAction": "Leave",
+  "settingsLeaveActionSupport": "You stop taking part. No approval is needed.",
+  "settingsBlockAction": "Block",
+  "settingsBlockActionSupportNoPartner": "There is no one here to block yet.",
+  "settingsBlockActionSupport": "You leave, and they cannot reach you here again.",
+  "settingsLeaveConfirmTitle": "Leave this Dynamic",
+  "settingsLeaveFactEndsForBoth": "It ends for both of you.",
+  "settingsLeaveFactNothingAskedAgain": "Neither of you will be asked for anything here again.",
+  "settingsLeaveFactNoAgreementNeeded": "Your partner is not asked to agree, and cannot stop it.",
+  "settingsLeaveFactCannotUndo": "This cannot be undone from the app.",
+  "settingsLeaveBusy": "Leaving…",
+  "settingsBlockConfirmTitle": "Block",
+  "settingsBlockConfirmTitleNamed": "Block {name}",
+  "settingsBlockPartnerFallbackName": "your partner",
+  "settingsBlockFactEndsForBoth": "It ends for both of you.",
+  "settingsBlockFactNoContact": "They will not be able to reach you here again.",
+  "settingsBlockFactNoHistory": "Neither of you can read the shared history afterwards.",
+  "settingsBlockFactNotTold": "They are not told who did it.",
+  "settingsBlockFactCannotUndo": "This cannot be undone from the app.",
+  "settingsBlockBusy": "Blocking…",
+  "settingsGoBack": "Go back",
+  "settingsNoOneToBlock": "There is no one here to block.",
+  "settingsLeaveFailed": "That did not reach the server. Nothing has changed.",
+  "weeklyTitle": "THIS WEEK",
+  "weeklyClose": "Close",
+  "weeklyLoading": "Gathering what actually happened this week.",
+  "weeklyLoadFailed": "This week could not be loaded. Nothing was changed.",
+  "weeklyTryAgain": "Try again",
+  "weeklyTooEarlyHeadline": "There is not a week to look back on yet.",
+  "weeklyTooEarlySupport": "This comes back once you have some days behind you. Nothing is missing in the meantime.",
+  "weeklyHeadlineQuiet": "A quiet week.",
+  "weeklyHeadlineOneDay": "One day had something on it.",
+  "weeklyHeadlineDays": "{count} days had something on them.",
+  "weeklyAnsweredOne": "One thing was answered by a person",
+  "weeklyAnsweredMany": "{count} things were answered by a person",
+  "weeklyAdjustedOne": "one adjustment was worked out together",
+  "weeklyAdjustedMany": "{count} adjustments were worked out together",
+  "weeklySupportJoin": "{first}, and {second}.",
+  "weeklySupportSingle": "{only}.",
+  "weeklySupportNothing": "Nothing was completed or answered. That is a fact about the week, not about either of you.",
+  "weeklyAnsweredSection": "WHAT WAS ANSWERED",
+  "weeklyMomentAttribution": "— {name}",
+  "weeklyNextWeekSection": "NEXT WEEK",
+  "weeklyKeep": "Keep the current rhythm",
+  "weeklyPauseInstead": "Pause instead",
+  "weeklyKeepSupport": "Keeping is not a commitment. Either of you may pause at any time, from Dynamic.",
+  "checkInTitle": "Check in",
+  "checkInCancel": "Cancel",
+  "checkInHeadline": "How are you, right now?",
+  "checkInSupport": "Answer as much or as little as you want.",
+  "checkInMoodSection": "MOOD",
+  "checkInMoodGood": "Good",
+  "checkInMoodSteady": "Steady",
+  "checkInMoodLow": "Low",
+  "checkInMoodTender": "Tender",
+  "checkInMoodRaw": "Raw",
+  "checkInEnergySection": "ENERGY",
+  "checkInEnergyHigh": "High",
+  "checkInEnergySteady": "Steady",
+  "checkInEnergyLow": "Running low",
+  "checkInNeedSection": "WHAT WOULD HELP",
+  "checkInNeedNothing": "Nothing",
+  "checkInNeedCloseness": "Closeness",
+  "checkInNeedSpace": "Space",
+  "checkInNeedStructure": "Structure",
+  "checkInNeedToBeAsked": "To be asked",
+  "checkInNoteSection": "ANYTHING ELSE (OPTIONAL)",
+  "checkInNoteHint": "In your own words",
+  "checkInVisibilitySection": "WHO CAN SEE THIS",
+  "checkInVisibilityPrivate": "Only me",
+  "checkInVisibilityShare": "Share",
+  "checkInVisibilityShareWith": "Share with {name}",
+  "checkInVisibilityPrivateSupport": "Kept to yourself. Nothing about it reaches anyone else.",
+  "checkInVisibilityNoPartnerSupport": "There is no one to share with yet.",
+  "checkInVisibilitySharedSupport": "{name} will be able to read this. It cannot be unshared afterwards.",
+  "checkInSave": "Save",
+  "checkInSaving": "Saving…",
+  "checkInSaveFailed": "That did not reach the server. Nothing was saved — try again.",
+  "shellOpeningYourSpace": "Opening your space…",
+  "shellSignInToContinue": "Sign in to continue.",
+  "shellCouldNotOpenYourSpace": "We couldn't open\nyour space.",
+  "shellSessionEndedNothingLost": "Your session ended. Nothing was lost.",
+  "shellCouldNotReachYourSpace": "We couldn't reach your space just now.",
+  "shellSignIn": "Sign in",
+  "shellTryAgain": "Try again",
+  "shellButtonWorking": "{label}, working",
+  "@shellButtonWorking": {
+    "description": "Screen-reader label for a button whose request is in flight, so a working button is not announced as an ordinary one.",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "shellShow": "Show",
+  "shellHide": "Hide",
+  "shellShowPassword": "Show password",
+  "shellHidePassword": "Hide password",
+  "usConfirmingContext": "Confirming context",
+  "usNotConfirmed": "Not confirmed",
+  "usSoFar": "So far",
+  "usSettings": "Settings",
+  "usTryAgain": "Try again",
+  "usCouldNotBeLoaded": "This could not be loaded. Nothing is missing from your history.",
+  "usConnectedDays": "{count, plural, =0{Nothing has landed on the same day yet.} =1{One day you both showed up.} other{{count} days you both showed up.}}",
+  "@usConnectedDays": {
+    "description": "A count of days where both people did something. Stated as a record, never as a rate, a streak or a target — '4 of 7' would turn a record into a report card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usConnectedDaysSupport": "Days you both did something. Nothing the app did on its own is counted here.",
+  "usThisWeek": "This week",
+  "usNothingYet": "Nothing has happened here yet. It fills up as you use it — there is nothing to catch up on.",
+  "usRecently": "RECENTLY",
+  "usSomeone": "Someone",
+  "@usSomeone": {
+    "description": "Stands in for an actor whose display name the server did not give."
+  },
+  "usMomentCompletion": "{name} did something that was asked",
+  "@usMomentCompletion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usMomentAcknowledgement": "{name} answered",
+  "@usMomentAcknowledgement": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usMomentAdjustmentRequested": "{name} asked to change something",
+  "@usMomentAdjustmentRequested": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usMomentAdjustmentResolved": "You worked something out",
+  "usMomentCheckin": "{name} shared how they were",
+  "@usMomentCheckin": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usMomentMemberJoined": "{name} joined",
+  "@usMomentMemberJoined": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "usMomentUnknown": "Something happened",
+  "@usMomentUnknown": {
+    "description": "An event type this build does not recognise. Never show the raw server enum."
+  },
+  "usPrivateSessionEnded": "PRIVATE SESSION ENDED",
+  "usSessionNeedsRestoring": "Your private session\nneeds to be restored.",
+  "usHistoryHidden": "Your history together has been hidden.\nSign in again to confirm current access.",
+  "usSignInAgain": "Sign in again",
+  "usNoProtectedContent": "No protected content remains on this screen.",
+  "todayTitle": "Today",
+  "todayPrivate": "Private",
+  "todayPresent": "{name} is present",
+  "todayLaterOptional": "LATER / OPTIONAL",
+  "todayDayEndsAt": "Relationship day ends at {clock}",
+  "todayFrom": "From {name}",
+  "todayNothingExpected": "Nothing is expected of you today.",
+  "todayCheckInOffer": "A check-in is here if you want one.",
+  "todayCheckIn": "Check in",
+  "stateOnToday": "Today",
+  "stateWaitingForReply": "Waiting for a reply",
+  "stateNeedsReview": "Needs review",
+  "stateBeingDiscussed": "Being discussed",
+  "stateNewTimeRequested": "New time requested",
+  "stateCantDoSent": "Can't do — sent",
+  "stateScheduled": "Scheduled",
+  "kindRitual": "RITUAL",
+  "kindExpectation": "EXPECTATION",
+  "kindOnToday": "ON TODAY",
+  "ageJustNow": "JUST NOW",
+  "ageMinutes": "{count} MIN AGO",
+  "ageHours": "{count} HR AGO",
+  "ageDays": "{count} DAY AGO",
+  "actionSending": "Sending",
+  "yourPartner": "YOUR PARTNER",
+  "todayResponseHeading": "{name} RESPONDED · {age}",
+  "todayPriorityHeading": "{count, plural, =1{ONE THING MATTERS} =2{TWO THINGS MATTER} other{{count} THINGS MATTER}}",
+  "@todayPriorityHeading": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayPriorityHeadingNone": "NOTHING MATTERS TODAY",
+  "todayPrimaryEyebrow": "01 · NOW · {kind}",
+  "@todayPrimaryEyebrow": {
+    "placeholders": {
+      "kind": {
+        "type": "String"
+      }
+    }
+  }
+}

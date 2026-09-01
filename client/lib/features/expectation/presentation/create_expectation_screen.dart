@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
 import '../../../app/shell/ds_text_field.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../domain_client/models/dynamic_view.dart';
 import '../../dynamic/presentation/dynamic_screen.dart';
 import '../../today/presentation/widgets/today_layout.dart';
@@ -121,6 +122,7 @@ class _CreateExpectationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
 
     return Scaffold(
@@ -162,6 +164,7 @@ class _CreateExpectationScreenState
   }
 
   Widget _form(DynamicDetail view, MemberView assignee) {
+    final l = L.of(context);
     return Column(
       children: [
         _TopBar(onCancel: widget.onCancel),
@@ -174,21 +177,21 @@ class _CreateExpectationScreenState
 
               NumberedStep(
                 index: 1,
-                label: 'WHAT YOU ARE ASKING',
+                label: l.askWhatStep,
                 child: DsTextField(
                   label: '',
                   controller: _title,
-                  hint: 'Prepare the room before 8:00 PM',
+                  hint: l.askWhatHint,
                   enabled: !_busy,
                   error: _submitted && !_ready
-                      ? 'Say what you are asking for.'
+                      ? l.askWhatMissing
                       : null,
                 ),
               ),
 
               NumberedStep(
                 index: 2,
-                label: 'WHEN',
+                label: l.askWhenStep,
                 child: WhenRow(
                   value: _dueAt,
                   zone: view.referenceTimezone,
@@ -199,12 +202,12 @@ class _CreateExpectationScreenState
 
               NumberedStep(
                 index: 3,
-                label: 'WHY IT MATTERS (OPTIONAL)',
+                label: l.askWhyStep,
                 last: true,
                 child: DsTextField(
                   label: '',
                   controller: _purpose,
-                  hint: 'Create a calm space for our evening ritual',
+                  hint: l.askWhyHint,
                   enabled: !_busy,
                 ),
               ),
@@ -226,9 +229,9 @@ class _CreateExpectationScreenState
               Padding(
                 padding: todayInset,
                 child: DsPrimaryButton(
-                  label: 'Send',
+                  label: l.askSend,
                   busy: _busy,
-                  busyLabel: 'Sending…',
+                  busyLabel: l.askSending,
                   onPressed: _busy ? null : () => _send(assignee),
                 ),
               ),
@@ -239,9 +242,9 @@ class _CreateExpectationScreenState
               Padding(
                 padding: todayInset,
                 child: Text(
-                  '${assignee.displayName ?? 'They'} can complete this, ask to '
-                  'discuss it, ask for another time, or say they cannot — '
-                  'always.',
+                  l.askAgencyNote(
+                    assignee.displayName ?? l.askYourPartnerFallback,
+                  ),
                   style: DsTextStyles.bodySecondary.copyWith(
                     color: DsColors.textOnRitualMuted,
                     fontSize: todaySupportSize,
@@ -265,6 +268,7 @@ class _TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: todayInset.add(
         const EdgeInsets.symmetric(vertical: DsSpacing.space4),
@@ -274,7 +278,7 @@ class _TopBar extends StatelessWidget {
           GestureDetector(
             onTap: onCancel,
             child: Text(
-              'Cancel',
+              l.askCancel,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
@@ -282,7 +286,7 @@ class _TopBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Ask one thing',
+              l.askTitle,
               textAlign: TextAlign.center,
               style: DsTextStyles.bodyPrimary.copyWith(
                 color: DsColors.textOnRitualPrimary,
@@ -305,6 +309,7 @@ class _ForWhom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: todayInset,
       child: Row(
@@ -321,7 +326,9 @@ class _ForWhom extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'For ${assignee.displayName ?? 'your partner'}',
+                  l.askForWhom(
+                    assignee.displayName ?? l.askYourPartnerFallback,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: DsTextStyles.bodyPrimary.copyWith(
@@ -330,7 +337,7 @@ class _ForWhom extends StatelessWidget {
                 ),
                 if (assignee.rolePreset != null)
                   Text(
-                    _role(assignee.rolePreset!),
+                    _role(l, assignee.rolePreset!),
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualMuted,
                       fontSize: todaySupportSize,
@@ -346,11 +353,11 @@ class _ForWhom extends StatelessWidget {
   }
 }
 
-String _role(String preset) => switch (preset) {
-  'DOMINANT' => 'Dominant',
-  'SUBMISSIVE' => 'Submissive',
-  'SWITCH' => 'Switch',
-  'CUSTOM' => 'Their own words',
+String _role(L l, String preset) => switch (preset) {
+  'DOMINANT' => l.rolePresetDominant,
+  'SUBMISSIVE' => l.rolePresetSubmissive,
+  'SWITCH' => l.rolePresetSwitch,
+  'CUSTOM' => l.rolePresetCustom,
   _ => preset,
 };
 
@@ -362,6 +369,7 @@ class _NoOneToAsk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       children: [
         _TopBar(onCancel: onCancel),
@@ -369,7 +377,7 @@ class _NoOneToAsk extends StatelessWidget {
         Padding(
           padding: todayInset,
           child: Text(
-            'There is no one to ask yet.',
+            l.askNoOneYet,
             style: DsTextStyles.bodyPrimary.copyWith(
               color: DsColors.textOnRitualPrimary,
             ),
@@ -379,8 +387,7 @@ class _NoOneToAsk extends StatelessWidget {
         Padding(
           padding: todayInset,
           child: Text(
-            'Once your invitation is accepted, you can ask them for things '
-            'here.',
+            l.askNoOneYetBody,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -398,6 +405,7 @@ class _Unavailable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       children: [
         _TopBar(onCancel: onCancel),
@@ -405,7 +413,7 @@ class _Unavailable extends StatelessWidget {
         Padding(
           padding: todayInset,
           child: Text(
-            'This could not be opened. Nothing was sent.',
+            l.askCouldNotOpen,
             style: DsTextStyles.bodyPrimary.copyWith(
               color: DsColors.textOnRitualPrimary,
             ),

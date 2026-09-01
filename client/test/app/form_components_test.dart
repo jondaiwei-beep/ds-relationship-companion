@@ -1,6 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:dsapp/app/shell/ds_primary_button.dart';
 import 'package:dsapp/app/shell/ds_text_field.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,6 +20,8 @@ void main() {
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: L.localizationsDelegates,
+        supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: Scaffold(
           backgroundColor: DsColors.canvasRitual,

@@ -7,6 +7,7 @@ import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/us_view.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
@@ -57,6 +58,7 @@ class UsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
     final us = ref.watch(usProvider(dynamicId));
     void reload() => ref.invalidate(usProvider(dynamicId));
 
@@ -71,10 +73,10 @@ class UsScreen extends ConsumerWidget {
                 child: us.when(
                   skipLoadingOnReload: true,
                   skipLoadingOnRefresh: true,
-                  loading: () => const RecoveryScaffold(
-                    context_: 'Confirming context',
-                    title: 'Us',
-                    children: [
+                  loading: () => RecoveryScaffold(
+                    context_: l.usConfirmingContext,
+                    title: l.navUs,
+                    children: const [
                       DsSkeletonPulse(
                         child: Column(
                           children: [
@@ -114,20 +116,19 @@ class UsScreen extends ConsumerWidget {
                   error: (error, _) => _isAuthLoss(error)
                       ? _AuthorizationLost(onSignIn: onSignIn)
                       : RecoveryScaffold(
-                          context_: 'Not confirmed',
-                          title: 'Us',
+                          context_: l.usNotConfirmed,
+                          title: l.navUs,
                           children: [
                             const SizedBox(height: DsSpacing.space8),
-                            const RecoveryMessage(
-                              'This could not be loaded. Nothing is missing '
-                              'from your history.',
+                            RecoveryMessage(
+                              l.usCouldNotBeLoaded,
                               prominent: true,
                             ),
                             const SizedBox(height: DsSpacing.space6),
                             Padding(
                               padding: todayInset,
                               child: SecondaryButton(
-                                label: 'Try again',
+                                label: l.usTryAgain,
                                 onTap: reload,
                               ),
                             ),
@@ -165,13 +166,14 @@ class _Loaded extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return ListView(
       padding: EdgeInsets.zero,
       children: [
         Row(
           children: [
-            const Expanded(
-              child: TodayHeader(title: 'Us', context_: 'So far'),
+            Expanded(
+              child: TodayHeader(title: l.navUs, context_: l.usSoFar),
             ),
             if (onSettings != null)
               Padding(
@@ -183,7 +185,7 @@ class _Loaded extends StatelessWidget {
                     Icons.settings_outlined,
                     size: 22,
                     color: DsColors.textOnRitualMuted,
-                    semanticLabel: 'Settings',
+                    semanticLabel: l.usSettings,
                   ),
                 ),
               ),
@@ -193,7 +195,7 @@ class _Loaded extends StatelessWidget {
         Padding(
           padding: todayInset,
           child: Text(
-            _connected(view.connectedDays),
+            l.usConnectedDays(view.connectedDays),
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
               fontSize: 26,
@@ -205,8 +207,7 @@ class _Loaded extends StatelessWidget {
         Padding(
           padding: todayInset,
           child: Text(
-            'Days you both did something. Nothing the app did on its own is '
-            'counted here.',
+            l.usConnectedDaysSupport,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualMuted,
               fontSize: todaySupportSize,
@@ -219,19 +220,18 @@ class _Loaded extends StatelessWidget {
           const SizedBox(height: DsSpacing.space8),
           Padding(
             padding: todayInset,
-            child: SecondaryButton(label: 'This week', onTap: onWeekly!),
+            child: SecondaryButton(label: l.usThisWeek, onTap: onWeekly!),
           ),
         ],
 
         const SizedBox(height: DsSpacing.space10),
 
         if (view.moments.isEmpty)
-          const Padding(
+          Padding(
             padding: todayInset,
             child: Text(
-              'Nothing has happened here yet. It fills up as you use it — '
-              'there is nothing to catch up on.',
-              style: TextStyle(color: DsColors.textOnRitualMuted),
+              l.usNothingYet,
+              style: const TextStyle(color: DsColors.textOnRitualMuted),
             ),
           )
         else ...[
@@ -240,7 +240,7 @@ class _Loaded extends StatelessWidget {
               const EdgeInsets.only(bottom: DsSpacing.space4),
             ),
             child: Text(
-              'RECENTLY',
+              l.usRecently,
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),
@@ -255,14 +255,6 @@ class _Loaded extends StatelessWidget {
   }
 }
 
-/// A count of days, never a rate. "4 of 7" would turn a record into a target
-/// and make an ordinary week read as a shortfall.
-String _connected(int days) => switch (days) {
-  0 => 'Nothing has landed on the same day yet.',
-  1 => 'One day you both showed up.',
-  final n => '$n days you both showed up.',
-};
-
 class _Moment extends StatelessWidget {
   const _Moment({required this.moment});
 
@@ -270,8 +262,8 @@ class _Moment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final who = moment.actorDisplayName;
-    final line = _describe(moment.eventType, who);
+    final line = _describe(L.of(context), moment.eventType,
+        moment.actorDisplayName);
 
     return Container(
       margin: todayInset.add(
@@ -331,16 +323,16 @@ class _Moment extends StatelessWidget {
 /// is described as "something happened" rather than shown as a raw enum: a
 /// person should never be shown `adjustment_resolved`, and a new server event
 /// type must not be able to leak database vocabulary onto this screen.
-String _describe(String eventType, String? who) {
-  final name = who ?? 'Someone';
+String _describe(L l, String eventType, String? who) {
+  final name = who ?? l.usSomeone;
   return switch (eventType) {
-    'completion_submitted' => '$name did something that was asked',
-    'acknowledgement_sent' => '$name answered',
-    'adjustment_requested' => '$name asked to change something',
-    'adjustment_resolved' => 'You worked something out',
-    'checkin_created' => '$name shared how they were',
-    'member_joined' => '$name joined',
-    _ => 'Something happened',
+    'completion_submitted' => l.usMomentCompletion(name),
+    'acknowledgement_sent' => l.usMomentAcknowledgement(name),
+    'adjustment_requested' => l.usMomentAdjustmentRequested(name),
+    'adjustment_resolved' => l.usMomentAdjustmentResolved,
+    'checkin_created' => l.usMomentCheckin(name),
+    'member_joined' => l.usMomentMemberJoined(name),
+    _ => l.usMomentUnknown,
   };
 }
 
@@ -351,14 +343,15 @@ class _AuthorizationLost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return RecoveryScaffold(
-      context_: 'Confirming context',
-      title: 'Us',
+      context_: l.usConfirmingContext,
+      title: l.navUs,
       children: [
         Padding(
           padding: todayInset,
           child: Text(
-            'PRIVATE SESSION ENDED',
+            l.usPrivateSessionEnded,
             style: DsTextStyles.labelRitual.copyWith(
               color: DsColors.textOnRitualMuted,
             ),
@@ -379,7 +372,7 @@ class _AuthorizationLost extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                'Your private session\nneeds to be restored.',
+                l.usSessionNeedsRestoring,
                 textAlign: TextAlign.center,
                 style: DsTextStyles.displayRitual.copyWith(
                   color: DsColors.textOnRitualPrimary,
@@ -389,8 +382,7 @@ class _AuthorizationLost extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space5),
               Text(
-                'Your history together has been hidden.\n'
-                'Sign in again to confirm current access.',
+                l.usHistoryHidden,
                 textAlign: TextAlign.center,
                 style: DsTextStyles.bodySecondary.copyWith(
                   color: DsColors.textOnRitualMuted,
@@ -398,7 +390,7 @@ class _AuthorizationLost extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space8),
               SecondaryButton(
-                label: 'Sign in again',
+                label: l.usSignInAgain,
                 onTap: onSignIn ?? () {},
                 filled: true,
               ),
@@ -406,7 +398,7 @@ class _AuthorizationLost extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space6),
-        const RecoveryMessage('No protected content remains on this screen.'),
+        RecoveryMessage(l.usNoProtectedContent),
       ],
     );
   }

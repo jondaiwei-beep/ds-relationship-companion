@@ -3,6 +3,7 @@ import 'package:dsapp/app/shell/bottom_navigation.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/features/entrance/presentation/create_account_screen.dart';
 import 'package:dsapp/features/entrance/presentation/entrance_screen.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,7 +32,11 @@ void main() {
           data: const MediaQueryData(
             padding: EdgeInsets.only(top: 32, bottom: inset),
           ),
-          child: MaterialApp(home: w),
+          child: MaterialApp(
+            localizationsDelegates: L.localizationsDelegates,
+            supportedLocales: L.supportedLocales,
+            home: w,
+          ),
         ),
       ),
     );

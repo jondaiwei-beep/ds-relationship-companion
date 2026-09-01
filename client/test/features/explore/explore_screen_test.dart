@@ -7,6 +7,7 @@ import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/explore_view.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/features/explore/presentation/explore_screen.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 
 class _FakeExplore implements ExploreRepository {
   _FakeExplore(this.result);
@@ -67,6 +68,8 @@ Future<List<ExploreIdea>> _pump(
         exploreRepositoryProvider.overrideWithValue(_FakeExplore(library)),
       ],
       child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
         theme: DsTheme.ritual(),
         home: ExploreScreen(dynamicId: 'dyn-1', onUse: used.add),
       ),

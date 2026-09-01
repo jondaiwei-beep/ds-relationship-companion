@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'today_layout.dart';
@@ -13,7 +14,7 @@ import 'today_layout.dart';
 class TodayHeader extends StatelessWidget {
   const TodayHeader({
     super.key,
-    this.title = 'Today',
+    required this.title,
     this.partnerName,
     this.context_,
   });
@@ -30,8 +31,9 @@ class TodayHeader extends StatelessWidget {
 
   /// A named context wins over presence: while access is unconfirmed the
   /// header must say so rather than imply a partner is there.
-  String get _label =>
-      context_ ?? (partnerName == null ? 'Private' : '$partnerName is present');
+  String _label(L l) =>
+      context_ ??
+      (partnerName == null ? l.todayPrivate : l.todayPresent(partnerName!));
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +75,7 @@ class TodayHeader extends StatelessWidget {
                 const SizedBox(width: DsSpacing.space2),
                 Flexible(
                   child: Text(
-                    _label,
+                    _label(L.of(context)),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: DsTextStyles.bodySecondary.copyWith(

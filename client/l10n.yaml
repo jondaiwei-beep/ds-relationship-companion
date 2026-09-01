@@ -1,0 +1,8 @@
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: L
+# Chinese is a real translation, not a fallback. A missing key should fail the
+# build rather than silently show English to a person who cannot read it.
+untranslated-messages-file: lib/l10n/untranslated.json
+nullable-getter: false

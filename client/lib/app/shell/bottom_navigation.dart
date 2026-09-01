@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 /// The four surfaces the product navigates between.
 ///
 /// Named, not indexed. The version this replaces took an `int`, which was
@@ -10,15 +12,23 @@ import 'package:flutter/material.dart';
 /// Attention is deliberately absent: it is reached from Today, not from here.
 /// The set is fixed by the product, so this enum is the whole contract.
 enum NavSurface {
-  today(DsAssets.navToday, 'Today'),
-  dynamic_(DsAssets.navDynamic, 'Dynamic'),
-  explore(DsAssets.navExplore, 'Explore'),
-  us(DsAssets.navUs, 'Us');
+  today(DsAssets.navToday),
+  dynamic_(DsAssets.navDynamic),
+  explore(DsAssets.navExplore),
+  us(DsAssets.navUs);
 
-  const NavSurface(this.asset, this.label);
+  const NavSurface(this.asset);
 
   final DsAssetId asset;
-  final String label;
+
+  /// The tab's word, in the reader's language. A method rather than a const
+  /// field because the enum is built before any locale is known.
+  String label(L l) => switch (this) {
+    NavSurface.today => l.navToday,
+    NavSurface.dynamic_ => l.navDynamic,
+    NavSurface.explore => l.navExplore,
+    NavSurface.us => l.navUs,
+  };
 }
 
 /// Bottom navigation, shared by every surface that has it.
@@ -108,7 +118,7 @@ class _NavTab extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space1),
               Text(
-                surface.label,
+                surface.label(L.of(context)),
                 style: DsTextStyles.navLabel.copyWith(color: colour),
               ),
             ],

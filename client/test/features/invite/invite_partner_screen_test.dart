@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dsapp/app/providers.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:dsapp/domain_client/repositories/invite_repository.dart';
 import 'package:dsapp/features/invite/presentation/invite_partner_screen.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +77,8 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: MaterialApp(
+          localizationsDelegates: L.localizationsDelegates,
+          supportedLocales: L.supportedLocales,
           home: InvitePartnerScreen(
             dynamicId: 'dyn-1',
             onDone: () {},

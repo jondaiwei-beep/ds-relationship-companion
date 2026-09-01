@@ -3,7 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../l10n/app_localizations.dart';
 import '../application/response_actions.dart';
+
+/// What each way of answering is called, in the reader's language.
+///
+/// A label on the enum would be one English sentence the composer cannot
+/// translate — and this screen, more than any other, must read as one person
+/// speaking to another rather than as software with a vocabulary.
+String responseTypeLabel(L l, HumanResponse type) => switch (type) {
+  HumanResponse.acknowledge => l.responseTypeAcknowledge,
+  HumanResponse.praise => l.responseTypePraise,
+  HumanResponse.comment => l.responseTypeComment,
+  HumanResponse.review => l.responseTypeReview,
+};
 
 /// SCR-33 — the acknowledgement composer.
 ///
@@ -63,7 +76,7 @@ class _ResponseComposerState extends ConsumerState<ResponseComposer> {
   bool _busy = false;
   bool _needsWords = false;
   bool _alreadyAnswered = false;
-  String? _failure;
+  ResponseFailureReason? _failure;
 
   @override
   void dispose() {
@@ -95,8 +108,8 @@ class _ResponseComposerState extends ConsumerState<ResponseComposer> {
         setState(() => _alreadyAnswered = true);
       case ResponseNeedsWords():
         setState(() => _needsWords = true);
-      case ResponseFailed(:final message):
-        setState(() => _failure = message);
+      case ResponseFailed(:final reason):
+        setState(() => _failure = reason);
     }
   }
 
@@ -157,13 +170,14 @@ class _Composer extends StatelessWidget {
   final HumanResponse type;
   final bool busy;
   final bool needsWords;
-  final String? failure;
+  final ResponseFailureReason? failure;
   final ValueChanged<HumanResponse> onType;
   final VoidCallback onSend;
   final VoidCallback onDismiss;
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -182,7 +196,7 @@ class _Composer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                'Respond to $partnerName',
+                l.responseComposerTitle(partnerName),
                 style: DsTextStyles.titlePage.copyWith(
                   color: DsColors.textOnRitualPrimary,
                 ),
@@ -202,7 +216,7 @@ class _Composer extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space6),
               Text(
-                'YOUR WORDS',
+                l.responseYourWords,
                 style: DsTextStyles.labelRitual.copyWith(
                   color: DsColors.textOnRitualMuted,
                   fontSize: 10,
@@ -219,7 +233,7 @@ class _Composer extends StatelessWidget {
               if (needsWords) ...[
                 const SizedBox(height: DsSpacing.space3),
                 Text(
-                  'A ${type.label.toLowerCase()} needs your words.',
+                  l.responseNeedsWords(responseTypeLabel(l, type)),
                   style: DsTextStyles.bodySecondary.copyWith(
                     color: DsColors.stateError,
                     fontSize: 12,
@@ -229,7 +243,10 @@ class _Composer extends StatelessWidget {
               if (failure case final failure?) ...[
                 const SizedBox(height: DsSpacing.space4),
                 Text(
-                  failure,
+                  switch (failure) {
+                    ResponseFailureReason.offline => l.responseErrorOffline,
+                    ResponseFailureReason.unknown => l.responseErrorGeneric,
+                  },
                   style: DsTextStyles.bodySecondary.copyWith(
                     color: DsColors.stateError,
                   ),
@@ -241,8 +258,8 @@ class _Composer extends StatelessWidget {
               // missing when pressed. A disabled Send would make the two-tap
               // floor look broken.
               DsPrimaryButton(
-                label: 'Send to $partnerName',
-                busyLabel: 'Sending',
+                label: l.responseSendTo(partnerName),
+                busyLabel: l.responseSending,
                 busy: busy,
                 onPressed: onSend,
               ),
@@ -254,7 +271,7 @@ class _Composer extends StatelessWidget {
                     // Not "Skip" or "Dismiss": nothing is being declined. The
                     // moment stays open and unanswered, and saying otherwise
                     // would be the app deciding on their behalf.
-                    'Not now',
+                    l.responseNotNow,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualSecondary,
                       fontWeight: FontWeight.w500,
@@ -285,6 +302,7 @@ class _WhatHappened extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         DsSpacing.space5,
@@ -297,7 +315,7 @@ class _WhatHappened extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Attention',
+                l.responseAttention,
                 style: DsTextStyles.titlePage.copyWith(
                   color: DsColors.textOnRitualPrimary,
                 ),
@@ -312,7 +330,7 @@ class _WhatHappened extends StatelessWidget {
               const SizedBox(width: DsSpacing.space3),
               Flexible(
                 child: Text(
-                  '$partnerName is present',
+                  l.responsePartnerPresent(partnerName),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: DsTextStyles.bodySecondary.copyWith(
@@ -341,7 +359,7 @@ class _WhatHappened extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space6),
           Text(
-            '$partnerName completed\nthis at $completedAt.',
+            l.responseCompletedAtBy(partnerName, completedAt),
             textAlign: TextAlign.center,
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
@@ -409,7 +427,7 @@ class _TypeChoice extends StatelessWidget {
               ),
               const SizedBox(height: DsSpacing.space3),
               Text(
-                type.label,
+                responseTypeLabel(L.of(context), type),
                 textAlign: TextAlign.center,
                 style: DsTextStyles.bodySecondary.copyWith(
                   fontSize: 11,
@@ -479,7 +497,9 @@ class _WordsField extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
           // A prompt, not a draft. It disappears the moment anyone types, and
           // it is never sent — an empty field sends nothing but the type.
-          hintText: type.wordsRequired ? 'Say what you noticed…' : null,
+          hintText: type.wordsRequired
+              ? L.of(context).responseWordsHint
+              : null,
           hintStyle: DsTextStyles.bodyPrimary.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
@@ -502,6 +522,7 @@ class _AlreadyAnswered extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Padding(
       padding: const EdgeInsets.all(DsSpacing.space5),
       child: Column(
@@ -518,7 +539,7 @@ class _AlreadyAnswered extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space8),
           Text(
-            'This has already\nbeen answered.',
+            l.responseAlreadyAnsweredTitle,
             textAlign: TextAlign.center,
             style: DsTextStyles.displayRitual.copyWith(
               color: DsColors.textOnRitualPrimary,
@@ -526,14 +547,14 @@ class _AlreadyAnswered extends StatelessWidget {
           ),
           const SizedBox(height: DsSpacing.space6),
           Text(
-            '$partnerName has your response.',
+            l.responseAlreadyAnsweredDetail(partnerName),
             textAlign: TextAlign.center,
             style: DsTextStyles.bodySecondary.copyWith(
               color: DsColors.textOnRitualSecondary,
             ),
           ),
           const SizedBox(height: DsSpacing.space10),
-          DsPrimaryButton(label: 'Close', onPressed: onDismiss),
+          DsPrimaryButton(label: l.responseClose, onPressed: onDismiss),
         ],
       ),
     );

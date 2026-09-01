@@ -1,4 +1,5 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 import 'today_layout.dart';
@@ -24,7 +25,7 @@ class LaterRow extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              'LATER / OPTIONAL',
+              L.of(context).todayLaterOptional,
               style: DsTextStyles.labelRitual.copyWith(
                 color: DsColors.textOnRitualMuted,
               ),

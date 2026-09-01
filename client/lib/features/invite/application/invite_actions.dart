@@ -2,9 +2,32 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../domain_client/repositories/invite_repository.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/invite_view.dart';
+
+/// Which sentence an invite outcome carries.
+///
+/// Named here rather than written here: creating, withdrawing and accepting
+/// all happen without a `BuildContext`, and the join page in particular is
+/// opened from a link by someone who may not read English.
+enum InviteMessage {
+  offline,
+  createFailed,
+  revokeFailed,
+  joinRefused,
+  joinFailed,
+}
+
+/// The sentence an [InviteMessage] stands for, in the reader's language.
+String inviteMessage(L l, InviteMessage key) => switch (key) {
+      InviteMessage.offline => l.inviteErrorOffline,
+      InviteMessage.createFailed => l.inviteErrorCreateFailed,
+      InviteMessage.revokeFailed => l.inviteErrorRevokeFailed,
+      InviteMessage.joinRefused => l.inviteErrorJoinRefused,
+      InviteMessage.joinFailed => l.inviteErrorJoinFailed,
+    };
 
 /// The result of asking the server for a private invitation link.
 sealed class InviteCreated {
@@ -24,8 +47,14 @@ class InviteLinkReady extends InviteCreated {
 }
 
 class InviteCreateFailed extends InviteCreated {
-  const InviteCreateFailed(this.message);
+  const InviteCreateFailed(this.key, this.message);
 
+  /// Which sentence to show. This layer has no `BuildContext`, so it names a
+  /// sentence and the screen resolves it against the current locale.
+  final InviteMessage key;
+
+  /// The same sentence in English, kept for callers outside the invite
+  /// screens and for tests that pin the wording. Screens must prefer [key].
   final String message;
 }
 
@@ -58,14 +87,16 @@ class Joined extends JoinOutcome {
 /// The invitation could not be accepted, and the reason is terminal — the
 /// link expired, was revoked, or was already used.
 class JoinRefused extends JoinOutcome {
-  const JoinRefused(this.message);
+  const JoinRefused(this.key, this.message);
 
+  final InviteMessage key;
   final String message;
 }
 
 class JoinFailed extends JoinOutcome {
-  const JoinFailed(this.message);
+  const JoinFailed(this.key, this.message);
 
+  final InviteMessage key;
   final String message;
 }
 
@@ -132,11 +163,15 @@ class InviteActions {
         return const InviteAlreadyExists();
       }
       // The key is deliberately kept: the next attempt is the same attempt.
-      return InviteCreateFailed(
-        _isOffline(e)
-            ? "You're offline. Connect to the internet, then try again."
-            : "We couldn't create the link right now. Try again.",
-      );
+      return _isOffline(e)
+          ? const InviteCreateFailed(
+              InviteMessage.offline,
+              "You're offline. Connect to the internet, then try again.",
+            )
+          : const InviteCreateFailed(
+              InviteMessage.createFailed,
+              "We couldn't create the link right now. Try again.",
+            );
     }
   }
 
@@ -162,11 +197,15 @@ class InviteActions {
         _createKeys.remove(dynamicId);
         return const InviteRevoked();
       }
-      return InviteCreateFailed(
-        _isOffline(e)
-            ? "You're offline. Connect to the internet, then try again."
-            : "We couldn't withdraw that link right now. Try again.",
-      );
+      return _isOffline(e)
+          ? const InviteCreateFailed(
+              InviteMessage.offline,
+              "You're offline. Connect to the internet, then try again.",
+            )
+          : const InviteCreateFailed(
+              InviteMessage.revokeFailed,
+              "We couldn't withdraw that link right now. Try again.",
+            );
     }
   }
 
@@ -202,6 +241,7 @@ class InviteActions {
     } on DioException catch (e) {
       if (_isOffline(e)) {
         return const JoinFailed(
+          InviteMessage.offline,
           "You're offline. Connect to the internet, then try again.",
         );
       }
@@ -218,10 +258,14 @@ class InviteActions {
         // invitation is a new attempt.
         _joinKeys.remove(token);
         return const JoinRefused(
+          InviteMessage.joinRefused,
           'This invitation can no longer be used. Ask for a new one.',
         );
       }
-      return const JoinFailed("We couldn't complete that just now. Try again.");
+      return const JoinFailed(
+        InviteMessage.joinFailed,
+        "We couldn't complete that just now. Try again.",
+      );
     }
   }
 

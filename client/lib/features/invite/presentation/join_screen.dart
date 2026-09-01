@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../domain_client/models/invite_view.dart';
 import '../application/invite_actions.dart';
 
@@ -50,7 +51,15 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   InviteView? _invite;
   bool _resolving = true;
   bool _joining = false;
-  String? _failure;
+
+  /// The sentence to show, named rather than written. This page is opened
+  /// from a link on whatever device is nearest, so it must be able to speak
+  /// the reader's language before anyone has signed in.
+  InviteMessage? _failure;
+
+  /// A locally-decided message with no server outcome behind it.
+  bool _joinedWithoutDynamic = false;
+
   bool _offline = false;
 
   @override
@@ -90,6 +99,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
     setState(() {
       _joining = true;
       _failure = null;
+      _joinedWithoutDynamic = false;
     });
 
     final outcome = await ref.read(inviteActionsProvider).join(widget.token);
@@ -103,23 +113,22 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
           // Resolve gave no Dynamic id, which should not happen for a Pending
           // invite. The membership exists either way, so this must not read
           // as a failure to join.
-          setState(() => _failure =
-              "You've joined. Open the app to continue.");
+          setState(() => _joinedWithoutDynamic = true);
           return;
         }
         widget.onJoined(dynamicId);
-      case JoinRefused(:final message):
+      case JoinRefused(:final key):
         // The invitation changed under them while the page was open. Re-ask
         // the server rather than guessing which ending it reached — the same
         // reason this screen never infers state from a link.
-        setState(() => _failure = message);
+        setState(() => _failure = key);
         await _resolve();
       case JoinNeedsAccount():
         // Expected, not a fault: this page is public so a person can see what
         // they are being asked to join before signing in.
         widget.onSignIn();
-      case JoinFailed(:final message):
-        setState(() => _failure = message);
+      case JoinFailed(:final key):
+        setState(() => _failure = key);
     }
   }
 
@@ -139,6 +148,7 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
   }
 
   Widget _body() {
+    final l = L.of(context);
     if (_resolving) return const _Resolving();
     if (_offline) return _Unresolved(onRetry: _resolve);
 
@@ -149,32 +159,34 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
       InviteState.pending => _Review(
         inviter: invite.inviterDisplayName,
         busy: _joining,
-        failure: _failure,
+        failure: _joinedWithoutDynamic
+            ? l.joinAlreadyJoined
+            : (_failure == null ? null : inviteMessage(l, _failure!)),
         onJoin: _join,
         onDecline: widget.onDecline,
       ),
       // Accepted by this person already, or by someone else. Either way there
       // is nothing to do here and no detail to show.
       InviteState.accepted => _Closed(
-        headline: 'This invitation\nhas been used.',
-        detail: 'For privacy, no Dynamic\ndetails are shown here.',
+        headline: l.joinUsedHeadline,
+        detail: l.joinClosedPrivacyDetail,
         onLeave: widget.onDecline,
       ),
       InviteState.expired => _Closed(
-        headline: 'This invitation\nhas expired.',
-        detail: 'For privacy, no Dynamic\ndetails are shown here.',
-        assurance: 'You have not joined anything.',
-        guidance: 'Ask the person who invited you\nto create a new private link.',
+        headline: l.joinExpiredHeadline,
+        detail: l.joinClosedPrivacyDetail,
+        assurance: l.joinNotJoinedAnything,
+        guidance: l.joinAskForNewLink,
         onLeave: widget.onDecline,
       ),
       // Revoked and Not-found say the same thing on purpose. Distinguishing
       // them would tell whoever holds the URL whether an invitation ever
       // existed, which is a fact about someone's private life.
       InviteState.revoked || InviteState.notFound => _Closed(
-        headline: 'This invitation is\nno longer available.',
-        detail: 'No invitation details are shown here.',
-        assurance: 'You have not joined anything.',
-        guidance: 'If you need a new invitation, ask the\nperson who shared this link.',
+        headline: l.joinUnavailableHeadline,
+        detail: l.joinUnavailableDetail,
+        assurance: l.joinNotJoinedAnything,
+        guidance: l.joinAskSharer,
         onLeave: widget.onDecline,
       ),
     };
@@ -188,19 +200,20 @@ class _Resolving extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       children: [
         const _Wordmark(),
         const SizedBox(height: 120),
         Text(
-          'Checking this invitation…',
+          l.joinResolving,
           style: DsTextStyles.bodyPrimary.copyWith(
             color: DsColors.textOnRitualSecondary,
           ),
         ),
         const SizedBox(height: DsSpacing.space4),
         Text(
-          'Nothing is shown until it is confirmed.',
+          l.joinResolvingNote,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
@@ -218,13 +231,14 @@ class _Unresolved extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const _Wordmark(),
         const SizedBox(height: DsSpacing.space10),
         Text(
-          "We couldn't check\nthis invitation.",
+          l.joinUnresolvedHeadline,
           textAlign: TextAlign.center,
           style: DsTextStyles.displayRitual.copyWith(
             color: DsColors.textOnRitualPrimary,
@@ -232,16 +246,16 @@ class _Unresolved extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space6),
         Text(
-          "We couldn't determine its status.\nNo join was attempted.",
+          l.joinUnresolvedDetail,
           textAlign: TextAlign.center,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualSecondary,
           ),
         ),
         const SizedBox(height: DsSpacing.space10),
-        DsPrimaryButton(label: 'Try again', onPressed: onRetry),
+        DsPrimaryButton(label: l.joinTryAgain, onPressed: onRetry),
         const SizedBox(height: DsSpacing.space6),
-        const _PrivacyNote('This link is still here. Trying again is safe.'),
+        _PrivacyNote(l.joinUnresolvedPrivacyNote),
       ],
     );
   }
@@ -268,7 +282,8 @@ class _Review extends StatelessWidget {
     // A name, or nothing. Never "your partner" — this person is not yet
     // anyone's partner, and the app does not name a relationship that has not
     // been agreed to.
-    final who = inviter ?? 'Someone';
+    final l = L.of(context);
+    final who = inviter ?? l.joinSomeone;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -283,7 +298,7 @@ class _Review extends StatelessWidget {
           ),
         ),
         Text(
-          'invited you to begin\na private dynamic.',
+          l.joinInvitedYou,
           style: DsTextStyles.displayRitual.copyWith(
             color: DsColors.textOnRitualPrimary,
             fontSize: 26,
@@ -312,14 +327,14 @@ class _Review extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'You choose your own role.',
+                    l.joinYouChooseYourRole,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualSecondary,
                     ),
                   ),
                   const SizedBox(height: DsSpacing.space1),
                   Text(
-                    'Joining is not consent to future expectations.',
+                    l.joinNotConsentToExpectations,
                     style: DsTextStyles.bodySecondary.copyWith(
                       color: DsColors.textOnRitualMuted,
                       fontSize: 12,
@@ -347,8 +362,8 @@ class _Review extends StatelessWidget {
         ],
 
         DsPrimaryButton(
-          label: 'Review and join',
-          busyLabel: 'Joining',
+          label: l.joinReviewAndJoin,
+          busyLabel: l.joinBusy,
           busy: busy,
           onPressed: onJoin,
         ),
@@ -362,7 +377,7 @@ class _Review extends StatelessWidget {
             // declined something it did not is worse than an honest one that
             // just leaves.
             child: Text(
-              'Not now',
+              l.joinNotNow,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualSecondary,
                 fontWeight: FontWeight.w500,
@@ -371,7 +386,7 @@ class _Review extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space4),
-        const _PrivacyNote('You can pause or leave this dynamic at any time.'),
+        _PrivacyNote(l.joinPrivacyNote),
         const SizedBox(height: DsSpacing.space6),
       ],
     );
@@ -385,11 +400,12 @@ class _Boundary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = L.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SHARED INTENTION',
+          l.joinBoundaryIntentionLabel,
           style: DsTextStyles.labelRitual.copyWith(
             color: DsColors.textOnRitualMuted,
             fontSize: 10,
@@ -398,7 +414,7 @@ class _Boundary extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space3),
         Text(
-          'More structure and closeness.',
+          l.joinBoundaryIntention,
           style: DsTextStyles.bodyPrimary.copyWith(
             color: DsColors.textOnRitualSecondary,
           ),
@@ -413,11 +429,11 @@ class _Boundary extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(
+              Expanded(
                 child: _BoundaryHalf(
                   asset: DsAssets.iconSharedSpace,
-                  label: 'SHARED TOGETHER',
-                  items: 'Starter rhythm ·\nresponses ·\nagreed changes',
+                  label: l.joinBoundarySharedLabel,
+                  items: l.joinBoundarySharedItems,
                 ),
               ),
               Container(
@@ -427,11 +443,11 @@ class _Boundary extends StatelessWidget {
                   horizontal: DsSpacing.space5,
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: _BoundaryHalf(
                   asset: DsAssets.iconPrivateSpace,
-                  label: 'STAYS YOURS',
-                  items: 'Private notes ·\npersonal settings ·\nyour choice to leave',
+                  label: l.joinBoundaryPrivateLabel,
+                  items: l.joinBoundaryPrivateItems,
                 ),
               ),
             ],
@@ -565,7 +581,7 @@ class _Closed extends StatelessWidget {
           child: TextButton(
             onPressed: onLeave,
             child: Text(
-              'Return to private entrance',
+              L.of(context).joinReturnToEntrance,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualSecondary,
                 fontWeight: FontWeight.w500,
@@ -574,7 +590,7 @@ class _Closed extends StatelessWidget {
           ),
         ),
         const SizedBox(height: DsSpacing.space5),
-        const _PrivacyNote('This link cannot be used to join anything.'),
+        _PrivacyNote(L.of(context).joinClosedPrivacyNote),
         const SizedBox(height: DsSpacing.space6),
       ],
     );
@@ -599,7 +615,7 @@ class _Wordmark extends StatelessWidget {
       padding: const EdgeInsets.only(top: DsSpacing.space5),
       child: Center(
         child: Text(
-          'COMPANION',
+          L.of(context).joinWordmark,
           style: DsTextStyles.labelRitual.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
