@@ -1,5 +1,6 @@
 package com.dsapp.backend.expectation.application
 
+import com.dsapp.backend.points.application.PointsService
 import com.dsapp.backend.dynamic.application.MembershipAuthorizer
 import com.dsapp.backend.dynamic.domain.RoleContext
 import com.dsapp.backend.timeline.application.RelationshipEventWriter
@@ -18,12 +19,20 @@ class OccurrenceNotCompletable(val occurrenceId: UUID) :
  * OCCURRENCE_COMPLETED event ONLY. It has no access to the acknowledgements
  * table and must never gain one: a Completion is not an Acknowledgement, and
  * finishing a task must never auto-produce partner praise.
+ *
+ * Points (owner decision 2026-09-02) are awarded here and are NOT an exception
+ * to that. A ledger row is not a response: the occurrence still moves to
+ * WAITING_ACK, Attention still asks a human to answer, and the North Star
+ * still counts only bilateral events. Points ride alongside the wait; they do
+ * not end it. If awarding points ever marks something answered, red line #2
+ * has been broken through a side door.
  */
 @Service
 class CompleteOccurrenceService(
     private val dsl: DSLContext,
     private val authorizer: MembershipAuthorizer,
     private val events: RelationshipEventWriter,
+    private val points: PointsService,
 ) {
 
     @Transactional
@@ -70,6 +79,12 @@ class CompleteOccurrenceService(
             eventType = "completion_submitted",
             dedupeKey = "completion:$completionId",
         )
+
+        // Same transaction: a completion that was recorded must not leave the
+        // ledger behind, and a ledger write must not survive a rolled-back
+        // completion. Silent when the couple has points off.
+        points.awardForCompletion(ctx.dynamicId, actorUserId, occurrenceId)
+
         return completionId
     }
 }

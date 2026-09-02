@@ -9,6 +9,8 @@ import com.dsapp.backend.expectation.application.OccurrenceNotCompletable
 import com.dsapp.backend.response.application.AdjustmentNotPossible
 import com.dsapp.backend.response.application.NoOpenAdjustment
 import com.dsapp.backend.boundary.application.NoSuchBoundary
+import com.dsapp.backend.points.application.InsufficientPoints
+import com.dsapp.backend.points.application.NoSuchReward
 import com.dsapp.backend.boundary.application.NotTheAuthor
 import com.dsapp.backend.response.application.NotTheRequester
 import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
@@ -87,6 +89,16 @@ class ApiErrorHandler {
 
     @ExceptionHandler(NoSuchBoundary::class)
     fun onNoSuchBoundary(e: NoSuchBoundary): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
+
+    @ExceptionHandler(InsufficientPoints::class)
+    fun onInsufficientPoints(e: InsufficientPoints): ResponseEntity<ApiError> =
+        // 409, not 403: they may buy it, just not yet. The client shows the
+        // shortfall rather than treating this as an authorization failure.
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("INSUFFICIENT_POINTS"))
+
+    @ExceptionHandler(NoSuchReward::class)
+    fun onNoSuchReward(e: NoSuchReward): ResponseEntity<ApiError> =
         ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
 
     @ExceptionHandler(InviteNotRevocable::class)

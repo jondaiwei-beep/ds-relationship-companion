@@ -34,45 +34,61 @@ North Star: **Connected Dynamic Days / Active Couple / Week**.
 
 ## Non-goals
 
-Dating/discovery, community feed, AI Dom/Sub persona, automated partner praise, automatic punishment, compliance scoring, mandatory streaks, explicit-content discovery, emergency safety service, and treating a contract as consent certification are not part of this product.
+Dating/discovery, community feed, AI Dom/Sub persona, automated partner praise, explicit-content discovery, emergency safety service, and treating a contract as consent certification are not part of this product.
 
-### Why we refuse points, automatic punishment and streaks
+Points, tasks, rewards and consequences **are** part of this product, decided
+by the owner on 2026-09-02. See "Points and consequences" below for what that
+does and does not include.
 
-Reviewed 2026-09-01 against three shipped competitors (see
-`product/research/competitors/`). Every task-managing product in this
-category ships points and punishment, and two of three put a streak counter
-on a main surface. Obedience holds 4.7 stars across 2,800+ ratings, so these
-mechanics demonstrably work for a large audience. We are the unusual ones,
-and that is a decision, not an oversight.
+### Points and consequences
 
-- **Points** do a real job — "that counted", instantly, without needing the
-  dominant to be awake. They beat our human response on latency,
-  reliability, legibility and dominant effort. We refuse them because the
-  documented cost is the overjustification effect: expected external rewards
-  crowd out intrinsic motivation, and research on gamified intimacy finds it
-  "reduces intimacy to a transactional loop of inputs and outputs". Our
-  product test is to reduce the work of maintaining a Dynamic *without
-  automating away the human attention that gives it meaning*; a points
-  balance is precisely that automation. **Refusing them obliges us to compete
-  on those four axes instead** — cheap acknowledgement, visible bounded
-  waiting, prompting the dominant that someone is waiting.
-- **Automatic punishment** stays refused; **agreed, human-issued consequence
-  does not**. The erotic and structural content this audience wants from
-  punishment survives being decided by the couple in advance and issued by a
-  person. What does not survive is the machine deciding, which is what red
-  line #3 and this list actually bar.
-- **Streaks** are refused on the strongest evidence of the three. A streak's
-  motive force is making a gap feel like failure — the exact inverse of red
-  line #3 — and breaking one is documented to cause all-at-once abandonment
-  rather than a gradual decline. The underlying job (continuity, "we are
-  keeping this up") is real and should be served by accumulated history,
-  which does not reset to zero. The test for any such feature: **does a gap
-  in it feel like a loss?** If yes, it is a streak wearing a different hat.
+**Decision, 2026-09-02: we build points, tasks, rewards and consequences.**
 
-None of this is settled by review data, because the failure mode is silent
-churn rather than complaints. The instrument that can settle it is our own
-North Star — Connected Dynamic Days per Active Couple per Week — which counts
-bilateral events and would stay flat if we inflated task completion.
+This reverses the previous position, and the reasoning for the reversal is
+the stronger half of the evidence that was already on file. Reviewed against
+three shipped competitors (see `product/research/competitors/`): every
+task-managing product in this category ships points and punishment, and
+Obedience holds 4.7 stars across 2,800+ ratings. These mechanics
+demonstrably work for a large audience, and the case against them rested on
+a documented *risk* (overjustification) rather than on evidence that this
+audience dislikes them. Refusing a feature the whole category ships, on the
+strength of a risk we had not measured, was the more expensive bet.
+
+What follows is what the previous analysis got right and is worth keeping as
+design constraints rather than as refusals. Each is a rule about **how** we
+build these four things, not whether.
+
+**1. A person always decides a consequence.** Points may accrue
+automatically; a consequence may not fire automatically. This is the one
+piece of the old position that is safety rather than taste — their own
+writing says vague punishment "breeds resentment" and bad punishment makes
+"the sub resent the dynamic entirely", and an automatic system structurally
+cannot be merciful. Every consequence event names the human who issued it,
+and "let it go" is an equal-weight action. See
+`product/design/agreed-consequences.md`.
+
+**2. Points supplement the human response; they never replace it.** The
+product test still stands: reduce the work of maintaining a Dynamic without
+automating away the human attention that gives it meaning. A completion that
+earns points and receives no human response is the failure case. Concretely:
+awarding points must never mark an occurrence as answered, and the Attention
+surface keeps asking for a real response.
+
+**3. Streaks may show continuity, never fear of loss.** Breaking a streak is
+documented to cause all-at-once abandonment rather than gradual decline, and
+red line #3 says adjustment is normal. So: accumulated totals that never
+reset are fine; a counter whose visible purpose is that a gap destroys it is
+not. Test for any such display: **does a gap in it feel like a loss?**
+
+**4. Nothing here is a compliance score shown as a verdict on a person.**
+Totals are fine. A number presented as how well someone is doing at being a
+partner is not.
+
+The instrument that tells us whether points are helping or hollowing out the
+loop is our own North Star — Connected Dynamic Days per Active Couple per
+Week — which counts bilateral events. If task completion and points climb
+while that stays flat, points are substituting for the relationship rather
+than supporting it, and we will know.
 
 ## Sources
 
