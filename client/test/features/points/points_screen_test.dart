@@ -18,6 +18,9 @@ class _FakePoints implements PointsRepository {
   List<Reward> rewardList;
   final gifts = <String>[];
   final redeems = <String>[];
+  final added = <String>[];
+  final agreementsAdded = <String>[];
+  List<ConsequenceAgreement> agreementList = const [];
 
   @override
   Future<PointsSummary> summary(String dynamicId, {String? subjectUserId}) async =>
@@ -35,6 +38,24 @@ class _FakePoints implements PointsRepository {
   @override
   Future<void> redeem(String dynamicId, String rewardId) async {
     redeems.add(rewardId);
+  }
+
+  @override
+  Future<List<ConsequenceAgreement>> agreements(String dynamicId) async =>
+      agreementList;
+
+  @override
+  Future<void> addReward(String dynamicId,
+      {required String title, String? detail, required int cost}) async {
+    added.add('$title/$cost');
+  }
+
+  @override
+  Future<void> addAgreement(String dynamicId,
+      {required String label,
+      required String consequence,
+      int pointCost = 0}) async {
+    agreementsAdded.add('$label -> $consequence');
   }
 
   @override
@@ -68,6 +89,14 @@ Future<ProviderContainer> _pump(WidgetTester tester, _FakePoints repo) async {
   );
   await tester.pumpAndSettle();
   return container;
+}
+
+/// The screen grew past one viewport once rewards, agreements and history
+/// all landed on it. `scrollUntilVisible` needs a single scrollable and this
+/// screen nests them, so drag the outer list instead.
+Future<void> _scrollToBottom(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(390, 3000));
+  await tester.pumpAndSettle();
 }
 
 void main() {
@@ -116,6 +145,7 @@ void main() {
       ),
     );
 
+    await _scrollToBottom(tester);
     expect(find.text('Alex noticed'), findsOneWidget);
     expect(find.textContaining('COMPLETION'), findsNothing);
   });
@@ -140,6 +170,68 @@ void main() {
     await tester.tap(find.text('Give it'));
     await tester.pumpAndSettle();
     expect(repo.gifts, ['r1']);
+  });
+
+  testWidgets('a reward can be put on offer from the app', (tester) async {
+    final repo = _FakePoints();
+    await _pump(tester, repo);
+
+    await tester.enterText(find.byType(TextField).first, 'Massage');
+    await tester.tap(find.text('Add a reward'));
+    await tester.pumpAndSettle();
+
+    expect(repo.added, ['Massage/1']);
+  });
+
+  testWidgets('adding a reward with no name says what is missing', (tester) async {
+    // Red line: the control says what is missing rather than going dead.
+    final repo = _FakePoints();
+    await _pump(tester, repo);
+
+    await tester.tap(find.text('Add a reward'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Say what it is first.'), findsOneWidget);
+    expect(repo.added, isEmpty);
+  });
+
+  testWidgets('an agreement needs both halves, not just the consequence', (
+    tester,
+  ) async {
+    // Their own writing: vague punishment "breeds resentment". An agreement
+    // that names only what follows, without saying when, is the vague kind.
+    final repo = _FakePoints();
+    await _pump(tester, repo);
+
+    await _scrollToBottom(tester);
+    await tester.tap(find.text('Add an agreement'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Say what happens, and what follows.'), findsOneWidget);
+    expect(repo.agreementsAdded, isEmpty);
+  });
+
+  testWidgets('either partner can end an agreement, alone', (tester) async {
+    final repo = _FakePoints()
+      ..agreementList = const [
+        ConsequenceAgreement(
+          id: 'a1',
+          label: 'The evening things do not get done',
+          consequence: 'Early bedtime, one hour',
+          pointCost: 2,
+        ),
+      ];
+    await _pump(tester, repo);
+
+    await _scrollToBottom(tester);
+    // Two matches are correct here: the agreement itself, and the add-form's
+    // hint, which uses the same phrase as its example.
+    expect(find.text('Early bedtime, one hour'), findsNWidgets(2));
+    expect(find.text('The evening things do not get done'), findsNWidgets(2));
+    expect(
+      find.text('Either of you can end any of these, alone.'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('letting go is not styled as the lesser option', (tester) async {

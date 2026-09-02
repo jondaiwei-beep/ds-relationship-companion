@@ -48,6 +48,7 @@ class PointsScreen extends ConsumerWidget {
     final l = L.of(context);
     final summary = ref.watch(pointsProvider(dynamicId));
     final rewards = ref.watch(rewardsProvider(dynamicId));
+    final agreements = ref.watch(agreementsProvider(dynamicId));
 
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
@@ -56,6 +57,7 @@ class PointsScreen extends ConsumerWidget {
           onRefresh: () async {
             ref.invalidate(pointsProvider(dynamicId));
             ref.invalidate(rewardsProvider(dynamicId));
+            ref.invalidate(agreementsProvider(dynamicId));
             await ref.read(pointsProvider(dynamicId).future);
           },
           child: ListView(
@@ -87,6 +89,30 @@ class PointsScreen extends ConsumerWidget {
                 AsyncError() => _Muted(l.rewardsEmpty),
                 _ => const SizedBox(height: 60),
               },
+
+              _AddReward(dynamicId: dynamicId),
+
+              const SizedBox(height: DsSpacing.space10),
+              _SectionLabel(l.agreementsTitle.toUpperCase()),
+              const SizedBox(height: DsSpacing.space3),
+              _Muted(l.agreementsIntro),
+              const SizedBox(height: DsSpacing.space4),
+              switch (agreements) {
+                AsyncData(:final value) when value.isEmpty =>
+                  _Muted(l.agreementsEmpty),
+                AsyncData(:final value) => Column(
+                  children: [
+                    for (final a in value)
+                      _AgreementRow(agreement: a, dynamicId: dynamicId),
+                    const SizedBox(height: DsSpacing.space2),
+                    _Muted(l.agreementsEitherCanEnd),
+                  ],
+                ),
+                AsyncError() => _Muted(l.agreementsEmpty),
+                _ => const SizedBox(height: 40),
+              },
+              const SizedBox(height: DsSpacing.space4),
+              _AddAgreement(dynamicId: dynamicId),
 
               const SizedBox(height: DsSpacing.space10),
               _SectionLabel(l.pointsHistory),
@@ -276,6 +302,19 @@ class _RewardRowState extends ConsumerState<_RewardRow> {
                     ),
                   ),
                 ),
+              // Taking it off the list. Withdrawn, not deleted: history that
+              // names it still reads.
+              IconButton(
+                onPressed: _busy
+                    ? null
+                    : () => _run(
+                        () => repo.retireReward(widget.dynamicId, r.id),
+                      ),
+                icon: const DsGlyphIcon(DsGlyph.close, size: 16),
+                tooltip: l.rewardsRemove(r.title),
+                constraints: const BoxConstraints(),
+                padding: const EdgeInsets.all(DsSpacing.space2),
+              ),
             ],
             ),
           ),
@@ -384,6 +423,306 @@ class _Action extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// Putting something on offer.
+class _AddReward extends ConsumerStatefulWidget {
+  const _AddReward({required this.dynamicId});
+
+  final String dynamicId;
+
+  @override
+  ConsumerState<_AddReward> createState() => _AddRewardState();
+}
+
+class _AddRewardState extends ConsumerState<_AddReward> {
+  final _title = TextEditingController();
+  final _detail = TextEditingController();
+  final _cost = TextEditingController(text: '1');
+  bool _needsTitle = false;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _title.dispose();
+    _detail.dispose();
+    _cost.dispose();
+    super.dispose();
+  }
+
+  Future<void> _add() async {
+    final t = _title.text.trim();
+    if (t.isEmpty) {
+      setState(() => _needsTitle = true);
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await ref.read(pointsRepositoryProvider).addReward(
+        widget.dynamicId,
+        title: t,
+        detail: _detail.text.trim().isEmpty ? null : _detail.text.trim(),
+        // A malformed cost is zero — on offer for nothing — rather than a
+        // validation error. Nothing here is worth blocking someone over.
+        cost: int.tryParse(_cost.text.trim()) ?? 0,
+      );
+      _title.clear();
+      _detail.clear();
+      ref.invalidate(rewardsProvider(widget.dynamicId));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    return Padding(
+      padding: todayInset,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DsTextField(
+            label: '',
+            controller: _title,
+            hint: l.rewardsAddHint,
+            enabled: !_busy,
+            error: _needsTitle ? l.rewardsNeedsTitle : null,
+          ),
+          const SizedBox(height: DsSpacing.space3),
+          DsTextField(
+            label: '',
+            controller: _detail,
+            hint: l.rewardsAddDetail,
+            enabled: !_busy,
+          ),
+          const SizedBox(height: DsSpacing.space3),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.rewardsAddCost,
+                  style: DsTextStyles.bodySecondary.copyWith(
+                    color: DsColors.textOnRitualMuted,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 64,
+                child: DsTextField(
+                  label: '',
+                  controller: _cost,
+                  hint: '1',
+                  enabled: !_busy,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.space3),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: _busy ? null : _add,
+              child: Text(
+                l.rewardsAdd,
+                style: DsTextStyles.labelRitual.copyWith(
+                  color: DsPrimitiveColors.terracotta,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Writing down what the couple agreed happens.
+///
+/// Two fields, "when this happens" and "then", because an agreement that
+/// names only the consequence is the vague kind their own writing says
+/// "breeds resentment".
+class _AddAgreement extends ConsumerStatefulWidget {
+  const _AddAgreement({required this.dynamicId});
+
+  final String dynamicId;
+
+  @override
+  ConsumerState<_AddAgreement> createState() => _AddAgreementState();
+}
+
+class _AddAgreementState extends ConsumerState<_AddAgreement> {
+  final _when = TextEditingController();
+  final _then = TextEditingController();
+  final _cost = TextEditingController(text: '0');
+  bool _incomplete = false;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _when.dispose();
+    _then.dispose();
+    _cost.dispose();
+    super.dispose();
+  }
+
+  Future<void> _add() async {
+    final w = _when.text.trim();
+    final t = _then.text.trim();
+    if (w.isEmpty || t.isEmpty) {
+      setState(() => _incomplete = true);
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await ref.read(pointsRepositoryProvider).addAgreement(
+        widget.dynamicId,
+        label: w,
+        consequence: t,
+        pointCost: int.tryParse(_cost.text.trim()) ?? 0,
+      );
+      _when.clear();
+      _then.clear();
+      ref.invalidate(agreementsProvider(widget.dynamicId));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    return Padding(
+      padding: todayInset,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l.agreementsWhen,
+            style: DsTextStyles.bodySecondary.copyWith(
+              color: DsColors.textOnRitualMuted,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: DsSpacing.space2),
+          DsTextField(
+            label: '',
+            controller: _when,
+            hint: l.agreementsWhenHint,
+            enabled: !_busy,
+            error: _incomplete ? l.agreementsNeedsBoth : null,
+          ),
+          const SizedBox(height: DsSpacing.space4),
+          Text(
+            l.agreementsThen,
+            style: DsTextStyles.bodySecondary.copyWith(
+              color: DsColors.textOnRitualMuted,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: DsSpacing.space2),
+          DsTextField(
+            label: '',
+            controller: _then,
+            hint: l.agreementsThenHint,
+            enabled: !_busy,
+          ),
+          const SizedBox(height: DsSpacing.space3),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.agreementsCost,
+                  style: DsTextStyles.bodySecondary.copyWith(
+                    color: DsColors.textOnRitualMuted,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 64,
+                child: DsTextField(
+                  label: '',
+                  controller: _cost,
+                  hint: '0',
+                  enabled: !_busy,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: DsSpacing.space3),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              onPressed: _busy ? null : _add,
+              child: Text(
+                l.agreementsAdd,
+                style: DsTextStyles.labelRitual.copyWith(
+                  color: DsPrimitiveColors.terracotta,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One agreement, with the way out beside it.
+class _AgreementRow extends ConsumerWidget {
+  const _AgreementRow({required this.agreement, required this.dynamicId});
+
+  final ConsequenceAgreement agreement;
+  final String dynamicId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
+    return Padding(
+      padding: todayInset.add(
+        const EdgeInsets.only(bottom: DsSpacing.space4),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  agreement.label,
+                  style: DsTextStyles.bodySecondary.copyWith(
+                    color: DsColors.textOnRitualMuted,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  agreement.consequence,
+                  style: DsTextStyles.bodyPrimary.copyWith(
+                    color: DsColors.textOnRitualPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Either of them, alone. An agreement you cannot leave is not one.
+          IconButton(
+            onPressed: () async {
+              await ref
+                  .read(pointsRepositoryProvider)
+                  .endAgreement(dynamicId, agreement.id);
+              ref.invalidate(agreementsProvider(dynamicId));
+            },
+            icon: const DsGlyphIcon(DsGlyph.close, size: 18),
+            tooltip: l.agreementsEnd(agreement.label),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _Header extends StatelessWidget {
