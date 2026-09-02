@@ -1075,5 +1075,20 @@
       }
     }
   },
-  "navPoints": "Points"
+  "navPoints": "Points",
+  "pointsDaysTogether": "{count, plural, =0{No days yet} =1{1 day together} other{{count} days together}}",
+  "pointsDaysNeverResets": "This only ever goes up. A quiet day takes nothing away.",
+  "consequenceChance": "Let chance",
+  "consequenceChanceNote": "Chance picks which one. You decided there is one.",
+  "proofAdd": "Add a photo",
+  "proofAdded": "Photo attached",
+  "proofRemove": "Remove photo",
+  "proofOptional": "Only if you want to show them.",
+  "@pointsDaysTogether": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

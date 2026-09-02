@@ -2368,4 +2368,39 @@ class LEn extends L {
 
   @override
   String get navPoints => 'Points';
+
+  @override
+  String pointsDaysTogether(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days together',
+      one: '1 day together',
+      zero: 'No days yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pointsDaysNeverResets =>
+      'This only ever goes up. A quiet day takes nothing away.';
+
+  @override
+  String get consequenceChance => 'Let chance';
+
+  @override
+  String get consequenceChanceNote =>
+      'Chance picks which one. You decided there is one.';
+
+  @override
+  String get proofAdd => 'Add a photo';
+
+  @override
+  String get proofAdded => 'Photo attached';
+
+  @override
+  String get proofRemove => 'Remove photo';
+
+  @override
+  String get proofOptional => 'Only if you want to show them.';
 }

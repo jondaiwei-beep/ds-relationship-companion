@@ -4,9 +4,14 @@
 /// that reach into these types: a balance never goes negative, and every entry
 /// names a person rather than reading as a system event.
 class PointsSummary {
-  const PointsSummary({required this.balance, required this.entries});
+  const PointsSummary({
+    required this.balance,
+    required this.entries,
+    this.daysTogether = 0,
+  });
 
   factory PointsSummary.fromJson(Map<String, dynamic> json) => PointsSummary(
+        daysTogether: (json['daysTogether'] as num?)?.toInt() ?? 0,
         // Floored server-side too. Clamped here as well because a negative
         // balance must be unrepresentable on screen, not merely unlikely.
         balance: ((json['balance'] as num?)?.toInt() ?? 0).clamp(0, 1 << 30),
@@ -18,6 +23,14 @@ class PointsSummary {
 
   /// What is available to spend. Never a score, never shown beside a name.
   final int balance;
+
+  /// Days this couple showed up, ever.
+  ///
+  /// Not a streak in the usual sense: it never resets. Kneel counts
+  /// consecutive days and Obedience draws a row of × marks, and breaking one
+  /// of those is documented to cause all-at-once abandonment. A gap here
+  /// simply does not add.
+  final int daysTogether;
 
   final List<PointEntry> entries;
 }

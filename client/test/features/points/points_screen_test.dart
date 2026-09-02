@@ -11,9 +11,15 @@ import 'package:dsapp/features/points/presentation/widgets/consequence_panel.dar
 import 'package:dsapp/l10n/app_localizations.dart';
 
 class _FakePoints implements PointsRepository {
-  _FakePoints({this.balance = 0, this.entries = const [], this.rewardList = const []});
+  _FakePoints({
+    this.balance = 0,
+    this.entries = const [],
+    this.rewardList = const [],
+    this.days = 0,
+  });
 
   int balance;
+  int days;
   List<PointEntry> entries;
   List<Reward> rewardList;
   final gifts = <String>[];
@@ -24,7 +30,7 @@ class _FakePoints implements PointsRepository {
 
   @override
   Future<PointsSummary> summary(String dynamicId, {String? subjectUserId}) async =>
-      PointsSummary(balance: balance, entries: entries);
+      PointsSummary(balance: balance, entries: entries, daysTogether: days);
 
   @override
   Future<List<Reward>> rewards(String dynamicId, {String? subjectUserId}) async =>
@@ -170,6 +176,22 @@ void main() {
     await tester.tap(find.text('Give it'));
     await tester.pumpAndSettle();
     expect(repo.gifts, ['r1']);
+  });
+
+  testWidgets('days together are shown, and said to be safe from a gap', (
+    tester,
+  ) async {
+    // Every other app in this category has taught people that a number like
+    // this is something you can lose in one bad day.
+    await _pump(tester, _FakePoints(balance: 0, days: 12));
+
+    expect(find.text('12 days together'), findsOneWidget);
+    expect(
+      find.text('This only ever goes up. A quiet day takes nothing away.'),
+      findsOneWidget,
+    );
+    // Never the word that means the opposite of what this does.
+    expect(find.textContaining('streak'), findsNothing);
   });
 
   testWidgets('a reward can be put on offer from the app', (tester) async {

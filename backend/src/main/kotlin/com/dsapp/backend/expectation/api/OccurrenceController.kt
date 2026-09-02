@@ -42,7 +42,12 @@ data class CreateExpectationRequest(
 
 data class CreateExpectationResponse(val definitionId: UUID, val occurrenceId: UUID)
 
-data class CompleteRequest(val note: String? = null)
+/**
+ * [proofMediaId] is a photo the completer chose to attach. There is no
+ * companion field for requiring one, deliberately: optional is the whole
+ * difference between showing someone what you did and being audited.
+ */
+data class CompleteRequest(val note: String? = null, val proofMediaId: String? = null)
 
 data class CompleteResponse(val completionId: UUID, val state: String)
 
@@ -210,7 +215,10 @@ class OccurrenceController(
         jwt, key, "complete_occurrence",
         "/v1/occurrences/{id}/complete", listOf(occurrenceId.toString()), body,
     ) { idem ->
-        val id = complete.complete(jwt.actorId(), occurrenceId, body?.note, idem)
+        val id = complete.complete(
+            jwt.actorId(), occurrenceId, body?.note, idem,
+            proofMediaId = body?.proofMediaId,
+        )
         // WAITING_ACK, never ACKNOWLEDGED: completing is not being seen.
         201 to CompleteResponse(id, "WAITING_ACK")
     }

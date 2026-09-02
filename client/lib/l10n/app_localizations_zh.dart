@@ -2227,4 +2227,37 @@ class LZh extends L {
 
   @override
   String get navPoints => '积分';
+
+  @override
+  String pointsDaysTogether(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '一起 $count 天',
+      one: '一起 1 天',
+      zero: '还没有开始',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pointsDaysNeverResets => '这个数字只会往上走。安静的一天不会拿走任何东西。';
+
+  @override
+  String get consequenceChance => '交给运气';
+
+  @override
+  String get consequenceChanceNote => '运气决定是哪一条。是不是要罚，是你定的。';
+
+  @override
+  String get proofAdd => '加一张照片';
+
+  @override
+  String get proofAdded => '照片已附上';
+
+  @override
+  String get proofRemove => '去掉照片';
+
+  @override
+  String get proofOptional => '只有你想让对方看到时才加。';
 }

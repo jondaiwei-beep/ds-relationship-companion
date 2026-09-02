@@ -40,6 +40,8 @@ data class ConsequenceBody(
     val occurrenceId: UUID? = null,
     val waived: Boolean = false,
     val note: String? = null,
+    /** Let chance pick WHICH agreed consequence. Never whether. */
+    val byChance: Boolean = false,
 )
 
 @RestController
@@ -58,6 +60,8 @@ class PointsController(private val points: PointsService) {
         return ResponseEntity.ok(
             mapOf(
                 "balance" to points.balanceOf(dynamicId, subject),
+                // Days that happened. Never resets, so there is no cliff.
+                "daysTogether" to points.daysTogether(me, dynamicId),
                 "entries" to entries.map {
                     mapOf(
                         "id" to it.id,
@@ -222,6 +226,7 @@ class PointsController(private val points: PointsService) {
             occurrenceId = body.occurrenceId,
             waived = body.waived,
             note = body.note,
+            byChance = body.byChance,
         )
         return ResponseEntity.status(201).body(mapOf("id" to id))
     }

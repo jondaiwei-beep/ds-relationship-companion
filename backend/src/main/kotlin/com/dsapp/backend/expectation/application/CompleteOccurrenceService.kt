@@ -36,7 +36,22 @@ class CompleteOccurrenceService(
 ) {
 
     @Transactional
-    fun complete(actorUserId: UUID, occurrenceId: UUID, note: String?, idempotencyId: UUID): UUID {
+    fun complete(
+        actorUserId: UUID,
+        occurrenceId: UUID,
+        note: String?,
+        idempotencyId: UUID,
+        /**
+         * A photo the completer chose to attach.
+         *
+         * Never demanded. Obedience makes proof a field on a punishment and
+         * Kneel gives verification its own sub-tab; both frame it as the
+         * other person checking up. Here it rides along with the completion
+         * as something offered, which is why there is no parameter — and no
+         * column — for requiring one.
+         */
+        proofMediaId: String? = null,
+    ): UUID {
         // Preliminary authorization: good errors. The guarded UPDATE below is
         // the concurrency-safe decision.
         val ctx = authorizer.requireMutate(
@@ -60,10 +75,12 @@ class CompleteOccurrenceService(
         val completionId = UUID.randomUUID()
         dsl.query(
             """
-            INSERT INTO occurrence_completions (id, occurrence_id, actor_user_id, note, idempotency_id)
-            VALUES ({0}, {1}, {2}, {3}, {4})
+            INSERT INTO occurrence_completions
+                (id, occurrence_id, actor_user_id, note, idempotency_id, proof_media_id)
+            VALUES ({0}, {1}, {2}, {3}, {4}, {5})
             """.trimIndent(),
             completionId, occurrenceId, actorUserId, note, idempotencyId,
+            proofMediaId?.trim()?.takeIf { it.isNotEmpty() },
         ).execute()
 
         events.append(

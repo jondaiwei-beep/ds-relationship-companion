@@ -98,6 +98,8 @@ class PointsRepository {
     String? occurrenceId,
     required bool waived,
     String? note,
+    /// Let chance pick WHICH agreed consequence. Never whether.
+    bool byChance = false,
   }) =>
       _api.post(
         '/v1/dynamics/$dynamicId/consequences',
@@ -107,6 +109,7 @@ class PointsRepository {
           'occurrenceId': occurrenceId,
           'waived': waived,
           'note': note,
+          'byChance': byChance,
         },
       );
 }

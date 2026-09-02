@@ -406,6 +406,7 @@ class _AgreedConsequenceState extends ConsumerState<_AgreedConsequence> {
     String agreementId,
     String subjectUserId, {
     required bool waived,
+    bool byChance = false,
   }) async {
     setState(() => _busy = true);
     try {
@@ -415,6 +416,7 @@ class _AgreedConsequenceState extends ConsumerState<_AgreedConsequence> {
         agreementId: agreementId,
         occurrenceId: widget.occurrenceId,
         waived: waived,
+        byChance: byChance,
       );
       ref.invalidate(pointsProvider(widget.dynamicId));
       if (mounted) setState(() => _decided = true);
@@ -451,6 +453,15 @@ class _AgreedConsequenceState extends ConsumerState<_AgreedConsequence> {
           busy: _busy,
           onHold: () => _decide(value.first.id, partnerId, waived: false),
           onLetGo: () => _decide(value.first.id, partnerId, waived: true),
+          // Nothing to choose between with one agreement.
+          onChance: value.length < 2
+              ? null
+              : () => _decide(
+                  value.first.id,
+                  partnerId,
+                  waived: false,
+                  byChance: true,
+                ),
           onTalk: widget.onTalk,
         ),
       ),

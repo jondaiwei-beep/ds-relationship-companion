@@ -32,6 +32,7 @@ class ConsequencePanel extends StatelessWidget {
     required this.onHold,
     required this.onLetGo,
     required this.onTalk,
+    this.onChance,
     this.busy = false,
   });
 
@@ -39,6 +40,16 @@ class ConsequencePanel extends StatelessWidget {
   final VoidCallback onHold;
   final VoidCallback onLetGo;
   final VoidCallback onTalk;
+
+  /// Offered only when the couple wrote more than one agreement — with a
+  /// single one there is nothing for chance to choose between, and a door
+  /// that does the same as its neighbour is clutter.
+  ///
+  /// Obedience's `Randomize` is a field configured in a form. This is one tap
+  /// at the moment the decision is live, which is when the anticipation is.
+  /// It picks WHICH; the person has already decided THAT.
+  final VoidCallback? onChance;
+
   final bool busy;
 
   @override
@@ -107,6 +118,19 @@ class ConsequencePanel extends StatelessWidget {
             ],
             ),
           ),
+
+          if (onChance != null) ...[
+            const SizedBox(height: DsSpacing.space2),
+            _Door(label: l.consequenceChance, onTap: busy ? null : onChance),
+            const SizedBox(height: DsSpacing.space2),
+            Text(
+              l.consequenceChanceNote,
+              style: DsTextStyles.bodySecondary.copyWith(
+                color: DsColors.textOnRitualMuted,
+                fontSize: 11,
+              ),
+            ),
+          ],
 
           const SizedBox(height: DsSpacing.space3),
           Text(

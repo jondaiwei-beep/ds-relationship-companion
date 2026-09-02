@@ -4158,6 +4158,54 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Points'**
   String get navPoints;
+
+  /// No description provided for @pointsDaysTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No days yet} =1{1 day together} other{{count} days together}}'**
+  String pointsDaysTogether(int count);
+
+  /// No description provided for @pointsDaysNeverResets.
+  ///
+  /// In en, this message translates to:
+  /// **'This only ever goes up. A quiet day takes nothing away.'**
+  String get pointsDaysNeverResets;
+
+  /// No description provided for @consequenceChance.
+  ///
+  /// In en, this message translates to:
+  /// **'Let chance'**
+  String get consequenceChance;
+
+  /// No description provided for @consequenceChanceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Chance picks which one. You decided there is one.'**
+  String get consequenceChanceNote;
+
+  /// No description provided for @proofAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get proofAdd;
+
+  /// No description provided for @proofAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo attached'**
+  String get proofAdded;
+
+  /// No description provided for @proofRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get proofRemove;
+
+  /// No description provided for @proofOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Only if you want to show them.'**
+  String get proofOptional;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -77,7 +77,10 @@ class PointsScreen extends ConsumerWidget {
 
               // The number, alone, as an inventory of what is available.
               switch (summary) {
-                AsyncData(:final value) => _Balance(value.balance),
+                AsyncData(:final value) => _Balance(
+                  balance: value.balance,
+                  daysTogether: value.daysTogether,
+                ),
                 _ => const SizedBox(height: 88),
               },
 
@@ -153,9 +156,13 @@ class PointsScreen extends ConsumerWidget {
 /// Deliberately not a "score" and deliberately alone on its line: the whole
 /// sentence is about what the number lets you do, not about the person.
 class _Balance extends StatelessWidget {
-  const _Balance(this.balance);
+  const _Balance({required this.balance, required this.daysTogether});
 
   final int balance;
+
+  /// One line, not a second counter. Kneel puts BALANCE and STREAK side by
+  /// side and the screen opens with two numbers competing for one glance.
+  final int daysTogether;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -176,6 +183,23 @@ class _Balance extends StatelessWidget {
           style: DsTextStyles.displayRitual.copyWith(
             color: DsColors.textOnRitualPrimary,
             fontSize: 22,
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space2),
+        Text(
+          L.of(context).pointsDaysTogether(daysTogether),
+          style: DsTextStyles.bodySecondary.copyWith(
+            color: DsColors.textOnRitualMuted,
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space1),
+        // Said out loud, because every other app in this category has taught
+        // people that a number like this is something you can lose.
+        Text(
+          L.of(context).pointsDaysNeverResets,
+          style: DsTextStyles.bodySecondary.copyWith(
+            color: DsColors.textOnRitualMuted,
+            fontSize: 11,
           ),
         ),
       ],

@@ -94,8 +94,9 @@ class _FakePoints implements PointsRepository {
     String? occurrenceId,
     required bool waived,
     String? note,
+    bool byChance = false,
   }) async {
-    issued.add(waived ? 'WAIVED' : 'ISSUED');
+    issued.add(waived ? 'WAIVED' : (byChance ? 'CHANCE' : 'ISSUED'));
   }
 
   @override
@@ -234,6 +235,51 @@ void main() {
       expect(lastPoints.issued, ['WAIVED']);
       // And it does not ask a second time about the same miss.
       expect(find.text('Hold to it'), findsNothing);
+    });
+
+    testWidgets('chance is not offered when there is nothing to choose', (
+      tester,
+    ) async {
+      // A door that does the same thing as its neighbour is clutter.
+      await _pump(
+        tester,
+        _view(state: OccurrenceState.needsReview),
+        agreements: const [anAgreement],
+      );
+
+      expect(find.text('Let chance'), findsNothing);
+    });
+
+    testWidgets('with two agreements, chance picks which — not whether', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        _view(state: OccurrenceState.needsReview),
+        agreements: const [
+          anAgreement,
+          ConsequenceAgreement(
+            id: 'a2',
+            label: 'Something else',
+            consequence: 'Write lines',
+            pointCost: 0,
+          ),
+        ],
+      );
+
+      tester.view.physicalSize = const Size(390, 2400);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Let chance'), findsOneWidget);
+      // Said plainly, because the person is still the one deciding.
+      expect(
+        find.text('Chance picks which one. You decided there is one.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Let chance'));
+      await tester.pumpAndSettle();
+      expect(lastPoints.issued, ['CHANCE']);
     });
 
     testWidgets('holding to it names the agreement', (tester) async {

@@ -188,6 +188,138 @@ class PointsIT {
         )
     }
 
+    /** A second thing on the same day needs its own definition. */
+    private fun anotherToday(): UUID {
+        val defId = UUID.randomUUID()
+        val occId = UUID.randomUUID()
+        dsl.query(
+            """INSERT INTO expectation_definitions
+                 (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
+               VALUES ({0},{1},'TASK','another',{2},{3},'SHARED')""",
+            defId, dynamicId, dom, sub,
+        ).execute()
+        dsl.query(
+            """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
+               VALUES ({0},{1},{2},'ACTIVE',CURRENT_DATE)""",
+            occId, defId, dynamicId,
+        ).execute()
+        return occId
+    }
+
+    // ---- streak, proof and chance ------------------------------------------
+
+    @Test
+    fun `days together never resets, so a gap costs nothing`() {
+        // Kneel shows "STREAK — consecutive days"; breaking one is documented
+        // to cause all-at-once abandonment rather than a gradual decline.
+        // Ours counts days that happened, so a bad Tuesday takes nothing away.
+        fun completedOn(day: String) {
+            val defId = UUID.randomUUID()
+            val occId = UUID.randomUUID()
+            dsl.query(
+                """INSERT INTO expectation_definitions
+                     (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
+                   VALUES ({0},{1},'TASK','x',{2},{3},'SHARED')""",
+                defId, dynamicId, dom, sub,
+            ).execute()
+            dsl.query(
+                """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
+                   VALUES ({0},{1},{2},'WAITING_ACK',CAST({3} AS date))""",
+                occId, defId, dynamicId, day,
+            ).execute()
+            dsl.query(
+                """INSERT INTO occurrence_completions
+                     (id,occurrence_id,actor_user_id,idempotency_id)
+                   VALUES ({0},{1},{2},{3})""",
+                UUID.randomUUID(), occId, sub, idem(sub),
+            ).execute()
+        }
+
+        // Monday and Tuesday, then a gap, then Friday.
+        completedOn("2026-09-01")
+        completedOn("2026-09-02")
+        completedOn("2026-09-05")
+
+        assertEquals(3, points.daysTogether(dom, dynamicId), "the gap took nothing")
+    }
+
+    @Test
+    fun `two things finished on one day count as one day`() {
+        // It counts days, not completions. Otherwise a busy Tuesday would
+        // read as a longer relationship.
+        complete.complete(sub, occurrenceId, null, idem(sub))
+
+        complete.complete(sub, anotherToday(), null, idem(sub))
+
+        assertEquals(1, points.daysTogether(dom, dynamicId))
+    }
+
+    @Test
+    fun `a completion can carry a photo, and never has to`() {
+        // Obedience puts Proof on a punishment as a camera; Kneel gives
+        // verification a sub-tab. Ours rides with the completion, offered.
+        complete.complete(sub, occurrenceId, null, idem(sub), proofMediaId = "media-1")
+
+        assertEquals(
+            "media-1",
+            dsl.fetchOne(
+                "SELECT proof_media_id FROM occurrence_completions WHERE occurrence_id={0}",
+                occurrenceId,
+            )!!.get("proof_media_id", String::class.java),
+        )
+
+        val other = anotherToday()
+        complete.complete(sub, other, null, idem(sub))
+
+        assertNull(
+            dsl.fetchOne(
+                "SELECT proof_media_id FROM occurrence_completions WHERE occurrence_id={0}",
+                other,
+            )!!.get("proof_media_id", String::class.java),
+            "a completion without a photo is complete",
+        )
+    }
+
+    @Test
+    fun `chance picks which consequence, never whether there is one`() {
+        val a = points.addAgreement(dom, dynamicId, "One", "Early bedtime", 0)
+        val b = points.addAgreement(dom, dynamicId, "Two", "Write lines", 0)
+        val pool = setOf(a, b)
+
+        points.issueConsequence(
+            dom, dynamicId, sub, a, occurrenceId,
+            waived = false, note = null, byChance = true,
+        )
+
+        val row = dsl.fetchOne(
+            "SELECT agreement_id, chosen_by_chance, issued_by_user_id, outcome FROM consequence_events WHERE dynamic_id={0}",
+            dynamicId,
+        )!!
+        assertTrue(row.get("agreement_id", UUID::class.java) in pool)
+        assertTrue(row.get("chosen_by_chance", Boolean::class.java))
+        // The only decision that matters is still a person's.
+        assertEquals(dom, row.get("issued_by_user_id", UUID::class.java))
+        assertEquals("ISSUED", row.get("outcome", String::class.java))
+    }
+
+    @Test
+    fun `waiving is never left to chance`() {
+        val a = points.addAgreement(dom, dynamicId, "One", "Early bedtime", 0)
+        points.addAgreement(dom, dynamicId, "Two", "Write lines", 0)
+
+        points.issueConsequence(
+            dom, dynamicId, sub, a, occurrenceId,
+            waived = true, note = null, byChance = true,
+        )
+
+        val row = dsl.fetchOne(
+            "SELECT agreement_id, chosen_by_chance FROM consequence_events WHERE dynamic_id={0}",
+            dynamicId,
+        )!!
+        assertEquals(a, row.get("agreement_id", UUID::class.java), "mercy is not a lottery")
+        assertTrue(!row.get("chosen_by_chance", Boolean::class.java))
+    }
+
     // ---- ordinary behaviour ------------------------------------------------
 
     @Test

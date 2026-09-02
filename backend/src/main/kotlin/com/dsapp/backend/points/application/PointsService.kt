@@ -71,6 +71,37 @@ class PointsService(private val dsl: DSLContext) {
         val createdAt: Instant,
     )
 
+    /**
+     * Days this couple showed up, ever. **Never resets.**
+     *
+     * Kneel shows "STREAK — consecutive days" and Obedience a row of × marks;
+     * both are the standard mechanic, whose documented effect is that
+     * breaking one causes all-at-once abandonment rather than a gradual
+     * decline — the zero triggers a "what the hell" response and the user
+     * leaves with the streak.
+     *
+     * This counts distinct days on which something was completed. A gap does
+     * not destroy it; it simply does not add to it. That is not a softer
+     * streak, it is a different quantity and the honest one: nobody's twelve
+     * days stopped having happened because Tuesday was bad.
+     *
+     * Computed from history rather than stored, so there is no number that
+     * can drift from the events behind it — and nothing anywhere that can
+     * set it back to zero.
+     */
+    fun daysTogether(actorUserId: UUID, dynamicId: UUID): Int {
+        requireMember(actorUserId, dynamicId)
+        return dsl.fetchOne(
+            """
+            SELECT count(DISTINCT o.relationship_day) AS days
+              FROM occurrence_completions c
+              JOIN occurrences o ON o.id = c.occurrence_id
+             WHERE o.dynamic_id = {0}
+            """.trimIndent(),
+            dynamicId,
+        )!!.get("days", Int::class.java)
+    }
+
     // ---- balance -----------------------------------------------------------
 
     fun balanceOf(dynamicId: UUID, subjectUserId: UUID): Int = dsl.fetchOne(
@@ -396,10 +427,31 @@ class PointsService(private val dsl: DSLContext) {
         occurrenceId: UUID?,
         waived: Boolean,
         note: String?,
+        /**
+         * Let chance pick WHICH of the agreed consequences applies.
+         *
+         * Never whether. The caller has already decided that there is one by
+         * being here with `waived = false`; this only says they would rather
+         * be surprised by which, which is a thing couples choose because not
+         * knowing is part of the play.
+         */
+        byChance: Boolean = false,
     ): UUID {
         requireMember(actorUserId, dynamicId)
 
-        val agreement = agreementId?.let {
+        val resolvedId = if (byChance && !waived) {
+            val pool = dsl.fetch(
+                "SELECT id FROM consequence_agreements WHERE dynamic_id = {0} AND active",
+                dynamicId,
+            ).map { it.get("id", UUID::class.java) }
+            // With nothing to choose between, chance is not involved and the
+            // caller's own agreement stands.
+            if (pool.isEmpty()) agreementId else pool.random()
+        } else {
+            agreementId
+        }
+
+        val agreement = resolvedId?.let {
             dsl.fetchOne(
                 "SELECT consequence, point_cost FROM consequence_agreements WHERE id = {0} AND dynamic_id = {1}",
                 it, dynamicId,
@@ -411,12 +463,13 @@ class PointsService(private val dsl: DSLContext) {
             """
             INSERT INTO consequence_events
                 (id, dynamic_id, agreement_id, occurrence_id,
-                 issued_by_user_id, subject_user_id, outcome, note)
-            VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7})
+                 issued_by_user_id, subject_user_id, outcome, note, chosen_by_chance)
+            VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})
             """.trimIndent(),
-            id, dynamicId, agreementId, occurrenceId, actorUserId, subjectUserId,
+            id, dynamicId, resolvedId, occurrenceId, actorUserId, subjectUserId,
             if (waived) "WAIVED" else "ISSUED",
             note?.trim()?.takeIf { it.isNotEmpty() },
+            byChance && !waived,
         ).execute()
 
         // A waived consequence costs nothing. That is what waiving means.
