@@ -3804,6 +3804,354 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Only you can change your own. Your partner sees them and cannot edit them.'**
   String get settingsBoundariesSupport;
+
+  /// No description provided for @pointsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get pointsTitle;
+
+  /// No description provided for @pointsToSpend.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing to spend yet} =1{1 point to spend} other{{count} points to spend}}'**
+  String pointsToSpend(int count);
+
+  /// No description provided for @pointsNoneYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet.'**
+  String get pointsNoneYet;
+
+  /// No description provided for @pointsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'WHAT HAPPENED'**
+  String get pointsHistory;
+
+  /// No description provided for @pointsEntryNoticed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} noticed'**
+  String pointsEntryNoticed(String name);
+
+  /// No description provided for @pointsEntryGave.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} gave you {count}'**
+  String pointsEntryGave(String name, int count);
+
+  /// No description provided for @pointsEntryTook.
+  ///
+  /// In en, this message translates to:
+  /// **'You took'**
+  String get pointsEntryTook;
+
+  /// No description provided for @pointsEntryHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} held you to it'**
+  String pointsEntryHeld(String name);
+
+  /// No description provided for @pointsEntryLetGo.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} let it go'**
+  String pointsEntryLetGo(String name);
+
+  /// No description provided for @pointsEntryGift.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} gave you this'**
+  String pointsEntryGift(String name);
+
+  /// No description provided for @pointsGiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give points'**
+  String get pointsGiveTitle;
+
+  /// No description provided for @pointsGiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What for? (optional)'**
+  String get pointsGiveHint;
+
+  /// No description provided for @pointsGiveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Give'**
+  String get pointsGiveAction;
+
+  /// No description provided for @pointsTakeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Take back'**
+  String get pointsTakeAction;
+
+  /// No description provided for @pointsAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'How many'**
+  String get pointsAmount;
+
+  /// No description provided for @rewardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewards'**
+  String get rewardsTitle;
+
+  /// No description provided for @rewardsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Things {name} can give, or you can ask for with points.'**
+  String rewardsIntro(String name);
+
+  /// No description provided for @rewardsIntroSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Things you can take with points, or {name} can simply give you.'**
+  String rewardsIntroSub(String name);
+
+  /// No description provided for @rewardsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on offer yet.'**
+  String get rewardsEmpty;
+
+  /// No description provided for @rewardsCost.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No points} =1{1 point} other{{count} points}}'**
+  String rewardsCost(int count);
+
+  /// No description provided for @rewardsTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take it'**
+  String get rewardsTake;
+
+  /// No description provided for @rewardsGive.
+  ///
+  /// In en, this message translates to:
+  /// **'Give it'**
+  String get rewardsGive;
+
+  /// No description provided for @rewardsNotYet.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} more to go'**
+  String rewardsNotYet(int count);
+
+  /// No description provided for @rewardsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a reward'**
+  String get rewardsAdd;
+
+  /// No description provided for @rewardsAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is on offer'**
+  String get rewardsAddTitle;
+
+  /// No description provided for @rewardsAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A massage'**
+  String get rewardsAddHint;
+
+  /// No description provided for @rewardsAddDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything they should know (optional)'**
+  String get rewardsAddDetail;
+
+  /// No description provided for @rewardsAddCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Points to take it'**
+  String get rewardsAddCost;
+
+  /// No description provided for @rewardsRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Take {title} off the list'**
+  String rewardsRemove(String title);
+
+  /// No description provided for @rewardsGivenByYou.
+  ///
+  /// In en, this message translates to:
+  /// **'You gave this.'**
+  String get rewardsGivenByYou;
+
+  /// No description provided for @rewardsNeedsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Say what it is first.'**
+  String get rewardsNeedsTitle;
+
+  /// No description provided for @agreementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What you agreed'**
+  String get agreementsTitle;
+
+  /// No description provided for @agreementsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Written by you both, in advance. Nothing here happens on its own — one of you decides, every time.'**
+  String get agreementsIntro;
+
+  /// No description provided for @agreementsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing agreed yet.'**
+  String get agreementsEmpty;
+
+  /// No description provided for @agreementsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an agreement'**
+  String get agreementsAdd;
+
+  /// No description provided for @agreementsWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When this happens'**
+  String get agreementsWhen;
+
+  /// No description provided for @agreementsWhenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The evening things do not get done'**
+  String get agreementsWhenHint;
+
+  /// No description provided for @agreementsThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Then'**
+  String get agreementsThen;
+
+  /// No description provided for @agreementsThenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Early bedtime, one hour'**
+  String get agreementsThenHint;
+
+  /// No description provided for @agreementsCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Points it costs (optional)'**
+  String get agreementsCost;
+
+  /// No description provided for @agreementsEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End {label}'**
+  String agreementsEnd(String label);
+
+  /// No description provided for @agreementsEitherCanEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Either of you can end any of these, alone.'**
+  String get agreementsEitherCanEnd;
+
+  /// No description provided for @agreementsNeedsBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Say what happens, and what follows.'**
+  String get agreementsNeedsBoth;
+
+  /// No description provided for @consequenceHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'YOU BOTH AGREED'**
+  String get consequenceHeading;
+
+  /// No description provided for @consequenceHold.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to it'**
+  String get consequenceHold;
+
+  /// No description provided for @consequenceLetGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it go'**
+  String get consequenceLetGo;
+
+  /// No description provided for @consequenceTalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk'**
+  String get consequenceTalk;
+
+  /// No description provided for @consequenceNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything you want to say (optional)'**
+  String get consequenceNoteHint;
+
+  /// No description provided for @consequenceHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} held you to it.'**
+  String consequenceHeld(String name);
+
+  /// No description provided for @consequenceWaived.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} let this one go.'**
+  String consequenceWaived(String name);
+
+  /// No description provided for @consequenceYouHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'You held {name} to it.'**
+  String consequenceYouHeld(String name);
+
+  /// No description provided for @consequenceYouWaived.
+  ///
+  /// In en, this message translates to:
+  /// **'You let this one go.'**
+  String get consequenceYouWaived;
+
+  /// No description provided for @consequenceNothingHappens.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing happens until you choose.'**
+  String get consequenceNothingHappens;
+
+  /// No description provided for @settingsPointsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'POINTS'**
+  String get settingsPointsSection;
+
+  /// No description provided for @settingsPointsOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Points and rewards'**
+  String get settingsPointsOpen;
+
+  /// No description provided for @settingsPointsSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Points can be switched off entirely. Nothing else changes if you do.'**
+  String get settingsPointsSupport;
+
+  /// No description provided for @settingsPointsEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Use points'**
+  String get settingsPointsEnabled;
+
+  /// No description provided for @settingsPointsPerCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Points for finishing something'**
+  String get settingsPointsPerCompletion;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

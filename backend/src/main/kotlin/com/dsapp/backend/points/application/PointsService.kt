@@ -134,6 +134,16 @@ class PointsService(private val dsl: DSLContext) {
     }
 
     /** A deliberate award or deduction by the other member. */
+    /**
+     * A deliberate award or deduction by the other member.
+     *
+     * A deduction takes what is there and no more. Obedience shows a balance
+     * of **-152** against a heart icon: the app telling someone their
+     * affection account is overdrawn, with no reward reachable and no move
+     * available but climbing out of a debt. Debt has no authority — nobody
+     * decided it, it accumulated — and no warmth. Nobody here is ever in the
+     * hole with their partner.
+     */
     @Transactional
     fun adjust(
         actorUserId: UUID,
@@ -141,10 +151,19 @@ class PointsService(private val dsl: DSLContext) {
         subjectUserId: UUID,
         amount: Int,
         note: String?,
-    ): UUID {
+    ): UUID? {
         requireMember(actorUserId, dynamicId)
         require(amount != 0) { "amount" }
         require(amount in -1000..1000) { "amount" }
+
+        val effective = if (amount < 0) {
+            val balance = balanceOf(dynamicId, subjectUserId)
+            // Nothing to take: the deduction is a no-op rather than a debt.
+            if (balance <= 0) return null
+            maxOf(amount, -balance)
+        } else {
+            amount
+        }
 
         val id = UUID.randomUUID()
         dsl.query(
@@ -153,8 +172,8 @@ class PointsService(private val dsl: DSLContext) {
                 (id, dynamic_id, subject_user_id, amount, reason, actor_user_id, note)
             VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})
             """.trimIndent(),
-            id, dynamicId, subjectUserId, amount,
-            if (amount > 0) "MANUAL_AWARD" else "MANUAL_DEDUCT",
+            id, dynamicId, subjectUserId, effective,
+            if (effective > 0) "MANUAL_AWARD" else "MANUAL_DEDUCT",
             actorUserId, note?.trim()?.takeIf { it.isNotEmpty() },
         ).execute()
         return id
@@ -268,6 +287,37 @@ class PointsService(private val dsl: DSLContext) {
         return id
     }
 
+    /**
+     * Give a reward outright — no cost, no balance check, no deduction.
+     *
+     * The feature none of the three competitors have, and the answer to
+     * "warmer". In their model the receiving partner must earn everything and
+     * the giving partner is reduced to an accountant enforcing a price list.
+     * A gift is authority in its most generous form: I can give you this
+     * because I decided to.
+     *
+     * Recorded in `reward_redemptions` like any free redemption, with the
+     * giver named — the point is that it came from them.
+     */
+    @Transactional
+    fun gift(actorUserId: UUID, dynamicId: UUID, rewardId: UUID, subjectUserId: UUID): UUID {
+        requireMember(actorUserId, dynamicId)
+        dsl.fetchOne(
+            "SELECT 1 FROM rewards WHERE id = {0} AND dynamic_id = {1} AND active",
+            rewardId, dynamicId,
+        ) ?: throw NoSuchReward(rewardId)
+
+        val id = UUID.randomUUID()
+        dsl.query(
+            """
+            INSERT INTO reward_redemptions (id, dynamic_id, reward_id, subject_user_id, given_by_user_id)
+            VALUES ({0}, {1}, {2}, {3}, {4})
+            """.trimIndent(),
+            id, dynamicId, rewardId, subjectUserId, actorUserId,
+        ).execute()
+        return id
+    }
+
     // ---- consequences ------------------------------------------------------
 
     fun agreements(actorUserId: UUID, dynamicId: UUID): List<Agreement> {
@@ -370,16 +420,23 @@ class PointsService(private val dsl: DSLContext) {
         ).execute()
 
         // A waived consequence costs nothing. That is what waiving means.
+        //
+        // An issued one costs what is there and no more: a consequence must
+        // never leave someone owing their partner points they do not have.
         val cost = agreement?.get("point_cost", Int::class.java) ?: 0
         if (!waived && cost > 0) {
-            dsl.query(
-                """
-                INSERT INTO point_entries
-                    (id, dynamic_id, subject_user_id, amount, reason, occurrence_id, actor_user_id)
-                VALUES ({0}, {1}, {2}, {3}, 'CONSEQUENCE', {4}, {5})
-                """.trimIndent(),
-                UUID.randomUUID(), dynamicId, subjectUserId, -cost, occurrenceId, actorUserId,
-            ).execute()
+            val available = balanceOf(dynamicId, subjectUserId)
+            val taken = minOf(cost, available)
+            if (taken > 0) {
+                dsl.query(
+                    """
+                    INSERT INTO point_entries
+                        (id, dynamic_id, subject_user_id, amount, reason, occurrence_id, actor_user_id)
+                    VALUES ({0}, {1}, {2}, {3}, 'CONSEQUENCE', {4}, {5})
+                    """.trimIndent(),
+                    UUID.randomUUID(), dynamicId, subjectUserId, -taken, occurrenceId, actorUserId,
+                ).execute()
+            }
         }
         return id
     }

@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain_client/api_client.dart';
 import '../domain_client/models/boundary.dart';
 import '../domain_client/repositories/boundary_repository.dart';
+import '../domain_client/models/points.dart';
+import '../domain_client/repositories/points_repository.dart';
 import '../domain_client/repositories/attention_repository.dart';
 import '../domain_client/repositories/adjustment_repository.dart';
 import '../domain_client/repositories/auth_repository.dart';
@@ -65,6 +67,24 @@ final boundaryRepositoryProvider = Provider<BoundaryRepository>(
 final boundariesProvider =
     FutureProvider.family<List<Boundary>, String>((ref, dynamicId) =>
         ref.watch(boundaryRepositoryProvider).forDynamic(dynamicId));
+
+final pointsRepositoryProvider = Provider<PointsRepository>(
+  (ref) => PointsRepository(ref.watch(apiClientProvider)),
+);
+
+/// Read once, then only when asked or after a mutation — see `DsRefreshable`.
+final pointsProvider = FutureProvider.family<PointsSummary, String>(
+  (ref, dynamicId) => ref.watch(pointsRepositoryProvider).summary(dynamicId),
+);
+
+final rewardsProvider = FutureProvider.family<List<Reward>, String>(
+  (ref, dynamicId) => ref.watch(pointsRepositoryProvider).rewards(dynamicId),
+);
+
+final agreementsProvider =
+    FutureProvider.family<List<ConsequenceAgreement>, String>(
+  (ref, dynamicId) => ref.watch(pointsRepositoryProvider).agreements(dynamicId),
+);
 
 final adjustmentRepositoryProvider = Provider<AdjustmentRepository>(
   (ref) => AdjustmentRepository(ref.watch(apiClientProvider)),

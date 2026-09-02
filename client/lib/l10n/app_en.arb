@@ -908,5 +908,171 @@
   },
   "settingsBoundariesSection": "LIMITS",
   "settingsBoundariesOpen": "Limits",
-  "settingsBoundariesSupport": "Only you can change your own. Your partner sees them and cannot edit them."
+  "settingsBoundariesSupport": "Only you can change your own. Your partner sees them and cannot edit them.",
+  "pointsTitle": "Points",
+  "pointsToSpend": "{count, plural, =0{Nothing to spend yet} =1{1 point to spend} other{{count} points to spend}}",
+  "pointsNoneYet": "Nothing here yet.",
+  "pointsHistory": "WHAT HAPPENED",
+  "pointsEntryNoticed": "{name} noticed",
+  "pointsEntryGave": "{name} gave you {count}",
+  "pointsEntryTook": "You took",
+  "pointsEntryHeld": "{name} held you to it",
+  "pointsEntryLetGo": "{name} let it go",
+  "pointsEntryGift": "{name} gave you this",
+  "pointsGiveTitle": "Give points",
+  "pointsGiveHint": "What for? (optional)",
+  "pointsGiveAction": "Give",
+  "pointsTakeAction": "Take back",
+  "pointsAmount": "How many",
+  "rewardsTitle": "Rewards",
+  "rewardsIntro": "Things {name} can give, or you can ask for with points.",
+  "rewardsIntroSub": "Things you can take with points, or {name} can simply give you.",
+  "rewardsEmpty": "Nothing on offer yet.",
+  "rewardsCost": "{count, plural, =0{No points} =1{1 point} other{{count} points}}",
+  "rewardsTake": "Take it",
+  "rewardsGive": "Give it",
+  "rewardsNotYet": "{count} more to go",
+  "rewardsAdd": "Add a reward",
+  "rewardsAddTitle": "What is on offer",
+  "rewardsAddHint": "A massage",
+  "rewardsAddDetail": "Anything they should know (optional)",
+  "rewardsAddCost": "Points to take it",
+  "rewardsRemove": "Take {title} off the list",
+  "rewardsGivenByYou": "You gave this.",
+  "rewardsNeedsTitle": "Say what it is first.",
+  "agreementsTitle": "What you agreed",
+  "agreementsIntro": "Written by you both, in advance. Nothing here happens on its own — one of you decides, every time.",
+  "agreementsEmpty": "Nothing agreed yet.",
+  "agreementsAdd": "Add an agreement",
+  "agreementsWhen": "When this happens",
+  "agreementsWhenHint": "The evening things do not get done",
+  "agreementsThen": "Then",
+  "agreementsThenHint": "Early bedtime, one hour",
+  "agreementsCost": "Points it costs (optional)",
+  "agreementsEnd": "End {label}",
+  "agreementsEitherCanEnd": "Either of you can end any of these, alone.",
+  "agreementsNeedsBoth": "Say what happens, and what follows.",
+  "consequenceHeading": "YOU BOTH AGREED",
+  "consequenceHold": "Hold to it",
+  "consequenceLetGo": "Let it go",
+  "consequenceTalk": "Talk",
+  "consequenceNoteHint": "Anything you want to say (optional)",
+  "consequenceHeld": "{name} held you to it.",
+  "consequenceWaived": "{name} let this one go.",
+  "consequenceYouHeld": "You held {name} to it.",
+  "consequenceYouWaived": "You let this one go.",
+  "consequenceNothingHappens": "Nothing happens until you choose.",
+  "settingsPointsSection": "POINTS",
+  "settingsPointsOpen": "Points and rewards",
+  "settingsPointsSupport": "Points can be switched off entirely. Nothing else changes if you do.",
+  "settingsPointsEnabled": "Use points",
+  "settingsPointsPerCompletion": "Points for finishing something",
+  "@pointsToSpend": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pointsEntryNoticed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@pointsEntryGave": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pointsEntryHeld": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@pointsEntryLetGo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@pointsEntryGift": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@rewardsIntro": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@rewardsIntroSub": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@rewardsCost": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@rewardsNotYet": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@rewardsRemove": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "@agreementsEnd": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "@consequenceHeld": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@consequenceWaived": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@consequenceYouHeld": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

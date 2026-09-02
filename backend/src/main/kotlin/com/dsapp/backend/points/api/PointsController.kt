@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 data class AdjustPointsBody(val subjectUserId: UUID, val amount: Int, val note: String? = null)
+data class GiftBody(val subjectUserId: UUID)
 data class RewardBody(@field:NotBlank val title: String, val detail: String? = null, val cost: Int)
 data class AgreementBody(
     @field:NotBlank val label: String,
@@ -76,10 +77,12 @@ class PointsController(private val points: PointsService) {
         @PathVariable dynamicId: UUID,
         @Valid @RequestBody body: AdjustPointsBody,
     ): ResponseEntity<Map<String, Any>> {
+        // Null when a deduction had nothing to take: not an error, just a
+        // balance that was already at zero and stays there.
         val id = points.adjust(
             jwt.actorId(), dynamicId, body.subjectUserId, body.amount, body.note,
         )
-        return ResponseEntity.status(201).body(mapOf("id" to id))
+        return ResponseEntity.status(201).body(mapOf("id" to (id ?: "")))
     }
 
     @GetMapping("/rewards")
@@ -123,6 +126,18 @@ class PointsController(private val points: PointsService) {
     ): ResponseEntity<Void> {
         points.retireReward(jwt.actorId(), dynamicId, rewardId)
         return ResponseEntity.noContent().build()
+    }
+
+    /** Given outright by the other member. No cost, no balance check. */
+    @PostMapping("/rewards/{rewardId}/gift")
+    fun gift(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable rewardId: UUID,
+        @Valid @RequestBody body: GiftBody,
+    ): ResponseEntity<Map<String, Any>> {
+        val id = points.gift(jwt.actorId(), dynamicId, rewardId, body.subjectUserId)
+        return ResponseEntity.status(201).body(mapOf("id" to id))
     }
 
     @PostMapping("/rewards/{rewardId}/redeem")

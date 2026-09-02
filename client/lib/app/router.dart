@@ -11,6 +11,7 @@ import '../features/dynamic/presentation/dynamic_screen.dart';
 import '../features/dynamic/presentation/pause_screen.dart';
 import '../features/settings/presentation/leave_screen.dart';
 import '../features/boundary/presentation/boundaries_screen.dart';
+import '../features/points/presentation/points_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/us/presentation/us_screen.dart';
 import '../features/weekly/presentation/weekly_screen.dart';
@@ -69,6 +70,9 @@ abstract final class Routes {
 
   /// Boundaries lite (REQ-ACT-002), reachable after activation.
   static const boundaries = '/dynamics/:id/boundaries';
+
+  /// Points, rewards and agreements (owner decision 2026-09-02).
+  static const points = '/dynamics/:id/points';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
 
@@ -199,6 +203,7 @@ GoRouter createRouter(Ref ref) {
             onLeave: () => context.go('/dynamics/$dynamicId/leave'),
             onBoundaries: () =>
                 context.go('/dynamics/$dynamicId/boundaries'),
+            onPoints: () => context.go('/dynamics/$dynamicId/points'),
           );
         },
       ),
@@ -330,6 +335,16 @@ GoRouter createRouter(Ref ref) {
         builder: (context, state) {
           final dynamicId = state.pathParameters['id']!;
           return BoundariesScreen(
+            dynamicId: dynamicId,
+            onBack: () => context.go('/dynamics/$dynamicId/settings'),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.points,
+        builder: (context, state) {
+          final dynamicId = state.pathParameters['id']!;
+          return PointsScreen(
             dynamicId: dynamicId,
             onBack: () => context.go('/dynamics/$dynamicId/settings'),
           );

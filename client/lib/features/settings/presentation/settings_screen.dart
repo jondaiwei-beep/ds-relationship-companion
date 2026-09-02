@@ -46,6 +46,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
     this.onSignOut,
     this.onLeave,
     this.onBoundaries,
+    this.onPoints,
   });
 
   final String dynamicId;
@@ -60,6 +61,10 @@ class SettingsScreen extends ConsumerStatefulWidget {
   /// life of the Dynamic: a limit named once during setup and never seen
   /// again would be worse than not having asked.
   final VoidCallback? onBoundaries;
+
+  /// Points, rewards and what the couple agreed happens when something is
+  /// not done (owner decision 2026-09-02).
+  final VoidCallback? onPoints;
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -166,6 +171,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
                       // SCR-34, read-only.
                       if (detail.hasValue) _Time(view: detail.value!),
+
+                      const SizedBox(height: DsSpacing.space10),
+                      _Section(l.settingsPointsSection),
+                      if (widget.onPoints != null)
+                        Padding(
+                          padding: todayInset,
+                          child: SecondaryButton(
+                            label: l.settingsPointsOpen,
+                            onTap: widget.onPoints!,
+                          ),
+                        ),
+                      const SizedBox(height: DsSpacing.space3),
+                      _Quiet(l.settingsPointsSupport),
 
                       const SizedBox(height: DsSpacing.space10),
                       _Section(l.settingsBoundariesSection),

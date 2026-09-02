@@ -138,6 +138,56 @@ class PointsIT {
         assertEquals(5, points.balanceOf(dynamicId, sub))
     }
 
+    @Test
+    fun `a balance never goes negative - nobody is in debt to their partner`() {
+        // Obedience shows -152 against a heart: the app telling someone their
+        // affection account is overdrawn, with no reward reachable and no move
+        // available but climbing out of a hole.
+        points.adjust(dom, dynamicId, sub, 3, null)
+        points.adjust(dom, dynamicId, sub, -10, null)
+
+        assertEquals(0, points.balanceOf(dynamicId, sub), "a deduction takes what is there")
+
+        // And a deduction against nothing is a no-op, not a debt.
+        assertNull(points.adjust(dom, dynamicId, sub, -5, null))
+        assertEquals(0, points.balanceOf(dynamicId, sub))
+    }
+
+    @Test
+    fun `a consequence cannot push someone below zero either`() {
+        val a = points.addAgreement(dom, dynamicId, "Missed evening", "Early bedtime", 5)
+        points.adjust(dom, dynamicId, sub, 2, null)
+
+        points.issueConsequence(dom, dynamicId, sub, a, null, waived = false, note = null)
+
+        assertEquals(0, points.balanceOf(dynamicId, sub))
+    }
+
+    @Test
+    fun `a reward can be given outright, and says who gave it`() {
+        // The feature none of the three competitors have. No cost, no balance
+        // check: authority in its most generous form.
+        val r = points.addReward(dom, dynamicId, "Massage", null, 10)
+        points.gift(dom, dynamicId, r, sub)
+
+        assertEquals(0, points.balanceOf(dynamicId, sub), "a gift costs the receiver nothing")
+        val giver = dsl.fetchOne(
+            "SELECT given_by_user_id FROM reward_redemptions WHERE reward_id={0}", r,
+        )!!.get("given_by_user_id", UUID::class.java)
+        assertEquals(dom, giver, "the point of a gift is who it came from")
+    }
+
+    @Test
+    fun `taking a free reward yourself is not recorded as a gift`() {
+        val r = points.addReward(dom, dynamicId, "Ask for anything", null, 0)
+        points.redeem(sub, dynamicId, r)
+
+        assertNull(
+            dsl.fetchOne("SELECT given_by_user_id FROM reward_redemptions WHERE reward_id={0}", r)!!
+                .get("given_by_user_id", UUID::class.java),
+        )
+    }
+
     // ---- ordinary behaviour ------------------------------------------------
 
     @Test

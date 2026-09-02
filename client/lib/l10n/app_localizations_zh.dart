@@ -2006,4 +2006,222 @@ class LZh extends L {
 
   @override
   String get settingsBoundariesSupport => '只有你能改自己写的。对方看得到，但改不了。';
+
+  @override
+  String get pointsTitle => '积分';
+
+  @override
+  String pointsToSpend(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '可用 $count 分',
+      one: '可用 1 分',
+      zero: '还没有可用的',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pointsNoneYet => '还没有记录。';
+
+  @override
+  String get pointsHistory => '发生了什么';
+
+  @override
+  String pointsEntryNoticed(String name) {
+    return '$name 看到了';
+  }
+
+  @override
+  String pointsEntryGave(String name, int count) {
+    return '$name 给了你 $count 分';
+  }
+
+  @override
+  String get pointsEntryTook => '你换了';
+
+  @override
+  String pointsEntryHeld(String name) {
+    return '$name 让你照约定来';
+  }
+
+  @override
+  String pointsEntryLetGo(String name) {
+    return '$name 免了这一次';
+  }
+
+  @override
+  String pointsEntryGift(String name) {
+    return '$name 送给你的';
+  }
+
+  @override
+  String get pointsGiveTitle => '给分';
+
+  @override
+  String get pointsGiveHint => '为什么？（可不填）';
+
+  @override
+  String get pointsGiveAction => '给';
+
+  @override
+  String get pointsTakeAction => '收回';
+
+  @override
+  String get pointsAmount => '多少';
+
+  @override
+  String get rewardsTitle => '奖励';
+
+  @override
+  String rewardsIntro(String name) {
+    return '$name 可以送你的，你也可以用分换。';
+  }
+
+  @override
+  String rewardsIntroSub(String name) {
+    return '你可以用分换，$name 也可以直接送你。';
+  }
+
+  @override
+  String get rewardsEmpty => '还没有放东西上来。';
+
+  @override
+  String rewardsCost(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 分',
+      one: '1 分',
+      zero: '不用分',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rewardsTake => '换这个';
+
+  @override
+  String get rewardsGive => '送给他';
+
+  @override
+  String rewardsNotYet(int count) {
+    return '还差 $count 分';
+  }
+
+  @override
+  String get rewardsAdd => '加一个奖励';
+
+  @override
+  String get rewardsAddTitle => '是什么';
+
+  @override
+  String get rewardsAddHint => '一次按摩';
+
+  @override
+  String get rewardsAddDetail => '想让对方知道的（可不填）';
+
+  @override
+  String get rewardsAddCost => '换它要多少分';
+
+  @override
+  String rewardsRemove(String title) {
+    return '把 $title 撤下来';
+  }
+
+  @override
+  String get rewardsGivenByYou => '你送的。';
+
+  @override
+  String get rewardsNeedsTitle => '先写清楚是什么。';
+
+  @override
+  String get agreementsTitle => '你们的约定';
+
+  @override
+  String get agreementsIntro => '你们两个人事先一起写的。这里没有任何事会自动发生 —— 每一次都由你们其中一个人来决定。';
+
+  @override
+  String get agreementsEmpty => '还没有约定。';
+
+  @override
+  String get agreementsAdd => '加一条约定';
+
+  @override
+  String get agreementsWhen => '如果出现这种情况';
+
+  @override
+  String get agreementsWhenHint => '晚上的事没做';
+
+  @override
+  String get agreementsThen => '那么';
+
+  @override
+  String get agreementsThenHint => '第二天早睡一小时';
+
+  @override
+  String get agreementsCost => '要扣的分（可不填）';
+
+  @override
+  String agreementsEnd(String label) {
+    return '结束「$label」';
+  }
+
+  @override
+  String get agreementsEitherCanEnd => '你们任何一个人都可以单方面结束其中任何一条。';
+
+  @override
+  String get agreementsNeedsBoth => '把情况和后果都写上。';
+
+  @override
+  String get consequenceHeading => '你们约定过';
+
+  @override
+  String get consequenceHold => '就这么办';
+
+  @override
+  String get consequenceLetGo => '这次算了';
+
+  @override
+  String get consequenceTalk => '聊聊';
+
+  @override
+  String get consequenceNoteHint => '想说的话（可不填）';
+
+  @override
+  String consequenceHeld(String name) {
+    return '$name 让你照约定来。';
+  }
+
+  @override
+  String consequenceWaived(String name) {
+    return '$name 免了这一次。';
+  }
+
+  @override
+  String consequenceYouHeld(String name) {
+    return '你让 $name 照约定来。';
+  }
+
+  @override
+  String get consequenceYouWaived => '你免了这一次。';
+
+  @override
+  String get consequenceNothingHappens => '你不选，就什么都不会发生。';
+
+  @override
+  String get settingsPointsSection => '积分';
+
+  @override
+  String get settingsPointsOpen => '积分和奖励';
+
+  @override
+  String get settingsPointsSupport => '积分可以整个关掉。关了之后其他一切照旧。';
+
+  @override
+  String get settingsPointsEnabled => '使用积分';
+
+  @override
+  String get settingsPointsPerCompletion => '做好一件事得几分';
 }

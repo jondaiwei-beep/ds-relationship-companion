@@ -2144,4 +2144,225 @@ class LEn extends L {
   @override
   String get settingsBoundariesSupport =>
       'Only you can change your own. Your partner sees them and cannot edit them.';
+
+  @override
+  String get pointsTitle => 'Points';
+
+  @override
+  String pointsToSpend(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count points to spend',
+      one: '1 point to spend',
+      zero: 'Nothing to spend yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get pointsNoneYet => 'Nothing here yet.';
+
+  @override
+  String get pointsHistory => 'WHAT HAPPENED';
+
+  @override
+  String pointsEntryNoticed(String name) {
+    return '$name noticed';
+  }
+
+  @override
+  String pointsEntryGave(String name, int count) {
+    return '$name gave you $count';
+  }
+
+  @override
+  String get pointsEntryTook => 'You took';
+
+  @override
+  String pointsEntryHeld(String name) {
+    return '$name held you to it';
+  }
+
+  @override
+  String pointsEntryLetGo(String name) {
+    return '$name let it go';
+  }
+
+  @override
+  String pointsEntryGift(String name) {
+    return '$name gave you this';
+  }
+
+  @override
+  String get pointsGiveTitle => 'Give points';
+
+  @override
+  String get pointsGiveHint => 'What for? (optional)';
+
+  @override
+  String get pointsGiveAction => 'Give';
+
+  @override
+  String get pointsTakeAction => 'Take back';
+
+  @override
+  String get pointsAmount => 'How many';
+
+  @override
+  String get rewardsTitle => 'Rewards';
+
+  @override
+  String rewardsIntro(String name) {
+    return 'Things $name can give, or you can ask for with points.';
+  }
+
+  @override
+  String rewardsIntroSub(String name) {
+    return 'Things you can take with points, or $name can simply give you.';
+  }
+
+  @override
+  String get rewardsEmpty => 'Nothing on offer yet.';
+
+  @override
+  String rewardsCost(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count points',
+      one: '1 point',
+      zero: 'No points',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rewardsTake => 'Take it';
+
+  @override
+  String get rewardsGive => 'Give it';
+
+  @override
+  String rewardsNotYet(int count) {
+    return '$count more to go';
+  }
+
+  @override
+  String get rewardsAdd => 'Add a reward';
+
+  @override
+  String get rewardsAddTitle => 'What is on offer';
+
+  @override
+  String get rewardsAddHint => 'A massage';
+
+  @override
+  String get rewardsAddDetail => 'Anything they should know (optional)';
+
+  @override
+  String get rewardsAddCost => 'Points to take it';
+
+  @override
+  String rewardsRemove(String title) {
+    return 'Take $title off the list';
+  }
+
+  @override
+  String get rewardsGivenByYou => 'You gave this.';
+
+  @override
+  String get rewardsNeedsTitle => 'Say what it is first.';
+
+  @override
+  String get agreementsTitle => 'What you agreed';
+
+  @override
+  String get agreementsIntro =>
+      'Written by you both, in advance. Nothing here happens on its own — one of you decides, every time.';
+
+  @override
+  String get agreementsEmpty => 'Nothing agreed yet.';
+
+  @override
+  String get agreementsAdd => 'Add an agreement';
+
+  @override
+  String get agreementsWhen => 'When this happens';
+
+  @override
+  String get agreementsWhenHint => 'The evening things do not get done';
+
+  @override
+  String get agreementsThen => 'Then';
+
+  @override
+  String get agreementsThenHint => 'Early bedtime, one hour';
+
+  @override
+  String get agreementsCost => 'Points it costs (optional)';
+
+  @override
+  String agreementsEnd(String label) {
+    return 'End $label';
+  }
+
+  @override
+  String get agreementsEitherCanEnd =>
+      'Either of you can end any of these, alone.';
+
+  @override
+  String get agreementsNeedsBoth => 'Say what happens, and what follows.';
+
+  @override
+  String get consequenceHeading => 'YOU BOTH AGREED';
+
+  @override
+  String get consequenceHold => 'Hold to it';
+
+  @override
+  String get consequenceLetGo => 'Let it go';
+
+  @override
+  String get consequenceTalk => 'Talk';
+
+  @override
+  String get consequenceNoteHint => 'Anything you want to say (optional)';
+
+  @override
+  String consequenceHeld(String name) {
+    return '$name held you to it.';
+  }
+
+  @override
+  String consequenceWaived(String name) {
+    return '$name let this one go.';
+  }
+
+  @override
+  String consequenceYouHeld(String name) {
+    return 'You held $name to it.';
+  }
+
+  @override
+  String get consequenceYouWaived => 'You let this one go.';
+
+  @override
+  String get consequenceNothingHappens => 'Nothing happens until you choose.';
+
+  @override
+  String get settingsPointsSection => 'POINTS';
+
+  @override
+  String get settingsPointsOpen => 'Points and rewards';
+
+  @override
+  String get settingsPointsSupport =>
+      'Points can be switched off entirely. Nothing else changes if you do.';
+
+  @override
+  String get settingsPointsEnabled => 'Use points';
+
+  @override
+  String get settingsPointsPerCompletion => 'Points for finishing something';
 }

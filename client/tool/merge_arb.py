@@ -18,7 +18,11 @@ import re
 import sys
 
 L10N = pathlib.Path(__file__).resolve().parent.parent / "lib" / "l10n"
-PLACEHOLDER = re.compile(r"\{(\w+)\}")
+# ASCII-only, because `\w` matches CJK: a Chinese ICU plural branch with no
+# spaces — `=0{还没有可用的}` — parsed as a placeholder named 还没有可用的 and
+# the merge refused a pair of files that were actually correct. A real
+# placeholder is always an ASCII identifier written by us.
+PLACEHOLDER = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
 def load(path):
