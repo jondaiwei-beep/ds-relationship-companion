@@ -12,6 +12,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../../domain_client/models/occurrence.dart';
 import '../../../domain_client/models/occurrence_view.dart';
 import '../../today/application/today_actions.dart';
+import '../../dynamic/presentation/dynamic_screen.dart';
+import '../../points/presentation/widgets/consequence_panel.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
@@ -342,6 +344,21 @@ class _OccurrenceDetailScreenState
           _Quiet(_nothingToDo(l, view.state), prominent: true),
         ],
 
+        // Past due, and the couple wrote down what happens. Offered here
+        // because this is where a person actually arrives from Today; the
+        // Attention surface this was designed against exists in the codebase
+        // but has no route, so nothing there is reachable.
+        //
+        // REQ-REVIEW-001 keeps its meaning: past due is still only a prompt
+        // to look, the software still assigns nothing, and a couple with no
+        // agreement sees none of this.
+        if (view.state == OccurrenceState.needsReview)
+          _AgreedConsequence(
+            dynamicId: widget.dynamicId,
+            occurrenceId: widget.occurrenceId,
+            onTalk: () => _run(TodayAction.discuss),
+          ),
+
         if (_failure != null) ...[
           const SizedBox(height: DsSpacing.space5),
           _Quiet(_failure!, prominent: true),
@@ -355,6 +372,94 @@ class _OccurrenceDetailScreenState
 
 /// What the state means when there is nothing for this person to do — said
 /// plainly, and never as a fault.
+/// What the couple agreed happens, offered as a choice and never taken.
+///
+/// Renders nothing unless they wrote an agreement, and nothing unless the
+/// viewer is the other person: deciding a consequence about yourself is not
+/// a thing this product does.
+class _AgreedConsequence extends ConsumerStatefulWidget {
+  const _AgreedConsequence({
+    required this.dynamicId,
+    required this.occurrenceId,
+    required this.onTalk,
+  });
+
+  final String dynamicId;
+  final String occurrenceId;
+
+  /// The existing adjustment path. Talking is not a new mechanism.
+  final VoidCallback onTalk;
+
+  @override
+  ConsumerState<_AgreedConsequence> createState() => _AgreedConsequenceState();
+}
+
+class _AgreedConsequenceState extends ConsumerState<_AgreedConsequence> {
+  bool _busy = false;
+
+  /// Hidden once decided, so the same miss is never presented twice. Nothing
+  /// is recorded as pending in between — if they close the app instead of
+  /// choosing, nothing has happened.
+  bool _decided = false;
+
+  Future<void> _decide(
+    String agreementId,
+    String subjectUserId, {
+    required bool waived,
+  }) async {
+    setState(() => _busy = true);
+    try {
+      await ref.read(pointsRepositoryProvider).issueConsequence(
+        widget.dynamicId,
+        subjectUserId: subjectUserId,
+        agreementId: agreementId,
+        occurrenceId: widget.occurrenceId,
+        waived: waived,
+      );
+      ref.invalidate(pointsProvider(widget.dynamicId));
+      if (mounted) setState(() => _decided = true);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_decided) return const SizedBox.shrink();
+
+    final me = ref.watch(dynamicViewerIdProvider);
+    final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
+    final agreements = ref.watch(agreementsProvider(widget.dynamicId));
+
+    final partnerId = switch (detail) {
+      AsyncData(:final value) =>
+        value.members.where((m) => m.userId != me).firstOrNull?.userId,
+      _ => null,
+    };
+
+    if (partnerId == null) return const SizedBox.shrink();
+
+    return switch (agreements) {
+      AsyncData(:final value) when value.isNotEmpty => Padding(
+        padding: todayInset.add(
+          const EdgeInsets.only(top: DsSpacing.space5),
+        ),
+        // The first agreement is the one offered. Asking "which rule applies"
+        // would turn a moment into a form.
+        child: ConsequencePanel(
+          agreement: value.first,
+          busy: _busy,
+          onHold: () => _decide(value.first.id, partnerId, waived: false),
+          onLetGo: () => _decide(value.first.id, partnerId, waived: true),
+          onTalk: widget.onTalk,
+        ),
+      ),
+      _ => const SizedBox.shrink(),
+    };
+  }
+
+}
+
 String _nothingToDo(L l, OccurrenceState state) => switch (state) {
   OccurrenceState.waitingAck => l.nothingWaitingAck,
   OccurrenceState.acknowledged => l.nothingAcknowledged,

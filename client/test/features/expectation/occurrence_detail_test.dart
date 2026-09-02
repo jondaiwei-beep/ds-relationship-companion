@@ -9,7 +9,11 @@ import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/occurrence.dart';
 import 'package:dsapp/domain_client/models/occurrence_view.dart';
 import 'package:dsapp/domain_client/repositories/adjustment_repository.dart';
+import 'package:dsapp/domain_client/models/dynamic_view.dart';
+import 'package:dsapp/domain_client/models/points.dart';
+import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/occurrence_repository.dart';
+import 'package:dsapp/domain_client/repositories/points_repository.dart';
 import 'package:dsapp/features/expectation/presentation/occurrence_detail_screen.dart';
 
 class _FakeOccurrenceRepository implements OccurrenceRepository {
@@ -71,10 +75,69 @@ class _FakeAdjustments implements AdjustmentRepository {
 // ignore: library_private_types_in_public_api
 late _FakeAdjustments lastAdjustments;
 
+/// Enough of the points repository for the consequence panel.
+class _FakePoints implements PointsRepository {
+  _FakePoints({this.agreementList = const []});
+
+  List<ConsequenceAgreement> agreementList;
+  final issued = <String>[];
+
+  @override
+  Future<List<ConsequenceAgreement>> agreements(String dynamicId) async =>
+      agreementList;
+
+  @override
+  Future<void> issueConsequence(
+    String dynamicId, {
+    required String subjectUserId,
+    String? agreementId,
+    String? occurrenceId,
+    required bool waived,
+    String? note,
+  }) async {
+    issued.add(waived ? 'WAIVED' : 'ISSUED');
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
+}
+
+class _FakeDynamics implements DynamicRepository {
+  @override
+  Future<DynamicDetail> detail(String dynamicId) async => const DynamicDetail(
+    dynamicId: 'dyn-1',
+    state: 'ACTIVE',
+    desiredOutcome: 'STRUCTURE',
+    structureLevel: 'STEADY',
+    referenceTimezone: 'Asia/Shanghai',
+    members: [
+      MemberView(
+        userId: 'u-me',
+        displayName: 'Alex',
+        roleContext: 'CREATOR',
+        accessState: 'ACTIVE',
+      ),
+      MemberView(
+        userId: 'u-them',
+        displayName: 'Jamie',
+        roleContext: 'PARTNER',
+        accessState: 'ACTIVE',
+      ),
+    ],
+  );
+
+  @override
+  dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
+}
+
+// ignore: library_private_types_in_public_api
+late _FakePoints lastPoints;
+
 Future<_FakeOccurrenceRepository> _pump(
   WidgetTester tester,
-  OccurrenceView view,
-) async {
+  OccurrenceView view, {
+  List<ConsequenceAgreement> agreements = const [],
+}) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
@@ -87,6 +150,10 @@ Future<_FakeOccurrenceRepository> _pump(
         adjustmentRepositoryProvider.overrideWithValue(
           lastAdjustments = _FakeAdjustments(),
         ),
+        pointsRepositoryProvider.overrideWithValue(
+          lastPoints = _FakePoints(agreementList: agreements),
+        ),
+        dynamicRepositoryProvider.overrideWithValue(_FakeDynamics()),
       ],
       child: MaterialApp(
         localizationsDelegates: L.localizationsDelegates,
@@ -104,6 +171,87 @@ Future<_FakeOccurrenceRepository> _pump(
 }
 
 void main() {
+  group('agreed consequences', () {
+    const anAgreement = ConsequenceAgreement(
+      id: 'a1',
+      label: 'The evening things do not get done',
+      consequence: 'Early bedtime, one hour',
+      pointCost: 2,
+    );
+
+    testWidgets('a couple with no agreement is shown no consequence machinery', (
+      tester,
+    ) async {
+      // REQ-REVIEW-001: past due is only a prompt to look. A couple who never
+      // wrote anything down must not meet a punishment surface because they
+      // were late.
+      await _pump(tester, _view(state: OccurrenceState.needsReview));
+
+      expect(find.text('YOU BOTH AGREED'), findsNothing);
+      expect(find.text('Hold to it'), findsNothing);
+    });
+
+    testWidgets('an agreement appears only once something is past due', (
+      tester,
+    ) async {
+      await _pump(tester, _view(), agreements: const [anAgreement]);
+
+      expect(find.text('YOU BOTH AGREED'), findsNothing);
+    });
+
+    testWidgets('past due plus an agreement offers three equal doors', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        _view(state: OccurrenceState.needsReview),
+        agreements: const [anAgreement],
+      );
+
+      expect(find.text('YOU BOTH AGREED'), findsOneWidget);
+      expect(find.text('Early bedtime, one hour'), findsOneWidget);
+      expect(find.text('Hold to it'), findsOneWidget);
+      expect(find.text('Let it go'), findsOneWidget);
+      expect(find.text('Talk'), findsOneWidget);
+      // The app says plainly that it will not act on its own.
+      expect(find.text('Nothing happens until you choose.'), findsOneWidget);
+    });
+
+    testWidgets('letting go is recorded as a decision, not as nothing', (
+      tester,
+    ) async {
+      await _pump(
+        tester,
+        _view(state: OccurrenceState.needsReview),
+        agreements: const [anAgreement],
+      );
+
+      tester.view.physicalSize = const Size(390, 2200);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Let it go'));
+      await tester.pumpAndSettle();
+
+      expect(lastPoints.issued, ['WAIVED']);
+      // And it does not ask a second time about the same miss.
+      expect(find.text('Hold to it'), findsNothing);
+    });
+
+    testWidgets('holding to it names the agreement', (tester) async {
+      await _pump(
+        tester,
+        _view(state: OccurrenceState.needsReview),
+        agreements: const [anAgreement],
+      );
+
+      tester.view.physicalSize = const Size(390, 2200);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Hold to it'));
+      await tester.pumpAndSettle();
+
+      expect(lastPoints.issued, ['ISSUED']);
+    });
+  });
+
   testWidgets('the four paths are equals, all reachable here', (tester) async {
     // The preview offers only "Mark complete". The alignment work adds the
     // other three, and the acceptance criterion is that no side path reads as
