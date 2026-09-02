@@ -684,5 +684,12 @@
   "proofAdd": "加一张照片",
   "proofAdded": "照片已附上",
   "proofRemove": "去掉照片",
-  "proofOptional": "只有你想让对方看到时才加。"
+  "proofOptional": "只有你想让对方看到时才加。",
+  "rewardsAddOpen": "放一个上来",
+  "rewardsAddCancel": "算了",
+  "rewardsAddSave": "放上去",
+  "agreementsAddOpen": "写一条约定",
+  "agreementsAddCancel": "算了",
+  "agreementsAddSave": "就这么定",
+  "pointsSpendable": "可用"
 }

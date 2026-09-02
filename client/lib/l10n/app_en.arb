@@ -1090,5 +1090,12 @@
         "type": "int"
       }
     }
-  }
+  },
+  "rewardsAddOpen": "Put something on offer",
+  "rewardsAddCancel": "Never mind",
+  "rewardsAddSave": "Put it on offer",
+  "agreementsAddOpen": "Write an agreement",
+  "agreementsAddCancel": "Never mind",
+  "agreementsAddSave": "Agree to this",
+  "pointsSpendable": "TO SPEND"
 }

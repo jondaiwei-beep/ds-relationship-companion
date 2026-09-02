@@ -198,8 +198,12 @@ void main() {
     final repo = _FakePoints();
     await _pump(tester, repo);
 
+    // The form is collapsed until asked for: an editing form sitting open
+    // under "Nothing on offer yet" was two things competing in one block.
+    await tester.tap(find.text('Put something on offer'));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Massage');
-    await tester.tap(find.text('Add a reward'));
+    await tester.tap(find.text('Put it on offer'));
     await tester.pumpAndSettle();
 
     expect(repo.added, ['Massage/1']);
@@ -210,7 +214,9 @@ void main() {
     final repo = _FakePoints();
     await _pump(tester, repo);
 
-    await tester.tap(find.text('Add a reward'));
+    await tester.tap(find.text('Put something on offer'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Put it on offer'));
     await tester.pumpAndSettle();
 
     expect(find.text('Say what it is first.'), findsOneWidget);
@@ -226,7 +232,9 @@ void main() {
     await _pump(tester, repo);
 
     await _scrollToBottom(tester);
-    await tester.tap(find.text('Add an agreement'));
+    await tester.tap(find.text('Write an agreement'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Agree to this'));
     await tester.pumpAndSettle();
 
     expect(find.text('Say what happens, and what follows.'), findsOneWidget);
@@ -246,10 +254,10 @@ void main() {
     await _pump(tester, repo);
 
     await _scrollToBottom(tester);
-    // Two matches are correct here: the agreement itself, and the add-form's
-    // hint, which uses the same phrase as its example.
-    expect(find.text('Early bedtime, one hour'), findsNWidgets(2));
-    expect(find.text('The evening things do not get done'), findsNWidgets(2));
+    // One match now: with the form collapsed, its example hint is not on
+    // screen competing with the real agreement.
+    expect(find.text('Early bedtime, one hour'), findsOneWidget);
+    expect(find.text('The evening things do not get done'), findsOneWidget);
     expect(
       find.text('Either of you can end any of these, alone.'),
       findsOneWidget,

@@ -4206,6 +4206,48 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Only if you want to show them.'**
   String get proofOptional;
+
+  /// No description provided for @rewardsAddOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Put something on offer'**
+  String get rewardsAddOpen;
+
+  /// No description provided for @rewardsAddCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Never mind'**
+  String get rewardsAddCancel;
+
+  /// No description provided for @rewardsAddSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it on offer'**
+  String get rewardsAddSave;
+
+  /// No description provided for @agreementsAddOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Write an agreement'**
+  String get agreementsAddOpen;
+
+  /// No description provided for @agreementsAddCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Never mind'**
+  String get agreementsAddCancel;
+
+  /// No description provided for @agreementsAddSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree to this'**
+  String get agreementsAddSave;
+
+  /// No description provided for @pointsSpendable.
+  ///
+  /// In en, this message translates to:
+  /// **'TO SPEND'**
+  String get pointsSpendable;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

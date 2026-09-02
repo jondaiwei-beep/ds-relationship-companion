@@ -2403,4 +2403,25 @@ class LEn extends L {
 
   @override
   String get proofOptional => 'Only if you want to show them.';
+
+  @override
+  String get rewardsAddOpen => 'Put something on offer';
+
+  @override
+  String get rewardsAddCancel => 'Never mind';
+
+  @override
+  String get rewardsAddSave => 'Put it on offer';
+
+  @override
+  String get agreementsAddOpen => 'Write an agreement';
+
+  @override
+  String get agreementsAddCancel => 'Never mind';
+
+  @override
+  String get agreementsAddSave => 'Agree to this';
+
+  @override
+  String get pointsSpendable => 'TO SPEND';
 }

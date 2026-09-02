@@ -2260,4 +2260,25 @@ class LZh extends L {
 
   @override
   String get proofOptional => '只有你想让对方看到时才加。';
+
+  @override
+  String get rewardsAddOpen => '放一个上来';
+
+  @override
+  String get rewardsAddCancel => '算了';
+
+  @override
+  String get rewardsAddSave => '放上去';
+
+  @override
+  String get agreementsAddOpen => '写一条约定';
+
+  @override
+  String get agreementsAddCancel => '算了';
+
+  @override
+  String get agreementsAddSave => '就这么定';
+
+  @override
+  String get pointsSpendable => '可用';
 }

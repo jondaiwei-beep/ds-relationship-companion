@@ -9,6 +9,8 @@ import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_text_field.dart';
 import '../../../domain_client/models/points.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../today/presentation/widgets/secondary_button.dart';
+import '../../today/presentation/widgets/section_label.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
 /// Points, rewards and what the couple agreed.
@@ -84,9 +86,8 @@ class PointsScreen extends ConsumerWidget {
                 _ => const SizedBox(height: 88),
               },
 
-              const SizedBox(height: DsSpacing.space8),
-              _SectionLabel(l.rewardsTitle.toUpperCase()),
-              const SizedBox(height: DsSpacing.space4),
+              const SizedBox(height: DsSpacing.space10),
+              SectionLabel(l.rewardsTitle.toUpperCase()),
               switch (rewards) {
                 AsyncData(:final value) when value.isEmpty =>
                   _Muted(l.rewardsEmpty),
@@ -104,13 +105,13 @@ class PointsScreen extends ConsumerWidget {
                 _ => const SizedBox(height: 60),
               },
 
+              const SizedBox(height: DsSpacing.space5),
               _AddReward(dynamicId: dynamicId),
 
               const SizedBox(height: DsSpacing.space10),
-              _SectionLabel(l.agreementsTitle.toUpperCase()),
-              const SizedBox(height: DsSpacing.space3),
+              SectionLabel(l.agreementsTitle.toUpperCase()),
               _Muted(l.agreementsIntro),
-              const SizedBox(height: DsSpacing.space4),
+              const SizedBox(height: DsSpacing.space5),
               switch (agreements) {
                 AsyncData(:final value) when value.isEmpty =>
                   _Muted(l.agreementsEmpty),
@@ -125,12 +126,11 @@ class PointsScreen extends ConsumerWidget {
                 AsyncError() => _Muted(l.agreementsEmpty),
                 _ => const SizedBox(height: 40),
               },
-              const SizedBox(height: DsSpacing.space4),
+              const SizedBox(height: DsSpacing.space5),
               _AddAgreement(dynamicId: dynamicId),
 
               const SizedBox(height: DsSpacing.space10),
-              _SectionLabel(l.pointsHistory),
-              const SizedBox(height: DsSpacing.space4),
+              SectionLabel(l.pointsHistory),
               switch (summary) {
                 AsyncData(:final value) when value.entries.isEmpty =>
                   _Muted(l.pointsNoneYet),
@@ -155,6 +155,13 @@ class PointsScreen extends ConsumerWidget {
 ///
 /// Deliberately not a "score" and deliberately alone on its line: the whole
 /// sentence is about what the number lets you do, not about the person.
+/// What is available, and how long this has been going.
+///
+/// Given the vertical authority rule the rest of the product uses for a block
+/// that matters, rather than three grey lines stacked at equal weight. The
+/// first draft of this screen had no hierarchy at all: everything was the
+/// same size at the same interval, so nothing read as more important than
+/// anything else.
 class _Balance extends StatelessWidget {
   const _Balance({required this.balance, required this.daysTogether});
 
@@ -165,46 +172,71 @@ class _Balance extends StatelessWidget {
   final int daysTogether;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: todayInset,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // The sentence is the headline, not the digit.
-        //
-        // A 44pt numeral rendered as the largest thing on the screen — which
-        // is what the first draft did — is the "number as verdict" this design
-        // exists to avoid, whatever the label beneath it says. Obedience puts
-        // a big number next to a heart; the size is most of why it reads as a
-        // judgement. Here the number is set at body scale inside the phrase
-        // that says what it is for.
-        Text(
-          L.of(context).pointsToSpend(balance),
-          style: DsTextStyles.displayRitual.copyWith(
-            color: DsColors.textOnRitualPrimary,
-            fontSize: 22,
-          ),
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: DsSpacing.space5),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              width: DsBorderWidths.selected,
+              color: DsPrimitiveColors.terracotta,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  DsSpacing.space5,
+                  DsSpacing.space2,
+                  DsSpacing.space5,
+                  DsSpacing.space2,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.pointsSpendable,
+                      style: DsTextStyles.labelRitual.copyWith(
+                        color: DsColors.textOnRitualMuted,
+                        fontSize: 10,
+                        letterSpacing: 1.9,
+                      ),
+                    ),
+                    const SizedBox(height: DsSpacing.space2),
+                    Text(
+                      l.pointsToSpend(balance),
+                      style: DsTextStyles.displayRitual.copyWith(
+                        color: DsColors.textOnRitualPrimary,
+                        fontSize: 26,
+                      ),
+                    ),
+                    const SizedBox(height: DsSpacing.space4),
+                    Text(
+                      l.pointsDaysTogether(daysTogether),
+                      style: DsTextStyles.bodyPrimary.copyWith(
+                        color: DsColors.textOnRitualSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: DsSpacing.space1),
+                    // Said out loud, because every other app in this category
+                    // has taught people a number like this can be lost.
+                    Text(
+                      l.pointsDaysNeverResets,
+                      style: DsTextStyles.bodySecondary.copyWith(
+                        color: DsColors.textOnRitualMuted,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: DsSpacing.space2),
-        Text(
-          L.of(context).pointsDaysTogether(daysTogether),
-          style: DsTextStyles.bodySecondary.copyWith(
-            color: DsColors.textOnRitualMuted,
-          ),
-        ),
-        const SizedBox(height: DsSpacing.space1),
-        // Said out loud, because every other app in this category has taught
-        // people that a number like this is something you can lose.
-        Text(
-          L.of(context).pointsDaysNeverResets,
-          style: DsTextStyles.bodySecondary.copyWith(
-            color: DsColors.textOnRitualMuted,
-            fontSize: 11,
-          ),
-        ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
 class _RewardRow extends ConsumerStatefulWidget {
@@ -461,6 +493,12 @@ class _Action extends StatelessWidget {
 }
 
 /// Putting something on offer.
+///
+/// Collapsed until asked for. The first version rendered the form open,
+/// always, directly beneath the words "Nothing on offer yet" — an empty state
+/// and an editing form competing in the same block, so neither read as
+/// anything. Bare hint text with no labels and no grouping made it look like
+/// a debug screen rather than a product.
 class _AddReward extends ConsumerStatefulWidget {
   const _AddReward({required this.dynamicId});
 
@@ -474,6 +512,7 @@ class _AddRewardState extends ConsumerState<_AddReward> {
   final _title = TextEditingController();
   final _detail = TextEditingController();
   final _cost = TextEditingController(text: '1');
+  bool _open = false;
   bool _needsTitle = false;
   bool _busy = false;
 
@@ -504,6 +543,7 @@ class _AddRewardState extends ConsumerState<_AddReward> {
       _title.clear();
       _detail.clear();
       ref.invalidate(rewardsProvider(widget.dynamicId));
+      if (mounted) setState(() => _open = false);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -512,72 +552,60 @@ class _AddRewardState extends ConsumerState<_AddReward> {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    return Padding(
-      padding: todayInset,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DsTextField(
-            label: '',
-            controller: _title,
-            hint: l.rewardsAddHint,
-            enabled: !_busy,
-            error: _needsTitle ? l.rewardsNeedsTitle : null,
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          DsTextField(
-            label: '',
-            controller: _detail,
-            hint: l.rewardsAddDetail,
-            enabled: !_busy,
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l.rewardsAddCost,
-                  style: DsTextStyles.bodySecondary.copyWith(
-                    color: DsColors.textOnRitualMuted,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 64,
-                child: DsTextField(
-                  label: '',
-                  controller: _cost,
-                  hint: '1',
-                  enabled: !_busy,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton(
-              onPressed: _busy ? null : _add,
-              child: Text(
-                l.rewardsAdd,
-                style: DsTextStyles.labelRitual.copyWith(
-                  color: DsPrimitiveColors.terracotta,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+
+    if (!_open) {
+      return Padding(
+        padding: todayInset,
+        child: SecondaryButton(
+          label: l.rewardsAddOpen,
+          onTap: () => setState(() => _open = true),
+        ),
+      );
+    }
+
+    return _Sheet(
+      children: [
+        _Field(
+          label: l.rewardsAddTitle,
+          controller: _title,
+          hint: l.rewardsAddHint,
+          enabled: !_busy,
+          error: _needsTitle ? l.rewardsNeedsTitle : null,
+        ),
+        const SizedBox(height: DsSpacing.space5),
+        _Field(
+          label: l.rewardsAddDetail,
+          controller: _detail,
+          hint: '',
+          enabled: !_busy,
+        ),
+        const SizedBox(height: DsSpacing.space5),
+        _CostField(
+          label: l.rewardsAddCost,
+          controller: _cost,
+          enabled: !_busy,
+        ),
+        const SizedBox(height: DsSpacing.space6),
+        _SheetActions(
+          busy: _busy,
+          saveLabel: l.rewardsAddSave,
+          cancelLabel: l.rewardsAddCancel,
+          onSave: _add,
+          onCancel: () => setState(() {
+            _open = false;
+            _needsTitle = false;
+          }),
+        ),
+      ],
     );
   }
 }
 
 /// Writing down what the couple agreed happens.
 ///
-/// Two fields, "when this happens" and "then", because an agreement that
-/// names only the consequence is the vague kind their own writing says
-/// "breeds resentment".
+/// Collapsed until asked for, like the reward form. Two fields, "when this
+/// happens" and "then", because an agreement naming only the consequence is
+/// the vague kind their own writing says breeds resentment.
 class _AddAgreement extends ConsumerStatefulWidget {
   const _AddAgreement({required this.dynamicId});
 
@@ -591,6 +619,7 @@ class _AddAgreementState extends ConsumerState<_AddAgreement> {
   final _when = TextEditingController();
   final _then = TextEditingController();
   final _cost = TextEditingController(text: '0');
+  bool _open = false;
   bool _incomplete = false;
   bool _busy = false;
 
@@ -620,6 +649,7 @@ class _AddAgreementState extends ConsumerState<_AddAgreement> {
       _when.clear();
       _then.clear();
       ref.invalidate(agreementsProvider(widget.dynamicId));
+      if (mounted) setState(() => _open = false);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -628,84 +658,201 @@ class _AddAgreementState extends ConsumerState<_AddAgreement> {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    return Padding(
-      padding: todayInset,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l.agreementsWhen,
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: DsSpacing.space2),
-          DsTextField(
-            label: '',
-            controller: _when,
-            hint: l.agreementsWhenHint,
-            enabled: !_busy,
-            error: _incomplete ? l.agreementsNeedsBoth : null,
-          ),
-          const SizedBox(height: DsSpacing.space4),
-          Text(
-            l.agreementsThen,
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: DsSpacing.space2),
-          DsTextField(
-            label: '',
-            controller: _then,
-            hint: l.agreementsThenHint,
-            enabled: !_busy,
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l.agreementsCost,
-                  style: DsTextStyles.bodySecondary.copyWith(
-                    color: DsColors.textOnRitualMuted,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 64,
-                child: DsTextField(
-                  label: '',
-                  controller: _cost,
-                  hint: '0',
-                  enabled: !_busy,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton(
-              onPressed: _busy ? null : _add,
-              child: Text(
-                l.agreementsAdd,
-                style: DsTextStyles.labelRitual.copyWith(
-                  color: DsPrimitiveColors.terracotta,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+
+    if (!_open) {
+      return Padding(
+        padding: todayInset,
+        child: SecondaryButton(
+          label: l.agreementsAddOpen,
+          onTap: () => setState(() => _open = true),
+        ),
+      );
+    }
+
+    return _Sheet(
+      children: [
+        _Field(
+          label: l.agreementsWhen,
+          controller: _when,
+          hint: l.agreementsWhenHint,
+          enabled: !_busy,
+          error: _incomplete ? l.agreementsNeedsBoth : null,
+        ),
+        const SizedBox(height: DsSpacing.space5),
+        _Field(
+          label: l.agreementsThen,
+          controller: _then,
+          hint: l.agreementsThenHint,
+          enabled: !_busy,
+        ),
+        const SizedBox(height: DsSpacing.space5),
+        _CostField(
+          label: l.agreementsCost,
+          controller: _cost,
+          enabled: !_busy,
+        ),
+        const SizedBox(height: DsSpacing.space6),
+        _SheetActions(
+          busy: _busy,
+          saveLabel: l.agreementsAddSave,
+          cancelLabel: l.agreementsAddCancel,
+          onSave: _add,
+          onCancel: () => setState(() {
+            _open = false;
+            _incomplete = false;
+          }),
+        ),
+      ],
     );
   }
 }
 
-/// One agreement, with the way out beside it.
+/// The shared shell for an open form: inset, raised, and set apart from the
+/// list it belongs to so it reads as a thing you are doing rather than more
+/// rows.
+class _Sheet extends StatelessWidget {
+  const _Sheet({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: todayInset,
+    child: Container(
+      padding: const EdgeInsets.all(DsSpacing.space5),
+      decoration: BoxDecoration(
+        color: DsColors.surfaceRitualRaised,
+        border: Border.all(
+          color: DsColors.textOnRitualMuted.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    ),
+  );
+}
+
+/// A labelled field. The first version had none — just hint text floating in
+/// the dark, so an empty form said nothing about what it wanted.
+class _Field extends StatelessWidget {
+  const _Field({
+    required this.label,
+    required this.controller,
+    required this.hint,
+    required this.enabled,
+    this.error,
+  });
+
+  final String label;
+  final TextEditingController controller;
+  final String hint;
+  final bool enabled;
+  final String? error;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label.toUpperCase(),
+        style: DsTextStyles.labelRitual.copyWith(
+          color: DsColors.textOnRitualMuted,
+          fontSize: 10,
+          letterSpacing: 1.6,
+        ),
+      ),
+      const SizedBox(height: DsSpacing.space2),
+      DsTextField(
+        label: '',
+        controller: controller,
+        hint: hint,
+        enabled: enabled,
+        error: error,
+      ),
+    ],
+  );
+}
+
+/// The number, kept beside its own label rather than stranded on a lonely
+/// underline half a screen away from what it means.
+class _CostField extends StatelessWidget {
+  const _CostField({
+    required this.label,
+    required this.controller,
+    required this.enabled,
+  });
+
+  final String label;
+  final TextEditingController controller;
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: [
+      Expanded(
+        child: Text(
+          label,
+          style: DsTextStyles.bodySecondary.copyWith(
+            color: DsColors.textOnRitualSecondary,
+          ),
+        ),
+      ),
+      const SizedBox(width: DsSpacing.space4),
+      SizedBox(
+        width: 56,
+        child: DsTextField(
+          label: '',
+          controller: controller,
+          hint: '0',
+          enabled: enabled,
+        ),
+      ),
+    ],
+  );
+}
+
+/// Save and cancel, as buttons rather than as letter-spaced text that reads
+/// like a heading.
+class _SheetActions extends StatelessWidget {
+  const _SheetActions({
+    required this.busy,
+    required this.saveLabel,
+    required this.cancelLabel,
+    required this.onSave,
+    required this.onCancel,
+  });
+
+  final bool busy;
+  final String saveLabel;
+  final String cancelLabel;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) => Row(
+    children: [
+      Expanded(
+        child: SecondaryButton(
+          label: cancelLabel,
+          onTap: busy ? () {} : onCancel,
+        ),
+      ),
+      const SizedBox(width: DsSpacing.space3),
+      Expanded(
+        child: SecondaryButton(
+          label: saveLabel,
+          filled: true,
+          onTap: busy ? () {} : onSave,
+        ),
+      ),
+    ],
+  );
+}
+
+/// One agreement, with the way out beside it./// One agreement, with the way out beside it.
 class _AgreementRow extends ConsumerWidget {
   const _AgreementRow({required this.agreement, required this.dynamicId});
 
@@ -786,25 +933,6 @@ class _Header extends StatelessWidget {
           ),
         ),
       ],
-    ),
-  );
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: todayInset,
-    child: Text(
-      text,
-      style: DsTextStyles.labelRitual.copyWith(
-        color: DsColors.textOnRitualMuted,
-        fontSize: 10,
-        letterSpacing: 1.9,
-      ),
     ),
   );
 }
