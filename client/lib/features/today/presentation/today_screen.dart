@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../app/shell/ds_glyph.dart';
 import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../domain_client/models/today_view.dart';
@@ -50,6 +51,7 @@ class TodayScreen extends ConsumerWidget {
     this.onSignIn,
     this.onSelectTab,
     this.onOpenOccurrence,
+    this.onOpenPoints,
     this.onCheckIn,
   });
 
@@ -64,6 +66,9 @@ class TodayScreen extends ConsumerWidget {
 
   /// Opens SCR-14 for one item.
   final void Function(String occurrenceId)? onOpenOccurrence;
+
+  /// Opens points, rewards and agreements.
+  final VoidCallback? onOpenPoints;
 
   /// Opens SCR-22. Journey B puts the check-in last, after what is expected:
   /// saying how you are is offered, never required first.
@@ -109,6 +114,7 @@ class TodayScreen extends ConsumerWidget {
                       dynamicId: dynamicId,
                       onOpenOccurrence: onOpenOccurrence,
                       onCheckIn: onCheckIn,
+                      onOpenPoints: onOpenPoints,
                     ),
                   ),
                 ),
@@ -149,12 +155,16 @@ class _Loaded extends ConsumerStatefulWidget {
     required this.dynamicId,
     this.onOpenOccurrence,
     this.onCheckIn,
+    this.onOpenPoints,
   });
 
   final TodayView view;
   final String dynamicId;
   final void Function(String occurrenceId)? onOpenOccurrence;
   final VoidCallback? onCheckIn;
+
+  /// Opens points, rewards and agreements.
+  final VoidCallback? onOpenPoints;
 
   @override
   ConsumerState<_Loaded> createState() => _LoadedState();
@@ -230,6 +240,17 @@ class _LoadedState extends ConsumerState<_Loaded> {
               ),
         ],
         if (response != null) PartnerResponse(response: response),
+
+        // Points, on the surface a person opens every day.
+        //
+        // This lived only behind Settings, under notification preferences and
+        // quiet hours — a place nobody looks for something they use daily,
+        // and the owner reported the whole feature as missing from a build
+        // that in fact contained it. All three competitors give this a
+        // bottom-tab; a row on Today is the smallest honest equivalent that
+        // does not add a fifth tab to a four-tab shell.
+        if (widget.onOpenPoints != null)
+          _PointsRow(dynamicId: widget.dynamicId, onTap: widget.onOpenPoints!),
         if (later.isNotEmpty)
           LaterRow(
             count: later.length,
@@ -275,6 +296,57 @@ class _LoadedState extends ConsumerState<_Loaded> {
 
 /// Nothing actionable for the relationship day. No invented urgency, and the
 /// optional check-in stays optional.
+/// The way in to points, rewards and what the couple agreed.
+///
+/// Deliberately does NOT read the balance. Today is the surface that must
+/// always render, and making it depend on a second network call means a
+/// points outage — or an unrelated provider failure — takes the day's
+/// expectations down with it. The number is one tap away on the page this
+/// opens, which is where it belongs anyway: a balance on Today would be a
+/// score sitting above someone's expectations.
+class _PointsRow extends StatelessWidget {
+  const _PointsRow({required this.dynamicId, required this.onTap});
+
+  final String dynamicId;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) =>
+      _PointsLabel(label: L.of(context).settingsPointsOpen, onTap: onTap);
+}
+
+/// The row's plain form, used before the balance is known and when it cannot
+/// be read at all.
+class _PointsLabel extends StatelessWidget {
+  const _PointsLabel({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    child: Padding(
+      padding: todayInset.add(
+        const EdgeInsets.symmetric(vertical: DsSpacing.space4),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: DsTextStyles.bodyPrimary.copyWith(
+                color: DsColors.textOnRitualPrimary,
+              ),
+            ),
+          ),
+          const DsGlyphIcon(DsGlyph.forward, size: 18),
+        ],
+      ),
+    ),
+  );
+}
+
 class _NothingExpected extends StatelessWidget {
   const _NothingExpected();
 

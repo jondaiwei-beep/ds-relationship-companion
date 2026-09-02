@@ -33,12 +33,29 @@ void main() {
           localizationsDelegates: L.localizationsDelegates,
           supportedLocales: L.supportedLocales,
           theme: DsTheme.ritual(),
-          home: const TodayScreen(dynamicId: 'd1'),
+          home: TodayScreen(dynamicId: 'd1', onOpenPoints: () {}),
         ),
       ),
     );
     await tester.pumpAndSettle();
   }
+
+  testWidgets('points are reachable from the day, not only from Settings', (
+    tester,
+  ) async {
+    // This shipped once with the whole feature built and routed, but its only
+    // entry point was in Settings below notification preferences, timezone
+    // and quiet hours. The owner installed it and reported the feature as
+    // missing. Code that exists but cannot be found has not shipped.
+    await pump(tester, todayFixture());
+    // Below the fold on a full day, and a lazy ListView does not build what
+    // is off screen. A taller surface asks the real question — is it on the
+    // day at all — without testing scroll mechanics.
+    await tester.binding.setSurfaceSize(const Size(390, 2400));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Points and rewards'), findsOneWidget);
+  });
 
   String allText(WidgetTester tester) => tester
       .widgetList<Text>(find.byType(Text))

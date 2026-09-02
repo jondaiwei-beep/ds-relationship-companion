@@ -187,6 +187,7 @@ GoRouter createRouter(Ref ref) {
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
             onOpenOccurrence: (id) =>
                 context.go('/dynamics/$dynamicId/occurrences/$id'),
+            onOpenPoints: () => context.go('/dynamics/$dynamicId/points'),
             onCheckIn: () => context.go('/dynamics/$dynamicId/check-in'),
           );
         },
