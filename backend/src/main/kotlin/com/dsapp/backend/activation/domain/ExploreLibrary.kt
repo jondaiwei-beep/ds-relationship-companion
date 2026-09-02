@@ -1,53 +1,47 @@
 package com.dsapp.backend.activation.domain
 
 /**
- * The small, reviewed library a person can browse before anyone else is
- * involved — Notion 02 §1 permits a light Explore in Core Beta.
+ * The reviewed library a person can browse before anyone else is involved.
  *
- * This exists because the product previously showed a new person five empty
- * surfaces and then asked them to send a private link about an intimate
- * subject to someone they know. It had no way to demonstrate its own taste
- * or judgement first. Distribution depends on someone deciding this is good
- * enough to share, and nothing was there to be convinced by.
+ * ## Who this is written for
  *
- * ## Why this file was rewritten
+ * People in, or starting, a D/s dynamic — one of them holds authority, the
+ * other has given it. That is the whole audience. Owner's decision,
+ * 2026-09-02: "解除所有限制。我们就是为这些用户提供服务。"
  *
- * The first version demonstrated taste, but not *this product's* taste. Its
- * sixteen entries — send a message that isn't logistics, twenty minutes with
- * the phone away, make one thing easier for them tomorrow — were true things
- * about couples, and a reader could not tell from any of them that this app
- * is for D/s. A person arriving with a dynamic they are trying to maintain
- * read them and correctly concluded the product did not know what they were
- * doing here.
+ * ## Why this file was rewritten a second time
  *
- * The product definition is not vague about this: "a private companion that
- * helps consensual adult D/s couples keep their dynamic present". The generic
- * register was an execution drift, not the spec.
+ * The previous version already assumed a dynamic, but it said everything in
+ * euphemism. "One posture, held briefly" meant kneeling. "An object that
+ * stays with them" meant a collar. "A form of address" meant Sir, Ma'am,
+ * Master, Mistress. A test enforced this: kneel, collar, cuff, spank, master,
+ * slave, worship, obey, discipline and punish were banned substrings, on the
+ * theory that a person might be reading on a train.
  *
- * So every entry now assumes the thing the product assumes — that these two
- * people have agreed one of them gives direction and the other receives it —
- * and is written to be useless to a couple who have not. That is the point.
- * An idea that works equally well for anyone is an idea this library should
- * not carry.
+ * The effect was that a D/s product could not say the words D/s people use,
+ * and readers correctly concluded it was a couples app wearing a costume. The
+ * competitor this category is measured against is *named* Kneel. The train
+ * problem is solved by the private entrance (REQ-TRUST-001), not by
+ * sanitising the content behind it.
  *
- * ## What has NOT changed
+ * So this library now says what it means. Kneeling is kneeling. A collar is a
+ * collar. Rules have consequences and the library says so. Play is named —
+ * impact, bondage, orgasm control, chastity — where the idea is about how to
+ * negotiate or care around it.
  *
- * The safety rules are the same and are load-bearing, not decoration:
- * low-to-moderate intensity, low privacy sensitivity, completable in minutes.
- * Nothing hints at punishment, proof, or points (00-overview Non-goals bars
- * automatic punishment and compliance scoring outright). Nothing is explicit
- * and nothing describes a scene. Protocol here is the ordinary,
- * daily-maintenance kind — how you speak, what you ask before, what you say
- * after — which is where a dynamic is actually kept alive, and which no
- * generic couples tool has any language for.
+ * ## What still holds
  *
- * Two of these collections carry the load a D/s tool cannot skip: negotiation
- * before, and aftercare after. A library that taught the ritual without them
- * would be teaching the dangerous half.
+ * Two things, and both are about trust rather than taste:
  *
- * Deliberately small. A large library would be a content product; this is
- * enough to prove the product has judgement, and no more until real couples
- * show what they actually use.
+ * - **The system never speaks in the partner's voice.** Every idea here is
+ *   something one of the two people does or says. None of it is the app
+ *   praising, correcting, or addressing anyone.
+ * - **Nothing here is a scene script.** Ideas about play are about the
+ *   negotiation before and the care after — the half people skip and the half
+ *   that goes wrong. The scene itself belongs to the two of them.
+ *
+ * Still deliberately bounded. Enough to prove the product knows what it is
+ * for, and no more until real couples show what they use.
  */
 object ExploreLibrary {
 
@@ -74,280 +68,398 @@ object ExploreLibrary {
     val collections = listOf(
         Collection(
             "protocol",
-            "Everyday protocol",
-            "Small agreed forms that keep the dynamic present on an ordinary Tuesday.",
+            "Protocol",
+            "Honorifics, positions, permissions — the forms that make a Tuesday part of the dynamic.",
         ),
         Collection(
             "service",
-            "Service that is felt",
-            "Acts done as service, where being told is part of what makes it one.",
+            "Service",
+            "Acts owed to someone by agreement, done their way, reported back.",
         ),
         Collection(
             "authority",
-            "Holding authority well",
-            "The work on the giving side, which is mostly attention.",
+            "Holding authority",
+            "The Dominant's work: clear direction, real attention, and knowing when to lift a rule.",
+        ),
+        Collection(
+            "rules",
+            "Rules and consequences",
+            "Standing rules, what happens when one is broken, and how mercy stays a choice.",
+        ),
+        Collection(
+            "play",
+            "Around a scene",
+            "Not the scene — what is agreed before it and what is owed after it.",
         ),
         Collection(
             "distance",
-            "When you are apart",
+            "Apart",
             "Keeping a dynamic real across timezones and empty evenings.",
         ),
         Collection(
             "negotiation",
-            "Before, and how you'd stop",
-            "Agreeing the shape of things while everyone is calm.",
+            "Limits and stopping",
+            "Hard limits, soft limits, safewords — agreed while everyone is calm.",
         ),
         Collection(
             "aftercare",
-            "Afterwards",
-            "The part that gets skipped, and the part people leave over.",
+            "Aftercare",
+            "For both of you. The part that gets skipped and the part people leave over.",
         ),
         Collection(
             "beginning",
-            "Just starting out",
-            "Where to begin if the two of you are new to this.",
+            "Starting out",
+            "If the two of you are new to D/s, begin here.",
         ),
     )
 
     val ideas = listOf(
-        // — Everyday protocol ————————————————————————————
+        // ── Protocol ──────────────────────────────────────────────────────
         Idea(
-            "greeting-form", Kind.RITUAL,
-            "A greeting that is only yours",
-            "A form of address is the cheapest way to step back into the dynamic.",
-            "Agree one word or gesture used at a set moment — arriving home, "
-                + "the first message of the day. It costs nothing and it marks "
-                + "that you are both here on purpose.",
+            "honorific", Kind.RITUAL,
+            "An honorific, used at agreed moments",
+            "Sir, Ma'am, Master, Mistress, Daddy — a title is the cheapest way to step back into the dynamic.",
+            "Agree the word and when it is used: on arriving home, when asking permission, "
+                + "in messages after a set hour. Using it everywhere wears it out; using it at "
+                + "agreed moments makes the moment.",
             "protocol",
         ),
         Idea(
-            "ask-before", Kind.EXPECTATION,
-            "Ask before, for one specific thing",
-            "Asking permission for something small keeps the agreement in daily use.",
-            "Pick one ordinary thing and agree it is asked about first. One is "
-                + "enough. A rule you actually keep beats five you quietly drop.",
-            "protocol",
-        ),
-        Idea(
-            "position-or-posture", Kind.RITUAL,
-            "One posture, held briefly",
+            "kneel-greeting", Kind.RITUAL,
+            "Kneel when they come home",
             "The body remembers the dynamic faster than conversation does.",
-            "A way of sitting or waiting, agreed in advance, held for a minute "
-                + "or two at a set time. Nothing strenuous, and nothing that "
-                + "needs more privacy than you have.",
+            "Waiting kneeling at the door, or kneeling once they have sat down — thirty "
+                + "seconds, eyes where they were told to be. It ends when the Dominant says "
+                + "it does. Agree the position once so nobody is guessing.",
+            "protocol",
+        ),
+        Idea(
+            "ask-permission", Kind.EXPECTATION,
+            "Ask permission for one specific thing",
+            "Permission asked daily keeps the authority in daily use.",
+            "Pick one ordinary thing — eating, leaving the house, going to bed, spending "
+                + "over an amount, an orgasm — and agree it is asked for first. One is "
+                + "enough to start; a list of ten is a cage nobody keeps.",
+            "protocol",
+        ),
+        Idea(
+            "positions", Kind.RITUAL,
+            "Three positions, named",
+            "A named position is an instruction that needs no sentence.",
+            "Kneeling, standing for inspection, present — whatever the two of you choose. "
+                + "Name them, practise them once while calm, and then a single word is "
+                + "enough. High protocol is built from small named things.",
             "protocol",
         ),
         Idea(
             "report-back", Kind.EXPECTATION,
-            "Report back when it is done",
+            "Report when it is done",
             "The reporting is the service, as much as the act is.",
-            "Not a receipt and not a log — a short line to the person who asked, "
-                + "saying it is finished. What makes it land is that it goes to "
-                + "them rather than into an app.",
+            "Not a log — a short line to the person who gave the instruction, in the form "
+                + "they asked for. 'Done, Sir.' is a complete report. Being told, and "
+                + "being the one who is told, is the point.",
+            "protocol",
+        ),
+        Idea(
+            "nightly-report", Kind.RITUAL,
+            "The nightly report",
+            "A submissive who accounts for the day is held; a Dominant who hears it is present.",
+            "Before sleep: what was asked, what was done, what was not and why. The "
+                + "Dominant answers — a word of acknowledgement or a correction. Two "
+                + "minutes, every night, is more dynamic than one grand weekend.",
             "protocol",
         ),
 
-        // — Service that is felt ————————————————————————
+        // ── Service ───────────────────────────────────────────────────────
         Idea(
             "standing-service", Kind.RITUAL,
             "One standing act of service",
-            "A task becomes service when it is owed to someone by agreement.",
-            "Choose something ordinary and make it theirs. The difference from "
-                + "a chore is entirely that it was asked for and is done for "
-                + "them.",
+            "A chore becomes service the moment it is owed to someone.",
+            "Their coffee made the way they take it, their clothes laid out, their bath run. "
+                + "The difference from a chore is that it was claimed by one and owed by the "
+                + "other, and that it is noticed.",
             "service",
         ),
         Idea(
-            "their-way-not-yours", Kind.EXPECTATION,
+            "their-way", Kind.EXPECTATION,
             "Do it their way, not the efficient way",
             "Following the instruction is what is being asked for, not the result.",
-            "Something with a specified manner — how it is folded, when it is "
-                + "done, which words are used. Doing it 'better' is not doing it.",
+            "Something with a specified manner — how it is folded, in what order, what "
+                + "is worn while doing it. The submissive's better idea is not asked for. "
+                + "Obedience to the detail is the service.",
             "service",
         ),
         Idea(
             "prepare-for-them", Kind.EXPECTATION,
-            "Prepare something before they arrive",
+            "Have it ready before they arrive",
             "Anticipation is a skill, and being anticipated is what it gives back.",
-            "Agree what 'ready' means once, then keep it. Small enough to "
-                + "repeat on a bad week.",
+            "Agree once what 'ready' means — the room, the drink, yourself — then keep it "
+                + "without being reminded. Small enough to do every time; specific enough "
+                + "to be inspected.",
+            "service",
+        ),
+        Idea(
+            "inspection", Kind.RITUAL,
+            "Inspection",
+            "Service that is never inspected quietly stops mattering.",
+            "The Dominant looks — at the task, the room, the submissive — and says what "
+                + "they see. Approval and correction both count. What is checked is what "
+                + "is kept.",
             "service",
         ),
 
-        // — Holding authority well ——————————————————————
+        // ── Authority ─────────────────────────────────────────────────────
         Idea(
-            "one-clear-instruction", Kind.EXPECTATION,
+            "clear-instruction", Kind.EXPECTATION,
             "Give one instruction that is actually clear",
-            "Most expectations that go nowhere were unclear, not refused.",
-            "Say what, and say when. Vagueness reads as a test, and being "
-                + "tested is corrosive. If they had to guess, that is yours to fix.",
+            "Most orders that go nowhere were unclear, not disobeyed.",
+            "Say what, say when, say how you will know. Vagueness reads as a test, and "
+                + "being tested is not what a submissive agreed to. Clarity is a form of "
+                + "care from the top.",
             "authority",
         ),
         Idea(
-            "notice-the-effort", Kind.RITUAL,
-            "Name what they did, specifically",
-            "Unnoticed service stops being offered.",
-            "Once a day, name the actual thing — 'you asked first, and I saw "
-                + "that' — not general praise. Specific is what proves you were "
-                + "paying attention.",
+            "praise-specifically", Kind.RITUAL,
+            "Praise the actual thing",
+            "Unnoticed obedience stops being offered.",
+            "Once a day, name it: 'You asked first, and I saw it.' 'You knelt without "
+                + "being told.' Good girl / good boy lands harder when it is attached to "
+                + "something real.",
             "authority",
         ),
         Idea(
-            "hold-or-release", Kind.CHECK_IN,
+            "lift-a-rule", Kind.CHECK_IN,
             "Decide what to lift this week",
             "Authority includes deciding when less is right.",
-            "Look at what is standing and take something off deliberately, "
-                + "before it lapses on its own. Lifting a rule is a decision, "
-                + "not a concession.",
+            "Look at what is standing and take something off deliberately, out loud. A "
+                + "rule lifted by the Dominant is still the Dominant's rule. A rule that "
+                + "quietly lapses is nobody's.",
+            "authority",
+        ),
+        Idea(
+            "dominants-own-check", Kind.CHECK_IN,
+            "The Dominant's own check",
+            "Topping is work, and drop is not only for submissives.",
+            "Once a week, honestly: am I giving direction or just approving? Am I "
+                + "enjoying this or performing it? Say the answer to your submissive. "
+                + "Authority that can admit tiredness lasts.",
             "authority",
         ),
 
-        // — When you are apart ——————————————————————————
-        //
-        // LDR is the design pressure case in 00-overview — Android giving
-        // member, iPhone receiving member, different timezones — and until
-        // now the library had nothing for it. Distance does not weaken a
-        // dynamic by removing contact; it weakens it by removing the small
-        // unplanned moments that carry it, which is why every idea here is
-        // something that survives being scheduled.
+        // ── Rules and consequences ────────────────────────────────────────
+        Idea(
+            "three-rules", Kind.EXPECTATION,
+            "Three standing rules, written down",
+            "A rule that is not written is an argument waiting to happen.",
+            "Not thirty — three. What is required, what is forbidden, what needs "
+                + "permission. Written where both can read them. Everything else is a "
+                + "request until it earns a place on the list.",
+            "rules",
+        ),
+        Idea(
+            "agree-consequences", Kind.CHECK_IN,
+            "Agree the consequences before they are needed",
+            "A punishment invented in anger is revenge. One agreed in calm is discipline.",
+            "For each rule, what follows when it is broken: writing lines, a corner, "
+                + "loss of a privilege, a spanking, an early bedtime. Agreed by both. "
+                + "Then the moment it is needed is not a negotiation.",
+            "rules",
+        ),
+        Idea(
+            "punishment-then-done", Kind.RITUAL,
+            "Punishment, then it is over",
+            "The point of a consequence is that afterwards the slate is clean.",
+            "Name the rule broken, carry out what was agreed, then say it is finished — "
+                + "and mean it. No bringing it up later. A punishment that lingers is "
+                + "resentment with a schedule.",
+            "rules",
+        ),
+        Idea(
+            "let-it-go", Kind.CHECK_IN,
+            "Letting it go is also an order",
+            "Mercy chosen by the Dominant is authority, not weakness.",
+            "Sometimes the rule was broken and the right call is to waive it — a hard "
+                + "week, a real reason. Say it plainly: 'I am letting this one go.' The "
+                + "submissive should know it was decided, not forgotten.",
+            "rules",
+        ),
+        Idea(
+            "funishment", Kind.CHECK_IN,
+            "Know which of you wants the punishment",
+            "If a consequence is something they want, it is not a consequence.",
+            "Say it out loud: which agreed punishments are actually play, and which "
+                + "actually correct. Both are fine. Confusing them is how a brat learns "
+                + "that breaking rules is rewarded.",
+            "rules",
+        ),
+
+        // ── Around a scene ────────────────────────────────────────────────
+        Idea(
+            "scene-negotiation", Kind.CHECK_IN,
+            "Negotiate the scene while dressed",
+            "Everything agreed beforehand is a thing that cannot go wrong during.",
+            "What is on the table tonight — impact, bondage, orgasm control, whatever it "
+                + "is — and what is not. Marks or no marks. How long. The safeword. Ten "
+                + "minutes of this buys an hour of not having to think.",
+            "play",
+        ),
+        Idea(
+            "traffic-lights", Kind.RITUAL,
+            "Green, yellow, red",
+            "A safeword only works if it has been said out loud in a calm room.",
+            "Green is more, yellow is hold here, red is everything stops now. Agree "
+                + "what happens in the ten seconds after red — restraints off, lights up, "
+                + "a blanket. Practise saying it once so it is not the first time.",
+            "play",
+        ),
+        Idea(
+            "check-in-during", Kind.EXPECTATION,
+            "Check in without breaking the scene",
+            "A Dominant who checks in is not less dominant.",
+            "Agree the form in advance — 'colour?', a squeeze of the hand answered by a "
+                + "squeeze — so the check is part of the scene rather than an exit from "
+                + "it. Silence is not consent; a squeeze is.",
+            "play",
+        ),
+        Idea(
+            "chastity-terms", Kind.CHECK_IN,
+            "If you use chastity or orgasm control, write the terms",
+            "Denial is a rule like any other, and rules need edges.",
+            "How long. Who decides release. What counts as breaking it. What is said "
+                + "when permission is asked and given. Written down, because 'until I "
+                + "say' is only fair if both of you knew that going in.",
+            "play",
+        ),
+
+        // ── Apart ─────────────────────────────────────────────────────────
         Idea(
             "same-hour", Kind.RITUAL,
             "One hour you both keep",
             "A shared hour beats a shared minute you both keep missing.",
-            "Work out one window that is reasonable in both timezones and "
-                + "keep it. It matters more that it is the same hour than "
-                + "that it is a convenient one.",
+            "Work out one window that is reasonable in both timezones and protect it. "
+                + "Protocol applies inside it — the honorific, the report, the kneeling on "
+                + "camera if that is yours.",
             "distance",
         ),
         Idea(
-            "before-you-sleep", Kind.EXPECTATION,
+            "goodnight-across", Kind.EXPECTATION,
             "Say goodnight to the timezone you are not in",
             "Whoever sleeps first should not be the one who feels forgotten.",
-            "The earlier evening sends first, and the later one answers when "
-                + "they get there. Neither of you waits up.",
+            "The earlier evening sends first — the report, a photo of the position, the "
+                + "words agreed — and the later one answers when they wake. Permission to "
+                + "sleep is a real thing to give.",
             "distance",
         ),
         Idea(
-            "asked-for-in-advance", Kind.EXPECTATION,
-            "Ask for something that lands while you are asleep",
+            "order-while-asleep", Kind.EXPECTATION,
+            "Give an order that lands while you sleep",
             "Direction does not need both of you awake at once.",
-            "Set it before you go to bed so it is waiting when their day "
-                + "starts. Being thought of ahead of time is what it gives.",
+            "Set it before bed so it is waiting when their day starts: what to wear, "
+                + "what to do first, what to send by noon. Waking up to an instruction is "
+                + "waking up owned.",
             "distance",
         ),
         Idea(
-            "one-thing-you-cannot-see", Kind.EXPECTATION,
-            "Something you will never witness",
+            "unwitnessed", Kind.EXPECTATION,
+            "Something you will never be able to check",
             "Distance makes trust the substance rather than the setting.",
-            "Ask for something you have no way of checking, and say plainly "
-                + "that you are not going to check. That is the whole of it.",
+            "Order something you have no way of verifying, and say plainly that you are "
+                + "trusting their word. An honest 'I did not' is worth more here than a "
+                + "photo.",
             "distance",
         ),
         Idea(
-            "the-empty-evening", Kind.CHECK_IN,
-            "Name the evening that was hard",
-            "The distance is worst at a predictable hour, and it is rarely said.",
-            "Most people apart have one time of day that is heaviest. Say "
-                + "which one yours was this week.",
-            "distance",
-        ),
-        Idea(
-            "something-with-your-hands", Kind.RITUAL,
-            "An object that stays with them",
+            "collar-apart", Kind.RITUAL,
+            "A collar, or something that stands for one",
             "A dynamic that lives only in text has nothing to hold.",
-            "Something small, chosen by one and kept by the other. Worn, "
-                + "carried, or left where it is seen daily.",
+            "A day collar, a bracelet, a lock — chosen by the Dominant, worn by the "
+                + "submissive. Put on and taken off at agreed times, or never. Something "
+                + "on the body says what the phone cannot.",
             "distance",
         ),
         Idea(
-            "next-time-we-are-together", Kind.CHECK_IN,
-            "One thing for when you are next in the same room",
-            "Anticipation is the version of presence distance allows.",
-            "Add to it whenever you think of something. It is not a plan and "
-                + "nothing has to happen on the day.",
+            "the-hard-hour", Kind.CHECK_IN,
+            "Name the hour that is hardest",
+            "The distance is worst at a predictable time, and it is rarely said.",
+            "Most people apart have one heavy hour. Say which. The other can aim "
+                + "something at it — an order, a message, a call — instead of guessing.",
             "distance",
         ),
 
-        // — Before, and how you'd stop ——————————————————
+        // ── Limits and stopping ───────────────────────────────────────────
         Idea(
-            "name-a-limit", Kind.CHECK_IN,
-            "Name one limit out loud",
+            "hard-and-soft", Kind.CHECK_IN,
+            "Hard limits and soft limits, out loud",
             "A limit said in advance is worth more than one discovered mid-way.",
-            "One thing that is off the table, and one you are unsure about. "
-                + "The unsure one is the useful half — it is where the "
-                + "conversation actually is.",
+            "Hard: never, not up for discussion. Soft: not now, maybe, only in some "
+                + "conditions. Each of you names both. The Dominant's limits count as "
+                + "much as the submissive's.",
             "negotiation",
         ),
         Idea(
-            "how-youd-stop", Kind.CHECK_IN,
+            "stopping", Kind.CHECK_IN,
             "Agree how either of you stops things",
             "The word only works if it was agreed while calm.",
-            "Decide what is said, and what happens immediately after it is "
-                + "said. Both of you get one. Agreeing it is not pessimism, it "
-                + "is what makes the rest possible.",
+            "The safeword, the gesture when a mouth is not free, and what happens in "
+                + "the minute after it. Either of you can use it. Using it is never "
+                + "punished — that rule is above every other rule.",
             "negotiation",
         ),
         Idea(
-            "whats-changed", Kind.CHECK_IN,
+            "renegotiate", Kind.CHECK_IN,
             "What has changed since we agreed this",
             "Consent is not a signature, it is a subscription.",
-            "Revisit one standing agreement and say plainly whether it still "
-                + "fits. Changing it is ordinary. Say so out loud so it stays "
-                + "ordinary.",
+            "Revisit one standing agreement — a rule, a limit, the terms of the collar — "
+                + "and say plainly whether it still holds. Changing it is not failing "
+                + "it.",
             "negotiation",
         ),
 
-        // — Afterwards ——————————————————————————————————
+        // ── Aftercare ─────────────────────────────────────────────────────
         Idea(
             "aftercare-ask", Kind.CHECK_IN,
-            "Ask what they need afterwards",
+            "Ask what they need afterwards, before",
             "Aftercare is not a mood, it is a question with an answer.",
-            "Ask directly — quiet, contact, food, being left alone for ten "
-                + "minutes. Guessing wrong is common and asking costs nothing.",
+            "Ask directly — quiet, being held, water, sugar, being left alone for ten "
+                + "minutes, hearing 'you did well'. The answer changes with the scene. "
+                + "Ask each time.",
             "aftercare",
         ),
         Idea(
-            "aftercare-for-the-other-one", Kind.CHECK_IN,
-            "The one who gave direction needs it too",
-            "Drop happens on both sides, and only one side gets asked about.",
-            "Say how you are, honestly, to the person you were directing. "
-                + "Holding authority is work, and pretending otherwise is how "
-                + "people quietly stop wanting to do it.",
+            "top-drop", Kind.CHECK_IN,
+            "Aftercare for the Dominant",
+            "Drop is not only for submissives, and it arrives a day late.",
+            "The next morning, or the one after: how does the person who held the "
+                + "power feel about what they did? Guilt and doubt are common and they "
+                + "pass faster when said. The submissive can give this.",
             "aftercare",
         ),
         Idea(
-            "next-day", Kind.CHECK_IN,
-            "Check in the next day, not just after",
-            "The dip often lands a day late.",
-            "One line the following day. It is the cheapest thing in this "
-                + "library and the most often skipped.",
+            "day-after", Kind.EXPECTATION,
+            "The day-after message",
+            "Sub drop arrives after the scene, not during it.",
+            "Twelve to thirty-six hours later, a message from the Dominant: one thing "
+                + "about last night, one question about now. Not logistics. This is the "
+                + "part people leave over.",
             "aftercare",
         ),
 
-        // — Just starting out ———————————————————————————
+        // ── Starting out ──────────────────────────────────────────────────
         Idea(
-            "one-rule-one-week", Kind.RITUAL,
-            "One agreement, for one week",
-            "Start smaller than feels worthwhile.",
-            "Pick the least ambitious thing here and keep it for seven days. "
-                + "Most people begin with a whole protocol and abandon it by "
-                + "Thursday.",
+            "one-thing-first", Kind.EXPECTATION,
+            "One rule, for one week",
+            "A dynamic is built by keeping one small thing, not by declaring a lifestyle.",
+            "Pick one — an honorific, a bedtime, asking permission for one thing. Keep "
+                + "it for a week before adding anything. What survives the week is "
+                + "real.",
             "beginning",
         ),
         Idea(
-            "say-no-once", Kind.EXPECTATION,
-            "Practise saying no to something small",
-            "A yes only means something if no is available.",
-            "Agree in advance that this is expected. It makes the real no, "
-                + "when it comes, ordinary rather than a crisis.",
-            "beginning",
-        ),
-        Idea(
-            "how-is-this-going", Kind.CHECK_IN,
-            "How is this going?",
+            "talk-after-days", Kind.CHECK_IN,
+            "Say what is working after a few days",
             "Ask early, before it becomes a bigger conversation.",
-            "After a few days, say plainly what is working and what is not. "
-                + "Changing it is part of it.",
+            "After a few days, plainly: what felt right, what felt like acting, what "
+                + "you want more of. Both of you. Changing it is part of it.",
             "beginning",
         ),
     )

@@ -16,18 +16,13 @@ class ExploreLibraryTest {
     fun `there is enough to browse and not so much it becomes a content product`() {
         assertTrue(ExploreLibrary.ideas.size >= 12,
             "too thin to prove judgement: ${ExploreLibrary.ideas.size}")
-        // Raised from 24/6 when the distance collection was added. The cap is
-        // an editorial guard against becoming a content product, not a
-        // technical limit, so it moves only for a reason that is written
-        // down: LDR is the design pressure case named in 00-overview
-        // (Android giving member, iPhone receiving member, different
-        // timezones) and the library had nothing for it.
-        //
-        // It should keep taking a stated reason to move. A competitor ships
-        // 46 ideas; matching that number is not a goal.
-        assertTrue(ExploreLibrary.ideas.size <= 30,
+        // Raised 30 -> 45 and 7 -> 9 collections on 2026-09-02 when the
+        // library stopped speaking in euphemism and gained rules/consequences
+        // and around-a-scene collections. Still an editorial guard: a
+        // competitor ships 46+ ideas and matching that is not a goal.
+        assertTrue(ExploreLibrary.ideas.size <= 45,
             "this is a companion, not a library: ${ExploreLibrary.ideas.size}")
-        assertTrue(ExploreLibrary.collections.size in 4..7)
+        assertTrue(ExploreLibrary.collections.size in 4..9)
     }
 
     @Test
@@ -51,31 +46,35 @@ class ExploreLibraryTest {
     }
 
     @Test
-    fun `nothing teaches the couple to score each other`() {
+    fun `the library is recognisably D-s, not a couples app in costume`() {
+        // Owner's decision 2026-09-02: remove every content restriction that
+        // hid what the product is for. The previous guards banned kneel,
+        // collar, master, obey, punish, discipline — and the library read as
+        // generic. This inverts them: the words this audience uses must
+        // appear, or the library has drifted back.
         val text = ExploreLibrary.ideas.joinToString(" ") {
             "${it.title} ${it.purpose} ${it.detail}"
         }.lowercase()
-        for (banned in listOf(
-            "punish", "proof", "point", "score", "streak", "obey",
-            "fail", "reward", "earn", "deserve", "discipline",
+        for (required in listOf(
+            "kneel", "collar", "dominant", "submissive", "permission",
+            "punishment", "safeword", "protocol", "obedience", "sir",
         )) {
-            assertTrue(!text.contains(banned),
-                "the first thing a person reads must not teach scoring: '$banned'")
+            assertTrue(text.contains(required),
+                "a D/s library that never says '$required' is hiding what it is for")
         }
     }
 
     @Test
-    fun `nothing is explicit or describes a scene`() {
+    fun `nothing is written in the system's own voice toward a person`() {
+        // Red line #1 is the one restriction that stays: the app never
+        // praises, corrects or addresses anyone. Every idea is something one
+        // of the two people does. A sentence addressed from "we" or "the app"
+        // to "you" as a verdict would be the system speaking.
         val text = ExploreLibrary.ideas.joinToString(" ") {
-            "${it.title} ${it.purpose} ${it.detail}"
+            "${it.purpose} ${it.detail}"
         }.lowercase()
-        // A person may be reading this on a train. Low privacy sensitivity is
-        // a content rule, not a preference.
-        for (banned in listOf(
-            "kneel", "collar", "cuff", "spank", "naked", "bedroom",
-            "submit to", "master", "slave", "worship",
-        )) {
-            assertTrue(!text.contains(banned), "not safe to read in public: '$banned'")
+        for (banned in listOf("we think you", "the app ", "this app will", "you have earned")) {
+            assertTrue(!text.contains(banned), "system voice leaked into content: '$banned'")
         }
     }
 

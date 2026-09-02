@@ -80,7 +80,7 @@ class StarterRhythmAndOverdueIT {
     fun `an apart couple is seeded content that works across timezones`() {
         // LDR is the design pressure case named in 00-overview, the wizard has
         // always asked the question, and until now the answer was dropped
-        // before the request was sent. "Prepare something before they arrive"
+        // before the request was sent. "Have it ready before they arrive"
         // assumes a shared room; offered to a couple in different timezones it
         // reads as written for somebody else.
         dsl.query(
@@ -99,7 +99,7 @@ class StarterRhythmAndOverdueIT {
         // the flag keeps the rhythm it would have had.
         val p = starter.propose(creator, dynamicId)
 
-        assertEquals("Prepare something before they arrive", p.expectationTitle)
+        assertEquals("Have it ready before they arrive", p.expectationTitle)
     }
 
     @Test
@@ -118,7 +118,7 @@ class StarterRhythmAndOverdueIT {
         val p = starter.propose(creator, dynamicId)
 
         // SERVICE was chosen in setup.
-        assertEquals("Prepare something before they arrive", p.expectationTitle)
+        assertEquals("Have it ready before they arrive", p.expectationTitle)
         assertTrue(p.checkInFraming.isNotBlank())
         // Nothing persisted by proposing.
         assertEquals(0, dsl.fetchOne(

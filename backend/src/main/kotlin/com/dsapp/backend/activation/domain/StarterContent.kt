@@ -4,25 +4,18 @@ package com.dsapp.backend.activation.domain
 enum class DesiredOutcome { CLOSER, STRUCTURE, SERVICE, ACCOUNTABILITY, EXPLORE }
 
 /**
- * Seed content for the Starter Rhythm — Notion 05 §4/§5.
+ * Seed content for the first day — Notion 05 §4/§5.
  *
- * Every candidate must be **low–moderate intensity, low privacy sensitivity,
- * and completable in a few minutes**. Nothing here may hint at punishment,
- * proof, or points: the first day must not teach the couple that this app is
- * about scoring each other.
+ * Rewritten 2026-09-02 with the owner's decision to remove every content
+ * restriction. The old rule was "low intensity, low privacy sensitivity,
+ * nothing that hints at punishment": the first day read as a couples app and
+ * a person who came here for a D/s dynamic could not tell we knew what that
+ * was. The first day now names the thing — honorifics, kneeling, permission,
+ * a nightly report to the Dominant — at starter size: one rule, one ritual,
+ * both completable in minutes.
  *
- * Notion 05 §5 asks for 8–12 Expectation candidates, 4–6 Rituals and 3
- * Check-in framings — not a 50-item library. Content depth waits until real
- * couples show us what they actually use.
- *
- * The outcomes a couple can pick are D/s outcomes, and the seeds must answer
- * the question that was actually asked. SERVICE previously offered "tidy one
- * shared space" and "make them a drink the way they like it" — a chore list,
- * which is what service looks like to someone who does not know what the word
- * means here. What makes an act service is that it was asked for and is owed
- * to someone by agreement, so the seeds carry that instead. Same for
- * STRUCTURE, which is protocol rather than tidiness, and ACCOUNTABILITY,
- * where reporting back to the person who asked is the substance of it.
+ * Still small by design. Notion 05 §4: the first day must not arrive already
+ * full. One ritual and one expectation, with an optional second.
  */
 object StarterContent {
 
@@ -31,56 +24,56 @@ object StarterContent {
     /** 1 steady Ritual per outcome, plus shared fallbacks. */
     private val rituals: Map<DesiredOutcome, List<Candidate>> = mapOf(
         DesiredOutcome.CLOSER to listOf(
-            Candidate("Evening check-in", "A pause for presence before the day closes."),
-            Candidate("A greeting that is only yours", "One agreed word that says you are both here on purpose."),
+            Candidate("The nightly report", "What was asked, what was done, in your Dominant's hearing."),
+            Candidate("An honorific at agreed moments", "Sir, Ma'am, Master — one word that says who you are to each other."),
         ),
         DesiredOutcome.STRUCTURE to listOf(
-            Candidate("A greeting that is only yours", "A small agreed form to step back into the dynamic."),
-            Candidate("Close the day", "Mark the end of the day together, however briefly."),
+            Candidate("An honorific at agreed moments", "A title used at set times is the smallest piece of protocol that holds."),
+            Candidate("Kneel when they come home", "Thirty seconds. The body remembers the dynamic faster than talk does."),
         ),
         DesiredOutcome.SERVICE to listOf(
-            Candidate("One standing act of service", "Ordinary on its own; service because it was asked for."),
-            Candidate("Evening check-in", "A moment to notice what the other needs."),
+            Candidate("One standing act of service", "Their coffee, their clothes laid out — owed by agreement, and inspected."),
+            Candidate("Inspection", "The Dominant looks, and says what they see."),
         ),
         DesiredOutcome.ACCOUNTABILITY to listOf(
-            Candidate("Report back when it is done", "A short line to the person who asked, not a log."),
-            Candidate("Evening check-in", "A regular place to say how the day actually went."),
+            Candidate("The nightly report", "Account for the day. The Dominant acknowledges or corrects."),
+            Candidate("Report when it is done", "'Done, Sir.' is a complete report."),
         ),
         DesiredOutcome.EXPLORE to listOf(
-            Candidate("Evening check-in", "A calm place to say what you are curious about."),
-            Candidate("Morning intention", "One thing you would like to notice today."),
+            Candidate("Green, yellow, red", "Agree the safeword and what happens in the ten seconds after it."),
+            Candidate("The nightly report", "A calm place to say what you are curious about."),
         ),
     )
 
     /** 1 meaningful Expectation per outcome. */
     private val expectations: Map<DesiredOutcome, List<Candidate>> = mapOf(
         DesiredOutcome.CLOSER to listOf(
-            Candidate("Send one message that isn't logistics",
-                "Something that is only about the two of you."),
-            Candidate("Say one thing you noticed about them today",
-                "Being seen is what it is for."),
+            Candidate("Praise the actual thing",
+                "'You asked first, and I saw it.' Once today, name what they did."),
+            Candidate("Send one message that is an order, not logistics",
+                "One instruction, clear enough to obey."),
         ),
         DesiredOutcome.STRUCTURE to listOf(
-            Candidate("Ask before, for one specific thing",
-                "One ordinary thing that gets asked about first."),
-            Candidate("Set out what tomorrow needs",
-                "Make the morning easier for both of you."),
+            Candidate("Ask permission for one specific thing",
+                "Eating, bed, leaving the house — pick one and ask first, today."),
+            Candidate("Three standing rules, written down",
+                "Required, forbidden, needs permission. Three, not thirty."),
         ),
         DesiredOutcome.SERVICE to listOf(
-            Candidate("Prepare something before they arrive",
+            Candidate("Have it ready before they arrive",
                 "Agree once what 'ready' means, then keep it."),
             Candidate("Do it their way, not the efficient way",
-                "Following the instruction is what is asked for, not the result."),
+                "Obedience to the detail is the service."),
         ),
         DesiredOutcome.ACCOUNTABILITY to listOf(
-            Candidate("Name one thing you are avoiding", "Naming it is the whole task."),
-            Candidate("Do the small thing you keep postponing",
-                "Five minutes, not a project."),
+            Candidate("Agree the consequences before they are needed",
+                "For each rule, what follows when it is broken. Agreed by both, in calm."),
+            Candidate("Name one thing you are avoiding", "Naming it to your Dominant is the whole task."),
         ),
         DesiredOutcome.EXPLORE to listOf(
-            Candidate("Name one limit out loud",
-                "One thing off the table, and one you are unsure about."),
-            Candidate("Ask them one question you haven't asked",
+            Candidate("Hard limits and soft limits, out loud",
+                "Each of you names both. The Dominant's limits count too."),
+            Candidate("Ask them one question you have not dared to",
                 "Curiosity, not an interview."),
         ),
     )
@@ -115,12 +108,12 @@ object StarterContent {
 
     private val distanceExpectation = Candidate(
         "Say goodnight to the timezone you are not in",
-        "Whoever sleeps first should not be the one who feels forgotten.",
+        "The earlier evening sends the report; the later one answers when they wake.",
     )
 
     private val distanceSecond = Candidate(
-        "Ask for something that lands while you are asleep",
-        "Direction does not need both of you awake at once.",
+        "Give an order that lands while you sleep",
+        "Waking up to an instruction is waking up owned.",
     )
 
     fun ritualFor(outcome: DesiredOutcome, longDistance: Boolean = false): Candidate =

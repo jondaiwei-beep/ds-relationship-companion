@@ -5,13 +5,26 @@ Source revision: 2026-08-28
 
 ## Product definition
 
-A private companion that helps consensual adult D/s couples keep their dynamic present, responsive, and easier to maintain—especially when life or distance gets in the way.
+A private companion for people in a D/s dynamic — one Dominant, one submissive
+(or a switch pair), in a persistent power-exchange relationship — that makes the
+dynamic **felt** every day: direction given, received, acknowledged, carried
+out, witnessed, and answered.
+
+**Owner's positioning, 2026-09-02:** the core user is a BDSM practitioner, not
+"a couple". Kneel manages a dynamic's objects (tasks, rules, points); we design
+the moments a dynamic happens between two people. "Kneel 帮你管理 Dynamic；
+我们让你感受到 Dynamic。"
 
 The internal product test is: **reduce the work required to maintain a Dynamic without automating away the real human attention that gives the Dynamic meaning.**
 
 ## Primary users
 
-- Adults who already have a partner and are beginning or maintaining a consensual D/s Dynamic.
+- Adults in, or beginning, a consensual D/s / power-exchange dynamic: 24/7 or
+  lifestyle D/s, Master/slave, Owner/pet, Daddy/little, Domestic discipline,
+  and bedroom-only couples who want the dynamic to reach further into the day.
+- They already use the vocabulary — kneel, collar, protocol, punishment,
+  safeword, aftercare — and a product that will not say those words reads as
+  not for them.
 - Design pressure case: Android direction-giving member + iPhone Safari receiving member + LDR + different timezones.
 - Solo mode may establish a private rhythm, but must not turn the product into a personal habit tracker. The couple is the primary value unit.
 
@@ -32,9 +45,40 @@ Product boundary: **Automation prepares; the partner responds.** The system may 
 
 North Star: **Connected Dynamic Days / Active Couple / Week**.
 
+## Content stance
+
+**Decision, 2026-09-02: all content restrictions are removed.** ("解除所有限制！
+我们就是为这些用户提供服务。")
+
+Until this date the Explore library and the first-day seeds were guarded by
+tests banning kneel, collar, master, slave, obey, punish, discipline, spank,
+worship, and by a rule of "low privacy sensitivity, nothing that describes a
+scene". The stated reason was that a person might be reading on a train. The
+effect was a D/s product that could not use D/s words, and users correctly read
+it as a couples app in costume.
+
+The train problem is solved where it belongs — the private entrance
+(REQ-TRUST-001), app lock, and neutral notifications — not by sanitising what
+is behind the door. Content now says what it means: kneeling, collars,
+honorifics, positions, inspection, rules with agreed punishments, chastity and
+orgasm control terms, scene negotiation, safewords, sub drop and top drop.
+
+What remains is not a content rule but the trust architecture, and it is
+unchanged:
+
+- The system never speaks in the partner's voice (red line #1).
+- The system never issues a consequence; a person does (`issued_by_user_id
+  NOT NULL`).
+- Consent, limits and safewords are the couple's, recorded and enforced per
+  person, never decided by the software.
+
+App-store boundary: naming kinks and practices in text is what Kneel,
+Obedience and BeMoreKinky ship on both stores. Explicit sexual imagery is not,
+and remains out of scope.
+
 ## Non-goals
 
-Dating/discovery, community feed, AI Dom/Sub persona, automated partner praise, explicit-content discovery, emergency safety service, and treating a contract as consent certification are not part of this product.
+Dating/discovery, community feed, AI Dom/Sub persona, automated partner praise, pornographic imagery, emergency safety service, and treating a contract as consent certification are not part of this product.
 
 Points, tasks, rewards and consequences **are** part of this product, decided
 by the owner on 2026-09-02. See "Points and consequences" below for what that
