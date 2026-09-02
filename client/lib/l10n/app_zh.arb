@@ -675,5 +675,6 @@
   "settingsPointsOpen": "积分和奖励",
   "settingsPointsSupport": "积分可以整个关掉。关了之后其他一切照旧。",
   "settingsPointsEnabled": "使用积分",
-  "settingsPointsPerCompletion": "做好一件事得几分"
+  "settingsPointsPerCompletion": "做好一件事得几分",
+  "navPoints": "积分"
 }

@@ -187,7 +187,6 @@ GoRouter createRouter(Ref ref) {
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
             onOpenOccurrence: (id) =>
                 context.go('/dynamics/$dynamicId/occurrences/$id'),
-            onOpenPoints: () => context.go('/dynamics/$dynamicId/points'),
             onCheckIn: () => context.go('/dynamics/$dynamicId/check-in'),
           );
         },
@@ -347,7 +346,8 @@ GoRouter createRouter(Ref ref) {
           final dynamicId = state.pathParameters['id']!;
           return PointsScreen(
             dynamicId: dynamicId,
-            onBack: () => context.go('/dynamics/$dynamicId/settings'),
+            onBack: () => context.go(_navPath(dynamicId, NavSurface.today)),
+            onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
           );
         },
       ),
@@ -455,6 +455,7 @@ GoRouter createRouter(Ref ref) {
 String _navPath(String dynamicId, NavSurface surface) => switch (surface) {
   NavSurface.today => '/dynamics/$dynamicId/today',
   NavSurface.dynamic_ => '/dynamics/$dynamicId/dynamic',
+  NavSurface.points => '/dynamics/$dynamicId/points',
   NavSurface.explore => '/dynamics/$dynamicId/explore',
   NavSurface.us => '/dynamics/$dynamicId/us',
 };

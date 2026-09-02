@@ -2224,4 +2224,7 @@ class LZh extends L {
 
   @override
   String get settingsPointsPerCompletion => '做好一件事得几分';
+
+  @override
+  String get navPoints => '积分';
 }

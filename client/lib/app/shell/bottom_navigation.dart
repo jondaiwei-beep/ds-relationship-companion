@@ -1,6 +1,8 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import 'ds_glyph.dart';
+
 import '../../l10n/app_localizations.dart';
 
 /// The four surfaces the product navigates between.
@@ -14,18 +16,29 @@ import '../../l10n/app_localizations.dart';
 enum NavSurface {
   today(DsAssets.navToday),
   dynamic_(DsAssets.navDynamic),
+  // Points, rewards and what the couple agreed. A tab rather than a row
+  // buried in Settings: all three competitors give this a bottom tab, and
+  // the first build that hid it in Settings was reported as not containing
+  // the feature at all.
+  //
+  // The only surface with no asset. SVG Freeze v1 rule 4 puts a generic mark
+  // like this in `DsGlyphIcon` as a drawn primitive rather than making it a
+  // 34th frozen master.
+  points(null),
   explore(DsAssets.navExplore),
   us(DsAssets.navUs);
 
   const NavSurface(this.asset);
 
-  final DsAssetId asset;
+  /// Null for [points], which draws its mark instead.
+  final DsAssetId? asset;
 
   /// The tab's word, in the reader's language. A method rather than a const
   /// field because the enum is built before any locale is known.
   String label(L l) => switch (this) {
     NavSurface.today => l.navToday,
     NavSurface.dynamic_ => l.navDynamic,
+    NavSurface.points => l.navPoints,
     NavSurface.explore => l.navExplore,
     NavSurface.us => l.navUs,
   };
@@ -110,12 +123,19 @@ class _NavTab extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              DsSvg(
-                asset: surface.asset,
-                tone: active ? DsAssetTone.primary : DsAssetTone.muted,
-                width: 24,
-                height: 24,
-              ),
+              if (surface.asset case final asset?)
+                DsSvg(
+                  asset: asset,
+                  tone: active ? DsAssetTone.primary : DsAssetTone.muted,
+                  width: 24,
+                  height: 24,
+                )
+              else
+                DsGlyphIcon(
+                  DsGlyph.points,
+                  size: 24,
+                  color: colour,
+                ),
               const SizedBox(height: DsSpacing.space1),
               Text(
                 surface.label(L.of(context)),

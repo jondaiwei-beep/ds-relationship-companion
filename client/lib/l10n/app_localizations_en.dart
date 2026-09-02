@@ -2365,4 +2365,7 @@ class LEn extends L {
 
   @override
   String get settingsPointsPerCompletion => 'Points for finishing something';
+
+  @override
+  String get navPoints => 'Points';
 }

@@ -1074,5 +1074,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navPoints": "Points"
 }

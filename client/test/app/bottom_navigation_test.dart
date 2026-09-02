@@ -33,7 +33,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('is exactly four surfaces, in the product order', (tester) async {
+  testWidgets('is exactly five surfaces, in the product order', (tester) async {
     await pump(tester, current: NavSurface.today);
 
     final l = L.of(
@@ -41,7 +41,10 @@ void main() {
     );
     expect(
       NavSurface.values.map((s) => s.label(l)),
-      ['Today', 'Dynamic', 'Explore', 'Us'],
+      // Points sits second, beside the Dynamic it belongs to, rather than
+      // last: all three competitors give it a bottom tab and it is a
+      // daily-use surface, not an afterthought.
+      ['Today', 'Dynamic', 'Points', 'Explore', 'Us'],
     );
     for (final surface in NavSurface.values) {
       expect(find.text(surface.label(l)), findsOneWidget);

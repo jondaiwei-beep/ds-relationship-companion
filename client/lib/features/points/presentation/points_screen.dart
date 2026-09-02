@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_glyph.dart';
 import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_text_field.dart';
@@ -34,6 +35,7 @@ class PointsScreen extends ConsumerWidget {
     required this.onBack,
     this.partnerName,
     this.partnerUserId,
+    this.onSelectTab,
   });
 
   final String dynamicId;
@@ -42,6 +44,9 @@ class PointsScreen extends ConsumerWidget {
 
   /// Needed to give or award. Null before anyone has joined.
   final String? partnerUserId;
+
+  /// Set when this is a tab root, so the bar is shown and works.
+  final void Function(NavSurface surface)? onSelectTab;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +57,12 @@ class PointsScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
+      bottomNavigationBar: onSelectTab == null
+          ? null
+          : DsBottomNavigation(
+              current: NavSurface.points,
+              onSelect: onSelectTab,
+            ),
       body: SafeArea(
         child: DsRefreshable(
           onRefresh: () async {

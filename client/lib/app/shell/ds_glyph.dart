@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 /// recognisable as Google's — which is the kind of detail that quietly tells
 /// someone this screen was assembled rather than drawn. These match the frozen
 /// navigation geometry instead: a 1.25–1.5 stroke on a 32×32 box, round caps.
-enum DsGlyph { close, back, forward, settings, check }
+enum DsGlyph { close, back, forward, settings, check, points }
 
 class DsGlyphIcon extends StatelessWidget {
   const DsGlyphIcon(
@@ -96,6 +96,23 @@ class _GlyphPainter extends CustomPainter {
       // ring — the first thing tried here — read as a camera control instead.
       // Horizontal rules with a dot on each are quiet, and this design system
       // is already built from rules and dots.
+      // The points tab's mark. A small stack of tokens rather than a coin or
+      // a star: a coin makes the thing currency and a star makes it a rating,
+      // and this is neither — it is what is available to spend. Drawn under
+      // SVG Freeze v1 rule 4 rather than added to the 33 frozen masters.
+      case DsGlyph.points:
+        for (final (i, y) in [21.0, 16.5, 12.0].indexed) {
+          final inset = 4.0 + i * 1.5;
+          canvas.drawRRect(
+            RRect.fromRectAndRadius(
+              Rect.fromLTRB(p(6 + inset, y).dx, p(0, y).dy,
+                  p(26 - inset, y).dx, p(0, y + 3.2).dy),
+              Radius.circular(1.6 * s),
+            ),
+            paint,
+          );
+        }
+
       case DsGlyph.settings:
         for (final (y, x) in [(10.0, 20.0), (16.0, 12.0), (22.0, 18.0)]) {
           canvas

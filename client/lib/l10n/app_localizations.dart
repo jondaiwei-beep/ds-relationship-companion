@@ -4152,6 +4152,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Points for finishing something'**
   String get settingsPointsPerCompletion;
+
+  /// No description provided for @navPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get navPoints;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

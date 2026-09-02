@@ -33,29 +33,12 @@ void main() {
           localizationsDelegates: L.localizationsDelegates,
           supportedLocales: L.supportedLocales,
           theme: DsTheme.ritual(),
-          home: TodayScreen(dynamicId: 'd1', onOpenPoints: () {}),
+          home: const TodayScreen(dynamicId: 'd1'),
         ),
       ),
     );
     await tester.pumpAndSettle();
   }
-
-  testWidgets('points are reachable from the day, not only from Settings', (
-    tester,
-  ) async {
-    // This shipped once with the whole feature built and routed, but its only
-    // entry point was in Settings below notification preferences, timezone
-    // and quiet hours. The owner installed it and reported the feature as
-    // missing. Code that exists but cannot be found has not shipped.
-    await pump(tester, todayFixture());
-    // Below the fold on a full day, and a lazy ListView does not build what
-    // is off screen. A taller surface asks the real question — is it on the
-    // day at all — without testing scroll mechanics.
-    await tester.binding.setSurfaceSize(const Size(390, 2400));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Points and rewards'), findsOneWidget);
-  });
 
   String allText(WidgetTester tester) => tester
       .widgetList<Text>(find.byType(Text))
@@ -174,10 +157,17 @@ void main() {
       }
     });
 
-    testWidgets('no gamification vocabulary', (tester) async {
+    testWidgets('the day itself is never scored', (tester) async {
+      // Points, rewards and consequences are part of the product (owner
+      // decision 2026-09-02) and have their own tab. What has not changed is
+      // that TODAY is not where they live: a balance sitting above someone's
+      // expectations turns the day into a scoreboard, which is the failure
+      // this whole design is trying to avoid.
+      //
+      // "points" left the list because the tab is legitimately named that.
+      // The rest stay: nothing on the day may read as a rating of a person.
       await pump(tester, todayFixture());
       for (final word in [
-        'points',
         'streak',
         'score',
         'trophy',
