@@ -55,7 +55,7 @@ class _Frame extends StatelessWidget {
           const SizedBox(height: DsSpacing.space5),
           for (final c in children) ...[c, const SizedBox(height: DsSpacing.space4)],
           const SizedBox(height: DsSpacing.space1),
-          DsPrimaryButton(label: primaryLabel, onPressed: onPrimary),
+          DsPrimaryButton(key: const ValueKey('sheet-primary'), label: primaryLabel, onPressed: onPrimary),
           if (extra != null) ...[const SizedBox(height: DsSpacing.space3), extra!],
           const SizedBox(height: DsSpacing.space3),
           SecondaryButton(label: l.rulesNeverMind, onTap: () => Navigator.of(context).pop()),
@@ -547,7 +547,7 @@ class _TaskSheetState extends State<_TaskSheet> {
             if (k == 'one_off') _dueDate ??= _dayOf(widget.today);
           }),
         ),
-        DsTextField(label: l.rulesTaskTitleLabel, controller: _title, error: err(_titleError)),
+        DsTextField(key: const ValueKey('task-title'), label: l.rulesTaskTitleLabel, controller: _title, error: err(_titleError)),
         DsTextField(label: l.rulesTaskDetailLabel, controller: _detail, error: err(_detailError)),
 
         // ── when
@@ -659,6 +659,7 @@ class _TaskSheetState extends State<_TaskSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             DsTextField(
+              key: const ValueKey('task-points'),
               label: l.rulesPointsLabel,
               controller: _points,
               keyboardType: TextInputType.number,

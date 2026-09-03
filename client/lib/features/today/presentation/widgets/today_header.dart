@@ -127,6 +127,7 @@ class TodayHeader extends StatelessWidget {
               label: L.of(context).notificationsTitle,
               value: unread > 0 ? '$unread' : null,
               child: InkWell(
+                key: const ValueKey('header-notifications'),
                 onTap: onNotifications,
                 borderRadius: BorderRadius.circular(24),
                 child: SizedBox(
@@ -173,6 +174,7 @@ class TodayHeader extends StatelessWidget {
               button: true,
               label: L.of(context).settingsTitle,
               child: InkWell(
+                key: const ValueKey('header-settings'),
                 onTap: onSettings,
                 borderRadius: BorderRadius.circular(24),
                 child: const SizedBox(

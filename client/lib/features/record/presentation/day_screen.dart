@@ -510,6 +510,7 @@ class _DayScreenState extends ConsumerState<DayScreen> {
             button: true,
             label: l.recordBack,
             child: InkWell(
+              key: const ValueKey('day-back'),
               onTap: widget.onBack,
               borderRadius: BorderRadius.circular(24),
               child: const SizedBox(

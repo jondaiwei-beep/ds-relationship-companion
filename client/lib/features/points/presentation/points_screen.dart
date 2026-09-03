@@ -268,6 +268,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
             children: [
               Text(
                 v.isD ? l.ptsBalanceOf(sName, balance) : l.ptsBalanceMine(balance),
+                key: const ValueKey('points-balance'),
                 style: DsTextStyles.displayRitual.copyWith(color: DsColors.textOnRitualPrimary),
               ),
               const SizedBox(height: DsSpacing.space2),

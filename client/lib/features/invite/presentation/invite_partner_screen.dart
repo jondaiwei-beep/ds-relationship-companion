@@ -281,6 +281,7 @@ class _Header extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
+              key: const ValueKey('invite-back'),
               onPressed: onBack,
               iconSize: 18,
               icon: DsGlyphIcon(
@@ -390,7 +391,11 @@ class _Live extends StatelessWidget {
   /// The token, shown as something a person can read out. It is the same
   /// secret as the URL, so it is treated with the same care — never logged,
   /// never sent anywhere but the clipboard or the share sheet.
-  String get _code => invite.invite.token.toUpperCase();
+  ///
+  /// Shown exactly as the server made it. Tokens are case-sensitive, and the
+  /// first version upper-cased this for looks — every code copied or read out
+  /// from that screen resolved to NOT_FOUND on the partner's phone.
+  String get _code => invite.invite.token;
 
   @override
   Widget build(BuildContext context) {
@@ -467,6 +472,7 @@ class _Live extends StatelessWidget {
             Expanded(
               child: Text(
                 _code,
+                key: const ValueKey('invite-code'),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: DsTextStyles.displayRitual.copyWith(

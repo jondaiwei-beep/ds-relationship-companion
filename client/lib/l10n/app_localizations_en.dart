@@ -2597,4 +2597,103 @@ class LEn extends L {
 
   @override
   String get settingsTypeDNote => 'Note reminder';
+
+  @override
+  String get inboxOccurrenceDeliveredTitle => 'Delivered';
+
+  @override
+  String get inboxOccurrenceDeliveredBody => 'Something was marked delivered.';
+
+  @override
+  String get inboxOccurrenceFlaggedTitle => 'An update';
+
+  @override
+  String get inboxOccurrenceFlaggedBody =>
+      'There is an update on something today.';
+
+  @override
+  String get inboxDispositionSetTitle => 'An answer';
+
+  @override
+  String get inboxDispositionSetBody => 'There is an answer waiting for you.';
+
+  @override
+  String get inboxDayCommentTitle => 'A note';
+
+  @override
+  String get inboxDayCommentBody => 'A note was left on a day.';
+
+  @override
+  String get inboxRuleProposedTitle => 'A proposal';
+
+  @override
+  String get inboxRuleProposedBody =>
+      'Something was proposed for you to decide.';
+
+  @override
+  String get inboxRuleAcceptedTitle => 'Accepted';
+
+  @override
+  String get inboxRuleAcceptedBody => 'Your proposal was accepted.';
+
+  @override
+  String get inboxTaskProposedTitle => 'A proposal';
+
+  @override
+  String get inboxTaskProposedBody =>
+      'Something was proposed for you to decide.';
+
+  @override
+  String get inboxTaskAcceptedTitle => 'Accepted';
+
+  @override
+  String get inboxTaskAcceptedBody => 'Your proposal was accepted.';
+
+  @override
+  String get inboxRedemptionRequestedTitle => 'A request';
+
+  @override
+  String get inboxRedemptionRequestedBody => 'A reward was requested.';
+
+  @override
+  String get inboxRedemptionDecidedTitle => 'Decided';
+
+  @override
+  String get inboxRedemptionDecidedBody => 'There is a decision on a request.';
+
+  @override
+  String get inboxRedemptionFulfilledTitle => 'Fulfilled';
+
+  @override
+  String get inboxRedemptionFulfilledBody => 'A reward was marked fulfilled.';
+
+  @override
+  String get inboxConsequenceIssuedTitle => 'Something new';
+
+  @override
+  String get inboxConsequenceIssuedBody => 'Something was issued for you.';
+
+  @override
+  String get inboxConsequenceDoneTitle => 'Marked done';
+
+  @override
+  String get inboxConsequenceDoneBody => 'Something was marked done.';
+
+  @override
+  String get inboxConsequenceDecidedTitle => 'Decided';
+
+  @override
+  String get inboxConsequenceDecidedBody => 'There is a decision waiting.';
+
+  @override
+  String get inboxDAwardTitle => 'Points';
+
+  @override
+  String get inboxDAwardBody => 'Points were awarded to you.';
+
+  @override
+  String get inboxDNoteReminderTitle => 'A reminder';
+
+  @override
+  String get inboxDNoteReminderBody => 'A reminder is due.';
 }

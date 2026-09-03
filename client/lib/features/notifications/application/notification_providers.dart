@@ -73,7 +73,28 @@ class TaskReminderScheduler {
   final LocalNotifier _notifier;
   final _scheduled = <int>{};
 
+  /// Reschedules run one at a time. Today reloads twice in quick succession
+  /// (a refresh, then the fetch behind it), and the second call cleared and
+  /// refilled [_scheduled] while the first was still iterating it inside
+  /// `cancelAll` — a ConcurrentModificationError thrown into nobody's hands.
+  Future<void> _chain = Future<void>.value();
+
   Future<void> reschedule(
+    TodayView view, {
+    required DateTime now,
+    required String Function(String taskTitle) dueText,
+    required String Function(int openCount) dayEndText,
+    required String title,
+    String? payload,
+  }) {
+    final run = _chain.then(
+      (_) => _reschedule(view, now: now, dueText: dueText, dayEndText: dayEndText, title: title, payload: payload),
+    );
+    _chain = run.then((_) {}, onError: (_) {});
+    return run;
+  }
+
+  Future<void> _reschedule(
     TodayView view, {
     required DateTime now,
     required String Function(String taskTitle) dueText,
@@ -82,8 +103,10 @@ class TaskReminderScheduler {
     String? payload,
   }) async {
     final planned = planReminders(view, now);
-    await _notifier.cancelAll(_scheduled);
+    // A copy: the notifier iterates while awaiting, and the set changes below.
+    final previous = _scheduled.toList();
     _scheduled.clear();
+    await _notifier.cancelAll(previous);
     for (final r in planned) {
       await _notifier.schedule(
         r.trayId,

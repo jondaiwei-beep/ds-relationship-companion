@@ -2485,4 +2485,100 @@ class LZh extends L {
 
   @override
   String get settingsTypeDNote => '备忘提醒';
+
+  @override
+  String get inboxOccurrenceDeliveredTitle => '交了';
+
+  @override
+  String get inboxOccurrenceDeliveredBody => '有一项标记为已交。';
+
+  @override
+  String get inboxOccurrenceFlaggedTitle => '有更新';
+
+  @override
+  String get inboxOccurrenceFlaggedBody => '今天有一项有了新情况。';
+
+  @override
+  String get inboxDispositionSetTitle => '有回应';
+
+  @override
+  String get inboxDispositionSetBody => '有一条回应在等你看。';
+
+  @override
+  String get inboxDayCommentTitle => '留言';
+
+  @override
+  String get inboxDayCommentBody => '有人在某一天留了言。';
+
+  @override
+  String get inboxRuleProposedTitle => '有提议';
+
+  @override
+  String get inboxRuleProposedBody => '有一条提议等你决定。';
+
+  @override
+  String get inboxRuleAcceptedTitle => '通过了';
+
+  @override
+  String get inboxRuleAcceptedBody => '你的提议通过了。';
+
+  @override
+  String get inboxTaskProposedTitle => '有提议';
+
+  @override
+  String get inboxTaskProposedBody => '有一条提议等你决定。';
+
+  @override
+  String get inboxTaskAcceptedTitle => '通过了';
+
+  @override
+  String get inboxTaskAcceptedBody => '你的提议通过了。';
+
+  @override
+  String get inboxRedemptionRequestedTitle => '有申请';
+
+  @override
+  String get inboxRedemptionRequestedBody => '有人申请兑换一项奖励。';
+
+  @override
+  String get inboxRedemptionDecidedTitle => '有决定';
+
+  @override
+  String get inboxRedemptionDecidedBody => '你的申请有了决定。';
+
+  @override
+  String get inboxRedemptionFulfilledTitle => '兑现了';
+
+  @override
+  String get inboxRedemptionFulfilledBody => '一项奖励标记为已兑现。';
+
+  @override
+  String get inboxConsequenceIssuedTitle => '新的一项';
+
+  @override
+  String get inboxConsequenceIssuedBody => '有一项给到了你。';
+
+  @override
+  String get inboxConsequenceDoneTitle => '做完了';
+
+  @override
+  String get inboxConsequenceDoneBody => '有一项标记为做完了。';
+
+  @override
+  String get inboxConsequenceDecidedTitle => '有决定';
+
+  @override
+  String get inboxConsequenceDecidedBody => '有一条决定在等你。';
+
+  @override
+  String get inboxDAwardTitle => '积分';
+
+  @override
+  String get inboxDAwardBody => '你收到了积分。';
+
+  @override
+  String get inboxDNoteReminderTitle => '提醒';
+
+  @override
+  String get inboxDNoteReminderBody => '一条提醒到时间了。';
 }

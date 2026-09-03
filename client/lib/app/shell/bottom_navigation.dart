@@ -106,6 +106,7 @@ class _NavTab extends StatelessWidget {
         selected: active,
         button: true,
         child: InkWell(
+          key: ValueKey('nav-${surface.name}'),
           onTap: onTap,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

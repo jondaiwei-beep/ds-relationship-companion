@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/router.dart';
+import 'app/user_data_reset.dart';
 import 'platform/deeplink/callback_params.dart';
 import 'platform/push/background_sync.dart';
 import 'platform/push/local_notifier.dart';
@@ -71,6 +72,9 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
     // this resolves the session is `SessionUnknown` and the router's guard
     // holds the door rather than guessing.
     final session = ref.read(sessionProvider.notifier);
+    // One phone, two people: whatever the last person loaded is forgotten
+    // the moment the identity changes.
+    watchIdentityForReset(ref);
     // A device picked up hours later still says Authenticated while its
     // access token has quietly expired; the scheduled refresh does not fire
     // while the process is suspended.

@@ -288,6 +288,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         Padding(
                           padding: todayInset,
                           child: SecondaryButton(
+                            key: const ValueKey('settings-sign-out'),
                             label: l.settingsSignOut,
                             onTap: widget.onSignOut!,
                           ),
@@ -935,6 +936,7 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           GestureDetector(
+            key: const ValueKey('settings-close'),
             onTap: onClose,
             behavior: HitTestBehavior.opaque,
             child: DsGlyphIcon(

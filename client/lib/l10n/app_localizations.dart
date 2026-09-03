@@ -4602,6 +4602,198 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Note reminder'**
   String get settingsTypeDNote;
+
+  /// No description provided for @inboxOccurrenceDeliveredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get inboxOccurrenceDeliveredTitle;
+
+  /// No description provided for @inboxOccurrenceDeliveredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something was marked delivered.'**
+  String get inboxOccurrenceDeliveredBody;
+
+  /// No description provided for @inboxOccurrenceFlaggedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An update'**
+  String get inboxOccurrenceFlaggedTitle;
+
+  /// No description provided for @inboxOccurrenceFlaggedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There is an update on something today.'**
+  String get inboxOccurrenceFlaggedBody;
+
+  /// No description provided for @inboxDispositionSetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An answer'**
+  String get inboxDispositionSetTitle;
+
+  /// No description provided for @inboxDispositionSetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There is an answer waiting for you.'**
+  String get inboxDispositionSetBody;
+
+  /// No description provided for @inboxDayCommentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A note'**
+  String get inboxDayCommentTitle;
+
+  /// No description provided for @inboxDayCommentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A note was left on a day.'**
+  String get inboxDayCommentBody;
+
+  /// No description provided for @inboxRuleProposedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A proposal'**
+  String get inboxRuleProposedTitle;
+
+  /// No description provided for @inboxRuleProposedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something was proposed for you to decide.'**
+  String get inboxRuleProposedBody;
+
+  /// No description provided for @inboxRuleAcceptedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get inboxRuleAcceptedTitle;
+
+  /// No description provided for @inboxRuleAcceptedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your proposal was accepted.'**
+  String get inboxRuleAcceptedBody;
+
+  /// No description provided for @inboxTaskProposedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A proposal'**
+  String get inboxTaskProposedTitle;
+
+  /// No description provided for @inboxTaskProposedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something was proposed for you to decide.'**
+  String get inboxTaskProposedBody;
+
+  /// No description provided for @inboxTaskAcceptedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accepted'**
+  String get inboxTaskAcceptedTitle;
+
+  /// No description provided for @inboxTaskAcceptedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your proposal was accepted.'**
+  String get inboxTaskAcceptedBody;
+
+  /// No description provided for @inboxRedemptionRequestedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A request'**
+  String get inboxRedemptionRequestedTitle;
+
+  /// No description provided for @inboxRedemptionRequestedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A reward was requested.'**
+  String get inboxRedemptionRequestedBody;
+
+  /// No description provided for @inboxRedemptionDecidedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decided'**
+  String get inboxRedemptionDecidedTitle;
+
+  /// No description provided for @inboxRedemptionDecidedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There is a decision on a request.'**
+  String get inboxRedemptionDecidedBody;
+
+  /// No description provided for @inboxRedemptionFulfilledTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fulfilled'**
+  String get inboxRedemptionFulfilledTitle;
+
+  /// No description provided for @inboxRedemptionFulfilledBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A reward was marked fulfilled.'**
+  String get inboxRedemptionFulfilledBody;
+
+  /// No description provided for @inboxConsequenceIssuedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Something new'**
+  String get inboxConsequenceIssuedTitle;
+
+  /// No description provided for @inboxConsequenceIssuedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something was issued for you.'**
+  String get inboxConsequenceIssuedBody;
+
+  /// No description provided for @inboxConsequenceDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked done'**
+  String get inboxConsequenceDoneTitle;
+
+  /// No description provided for @inboxConsequenceDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something was marked done.'**
+  String get inboxConsequenceDoneBody;
+
+  /// No description provided for @inboxConsequenceDecidedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Decided'**
+  String get inboxConsequenceDecidedTitle;
+
+  /// No description provided for @inboxConsequenceDecidedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'There is a decision waiting.'**
+  String get inboxConsequenceDecidedBody;
+
+  /// No description provided for @inboxDAwardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get inboxDAwardTitle;
+
+  /// No description provided for @inboxDAwardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Points were awarded to you.'**
+  String get inboxDAwardBody;
+
+  /// No description provided for @inboxDNoteReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A reminder'**
+  String get inboxDNoteReminderTitle;
+
+  /// No description provided for @inboxDNoteReminderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A reminder is due.'**
+  String get inboxDNoteReminderBody;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

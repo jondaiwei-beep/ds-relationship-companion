@@ -96,6 +96,7 @@ class _LineSheetState extends State<_LineSheet> {
           ],
           const SizedBox(height: DsSpacing.space5),
           DsTextField(
+            key: const ValueKey('line-field'),
             label: widget.label,
             controller: _controller,
             textInputAction: TextInputAction.done,
@@ -105,6 +106,7 @@ class _LineSheetState extends State<_LineSheet> {
           ),
           const SizedBox(height: DsSpacing.space5),
           DsPrimaryButton(
+            key: const ValueKey('line-send'),
             label: widget.sendLabel ?? l.todaySend,
             onPressed: _canSend ? () => Navigator.of(context).pop(_controller.text.trim()) : null,
           ),

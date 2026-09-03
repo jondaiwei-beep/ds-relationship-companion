@@ -40,3 +40,11 @@ flutter test integration_test/first_run_test.dart -d "$SIM" \
 
 echo
 echo "ok: a new person can register and reach a screen they can act on"
+
+echo "running the two-person full loop on $SIM"
+flutter test integration_test/full_loop_test.dart -d "$SIM" \
+  --dart-define=API_BASE_URL="$API" \
+  --dart-define=WEB_BASE_URL="$WEB"
+
+echo
+echo "ok: D and s ran the core loop end to end (pair, task, deliver, praise, points, record, inbox, safeword)"

@@ -92,6 +92,14 @@ void main() {
   }
 
   group('the expiry is the server\'s, never invented', () {
+    testWidgets('the code is the token verbatim', (tester) async {
+      await pump(tester);
+      // Tokens are case-sensitive. Upper-casing for looks made a code the
+      // server could not find, so nobody could join from a read-out code.
+      expect(find.text('ritual-7k4m'), findsOneWidget);
+      expect(find.text('RITUAL-7K4M'), findsNothing);
+    });
+
     testWidgets('it counts down from the real expiresAt', (tester) async {
       await pump(tester, expiresIn: const Duration(days: 3, hours: 2));
 

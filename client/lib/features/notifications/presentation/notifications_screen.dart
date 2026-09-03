@@ -13,6 +13,7 @@ import '../../today/presentation/today_format.dart';
 import '../../today/presentation/widgets/quiet_line.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 import '../application/notification_providers.dart';
+import 'inbox_copy.dart';
 
 /// The inbox: what happened, newest first. Opening it reads everything —
 /// a badge that lingers after the person has looked is a nag.
@@ -118,6 +119,9 @@ class _Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = item.unread ? DsColors.textOnRitualPrimary : DsColors.textOnRitualSecondary;
+    final copy = inboxCopy(L.of(context), item.eventType);
+    final title = copy?.title ?? item.title;
+    final body = copy?.body ?? item.body;
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -131,7 +135,7 @@ class _Item extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(item.title, style: DsTextStyles.bodyPrimary.copyWith(color: primary)),
+                  child: Text(title, style: DsTextStyles.bodyPrimary.copyWith(color: primary)),
                 ),
                 const SizedBox(width: DsSpacing.space3),
                 Text(
@@ -140,10 +144,10 @@ class _Item extends StatelessWidget {
                 ),
               ],
             ),
-            if (item.body.isNotEmpty) ...[
+            if (body.isNotEmpty) ...[
               const SizedBox(height: DsSpacing.space1),
               Text(
-                item.body,
+                body,
                 style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
               ),
             ],
