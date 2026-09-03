@@ -5,7 +5,7 @@ import com.dsapp.backend.dynamic.application.InviteService
 import com.dsapp.backend.dynamic.application.LeaveBlockService
 import com.dsapp.backend.dynamic.domain.AuthorizationException
 import com.dsapp.backend.dynamic.domain.RoleContext
-import com.dsapp.backend.expectation.application.OccurrenceQueryService
+import com.dsapp.backend.today.application.TodayQueryService
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,7 +30,7 @@ class LeaveBlockIT {
     @Autowired lateinit var dsl: DSLContext
     @Autowired lateinit var leaveBlock: LeaveBlockService
     @Autowired lateinit var invites: InviteService
-    @Autowired lateinit var query: OccurrenceQueryService
+    @Autowired lateinit var query: TodayQueryService
     @Autowired lateinit var dispatcher: OutboxDispatcher
 
     private lateinit var creator: UUID
@@ -52,19 +52,18 @@ class LeaveBlockIT {
         ).execute()
         for ((u, r) in listOf(creator to "CREATOR", partner to "PARTNER")) {
             dsl.query(
-                "INSERT INTO memberships (user_id,dynamic_id,role_context,access_state) VALUES ({0},{1},{2},'ACTIVE')",
+                "INSERT INTO memberships (user_id,dynamic_id,role_context,side,access_state) VALUES ({0},{1},{2},CASE WHEN {2}='CREATOR' THEN 'D' ELSE 'S' END,'ACTIVE')",
                 u, dynamicId, r,
             ).execute()
         }
         dsl.query(
-            """INSERT INTO expectation_definitions
-                 (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
-               VALUES ({0},{1},'TASK','Prepare the evening space',{2},{3},'SHARED')""",
-            defId, dynamicId, creator, partner,
+            """INSERT INTO tasks (id,dynamic_id,title,kind,schedule,created_by)
+               VALUES ({0},{1},'Prepare the evening space','recurring','{"type":"daily"}'::jsonb,{2})""",
+            defId, dynamicId, creator,
         ).execute()
         dsl.query(
-            """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
-               VALUES ({0},{1},{2},'ACTIVE',CURRENT_DATE)""",
+            """INSERT INTO occurrences (id,task_id,dynamic_id,day,outcome,outcome_at)
+               VALUES ({0},{1},{2},CURRENT_DATE,'delivered',now())""",
             occurrenceId, defId, dynamicId,
         ).execute()
     }
@@ -73,7 +72,7 @@ class LeaveBlockIT {
         dsl.query(
             """INSERT INTO outbox_records
                  (aggregate_type,aggregate_id,dynamic_id,event_type,payload,dedupe_key)
-               VALUES ('occurrence',{0},{1},'completion_submitted','{}'::jsonb,{2})""",
+               VALUES ('occurrence',{0},{1},'occurrence_delivered','{}'::jsonb,{2})""",
             occurrenceId, dynamicId, "d-${UUID.randomUUID()}",
         ).execute()
     }
@@ -159,7 +158,7 @@ class LeaveBlockIT {
 
         // The person who stayed did nothing wrong; erasing their record of the
         // relationship would be its own harm.
-        val view = query.get(creator, occurrenceId)
+        val view = query.occurrence(creator, occurrenceId)
         assertEquals("Prepare the evening space", view.title)
     }
 
@@ -179,8 +178,8 @@ class LeaveBlockIT {
     fun `after a block NEITHER person can read shared history`() {
         leaveBlock.block(partner, dynamicId, targetUserId = creator)
 
-        assertFailsWith<AuthorizationException.NotAMember> { query.get(creator, occurrenceId) }
-        assertFailsWith<AuthorizationException.NotAMember> { query.get(partner, occurrenceId) }
+        assertFailsWith<AuthorizationException.NotAMember> { query.occurrence(creator, occurrenceId) }
+        assertFailsWith<AuthorizationException.NotAMember> { query.occurrence(partner, occurrenceId) }
     }
 
     @Test

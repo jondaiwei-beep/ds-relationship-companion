@@ -34,7 +34,9 @@
 - 验收：`./gradlew test`、`flutter analyze` 过。
 
 ## Phase 1 · 今天（核心闭环，2–3 周）
-后端
+后端 ✅ 2026-09-03（`backend/…/today/`，`TodayIT` 覆盖不变量；164 测试通过）
+- 实际落地与下文差异：`memberships.side`（D/S）承担轴授权；`dynamics.day_boundary_minutes` 默认 240（无 `day_start` 列）；`point_entries.reason` 改名为 `task_earn/d_award/d_deduct/redemption/redemption_refund`；`open` 类任务无 occurrence，s 经 `POST /tasks/{id}/deliver` 生一条已交付；make-up 用 slot≥1000 的 occurrence 表达；`missed` 也写 `outcome_at`（历史行 `by_user_id` 为 NULL 标识系统）。
+- ⚠️ V18 是破坏性迁移（drop 旧 expectation/occurrence 表）：上 staging（`ops/deploy-ds.sh`，库 `dsapp`）会清掉测试数据。
 - V18：`tasks`（改 `expectation_definitions`）、`occurrences` 拆双轴、`day_comments`、`d_notes`、`private_notes`、`dynamics.day_start/timezone`、`point_entries.reason/by/ref`。
 - 关系日计算器（唯一实现，服务端 + 客户端各一份，同一测试向量）。
 - 每关系日生成 occurrence 的 job；日终标 `missed`（**只写 outcome，无其它副作用**）。

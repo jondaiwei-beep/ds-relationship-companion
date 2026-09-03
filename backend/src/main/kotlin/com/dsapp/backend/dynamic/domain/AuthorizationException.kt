@@ -15,6 +15,10 @@ sealed class AuthorizationException(message: String) : RuntimeException(message)
     class WrongRole(required: RoleContext, actual: RoleContext) :
         AuthorizationException("Command requires $required, actor holds $actual")
 
+    /** Wrong side for this axis: only the s side writes outcome, only the D side disposes. */
+    class WrongSide(required: Side, actual: Side) :
+        AuthorizationException("Command requires side $required, actor is $actual")
+
     /** Dynamic is not ACTIVE, so mutations are refused. */
     class DynamicNotActive(state: DynamicState) :
         AuthorizationException("Dynamic is $state; mutations require ACTIVE")

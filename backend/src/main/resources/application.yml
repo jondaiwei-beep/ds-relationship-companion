@@ -33,3 +33,8 @@ dsapp:
     web-push: ${FEATURE_WEB_PUSH:false}
     explore-placeholder: ${FEATURE_EXPLORE_PLACEHOLDER:true}
     analytics-experiments: ${FEATURE_ANALYTICS_EXPERIMENTS:false}
+  # Relationship-day tick: generates today's occurrences, marks yesterday's
+  # open ones missed, fires D-note reminders. Off in tests; driven explicitly.
+  generation:
+    enabled: ${GENERATION_ENABLED:true}
+    poll-ms: ${GENERATION_POLL_MS:60000}

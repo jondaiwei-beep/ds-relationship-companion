@@ -1,6 +1,7 @@
 package com.dsapp.backend.points
 
-import com.dsapp.backend.expectation.application.CompleteOccurrenceService
+import com.dsapp.backend.today.application.OutcomeService
+import com.dsapp.backend.today.domain.Outcome
 import com.dsapp.backend.points.application.InsufficientPoints
 import com.dsapp.backend.points.application.PointsService
 import org.jooq.DSLContext
@@ -29,12 +30,12 @@ class PointsIT {
 
     @Autowired lateinit var dsl: DSLContext
     @Autowired lateinit var points: PointsService
-    @Autowired lateinit var complete: CompleteOccurrenceService
+    @Autowired lateinit var outcomes: OutcomeService
 
     private lateinit var dom: UUID
     private lateinit var sub: UUID
     private lateinit var dynamicId: UUID
-    private lateinit var definitionId: UUID
+    private lateinit var taskId: UUID
     private lateinit var occurrenceId: UUID
 
     private fun idem(actor: UUID): UUID {
@@ -50,7 +51,7 @@ class PointsIT {
     @BeforeEach
     fun seed() {
         dom = UUID.randomUUID(); sub = UUID.randomUUID()
-        dynamicId = UUID.randomUUID(); definitionId = UUID.randomUUID()
+        dynamicId = UUID.randomUUID(); taskId = UUID.randomUUID()
         occurrenceId = UUID.randomUUID()
 
         for ((u, n) in listOf(dom to "Alex", sub to "Jamie")) {
@@ -63,26 +64,42 @@ class PointsIT {
         ).execute()
         for ((u, r) in listOf(dom to "CREATOR", sub to "PARTNER")) {
             dsl.query(
-                "INSERT INTO memberships (user_id,dynamic_id,role_context,access_state) VALUES ({0},{1},{2},'ACTIVE')",
+                "INSERT INTO memberships (user_id,dynamic_id,role_context,side,access_state) VALUES ({0},{1},{2},CASE WHEN {2}='CREATOR' THEN 'D' ELSE 'S' END,'ACTIVE')",
                 u, dynamicId, r,
             ).execute()
         }
-        dsl.query(
-            """INSERT INTO expectation_definitions
-                 (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
-               VALUES ({0},{1},'TASK','Prepare the evening space',{2},{3},'SHARED')""",
-            definitionId, dynamicId, dom, sub,
-        ).execute()
-        dsl.query(
-            """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
-               VALUES ({0},{1},{2},'ACTIVE',CURRENT_DATE)""",
-            occurrenceId, definitionId, dynamicId,
-        ).execute()
+        taskId = task("Prepare the evening space", pointsEarn = 1)
+        occurrenceId = occurrence(taskId)
     }
 
-    private fun stateOf() = dsl.fetchOne(
-        "SELECT state FROM occurrences WHERE id={0}", occurrenceId,
-    )!!.get("state", String::class.java)
+    private fun task(title: String, pointsEarn: Int = 1): UUID {
+        val id = UUID.randomUUID()
+        dsl.query(
+            """INSERT INTO tasks (id,dynamic_id,title,kind,schedule,points_earn,created_by)
+               VALUES ({0},{1},{2},'recurring','{"type":"daily"}'::jsonb,{3},{4})""",
+            id, dynamicId, title, pointsEarn, dom,
+        ).execute()
+        return id
+    }
+
+    private fun occurrence(task: UUID, day: String? = null): UUID {
+        val id = UUID.randomUUID()
+        dsl.query(
+            "INSERT INTO occurrences (id,task_id,dynamic_id,day) VALUES ({0},{1},{2},COALESCE(CAST({3} AS date),CURRENT_DATE))",
+            id, task, dynamicId, day,
+        ).execute()
+        return id
+    }
+
+    private fun deliver(occ: UUID = occurrenceId) = outcomes.set(sub, occ, OutcomeService.Change(Outcome.delivered))
+
+    private fun outcomeOf(occ: UUID = occurrenceId) = dsl.fetchOne(
+        "SELECT outcome FROM occurrences WHERE id={0}", occ,
+    )!!.get("outcome", String::class.java)
+
+    private fun dispositionOf() = dsl.fetchOne(
+        "SELECT disposition FROM occurrences WHERE id={0}", occurrenceId,
+    )!!.get("disposition", String::class.java)
 
     // ---- the constraints this feature was allowed under --------------------
 
@@ -92,15 +109,10 @@ class PointsIT {
         // without automating away the human attention that gives it meaning.
         // If points ever closed a completion, they would have replaced the
         // partner rather than supplemented them.
-        complete.complete(sub, occurrenceId, null, idem(sub))
+        deliver()
 
         assertEquals(1, points.balanceOf(dynamicId, sub))
-        assertEquals("WAITING_ACK", stateOf(), "points must not end the wait")
-
-        val acks = dsl.fetchOne(
-            "SELECT count(*) AS n FROM acknowledgements WHERE occurrence_id={0}", occurrenceId,
-        )!!.get("n", Int::class.java)
-        assertEquals(0, acks, "no acknowledgement may be manufactured by scoring")
+        assertEquals("none", dispositionOf(), "points must not touch the D axis")
     }
 
     @Test
@@ -188,23 +200,8 @@ class PointsIT {
         )
     }
 
-    /** A second thing on the same day needs its own definition. */
-    private fun anotherToday(): UUID {
-        val defId = UUID.randomUUID()
-        val occId = UUID.randomUUID()
-        dsl.query(
-            """INSERT INTO expectation_definitions
-                 (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
-               VALUES ({0},{1},'TASK','another',{2},{3},'SHARED')""",
-            defId, dynamicId, dom, sub,
-        ).execute()
-        dsl.query(
-            """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
-               VALUES ({0},{1},{2},'ACTIVE',CURRENT_DATE)""",
-            occId, defId, dynamicId,
-        ).execute()
-        return occId
-    }
+    /** A second thing on the same day needs its own task. */
+    private fun anotherToday(): UUID = occurrence(task("another"))
 
     // ---- streak, proof and chance ------------------------------------------
 
@@ -214,24 +211,9 @@ class PointsIT {
         // to cause all-at-once abandonment rather than a gradual decline.
         // Ours counts days that happened, so a bad Tuesday takes nothing away.
         fun completedOn(day: String) {
-            val defId = UUID.randomUUID()
-            val occId = UUID.randomUUID()
+            val occ = occurrence(task("x"), day)
             dsl.query(
-                """INSERT INTO expectation_definitions
-                     (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
-                   VALUES ({0},{1},'TASK','x',{2},{3},'SHARED')""",
-                defId, dynamicId, dom, sub,
-            ).execute()
-            dsl.query(
-                """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
-                   VALUES ({0},{1},{2},'WAITING_ACK',CAST({3} AS date))""",
-                occId, defId, dynamicId, day,
-            ).execute()
-            dsl.query(
-                """INSERT INTO occurrence_completions
-                     (id,occurrence_id,actor_user_id,idempotency_id)
-                   VALUES ({0},{1},{2},{3})""",
-                UUID.randomUUID(), occId, sub, idem(sub),
+                "UPDATE occurrences SET outcome='delivered', outcome_at=now() WHERE id={0}", occ,
             ).execute()
         }
 
@@ -247,35 +229,27 @@ class PointsIT {
     fun `two things finished on one day count as one day`() {
         // It counts days, not completions. Otherwise a busy Tuesday would
         // read as a longer relationship.
-        complete.complete(sub, occurrenceId, null, idem(sub))
+        deliver()
 
-        complete.complete(sub, anotherToday(), null, idem(sub))
+        deliver(anotherToday())
 
         assertEquals(1, points.daysTogether(dom, dynamicId))
     }
 
     @Test
     fun `a completion can carry a photo, and never has to`() {
-        // Obedience puts Proof on a punishment as a camera; Kneel gives
-        // verification a sub-tab. Ours rides with the completion, offered.
-        complete.complete(sub, occurrenceId, null, idem(sub), proofMediaId = "media-1")
-
+        outcomes.set(sub, occurrenceId, OutcomeService.Change(Outcome.delivered, proofKind = "photo", proofRef = "media-1"))
         assertEquals(
             "media-1",
-            dsl.fetchOne(
-                "SELECT proof_media_id FROM occurrence_completions WHERE occurrence_id={0}",
-                occurrenceId,
-            )!!.get("proof_media_id", String::class.java),
+            dsl.fetchOne("SELECT proof_ref FROM occurrences WHERE id={0}", occurrenceId)!!
+                .get("proof_ref", String::class.java),
         )
 
         val other = anotherToday()
-        complete.complete(sub, other, null, idem(sub))
-
+        deliver(other)
         assertNull(
-            dsl.fetchOne(
-                "SELECT proof_media_id FROM occurrence_completions WHERE occurrence_id={0}",
-                other,
-            )!!.get("proof_media_id", String::class.java),
+            dsl.fetchOne("SELECT proof_ref FROM occurrences WHERE id={0}", other)!!
+                .get("proof_ref", String::class.java),
             "a completion without a photo is complete",
         )
     }
@@ -326,16 +300,16 @@ class PointsIT {
     fun `a couple can turn the economy off entirely`() {
         dsl.query("UPDATE dynamics SET points_enabled = false WHERE id={0}", dynamicId).execute()
 
-        complete.complete(sub, occurrenceId, null, idem(sub))
+        deliver()
 
         assertEquals(0, points.balanceOf(dynamicId, sub))
-        assertEquals("WAITING_ACK", stateOf(), "the loop is unchanged without points")
+        assertEquals("delivered", outcomeOf(), "the loop is unchanged without points")
     }
 
     @Test
-    fun `zero per completion keeps manual awards available`() {
-        dsl.query("UPDATE dynamics SET points_per_completion = 0 WHERE id={0}", dynamicId).execute()
-        complete.complete(sub, occurrenceId, null, idem(sub))
+    fun `a task worth zero keeps manual awards available`() {
+        dsl.query("UPDATE tasks SET points_earn = 0 WHERE id={0}", taskId).execute()
+        deliver()
         assertEquals(0, points.balanceOf(dynamicId, sub))
 
         points.adjust(dom, dynamicId, sub, 3, "for the week")
@@ -414,7 +388,7 @@ class PointsIT {
 
     @Test
     fun `a completion award records no actor, because nobody chose it`() {
-        complete.complete(sub, occurrenceId, null, idem(sub))
+        deliver()
         val actor = dsl.fetchOne(
             "SELECT actor_user_id FROM point_entries WHERE occurrence_id={0}", occurrenceId,
         )!!.get("actor_user_id", UUID::class.java)

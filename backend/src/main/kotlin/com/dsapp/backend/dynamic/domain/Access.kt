@@ -16,12 +16,20 @@ enum class DynamicState { DRAFT, PENDING_PARTNER, ACTIVE, PAUSED, ENDED }
  */
 enum class RoleContext { CREATOR, PARTNER }
 
+/**
+ * Which side of the dynamic a member is on (product/03-domain.md). The S side
+ * delivers; the D side disposes. Authorization stays on [RoleContext]; side
+ * decides who may write which axis of an occurrence.
+ */
+enum class Side { D, S }
+
 /** A member's authorization context, resolved server-side on every request. */
 data class MemberContext(
     val userId: UUID,
     val dynamicId: UUID,
     val membershipId: UUID,
     val role: RoleContext,
+    val side: Side,
     val accessState: AccessState,
     val dynamicState: DynamicState,
 ) {

@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
 data class StartRhythmBody(
-    val assigneeUserId: UUID,
+    /** Ignored since Phase 1: tasks belong to the dynamic, the s side delivers them. Kept so older clients still parse. */
+    val assigneeUserId: UUID? = null,
     val ritualTitle: String? = null,
     val expectationTitle: String? = null,
     /** Opt-in only — the first day must not arrive already full (Notion 05 §4). */
@@ -63,7 +64,6 @@ class StarterRhythmController(
             val started = starter.start(
                 actorUserId = jwt.actorId(),
                 dynamicId = dynamicId,
-                assigneeUserId = body.assigneeUserId,
                 ritualTitle = body.ritualTitle,
                 expectationTitle = body.expectationTitle,
                 includeSecondExpectation = body.includeSecondExpectation,

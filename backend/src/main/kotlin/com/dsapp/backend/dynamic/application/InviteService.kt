@@ -215,11 +215,15 @@ class InviteService(
         val membershipId = UUID.randomUUID()
         dsl.query(
             """
-            INSERT INTO memberships (id, user_id, dynamic_id, role_context, access_state)
-            VALUES ({0}, {1}, {2}, {3}, 'ACTIVE')
+            INSERT INTO memberships (id, user_id, dynamic_id, role_context, side, access_state)
+            VALUES ({0}, {1}, {2}, {3},
+                    -- the side the inviter did not take
+                    COALESCE((SELECT CASE side WHEN 'D' THEN 'S' ELSE 'D' END
+                                FROM memberships WHERE dynamic_id = {2} AND user_id = {4}), 'S'),
+                    'ACTIVE')
             """.trimIndent(),
             membershipId, actorUserId, dynamicId,
-            claimed.get("intended_role_context", String::class.java),
+            claimed.get("intended_role_context", String::class.java), inviter,
         ).execute()
 
         // Both members are present, so the dynamic becomes ACTIVE.

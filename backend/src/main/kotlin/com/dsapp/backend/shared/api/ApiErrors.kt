@@ -5,13 +5,11 @@ import com.dsapp.backend.dynamic.application.InviteNotRevocable
 import com.dsapp.backend.dynamic.application.InviteNotJoinable
 import com.dsapp.backend.dynamic.application.DynamicNotPausable
 import com.dsapp.backend.dynamic.domain.AuthorizationException
-import com.dsapp.backend.expectation.application.OccurrenceNotCompletable
-import com.dsapp.backend.response.application.AdjustmentNotPossible
-import com.dsapp.backend.response.application.NoOpenAdjustment
 import com.dsapp.backend.points.application.InsufficientPoints
+import com.dsapp.backend.today.application.NoSuchItem
+import com.dsapp.backend.today.application.OccurrenceNotActionable
+import com.dsapp.backend.today.application.TaskNotActionable
 import com.dsapp.backend.points.application.NoSuchReward
-import com.dsapp.backend.response.application.NotTheRequester
-import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
 import com.dsapp.backend.shared.idempotency.IdempotencyKeyReusedException
 import com.dsapp.backend.shared.idempotency.MissingIdempotencyKeyException
 import org.springframework.http.HttpStatus
@@ -56,27 +54,22 @@ class ApiErrorHandler {
         // relationship structure to a non-member (Notion 04 §3).
         ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
 
-    @ExceptionHandler(OccurrenceNotCompletable::class)
-    fun onNotCompletable(e: OccurrenceNotCompletable): ResponseEntity<ApiError> =
-        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("OCCURRENCE_NOT_ACTIVE"))
+    @ExceptionHandler(OccurrenceNotActionable::class)
+    fun onOccurrenceNotActionable(e: OccurrenceNotActionable): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError(e.code))
 
-    @ExceptionHandler(OccurrenceNotAcknowledgeable::class)
-    fun onNotAcknowledgeable(e: OccurrenceNotAcknowledgeable): ResponseEntity<ApiError> =
-        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("OCCURRENCE_NOT_WAITING_ACK"))
+    @ExceptionHandler(TaskNotActionable::class)
+    fun onTaskNotActionable(e: TaskNotActionable): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError(e.code))
 
-    @ExceptionHandler(AdjustmentNotPossible::class)
-    fun onAdjustmentNotPossible(e: AdjustmentNotPossible): ResponseEntity<ApiError> =
-        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("OCCURRENCE_${e.state}"))
+    @ExceptionHandler(NoSuchItem::class)
+    fun onNoSuchItem(e: NoSuchItem): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
 
-    @ExceptionHandler(NoOpenAdjustment::class)
-    fun onNoOpenAdjustment(e: NoOpenAdjustment): ResponseEntity<ApiError> =
-        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("NO_OPEN_ADJUSTMENT"))
-
-    @ExceptionHandler(NotTheRequester::class)
-    fun onNotTheRequester(e: NotTheRequester): ResponseEntity<ApiError> =
-        // 403, not 404: the caller is a member and may see the adjustment.
-        // What they may not do is take back a request that is not theirs.
-        ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError("NOT_THE_REQUESTER"))
+    /** A body that parsed but asked for something the domain refuses (bad enum value, missing pair). */
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun onIllegalArgument(e: IllegalArgumentException): ResponseEntity<ApiError> =
+        ResponseEntity.badRequest().body(ApiError("INVALID_REQUEST", e.message?.take(80)))
 
     @ExceptionHandler(InsufficientPoints::class)
     fun onInsufficientPoints(e: InsufficientPoints): ResponseEntity<ApiError> =

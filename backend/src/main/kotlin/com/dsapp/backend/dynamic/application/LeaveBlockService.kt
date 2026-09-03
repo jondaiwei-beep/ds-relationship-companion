@@ -152,7 +152,8 @@ class LeaveBlockService(
                SET state = 'CANCELLED', locked_until = NULL, last_error = {1}
              WHERE state IN ('PENDING', 'FAILED')
                AND (dynamic_id = {0}
-                    OR aggregate_id IN (SELECT id FROM occurrences WHERE dynamic_id = {0}))
+                    OR aggregate_id IN (SELECT id FROM occurrences WHERE dynamic_id = {0})
+                    OR aggregate_id IN (SELECT id FROM d_notes WHERE dynamic_id = {0}))
             """.trimIndent(),
             dynamicId, "suppressed:ACCESS_ENDED:$why",
         ).execute()

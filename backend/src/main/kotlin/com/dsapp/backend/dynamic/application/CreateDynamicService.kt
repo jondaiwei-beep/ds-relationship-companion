@@ -27,7 +27,7 @@ class CreateDynamicService(
         desiredOutcome: String,
         structureLevel: String,
         referenceTimezone: String,
-        dayBoundaryMinutes: Int = 0,
+        dayBoundaryMinutes: Int = 240,
         /**
          * How this member describes their role, as a starting point
          * (Notion 03 §2). Optional: a couple that does not want to name it
@@ -37,7 +37,10 @@ class CreateDynamicService(
         rolePreset: String? = null,
         /** Couple is apart. Changes what is seeded, never what is permitted. */
         longDistance: Boolean = false,
+        /** Which side the creator takes: D disposes, S delivers. Partner gets the other. */
+        side: String = "D",
     ): Created {
+        require(side == "D" || side == "S") { "side must be D or S" }
         if (rolePreset != null &&
             rolePreset !in setOf("DOMINANT", "SUBMISSIVE", "SWITCH", "CUSTOM")
         ) {
@@ -62,10 +65,10 @@ class CreateDynamicService(
         dsl.query(
             """
             INSERT INTO memberships (id, user_id, dynamic_id, role_context,
-                                     role_preset, access_state)
-            VALUES ({0}, {1}, {2}, 'CREATOR', {3}, 'ACTIVE')
+                                     role_preset, side, access_state)
+            VALUES ({0}, {1}, {2}, 'CREATOR', {3}, {4}, 'ACTIVE')
             """.trimIndent(),
-            membershipId, actorUserId, dynamicId, rolePreset,
+            membershipId, actorUserId, dynamicId, rolePreset, side,
         ).execute()
 
         events.append(dynamicId, actorUserId, "dynamic_created", """{"dynamic_id":"$dynamicId"}""")

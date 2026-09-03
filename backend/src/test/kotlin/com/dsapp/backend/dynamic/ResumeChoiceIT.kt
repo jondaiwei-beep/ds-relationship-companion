@@ -24,22 +24,18 @@ class ResumeChoiceIT {
     private lateinit var me: UUID
     private lateinit var dyn: UUID
 
-    private fun definition(title: String) {
+    private fun task(title: String) {
         dsl.query(
             """
-            INSERT INTO expectation_definitions
-                (id, dynamic_id, kind, title, creator_user_id,
-                 assignee_user_id, visibility, active)
-            VALUES ({0},{1},'TASK',{2},{3},{3},'SHARED',true)
+            INSERT INTO tasks (id, dynamic_id, title, kind, schedule, created_by)
+            VALUES ({0},{1},{2},'recurring','{"type":"daily"}'::jsonb,{3})
             """.trimIndent(),
             UUID.randomUUID(), dyn, title, me,
         ).execute()
     }
 
     private fun activeCount() = dsl.fetchOne(
-        "SELECT count(*) AS n FROM expectation_definitions " +
-            "WHERE dynamic_id = {0} AND active",
-        dyn,
+        "SELECT count(*) AS n FROM tasks WHERE dynamic_id = {0} AND status = 'active'", dyn,
     )!!.get("n", Int::class.java)
 
     @BeforeEach
@@ -53,45 +49,26 @@ class ResumeChoiceIT {
             actorUserId = me, mode = "SOLO", desiredOutcome = "CLOSER",
             structureLevel = "LIGHT", referenceTimezone = "UTC",
         ).dynamicId
-        repeat(4) { definition("thing $it") }
+        repeat(4) { task("thing $it") }
         query.pause(me, dyn)
     }
 
     @Test
-    fun `coming back the same way changes nothing`() {
-        query.resume(me, dyn, lighter = false)
+    fun `coming back changes nothing about the rules`() {
+        query.resume(me, dyn)
         assertEquals("ACTIVE", query.detail(me, dyn).state)
         assertEquals(4, activeCount())
     }
 
     @Test
-    fun `coming back lighter reduces the load`() {
-        // Handing someone the same load they paused under is how they leave
-        // again. Journey E says the choice is theirs.
-        query.resume(me, dyn, lighter = true)
-        assertEquals("ACTIVE", query.detail(me, dyn).state)
-        assertEquals(2, activeCount())
-    }
-
-    @Test
-    fun `lighter deactivates, it never deletes`() {
-        query.resume(me, dyn, lighter = true)
-        val total = dsl.fetchOne(
-            "SELECT count(*) AS n FROM expectation_definitions WHERE dynamic_id = {0}",
-            dyn,
-        )!!.get("n", Int::class.java)
-        // Nothing is destroyed — the definitions can be switched back on.
-        assertEquals(4, total)
-    }
-
-    @Test
-    fun `neither choice produces a backlog`() {
-        query.resume(me, dyn, lighter = true)
+    fun `resume produces no backlog`() {
+        query.resume(me, dyn)
         val overdue = dsl.fetchOne(
             "SELECT count(*) AS n FROM occurrences WHERE dynamic_id = {0}",
             dyn,
         )!!.get("n", Int::class.java)
-        // Returning must never mean facing work you "owe" (Journey E).
+        // Paused = no debt (invariant 9). Nothing was generated while paused
+        // and resuming does not reach back for it.
         assertTrue(overdue == 0, "resume created $overdue occurrences")
     }
 }

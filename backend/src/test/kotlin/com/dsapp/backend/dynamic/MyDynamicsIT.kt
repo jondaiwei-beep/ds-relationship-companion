@@ -39,8 +39,8 @@ class MyDynamicsIT {
     private fun member(d: UUID, u: UUID, role: String, access: String = "ACTIVE") =
         dsl.query(
             """
-            INSERT INTO memberships (id, dynamic_id, user_id, role_context, access_state)
-            VALUES ({0},{1},{2},{3},{4})
+            INSERT INTO memberships (id, dynamic_id, user_id, role_context, side, access_state)
+            VALUES ({0},{1},{2},{3},CASE WHEN {3}='CREATOR' THEN 'D' ELSE 'S' END,{4})
             """.trimIndent(),
             UUID.randomUUID(), d, u, role, access,
         ).execute()

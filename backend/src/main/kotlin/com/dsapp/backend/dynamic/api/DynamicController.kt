@@ -52,7 +52,15 @@ data class CreateDynamicRequest(
     val structureLevel: String,
 
     @field:NotBlank val referenceTimezone: String,
-    val dayBoundaryMinutes: Int = 0,
+    /** Minutes after local midnight the relationship day turns over. Default 04:00 (D-04). */
+    val dayBoundaryMinutes: Int = 240,
+
+    /**
+     * Which side the creator takes. Derived from the preset when the client
+     * did not say: a SUBMISSIVE creator delivers, everyone else disposes.
+     */
+    @field:Pattern(regexp = "D|S", message = "side")
+    val side: String? = null,
 
     /**
      * Whether the couple is apart (REQ-ACT-002).
@@ -121,6 +129,7 @@ class DynamicController(
             referenceTimezone = body.referenceTimezone,
             dayBoundaryMinutes = body.dayBoundaryMinutes,
             longDistance = body.longDistance,
+            side = body.side ?: if (body.rolePreset == "SUBMISSIVE") "S" else "D",
         )
         201 to CreateDynamicResponse(c.dynamicId, c.membershipId)
     }
@@ -174,14 +183,12 @@ class DynamicController(
     fun resume(
         @AuthenticationPrincipal jwt: Jwt,
         @PathVariable dynamicId: UUID,
-        /** Journey E: come back to a lighter structure, not the same load. */
-        @RequestParam(defaultValue = "false") lighter: Boolean,
         @RequestHeader("Idempotency-Key", required = false) key: String?,
     ): ResponseEntity<Any> = runOnce(
         jwt, key, "resume_dynamic", "/v1/dynamics/{id}/resume",
-        listOf(dynamicId.toString(), lighter.toString()), null,
+        listOf(dynamicId.toString()), null,
     ) {
-        dynamics.resume(jwt.actorId(), dynamicId, lighter = lighter)
+        dynamics.resume(jwt.actorId(), dynamicId)
         200 to mapOf("state" to "ACTIVE")
     }
 

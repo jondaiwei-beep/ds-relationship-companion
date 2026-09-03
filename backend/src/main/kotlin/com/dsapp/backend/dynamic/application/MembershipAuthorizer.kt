@@ -5,6 +5,7 @@ import com.dsapp.backend.dynamic.domain.AuthorizationException
 import com.dsapp.backend.dynamic.domain.DynamicState
 import com.dsapp.backend.dynamic.domain.MemberContext
 import com.dsapp.backend.dynamic.domain.RoleContext
+import com.dsapp.backend.dynamic.domain.Side
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import java.util.UUID
@@ -23,7 +24,7 @@ class MembershipAuthorizer(private val dsl: DSLContext) {
     fun contextForDynamic(actorUserId: UUID, dynamicId: UUID): MemberContext? =
         dsl.fetchOne(
             """
-            SELECT m.id, m.role_context, m.access_state, d.state AS dynamic_state
+            SELECT m.id, m.role_context, m.side, m.access_state, d.state AS dynamic_state
               FROM memberships m
               JOIN dynamics d ON d.id = m.dynamic_id
              WHERE m.user_id = {0} AND m.dynamic_id = {1}
@@ -35,6 +36,7 @@ class MembershipAuthorizer(private val dsl: DSLContext) {
                 dynamicId = dynamicId,
                 membershipId = r.get("id", UUID::class.java),
                 role = RoleContext.valueOf(r.get("role_context", String::class.java)),
+                side = Side.valueOf(r.get("side", String::class.java)),
                 accessState = AccessState.valueOf(r.get("access_state", String::class.java)),
                 dynamicState = DynamicState.valueOf(r.get("dynamic_state", String::class.java)),
             )
@@ -44,7 +46,7 @@ class MembershipAuthorizer(private val dsl: DSLContext) {
     fun contextForOccurrence(actorUserId: UUID, occurrenceId: UUID): MemberContext? =
         dsl.fetchOne(
             """
-            SELECT m.id, m.dynamic_id, m.role_context, m.access_state, d.state AS dynamic_state
+            SELECT m.id, m.dynamic_id, m.role_context, m.side, m.access_state, d.state AS dynamic_state
               FROM occurrences o
               JOIN memberships m ON m.dynamic_id = o.dynamic_id AND m.user_id = {0}
               JOIN dynamics d ON d.id = o.dynamic_id
@@ -57,6 +59,7 @@ class MembershipAuthorizer(private val dsl: DSLContext) {
                 dynamicId = r.get("dynamic_id", UUID::class.java),
                 membershipId = r.get("id", UUID::class.java),
                 role = RoleContext.valueOf(r.get("role_context", String::class.java)),
+                side = Side.valueOf(r.get("side", String::class.java)),
                 accessState = AccessState.valueOf(r.get("access_state", String::class.java)),
                 dynamicState = DynamicState.valueOf(r.get("dynamic_state", String::class.java)),
             )
@@ -80,6 +83,21 @@ class MembershipAuthorizer(private val dsl: DSLContext) {
         val c = requireRead(ctx)
         if (!c.maySetUp) throw AuthorizationException.DynamicNotActive(c.dynamicState)
         if (c.role != role) throw AuthorizationException.WrongRole(role, c.role)
+        return c
+    }
+
+    /** Require mutation rights on a given side — the s axis or the D axis. */
+    fun requireSide(ctx: MemberContext?, side: Side): MemberContext {
+        val c = requireRead(ctx)
+        if (!c.mayMutate) throw AuthorizationException.DynamicNotActive(c.dynamicState)
+        if (c.side != side) throw AuthorizationException.WrongSide(side, c.side)
+        return c
+    }
+
+    /** Any active member may mutate; used where both sides write (comments, tasks). */
+    fun requireActive(ctx: MemberContext?): MemberContext {
+        val c = requireRead(ctx)
+        if (!c.mayMutate) throw AuthorizationException.DynamicNotActive(c.dynamicState)
         return c
     }
 

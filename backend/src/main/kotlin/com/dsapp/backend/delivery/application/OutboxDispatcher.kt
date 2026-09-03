@@ -153,7 +153,7 @@ class OutboxDispatcher(
             } else {
                 neutralBodyFor(record.eventType)
             },
-            deepLink = "/occurrences/${record.aggregateId}",
+            deepLink = if (record.eventType == "d_note_reminder") "/today" else "/occurrences/${record.aggregateId}",
             dedupeKey = record.dedupeKey,
         )
         require(request.body in NeutralCopy.all) { "non-neutral notification copy" }
@@ -174,18 +174,26 @@ class OutboxDispatcher(
      * does not need telling that they did it.
      */
     private fun recipientFor(record: Claimed): Recipient? {
-        val row = dsl.fetchOne(
-            """
-            SELECT o.dynamic_id,
-                   CASE WHEN {1} = 'acknowledgement_sent' THEN c.actor_user_id
-                        ELSE d.creator_user_id END AS recipient
-              FROM occurrences o
-              JOIN expectation_definitions d ON d.id = o.definition_id
-              LEFT JOIN occurrence_completions c ON c.occurrence_id = o.id
-             WHERE o.id = {0}
-            """.trimIndent(),
-            record.aggregateId, record.eventType,
-        ) ?: return null
+        val row = when (record.eventType) {
+            // The s said something -> the D side hears it. The D answered -> the s side.
+            "occurrence_delivered", "occurrence_flagged", "disposition_set" -> dsl.fetchOne(
+                """
+                SELECT o.dynamic_id, m.user_id AS recipient
+                  FROM occurrences o
+                  JOIN memberships m ON m.dynamic_id = o.dynamic_id
+                   AND m.side = CASE WHEN {1} = 'disposition_set' THEN 'S' ELSE 'D' END
+                   AND m.access_state = 'ACTIVE'
+                 WHERE o.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId, record.eventType,
+            )
+            // A D's reminder is theirs alone.
+            "d_note_reminder" -> dsl.fetchOne(
+                "SELECT dynamic_id, author_id AS recipient FROM d_notes WHERE id = {0}", record.aggregateId,
+            )
+            else -> null
+        } ?: return null
         val user = row.get("recipient", UUID::class.java) ?: return null
         return Recipient(user, row.get("dynamic_id", UUID::class.java))
     }
@@ -200,10 +208,14 @@ class OutboxDispatcher(
     private fun dynamicActive(dynamicId: UUID): Boolean =
         dsl.fetchOne("SELECT 1 FROM dynamics WHERE id = {0} AND state = 'ACTIVE'", dynamicId) != null
 
-    /** A completion notice is stale once an acknowledgement exists. */
+    /** A delivery notice is stale once the D has already looked or answered; a reminder once the note is done. */
     private fun isStale(record: Claimed): Boolean = when (record.eventType) {
-        "completion_submitted" -> dsl.fetchOne(
-            "SELECT 1 FROM acknowledgements WHERE occurrence_id = {0}", record.aggregateId,
+        "occurrence_delivered", "occurrence_flagged" -> dsl.fetchOne(
+            "SELECT 1 FROM occurrences WHERE id = {0} AND (seen_at IS NOT NULL OR disposition <> 'none')",
+            record.aggregateId,
+        ) != null
+        "d_note_reminder" -> dsl.fetchOne(
+            "SELECT 1 FROM d_notes WHERE id = {0} AND done_at IS NOT NULL", record.aggregateId,
         ) != null
         else -> false
     }
@@ -235,7 +247,7 @@ class OutboxDispatcher(
     }
 
     private fun neutralBodyFor(eventType: String): String = when (eventType) {
-        "completion_submitted", "adjustment_requested" -> NeutralCopy.NEEDS_ATTENTION
+        "occurrence_delivered", "occurrence_flagged" -> NeutralCopy.NEEDS_ATTENTION
         else -> NeutralCopy.GENERIC
     }
 

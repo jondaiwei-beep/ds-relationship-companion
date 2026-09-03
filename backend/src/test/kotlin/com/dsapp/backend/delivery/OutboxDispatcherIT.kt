@@ -67,24 +67,23 @@ class OutboxDispatcherIT {
         ).execute()
         for ((u, r) in listOf(creator to "CREATOR", partner to "PARTNER")) {
             dsl.query(
-                "INSERT INTO memberships (user_id,dynamic_id,role_context,access_state) VALUES ({0},{1},{2},'ACTIVE')",
+                "INSERT INTO memberships (user_id,dynamic_id,role_context,side,access_state) VALUES ({0},{1},{2},CASE WHEN {2}='CREATOR' THEN 'D' ELSE 'S' END,'ACTIVE')",
                 u, dynamicId, r,
             ).execute()
         }
         dsl.query(
-            """INSERT INTO expectation_definitions
-                 (id,dynamic_id,kind,title,creator_user_id,assignee_user_id,visibility)
-               VALUES ({0},{1},'TASK','A private and intimate task title',{2},{3},'SHARED')""",
-            defId, dynamicId, creator, partner,
+            """INSERT INTO tasks (id,dynamic_id,title,kind,schedule,created_by)
+               VALUES ({0},{1},'A private and intimate task title','recurring','{"type":"daily"}'::jsonb,{2})""",
+            defId, dynamicId, creator,
         ).execute()
         dsl.query(
-            """INSERT INTO occurrences (id,definition_id,dynamic_id,state,relationship_day)
-               VALUES ({0},{1},{2},'WAITING_ACK',CURRENT_DATE)""",
+            """INSERT INTO occurrences (id,task_id,dynamic_id,day,outcome,outcome_at)
+               VALUES ({0},{1},{2},CURRENT_DATE,'delivered',now())""",
             occurrenceId, defId, dynamicId,
         ).execute()
     }
 
-    private fun enqueue(eventType: String = "completion_submitted", dedupe: String? = null) {
+    private fun enqueue(eventType: String = "occurrence_delivered", dedupe: String? = null) {
         dsl.query(
             """INSERT INTO outbox_records (aggregate_type,aggregate_id,event_type,payload,dedupe_key)
                VALUES ('occurrence',{0},{1},'{"secret":"intimate relationship detail"}'::jsonb,{2})""",
@@ -153,16 +152,9 @@ class OutboxDispatcherIT {
 
     @Test
     fun `a stale reminder is not sent once the thing is already acknowledged`() {
-        val idem = UUID.randomUUID()
         dsl.query(
-            """INSERT INTO idempotency_keys (id,actor_user_id,key_value,command_name,request_hash,state)
-               VALUES ({0},{1},{2},'t',{3},'IN_PROGRESS')""",
-            idem, creator, "k-$idem", ByteArray(32),
-        ).execute()
-        dsl.query(
-            """INSERT INTO acknowledgements (occurrence_id,sender_user_id,type,text,idempotency_id)
-               VALUES ({0},{1},'PRAISE','Seen.',{2})""",
-            occurrenceId, creator, idem,
+            "UPDATE occurrences SET disposition='seen', disposition_at=now(), seen_at=now() WHERE id={0}",
+            occurrenceId,
         ).execute()
         enqueue()
 

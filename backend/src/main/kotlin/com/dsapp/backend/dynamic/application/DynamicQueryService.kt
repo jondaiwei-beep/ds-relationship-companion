@@ -36,10 +36,12 @@ class DynamicQueryService(
         val roleContext: String,
         /** How they describe their role. Never used for authorization. */
         val rolePreset: String?,
+        /** D disposes, S delivers (product/03-domain.md). */
+        val side: String,
         val accessState: String,
     )
 
-    data class StructureItem(val definitionId: UUID, val kind: String, val title: String, val active: Boolean)
+    data class StructureItem(val taskId: UUID, val kind: String, val title: String, val active: Boolean)
 
     data class DynamicDetail(
         val dynamicId: UUID,
@@ -116,7 +118,7 @@ class DynamicQueryService(
         val members = dsl.fetch(
             """
             SELECT u.id AS user_id, u.display_name, m.role_context,
-                   m.role_preset, m.access_state
+                   m.role_preset, m.side, m.access_state
               FROM memberships m JOIN users u ON u.id = m.user_id
              WHERE m.dynamic_id = {0} ORDER BY m.joined_at
             """.trimIndent(),
@@ -127,14 +129,15 @@ class DynamicQueryService(
                 it.get("display_name", String::class.java),
                 it.get("role_context", String::class.java),
                 it.get("role_preset", String::class.java),
+                it.get("side", String::class.java),
                 it.get("access_state", String::class.java),
             )
         }
 
         val structure = dsl.fetch(
             """
-            SELECT id, kind, title, active FROM expectation_definitions
-             WHERE dynamic_id = {0} ORDER BY created_at
+            SELECT id, kind, title, status FROM tasks
+             WHERE dynamic_id = {0} AND status <> 'archived' ORDER BY position, created_at
             """.trimIndent(),
             dynamicId,
         ).map {
@@ -142,7 +145,7 @@ class DynamicQueryService(
                 it.get("id", UUID::class.java),
                 it.get("kind", String::class.java),
                 it.get("title", String::class.java),
-                it.get("active", Boolean::class.java),
+                it.get("status", String::class.java) == "active",
             )
         }
 
@@ -187,16 +190,13 @@ class DynamicQueryService(
         events.enqueueOutbox("dynamic", dynamicId, "dynamic_paused", "pause:$dynamicId:${ctx.membershipId}")
     }
 
-    @Transactional
     /**
-     * Coming back — Journey E (Notion 02 Section 6).
-     *
-     * [lighter] halves the recurring structure rather than restoring all of
-     * it. Returning after a hard stretch and being handed the same load is
-     * how people leave again; the choice belongs to them, and the third
-     * option (adjust) is the Dynamic screen, not a mode here.
+     * Coming back. Paused days were never generated (the scheduler only ticks
+     * ACTIVE dynamics), so resuming never means facing work you "owe"
+     * (invariant 9: paused = no debt). Adjusting the load is the 规矩 tab.
      */
-    fun resume(actorUserId: UUID, dynamicId: UUID, lighter: Boolean = false) {
+    @Transactional
+    fun resume(actorUserId: UUID, dynamicId: UUID) {
         val ctx = authorizer.requireRead(authorizer.contextForDynamic(actorUserId, dynamicId))
 
         dsl.fetchOne(
@@ -207,44 +207,6 @@ class DynamicQueryService(
             """.trimIndent(),
             dynamicId,
         ) ?: throw DynamicNotPausable(detail(actorUserId, dynamicId).state)
-
-        if (lighter) {
-            // Deactivate half of the recurring structure, oldest kept first.
-            // Nothing is deleted: the definitions stay and can be switched
-            // back on from the Dynamic screen.
-            dsl.query(
-                """
-                UPDATE expectation_definitions
-                   SET active = false
-                 WHERE id IN (
-                     SELECT d.id FROM expectation_definitions d
-                      WHERE d.dynamic_id = {0} AND d.active
-                      ORDER BY d.created_at DESC
-                      LIMIT GREATEST(
-                          (SELECT count(*) / 2 FROM expectation_definitions
-                            WHERE dynamic_id = {0} AND active), 0)
-                 )
-                """.trimIndent(),
-                dynamicId,
-            ).execute()
-        }
-
-        // Advance the generation barrier to today's relationship day. This is
-        // what makes Resume backlog-free: paused days are simply not eligible,
-        // so returning never means facing work you "owe" (Journey E).
-        dsl.query(
-            """
-            UPDATE expectation_recurrences r
-               SET eligible_from_day = (
-                     SELECT (now() AT TIME ZONE d.reference_timezone)::date
-                       FROM dynamics d WHERE d.id = {0}
-                   ),
-                   updated_at = now()
-              FROM expectation_definitions e
-             WHERE r.definition_id = e.id AND e.dynamic_id = {0}
-            """.trimIndent(),
-            dynamicId,
-        ).execute()
 
         events.append(dynamicId, actorUserId, "dynamic_resumed", """{"dynamic_id":"$dynamicId"}""")
         events.enqueueOutbox("dynamic", dynamicId, "dynamic_resumed", "resume:$dynamicId:${ctx.membershipId}:${Instant.now().epochSecond}")

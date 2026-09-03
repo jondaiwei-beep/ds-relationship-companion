@@ -93,10 +93,8 @@ class PointsService(private val dsl: DSLContext) {
         requireMember(actorUserId, dynamicId)
         return dsl.fetchOne(
             """
-            SELECT count(DISTINCT o.relationship_day) AS days
-              FROM occurrence_completions c
-              JOIN occurrences o ON o.id = c.occurrence_id
-             WHERE o.dynamic_id = {0}
+            SELECT count(DISTINCT day) AS days FROM occurrences
+             WHERE dynamic_id = {0} AND outcome IN ('delivered', 'delivered_late')
             """.trimIndent(),
             dynamicId,
         )!!.get("days", Int::class.java)
@@ -134,33 +132,41 @@ class PointsService(private val dsl: DSLContext) {
     }
 
     /**
-     * The automatic award on completion.
-     *
-     * Called from the completion path, inside its transaction. Silent when
-     * the couple has points switched off or the per-completion value is zero,
-     * because a couple who wants the structure without the economy must be
-     * able to have it.
-     *
-     * Deliberately never throws: a points failure must not roll back somebody
-     * having done the thing they were asked to do.
+     * The credit that rides with a delivery, when the task carries points
+     * (D-05: basics earn 0; the D decides which tasks pay). Silent when the
+     * couple has points switched off. Called inside the delivery transaction.
      */
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
-    fun awardForCompletion(dynamicId: UUID, subjectUserId: UUID, occurrenceId: UUID) {
-        val settings = dsl.fetchOne(
-            "SELECT points_enabled, points_per_completion FROM dynamics WHERE id = {0}",
-            dynamicId,
-        ) ?: return
-        if (!settings.get("points_enabled", Boolean::class.java)) return
-        val amount = settings.get("points_per_completion", Int::class.java)
+    fun creditTaskEarn(dynamicId: UUID, subjectUserId: UUID, occurrenceId: UUID, amount: Int) {
         if (amount <= 0) return
-
+        val enabled = dsl.fetchOne("SELECT points_enabled FROM dynamics WHERE id = {0}", dynamicId)
+            ?.get("points_enabled", Boolean::class.java) ?: return
+        if (!enabled) return
         dsl.query(
             """
             INSERT INTO point_entries
                 (id, dynamic_id, subject_user_id, amount, reason, occurrence_id, actor_user_id)
-            VALUES ({0}, {1}, {2}, {3}, 'COMPLETION', {4}, NULL)
+            VALUES ({0}, {1}, {2}, {3}, 'task_earn', {4}, NULL)
             """.trimIndent(),
             UUID.randomUUID(), dynamicId, subjectUserId, amount, occurrenceId,
+        ).execute()
+    }
+
+    /** The s took a delivery back; what it earned goes back with it, by their hand. */
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.MANDATORY)
+    fun reverseTaskEarn(dynamicId: UUID, subjectUserId: UUID, occurrenceId: UUID) {
+        val earned = dsl.fetchOne(
+            "SELECT COALESCE(SUM(amount), 0) AS n FROM point_entries WHERE occurrence_id = {0} AND reason = 'task_earn'",
+            occurrenceId,
+        )!!.get("n", Int::class.java)
+        if (earned <= 0) return
+        dsl.query(
+            """
+            INSERT INTO point_entries
+                (id, dynamic_id, subject_user_id, amount, reason, occurrence_id, actor_user_id, note)
+            VALUES ({0}, {1}, {2}, {3}, 'task_earn', {4}, {2}, 'withdrawn')
+            """.trimIndent(),
+            UUID.randomUUID(), dynamicId, subjectUserId, -earned, occurrenceId,
         ).execute()
     }
 
@@ -204,7 +210,7 @@ class PointsService(private val dsl: DSLContext) {
             VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6})
             """.trimIndent(),
             id, dynamicId, subjectUserId, effective,
-            if (effective > 0) "MANUAL_AWARD" else "MANUAL_DEDUCT",
+            if (effective > 0) "d_award" else "d_deduct",
             actorUserId, note?.trim()?.takeIf { it.isNotEmpty() },
         ).execute()
         return id
@@ -310,7 +316,7 @@ class PointsService(private val dsl: DSLContext) {
             """
             INSERT INTO point_entries
                 (id, dynamic_id, subject_user_id, amount, reason, reward_id, actor_user_id, note)
-            VALUES ({0}, {1}, {2}, {3}, 'REWARD_PURCHASE', {4}, {2}, {5})
+            VALUES ({0}, {1}, {2}, {3}, 'redemption', {4}, {2}, {5})
             """.trimIndent(),
             id, dynamicId, actorUserId, -cost, rewardId,
             reward.get("title", String::class.java),
@@ -485,7 +491,7 @@ class PointsService(private val dsl: DSLContext) {
                     """
                     INSERT INTO point_entries
                         (id, dynamic_id, subject_user_id, amount, reason, occurrence_id, actor_user_id)
-                    VALUES ({0}, {1}, {2}, {3}, 'CONSEQUENCE', {4}, {5})
+                    VALUES ({0}, {1}, {2}, {3}, 'd_deduct', {4}, {5})
                     """.trimIndent(),
                     UUID.randomUUID(), dynamicId, subjectUserId, -taken, occurrenceId, actorUserId,
                 ).execute()

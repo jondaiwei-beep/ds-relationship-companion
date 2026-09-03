@@ -41,8 +41,8 @@ class InviteServiceIT {
                VALUES ({0},'COUPLE','CLOSER','LIGHT','ACTIVE','America/New_York')""", dynamicId,
         ).execute()
         dsl.query(
-            """INSERT INTO memberships (user_id,dynamic_id,role_context,access_state)
-               VALUES ({0},{1},'CREATOR','ACTIVE')""", creator, dynamicId,
+            """INSERT INTO memberships (user_id,dynamic_id,role_context,side,access_state)
+               VALUES ({0},{1},'CREATOR','D','ACTIVE')""", creator, dynamicId,
         ).execute()
     }
 

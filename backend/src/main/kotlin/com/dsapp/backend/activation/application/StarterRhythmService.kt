@@ -5,6 +5,8 @@ import com.dsapp.backend.activation.domain.StarterContent
 import com.dsapp.backend.dynamic.application.MembershipAuthorizer
 import com.dsapp.backend.dynamic.domain.RoleContext
 import com.dsapp.backend.timeline.application.RelationshipEventWriter
+import com.dsapp.backend.today.application.DynamicDays
+import com.dsapp.backend.today.application.OccurrenceGenerator
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,14 +20,16 @@ import java.util.UUID
  * doesn't." The point is to answer *how do we begin* before the couple has to
  * learn any software, and to do it without the first day arriving already full.
  *
- * The default is exactly **1 Ritual + 1 Expectation + 1 Check-in framing**. A
- * second Expectation exists only as a suggestion the creator may add.
+ * The default is exactly **1 Ritual + 1 Expectation**. A second Expectation
+ * exists only as a suggestion the creator may add. Both land as `tasks`.
  */
 @Service
 class StarterRhythmService(
     private val dsl: DSLContext,
     private val authorizer: MembershipAuthorizer,
     private val events: RelationshipEventWriter,
+    private val generator: OccurrenceGenerator,
+    private val days: DynamicDays,
 ) {
     data class Proposed(
         val ritualTitle: String,
@@ -38,11 +42,7 @@ class StarterRhythmService(
         val optionalSecondPurpose: String,
     )
 
-    data class Started(
-        val ritualDefinitionId: UUID,
-        val expectationDefinitionId: UUID,
-        val recurrenceId: UUID,
-    )
+    data class Started(val ritualTaskId: UUID, val expectationTaskId: UUID)
 
     /** What we would suggest — nothing is written yet. */
     @Transactional(readOnly = true)
@@ -70,17 +70,17 @@ class StarterRhythmService(
     }
 
     /**
-     * "Start this rhythm" — creates the Ritual (with recurrence) and the
-     * Expectation. The creator may override any title before starting.
+     * "Start this rhythm" — two recurring daily tasks (the ritual at a local
+     * wall-clock time, the expectation by end of relationship day). The
+     * creator may override any title before starting.
      *
-     * Idempotent by construction: a Dynamic that already has definitions is
-     * left alone, so a double-tap cannot produce two starting rhythms.
+     * Idempotent by construction: a Dynamic that already has tasks is left
+     * alone, so a double-tap cannot produce two starting rhythms.
      */
     @Transactional
     fun start(
         actorUserId: UUID,
         dynamicId: UUID,
-        assigneeUserId: UUID,
         ritualTitle: String? = null,
         expectationTitle: String? = null,
         ritualLocalTime: LocalTime = LocalTime.of(20, 30),
@@ -97,48 +97,24 @@ class StarterRhythmService(
         val ritual = StarterContent.ritualFor(outcome, apart)
         val expectation = StarterContent.expectationFor(outcome, apart)
 
-        val ritualId = insertDefinition(
-            dynamicId, "RITUAL", ritualTitle ?: ritual.title, ritual.purpose,
-            actorUserId, assigneeUserId,
-        )
-        val expectationId = insertDefinition(
-            dynamicId, "TASK", expectationTitle ?: expectation.title, expectation.purpose,
-            actorUserId, assigneeUserId,
-        )
-
-        // The Ritual recurs daily at a local wall-clock time in the Dynamic's
-        // own zone (Notion 04 §9 — never a bare UTC offset).
-        val timezone = dsl.fetchOne(
-            "SELECT reference_timezone FROM dynamics WHERE id = {0}", dynamicId,
-        )!!.get("reference_timezone", String::class.java)
-
-        val recurrenceId = UUID.randomUUID()
-        dsl.query(
-            """
-            INSERT INTO expectation_recurrences
-                (id, definition_id, frequency, local_time, timezone)
-            VALUES ({0}, {1}, 'DAILY', {2}, {3})
-            """.trimIndent(),
-            recurrenceId, ritualId, ritualLocalTime, timezone,
-        ).execute()
-
+        val ritualId = insertTask(dynamicId, ritualTitle ?: ritual.title, ritual.purpose, ritualLocalTime, actorUserId, 1)
+        val expectationId = insertTask(dynamicId, expectationTitle ?: expectation.title, expectation.purpose, null, actorUserId, 2)
         if (includeSecondExpectation) {
             val second = StarterContent.optionalSecondExpectation(outcome, apart)
-            insertDefinition(dynamicId, "TASK", second.title, second.purpose,
-                actorUserId, assigneeUserId)
+            insertTask(dynamicId, second.title, second.purpose, null, actorUserId, 3)
         }
+        // Today exists from the first minute, not from the next tick.
+        generator.generate(dynamicId, days.today(dynamicId))
 
         events.append(
             ctx.dynamicId, actorUserId, "starter_rhythm_started",
-            """{"ritual_definition_id":"$ritualId","expectation_definition_id":"$expectationId"}""",
+            """{"ritual_task_id":"$ritualId","expectation_task_id":"$expectationId"}""",
         )
-        return Started(ritualId, expectationId, recurrenceId)
+        return Started(ritualId, expectationId)
     }
 
     private fun alreadyStarted(dynamicId: UUID): Boolean =
-        dsl.fetchOne(
-            "SELECT 1 FROM expectation_definitions WHERE dynamic_id = {0} LIMIT 1", dynamicId,
-        ) != null
+        dsl.fetchOne("SELECT 1 FROM tasks WHERE dynamic_id = {0} LIMIT 1", dynamicId) != null
 
     private fun outcomeOf(dynamicId: UUID): DesiredOutcome {
         val raw = dsl.fetchOne(
@@ -151,18 +127,16 @@ class StarterRhythmService(
         "SELECT long_distance FROM dynamics WHERE id = {0}", dynamicId,
     )!!.get("long_distance", Boolean::class.java)
 
-    private fun insertDefinition(
-        dynamicId: UUID, kind: String, title: String, purpose: String,
-        creator: UUID, assignee: UUID,
+    private fun insertTask(
+        dynamicId: UUID, title: String, purpose: String, dueTime: LocalTime?, creator: UUID, position: Int,
     ): UUID {
         val id = UUID.randomUUID()
         dsl.query(
             """
-            INSERT INTO expectation_definitions
-                (id, dynamic_id, kind, title, purpose, creator_user_id, assignee_user_id, visibility)
-            VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, 'SHARED')
+            INSERT INTO tasks (id, dynamic_id, title, detail, kind, schedule, due_time, created_by, status, position)
+            VALUES ({0}, {1}, {2}, {3}, 'recurring', '{"type":"daily"}'::jsonb, {4}, {5}, 'active', {6})
             """.trimIndent(),
-            id, dynamicId, kind, title, purpose, creator, assignee,
+            id, dynamicId, title, purpose, dueTime, creator, position,
         ).execute()
         return id
     }
