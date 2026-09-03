@@ -286,7 +286,7 @@ class LZh extends L {
   String get entranceNoticeOffline => '现在没有网络。连上网就可以继续。';
 
   @override
-  String get entranceNoticeUnreachable => '连不上服务器。再试一次。';
+  String get entranceNoticeUnreachable => '连不上。再试一次。';
 
   @override
   String get entranceTrustFooter =>
@@ -449,7 +449,7 @@ class LZh extends L {
   String get entranceErrorRegisterGeneric => '现在没能创建这个账号。再试一次。';
 
   @override
-  String get entranceErrorEmailInvalid => '填一个有效的邮箱地址。';
+  String get entranceErrorEmailInvalid => '这个邮箱看起来不对。';
 
   @override
   String get entranceErrorPasswordMissing => '填一下你的密码。';
@@ -616,10 +616,10 @@ class LZh extends L {
   String get joinAlreadyJoined => '这条邀请已经把你带进来了。';
 
   @override
-  String get joinBoundaryIntentionLabel => '共同的心意';
+  String get joinBoundaryIntentionLabel => '你们要开始的';
 
   @override
-  String get joinBoundaryIntention => '多一点相处方式，多一点亲近。';
+  String get joinBoundaryIntention => '一个定规矩，一个交付；处置和记录，都在这里。';
 
   @override
   String get joinBoundarySharedLabel => '你们一起看得到';
@@ -700,19 +700,19 @@ class LZh extends L {
   String get todayPrivateByDefault => '默认私密';
 
   @override
-  String get todayPrivateByDefaultBody => '在确认成员身份和今天是哪一天之前，不会显示任何和对方有关的内容。';
+  String get todayPrivateByDefaultBody => '确认是你、也确认今天是哪一天之前，先什么都不显示。';
 
   @override
-  String get todayCouldNotLoad => '今天的内容没能加载出来。什么都没丢。';
+  String get todayCouldNotLoad => '今天没能打开。什么都没丢。';
 
   @override
-  String get todayActionsPaused => '离线时暂时不能操作';
+  String get todayActionsPaused => '没有网络，先交付不了。';
 
   @override
-  String get todayActionsReturn => '确认到最新内容之后，做好了、想聊聊、换个时间、这次做不到都会回来。';
+  String get todayActionsReturn => '连上之后，交付和说明都会回来。';
 
   @override
-  String get todayHiddenDetails => '和对方、和这段关系有关的内容都已隐藏。\n重新登录后才会显示。';
+  String get todayHiddenDetails => '和 TA、和你们有关的，先都收起来了。\n重新登录就回来。';
 
   @override
   String get settingsTitle => '设置';
@@ -1009,7 +1009,7 @@ class LZh extends L {
   String get shellBack => '返回';
 
   @override
-  String get pointsTitle => '积分';
+  String get pointsTitle => '分';
 
   @override
   String get settingsPointsSection => '积分';
@@ -1801,7 +1801,7 @@ class LZh extends L {
 
   @override
   String rulesConsequencesIntro(String name) {
-    return '只在处置里由 $name 手动使用，这里不能执行。';
+    return '只有 $name 处置的时候用得上；放在这里，不从这里执行。';
   }
 
   @override
@@ -2050,7 +2050,7 @@ class LZh extends L {
   String get exploreSectionCards => '灵感卡';
 
   @override
-  String get exploreCouldNotLoad => '没加载出来。';
+  String get exploreCouldNotLoad => '没能打开。';
 
   @override
   String get exploreActionFailed => '没记上。再试一次。';
@@ -2382,4 +2382,7 @@ class LZh extends L {
 
   @override
   String get sTodayEmptyRules => '去看规矩';
+
+  @override
+  String get todayWaitingPartnerBodyD => 'TA 进来之前，你可以先把规矩和任务立起来。';
 }

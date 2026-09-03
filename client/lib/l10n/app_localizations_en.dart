@@ -307,8 +307,7 @@ class LEn extends L {
   String get entranceNoticeOffline => 'You\'re offline. Connect to continue.';
 
   @override
-  String get entranceNoticeUnreachable =>
-      'We couldn\'t reach the server. Try again.';
+  String get entranceNoticeUnreachable => 'Could not connect. Try again.';
 
   @override
   String get entranceTrustFooter =>
@@ -487,7 +486,7 @@ class LEn extends L {
       'We couldn\'t create the account right now. Try again.';
 
   @override
-  String get entranceErrorEmailInvalid => 'Enter a valid email address.';
+  String get entranceErrorEmailInvalid => 'That email does not look right.';
 
   @override
   String get entranceErrorPasswordMissing => 'Enter your password.';
@@ -669,10 +668,11 @@ class LEn extends L {
   String get joinAlreadyJoined => 'This invitation has brought you in.';
 
   @override
-  String get joinBoundaryIntentionLabel => 'SHARED INTENTION';
+  String get joinBoundaryIntentionLabel => 'WHAT YOU ARE STARTING';
 
   @override
-  String get joinBoundaryIntention => 'More structure and closeness.';
+  String get joinBoundaryIntention =>
+      'One sets the rules, one delivers; disposing and the record live here.';
 
   @override
   String get joinBoundarySharedLabel => 'SHARED TOGETHER';
@@ -762,22 +762,23 @@ class LEn extends L {
 
   @override
   String get todayPrivateByDefaultBody =>
-      'Partner details stay hidden until membership and the current relationship day are confirmed.';
+      'Nothing is shown until it is confirmed that this is you, and which day it is.';
 
   @override
   String get todayCouldNotLoad =>
-      'Today could not be loaded. Nothing was lost.';
+      'Today could not be opened. Nothing was lost.';
 
   @override
-  String get todayActionsPaused => 'Actions are paused offline';
+  String get todayActionsPaused =>
+      'No connection, so nothing can be delivered yet.';
 
   @override
   String get todayActionsReturn =>
-      'Complete, Discuss, New Time and Can\'t Do will return after current truth is confirmed.';
+      'Deliveries and explanations come back once you are connected.';
 
   @override
   String get todayHiddenDetails =>
-      'Partner and Dynamic details have been hidden.\nSign in again to confirm current access.';
+      'Everything about them and the two of you is put away for now.\nSign in again and it comes back.';
 
   @override
   String get settingsTitle => 'Settings';
@@ -1901,7 +1902,7 @@ class LEn extends L {
 
   @override
   String rulesConsequencesIntro(String name) {
-    return 'Only $name uses these, by hand, when disposing. Nothing runs from here.';
+    return 'Only $name uses these, when disposing. They are kept here; nothing runs from here.';
   }
 
   @override
@@ -2151,7 +2152,7 @@ class LEn extends L {
   String get exploreSectionCards => 'Idea cards';
 
   @override
-  String get exploreCouldNotLoad => 'Could not load.';
+  String get exploreCouldNotLoad => 'Could not be opened.';
 
   @override
   String get exploreActionFailed => 'That did not land. Try again.';
@@ -2489,4 +2490,8 @@ class LEn extends L {
 
   @override
   String get sTodayEmptyRules => 'See the rules';
+
+  @override
+  String get todayWaitingPartnerBodyD =>
+      'Until they are in, you can start putting rules and tasks in place.';
 }

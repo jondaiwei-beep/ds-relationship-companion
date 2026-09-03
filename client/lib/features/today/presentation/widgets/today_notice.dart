@@ -62,7 +62,7 @@ class TodayNotice extends StatelessWidget {
         _line(
           l.todayWaitingPartner,
           DsTextStyles.bodyPrimary.copyWith(color: DsColors.textOnRitualPrimary),
-          support: l.todayWaitingPartnerBody,
+          support: view.isD ? l.todayWaitingPartnerBodyD : l.todayWaitingPartnerBody,
           action: onInvite == null ? null : (l.todayInviteLink, onInvite!),
         ),
       );

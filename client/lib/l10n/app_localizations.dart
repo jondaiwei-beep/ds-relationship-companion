@@ -646,7 +646,7 @@ abstract class L {
   /// No description provided for @entranceNoticeUnreachable.
   ///
   /// In en, this message translates to:
-  /// **'We couldn\'t reach the server. Try again.'**
+  /// **'Could not connect. Try again.'**
   String get entranceNoticeUnreachable;
 
   /// No description provided for @entranceTrustFooter.
@@ -958,7 +958,7 @@ abstract class L {
   /// No description provided for @entranceErrorEmailInvalid.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid email address.'**
+  /// **'That email does not look right.'**
   String get entranceErrorEmailInvalid;
 
   /// No description provided for @entranceErrorPasswordMissing.
@@ -1276,13 +1276,13 @@ abstract class L {
   /// No description provided for @joinBoundaryIntentionLabel.
   ///
   /// In en, this message translates to:
-  /// **'SHARED INTENTION'**
+  /// **'WHAT YOU ARE STARTING'**
   String get joinBoundaryIntentionLabel;
 
   /// No description provided for @joinBoundaryIntention.
   ///
   /// In en, this message translates to:
-  /// **'More structure and closeness.'**
+  /// **'One sets the rules, one delivers; disposing and the record live here.'**
   String get joinBoundaryIntention;
 
   /// No description provided for @joinBoundarySharedLabel.
@@ -1444,31 +1444,31 @@ abstract class L {
   /// No description provided for @todayPrivateByDefaultBody.
   ///
   /// In en, this message translates to:
-  /// **'Partner details stay hidden until membership and the current relationship day are confirmed.'**
+  /// **'Nothing is shown until it is confirmed that this is you, and which day it is.'**
   String get todayPrivateByDefaultBody;
 
   /// No description provided for @todayCouldNotLoad.
   ///
   /// In en, this message translates to:
-  /// **'Today could not be loaded. Nothing was lost.'**
+  /// **'Today could not be opened. Nothing was lost.'**
   String get todayCouldNotLoad;
 
   /// No description provided for @todayActionsPaused.
   ///
   /// In en, this message translates to:
-  /// **'Actions are paused offline'**
+  /// **'No connection, so nothing can be delivered yet.'**
   String get todayActionsPaused;
 
   /// No description provided for @todayActionsReturn.
   ///
   /// In en, this message translates to:
-  /// **'Complete, Discuss, New Time and Can\'t Do will return after current truth is confirmed.'**
+  /// **'Deliveries and explanations come back once you are connected.'**
   String get todayActionsReturn;
 
   /// No description provided for @todayHiddenDetails.
   ///
   /// In en, this message translates to:
-  /// **'Partner and Dynamic details have been hidden.\nSign in again to confirm current access.'**
+  /// **'Everything about them and the two of you is put away for now.\nSign in again and it comes back.'**
   String get todayHiddenDetails;
 
   /// No description provided for @settingsTitle.
@@ -3376,7 +3376,7 @@ abstract class L {
   /// No description provided for @rulesConsequencesIntro.
   ///
   /// In en, this message translates to:
-  /// **'Only {name} uses these, by hand, when disposing. Nothing runs from here.'**
+  /// **'Only {name} uses these, when disposing. They are kept here; nothing runs from here.'**
   String rulesConsequencesIntro(String name);
 
   /// No description provided for @rulesConsequencesEmpty.
@@ -3808,7 +3808,7 @@ abstract class L {
   /// No description provided for @exploreCouldNotLoad.
   ///
   /// In en, this message translates to:
-  /// **'Could not load.'**
+  /// **'Could not be opened.'**
   String get exploreCouldNotLoad;
 
   /// No description provided for @exploreActionFailed.
@@ -4404,6 +4404,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'See the rules'**
   String get sTodayEmptyRules;
+
+  /// No description provided for @todayWaitingPartnerBodyD.
+  ///
+  /// In en, this message translates to:
+  /// **'Until they are in, you can start putting rules and tasks in place.'**
+  String get todayWaitingPartnerBodyD;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
