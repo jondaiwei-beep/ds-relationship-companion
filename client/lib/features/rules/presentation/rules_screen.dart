@@ -217,6 +217,9 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
       context,
       title: v.isD ? l.rulesAddTask : l.rulesProposeTask,
       dName: v.isD ? l.rulesTheD : _dName(l, v),
+      timezone: v.timezone,
+      today: v.day,
+      dayBoundaryMinutes: v.dayBoundaryMinutes,
       primaryLabel: v.isD ? null : l.rulesProposeTask,
     );
     if (t == null || !mounted) return;
@@ -233,6 +236,7 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
       context,
       title: t.title,
       choices: [
+        (l.rulesEditTask, 'edit'),
         if (paused) (l.rulesUnpause, 'unpause'),
         if (!paused) (l.rulesPauseIndefinite, 'pause'),
         if (!paused) (l.rulesPauseUntilDate, 'pause_until'),
@@ -243,6 +247,18 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
     final repo = ref.read(taskRepositoryProvider);
     final key = ApiClient.newIdempotencyKey();
     switch (choice) {
+      case 'edit':
+        final edited = await showTaskSheet(
+          context,
+          title: t.title,
+          dName: l.rulesTheD,
+          timezone: v.timezone,
+          today: v.day,
+          dayBoundaryMinutes: v.dayBoundaryMinutes,
+          existing: t,
+        );
+        if (edited == null || !mounted) return;
+        await _run(() => repo.update(_id, t.id, edited));
       case 'unpause':
         await _run(() => repo.unpause(_id, t.id, idempotencyKey: key));
       case 'pause':

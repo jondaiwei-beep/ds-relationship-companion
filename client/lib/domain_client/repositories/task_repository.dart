@@ -30,6 +30,11 @@ class TaskRepository {
         ),
       );
 
+  /// Full edit of a definition: `PATCH /tasks/{id}` with the same body as
+  /// create. Every field is sent, so a null `dueTime` really clears it.
+  Future<TaskView> update(String dynamicId, String taskId, NewTask task) async =>
+      TaskView.fromJson(await _api.patch('${_base(dynamicId)}/$taskId', body: task.toJson()));
+
   Future<TaskView> accept(String dynamicId, String taskId, {required String idempotencyKey}) async =>
       TaskView.fromJson(
         await _api.post('${_base(dynamicId)}/$taskId/accept', idempotencyKey: idempotencyKey),

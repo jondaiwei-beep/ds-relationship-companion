@@ -8,12 +8,18 @@ import '../../../../l10n/app_localizations.dart';
 import 'secondary_button.dart';
 import 'today_layout.dart';
 
-/// 快速加一条: a title, today or every day, points if any.
+/// 快速加一条: a title, today or every day, points if any. Everything else a
+/// task can carry is one door away — [onMore] opens the full editor seeded
+/// with what was typed here.
 class DQuickAdd extends StatefulWidget {
-  const DQuickAdd({super.key, required this.onAdd});
+  const DQuickAdd({super.key, required this.onAdd, this.onMore});
 
   /// Resolves when the server has the task; throws when it does not.
   final Future<void> Function(NewTask task) onAdd;
+
+  /// Opens the full task editor with [draft] pre-filled. Returns true when a
+  /// task was made, false when backed out; throws when the server said no.
+  final Future<bool> Function(NewTask draft)? onMore;
 
   @override
   State<DQuickAdd> createState() => _DQuickAddState();
@@ -33,6 +39,32 @@ class _DQuickAddState extends State<DQuickAdd> {
     super.dispose();
   }
 
+  NewTask _draft() {
+    final title = _title.text.trim();
+    final points = (int.tryParse(_points.text.trim()) ?? 0).clamp(0, 1000);
+    return _daily
+        ? NewTask(
+            title: title,
+            kind: 'recurring',
+            schedule: const {'type': 'daily'},
+            pointsEarn: points,
+          )
+        : NewTask(title: title, kind: 'one_off', pointsEarn: points);
+  }
+
+  Future<void> _more() async {
+    final l = L.of(context);
+    try {
+      final made = await widget.onMore!(_draft());
+      if (!mounted || !made) return;
+      _title.clear();
+      _points.clear();
+      setState(() => _message = l.dTodayQuickAdded);
+    } on Object {
+      if (mounted) setState(() => _message = l.dTodayQuickFailed);
+    }
+  }
+
   Future<void> _submit() async {
     final l = L.of(context);
     final title = _title.text.trim();
@@ -41,15 +73,7 @@ class _DQuickAddState extends State<DQuickAdd> {
       _busy = true;
       _message = null;
     });
-    final points = int.tryParse(_points.text.trim()) ?? 0;
-    final task = _daily
-        ? NewTask(
-            title: title,
-            kind: 'recurring',
-            schedule: const {'type': 'daily'},
-            pointsEarn: points,
-          )
-        : NewTask(title: title, kind: 'one_off', pointsEarn: points);
+    final task = _draft();
     try {
       await widget.onAdd(task);
       if (!mounted) return;
@@ -106,6 +130,10 @@ class _DQuickAddState extends State<DQuickAdd> {
           ),
           const SizedBox(height: DsSpacing.space4),
           DsPrimaryButton(label: l.dTodayQuickAdd, onPressed: _submit, busy: _busy),
+          if (widget.onMore != null) ...[
+            const SizedBox(height: DsSpacing.space3),
+            SecondaryButton(label: l.dTodayQuickMore, onTap: _busy ? () {} : _more),
+          ],
           if (_message != null) ...[
             const SizedBox(height: DsSpacing.space3),
             Text(

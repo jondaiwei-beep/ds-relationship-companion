@@ -21,7 +21,8 @@ abstract final class RulesFormat {
       };
 
   /// `{"type":"daily"}` · `{"type":"weekdays","days":[1,3,5]}` (ISO, Mon=1) ·
-  /// `{"type":"every_n_days","n":3}` — backend today/domain/Today.kt.
+  /// `{"type":"every_n_days","n":3,"from":"2026-09-01"}` — backend
+  /// today/domain/Today.kt.
   static String schedule(L l, TaskView t) {
     switch (t.kind) {
       case 'one_off':

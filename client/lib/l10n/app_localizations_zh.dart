@@ -3503,4 +3503,92 @@ class LZh extends L {
 
   @override
   String get recordExportFailed => '没导出成，再试一次。';
+
+  @override
+  String get rulesEditTask => '改一下';
+
+  @override
+  String get rulesTaskKindLabel => '哪一种';
+
+  @override
+  String get rulesTaskKindRecurring => '循环';
+
+  @override
+  String get rulesTaskKindOneOff => '一次';
+
+  @override
+  String get rulesTaskKindOpen => '想做就做';
+
+  @override
+  String get rulesTaskKindCheckin => '问安';
+
+  @override
+  String get rulesTaskKindMeasure => '记数值';
+
+  @override
+  String get rulesTaskDetailLabel => '细说（可选）';
+
+  @override
+  String get rulesTaskDetailTooLong => '最多 1000 字';
+
+  @override
+  String get rulesTaskTitleRequired => '先写做什么';
+
+  @override
+  String get rulesScheduleLabel => '什么时候';
+
+  @override
+  String get rulesWeekdaysRequired => '至少选一天';
+
+  @override
+  String rulesEveryNFrom(String date) {
+    return '从 $date 起';
+  }
+
+  @override
+  String get rulesEveryNInvalid => '填 2 到 365';
+
+  @override
+  String get rulesTimesPerDayLabel => '一天几次';
+
+  @override
+  String rulesDueTimeLabel(String zone) {
+    return '截止（$zone）';
+  }
+
+  @override
+  String get rulesDueEndOfDay => '日终';
+
+  @override
+  String get rulesDuePickTime => '选个时间';
+
+  @override
+  String get rulesDueAtLabel => '哪天、几点';
+
+  @override
+  String get rulesDuePickDate => '选一天';
+
+  @override
+  String get rulesDueAtRequired => '一次性的要选哪天';
+
+  @override
+  String get rulesProofLabel => '怎么交';
+
+  @override
+  String get rulesProofCheckinOnly => '问安只收文字';
+
+  @override
+  String get rulesPointsRange => '0 到 1000';
+
+  @override
+  String get rulesPointsHint => '基础项 0 分，没做才扣';
+
+  @override
+  String get rulesUnitLabel => '单位（kg、ml…）';
+
+  @override
+  String get rulesUnitRequired => '记数值要有单位';
+
+  @override
+  String get dTodayQuickMore => '更多设置…';
 }

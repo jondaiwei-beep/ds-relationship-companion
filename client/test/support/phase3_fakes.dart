@@ -99,6 +99,7 @@ class FakeTaskDefinitions implements TaskRepository {
   final accepted = <String>[];
   final declined = <String>[];
   final archived = <String>[];
+  final updated = <(String, NewTask)>[];
   final paused = <(String, DateTime?)>[];
   final unpaused = <String>[];
 
@@ -118,6 +119,12 @@ class FakeTaskDefinitions implements TaskRepository {
       createdBy: 'u-x',
       status: 'proposed',
     );
+  }
+
+  @override
+  Future<TaskView> update(String dynamicId, String taskId, NewTask task) async {
+    updated.add((taskId, task));
+    return _find(taskId);
   }
 
   @override

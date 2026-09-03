@@ -15,6 +15,7 @@ import '../../../domain_client/models/explore.dart';
 import '../../explore/application/explore_providers.dart';
 import '../../explore/presentation/widgets/idea_card_sheet.dart';
 import '../../rules/application/rules_providers.dart';
+import '../../rules/presentation/widgets/rules_sheets.dart';
 import 'widgets/word_button.dart';
 import '../application/today_providers.dart';
 import 'today_format.dart';
@@ -262,6 +263,23 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
     );
   }
 
+  /// 更多设置: the full editor from 规矩, seeded with the quick line.
+  Future<bool> _addTaskFully(TodayView view, NewTask draft) async {
+    final l = L.of(context);
+    final task = await showTaskSheet(
+      context,
+      title: l.rulesAddTask,
+      dName: l.rulesYou,
+      timezone: view.timezone,
+      today: view.day,
+      dayBoundaryMinutes: view.dayBoundaryMinutes,
+      draft: draft,
+    );
+    if (task == null || !mounted) return false;
+    await _addTask(task);
+    return true;
+  }
+
   Future<void> _addTask(NewTask task) async {
     await ref.read(taskRepositoryProvider).create(
           widget.dynamicId,
@@ -390,7 +408,7 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
         const SizedBox(height: DsSpacing.space8),
         _overview(l),
         SectionLabel(l.dTodaySectionQuickAdd),
-        DQuickAdd(onAdd: _addTask),
+        DQuickAdd(onAdd: _addTask, onMore: (draft) => _addTaskFully(view, draft)),
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.dTodaySectionNotes),
         notes.when(

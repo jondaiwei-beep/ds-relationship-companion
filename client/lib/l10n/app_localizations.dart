@@ -6312,6 +6312,174 @@ abstract class L {
   /// In en, this message translates to:
   /// **'The export did not go through. Try again.'**
   String get recordExportFailed;
+
+  /// No description provided for @rulesEditTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get rulesEditTask;
+
+  /// No description provided for @rulesTaskKindLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Kind'**
+  String get rulesTaskKindLabel;
+
+  /// No description provided for @rulesTaskKindRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeats'**
+  String get rulesTaskKindRecurring;
+
+  /// No description provided for @rulesTaskKindOneOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get rulesTaskKindOneOff;
+
+  /// No description provided for @rulesTaskKindOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Whenever'**
+  String get rulesTaskKindOpen;
+
+  /// No description provided for @rulesTaskKindCheckin.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get rulesTaskKindCheckin;
+
+  /// No description provided for @rulesTaskKindMeasure.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure'**
+  String get rulesTaskKindMeasure;
+
+  /// No description provided for @rulesTaskDetailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Details (optional)'**
+  String get rulesTaskDetailLabel;
+
+  /// No description provided for @rulesTaskDetailTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'At most 1000 characters'**
+  String get rulesTaskDetailTooLong;
+
+  /// No description provided for @rulesTaskTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Say what first'**
+  String get rulesTaskTitleRequired;
+
+  /// No description provided for @rulesScheduleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get rulesScheduleLabel;
+
+  /// No description provided for @rulesWeekdaysRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one day'**
+  String get rulesWeekdaysRequired;
+
+  /// No description provided for @rulesEveryNFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'from {date}'**
+  String rulesEveryNFrom(String date);
+
+  /// No description provided for @rulesEveryNInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'2 to 365'**
+  String get rulesEveryNInvalid;
+
+  /// No description provided for @rulesTimesPerDayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Times a day'**
+  String get rulesTimesPerDayLabel;
+
+  /// No description provided for @rulesDueTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Due ({zone})'**
+  String rulesDueTimeLabel(String zone);
+
+  /// No description provided for @rulesDueEndOfDay.
+  ///
+  /// In en, this message translates to:
+  /// **'End of day'**
+  String get rulesDueEndOfDay;
+
+  /// No description provided for @rulesDuePickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time'**
+  String get rulesDuePickTime;
+
+  /// No description provided for @rulesDueAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Which day, what time'**
+  String get rulesDueAtLabel;
+
+  /// No description provided for @rulesDuePickDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a day'**
+  String get rulesDuePickDate;
+
+  /// No description provided for @rulesDueAtRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A one-off needs a day'**
+  String get rulesDueAtRequired;
+
+  /// No description provided for @rulesProofLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'How it is handed in'**
+  String get rulesProofLabel;
+
+  /// No description provided for @rulesProofCheckinOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'A check-in is always words'**
+  String get rulesProofCheckinOnly;
+
+  /// No description provided for @rulesPointsRange.
+  ///
+  /// In en, this message translates to:
+  /// **'0 to 1000'**
+  String get rulesPointsRange;
+
+  /// No description provided for @rulesPointsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Basics earn 0; they only cost when missed'**
+  String get rulesPointsHint;
+
+  /// No description provided for @rulesUnitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit (kg, ml…)'**
+  String get rulesUnitLabel;
+
+  /// No description provided for @rulesUnitRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'A measure needs a unit'**
+  String get rulesUnitRequired;
+
+  /// No description provided for @dTodayQuickMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More…'**
+  String get dTodayQuickMore;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

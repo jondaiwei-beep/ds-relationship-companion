@@ -3652,4 +3652,92 @@ class LEn extends L {
 
   @override
   String get recordExportFailed => 'The export did not go through. Try again.';
+
+  @override
+  String get rulesEditTask => 'Edit';
+
+  @override
+  String get rulesTaskKindLabel => 'Kind';
+
+  @override
+  String get rulesTaskKindRecurring => 'Repeats';
+
+  @override
+  String get rulesTaskKindOneOff => 'Once';
+
+  @override
+  String get rulesTaskKindOpen => 'Whenever';
+
+  @override
+  String get rulesTaskKindCheckin => 'Check-in';
+
+  @override
+  String get rulesTaskKindMeasure => 'Measure';
+
+  @override
+  String get rulesTaskDetailLabel => 'Details (optional)';
+
+  @override
+  String get rulesTaskDetailTooLong => 'At most 1000 characters';
+
+  @override
+  String get rulesTaskTitleRequired => 'Say what first';
+
+  @override
+  String get rulesScheduleLabel => 'When';
+
+  @override
+  String get rulesWeekdaysRequired => 'Pick at least one day';
+
+  @override
+  String rulesEveryNFrom(String date) {
+    return 'from $date';
+  }
+
+  @override
+  String get rulesEveryNInvalid => '2 to 365';
+
+  @override
+  String get rulesTimesPerDayLabel => 'Times a day';
+
+  @override
+  String rulesDueTimeLabel(String zone) {
+    return 'Due ($zone)';
+  }
+
+  @override
+  String get rulesDueEndOfDay => 'End of day';
+
+  @override
+  String get rulesDuePickTime => 'Pick a time';
+
+  @override
+  String get rulesDueAtLabel => 'Which day, what time';
+
+  @override
+  String get rulesDuePickDate => 'Pick a day';
+
+  @override
+  String get rulesDueAtRequired => 'A one-off needs a day';
+
+  @override
+  String get rulesProofLabel => 'How it is handed in';
+
+  @override
+  String get rulesProofCheckinOnly => 'A check-in is always words';
+
+  @override
+  String get rulesPointsRange => '0 to 1000';
+
+  @override
+  String get rulesPointsHint => 'Basics earn 0; they only cost when missed';
+
+  @override
+  String get rulesUnitLabel => 'Unit (kg, ml…)';
+
+  @override
+  String get rulesUnitRequired => 'A measure needs a unit';
+
+  @override
+  String get dTodayQuickMore => 'More…';
 }

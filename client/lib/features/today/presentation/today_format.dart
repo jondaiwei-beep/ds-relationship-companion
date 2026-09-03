@@ -21,6 +21,9 @@ abstract final class TodayFormat {
     return tz.TZDateTime.from(instant.toUtc(), loc);
   }
 
+  /// The wall clock of [instant] in [zone] (UTC when the zone is unknown).
+  static DateTime inZone(DateTime instant, String zone) => _inZone(instant, zone);
+
   /// `HH:mm` in the reader's convention.
   static String clock(DateTime instant, String zone, String locale) =>
       DateFormat.Hm(locale).format(_inZone(instant, zone));
