@@ -15,10 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MemberView {
 
-/// Needed to address an expectation to a person. Without it nothing can
-/// be assigned, so nothing can be created.
  String get userId; String? get displayName; String get roleContext;/// How they describe their role. Never used for authorization.
- String? get rolePreset; String get accessState;
+ String? get rolePreset;/// `D` or `S` — which face of the app this member sees.
+ String? get side; String get accessState;
 /// Create a copy of MemberView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,16 +30,16 @@ $MemberViewCopyWith<MemberView> get copyWith => _$MemberViewCopyWithImpl<MemberV
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberView&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.rolePreset, rolePreset) || other.rolePreset == rolePreset)&&(identical(other.accessState, accessState) || other.accessState == accessState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MemberView&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.rolePreset, rolePreset) || other.rolePreset == rolePreset)&&(identical(other.side, side) || other.side == side)&&(identical(other.accessState, accessState) || other.accessState == accessState));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,displayName,roleContext,rolePreset,accessState);
+int get hashCode => Object.hash(runtimeType,userId,displayName,roleContext,rolePreset,side,accessState);
 
 @override
 String toString() {
-  return 'MemberView(userId: $userId, displayName: $displayName, roleContext: $roleContext, rolePreset: $rolePreset, accessState: $accessState)';
+  return 'MemberView(userId: $userId, displayName: $displayName, roleContext: $roleContext, rolePreset: $rolePreset, side: $side, accessState: $accessState)';
 }
 
 
@@ -51,7 +50,7 @@ abstract mixin class $MemberViewCopyWith<$Res>  {
   factory $MemberViewCopyWith(MemberView value, $Res Function(MemberView) _then) = _$MemberViewCopyWithImpl;
 @useResult
 $Res call({
- String userId, String? displayName, String roleContext, String? rolePreset, String accessState
+ String userId, String? displayName, String roleContext, String? rolePreset, String? side, String accessState
 });
 
 
@@ -68,12 +67,13 @@ class _$MemberViewCopyWithImpl<$Res>
 
 /// Create a copy of MemberView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? displayName = freezed,Object? roleContext = null,Object? rolePreset = freezed,Object? accessState = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? displayName = freezed,Object? roleContext = null,Object? rolePreset = freezed,Object? side = freezed,Object? accessState = null,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,rolePreset: freezed == rolePreset ? _self.rolePreset : rolePreset // ignore: cast_nullable_to_non_nullable
+as String?,side: freezed == side ? _self.side : side // ignore: cast_nullable_to_non_nullable
 as String?,accessState: null == accessState ? _self.accessState : accessState // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -160,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String? displayName,  String roleContext,  String? rolePreset,  String accessState)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String userId,  String? displayName,  String roleContext,  String? rolePreset,  String? side,  String accessState)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MemberView() when $default != null:
-return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePreset,_that.accessState);case _:
+return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePreset,_that.side,_that.accessState);case _:
   return orElse();
 
 }
@@ -181,10 +181,10 @@ return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePrese
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String? displayName,  String roleContext,  String? rolePreset,  String accessState)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String userId,  String? displayName,  String roleContext,  String? rolePreset,  String? side,  String accessState)  $default,) {final _that = this;
 switch (_that) {
 case _MemberView():
-return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePreset,_that.accessState);case _:
+return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePreset,_that.side,_that.accessState);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +201,10 @@ return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePrese
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String? displayName,  String roleContext,  String? rolePreset,  String accessState)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String userId,  String? displayName,  String roleContext,  String? rolePreset,  String? side,  String accessState)?  $default,) {final _that = this;
 switch (_that) {
 case _MemberView() when $default != null:
-return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePreset,_that.accessState);case _:
+return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePreset,_that.side,_that.accessState);case _:
   return null;
 
 }
@@ -216,16 +216,16 @@ return $default(_that.userId,_that.displayName,_that.roleContext,_that.rolePrese
 @JsonSerializable()
 
 class _MemberView implements MemberView {
-  const _MemberView({required this.userId, this.displayName, required this.roleContext, this.rolePreset, required this.accessState});
+  const _MemberView({required this.userId, this.displayName, required this.roleContext, this.rolePreset, this.side, required this.accessState});
   factory _MemberView.fromJson(Map<String, dynamic> json) => _$MemberViewFromJson(json);
 
-/// Needed to address an expectation to a person. Without it nothing can
-/// be assigned, so nothing can be created.
 @override final  String userId;
 @override final  String? displayName;
 @override final  String roleContext;
 /// How they describe their role. Never used for authorization.
 @override final  String? rolePreset;
+/// `D` or `S` — which face of the app this member sees.
+@override final  String? side;
 @override final  String accessState;
 
 /// Create a copy of MemberView
@@ -241,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberView&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.rolePreset, rolePreset) || other.rolePreset == rolePreset)&&(identical(other.accessState, accessState) || other.accessState == accessState));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MemberView&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.rolePreset, rolePreset) || other.rolePreset == rolePreset)&&(identical(other.side, side) || other.side == side)&&(identical(other.accessState, accessState) || other.accessState == accessState));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,displayName,roleContext,rolePreset,accessState);
+int get hashCode => Object.hash(runtimeType,userId,displayName,roleContext,rolePreset,side,accessState);
 
 @override
 String toString() {
-  return 'MemberView(userId: $userId, displayName: $displayName, roleContext: $roleContext, rolePreset: $rolePreset, accessState: $accessState)';
+  return 'MemberView(userId: $userId, displayName: $displayName, roleContext: $roleContext, rolePreset: $rolePreset, side: $side, accessState: $accessState)';
 }
 
 
@@ -261,7 +261,7 @@ abstract mixin class _$MemberViewCopyWith<$Res> implements $MemberViewCopyWith<$
   factory _$MemberViewCopyWith(_MemberView value, $Res Function(_MemberView) _then) = __$MemberViewCopyWithImpl;
 @override @useResult
 $Res call({
- String userId, String? displayName, String roleContext, String? rolePreset, String accessState
+ String userId, String? displayName, String roleContext, String? rolePreset, String? side, String accessState
 });
 
 
@@ -278,12 +278,13 @@ class __$MemberViewCopyWithImpl<$Res>
 
 /// Create a copy of MemberView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? displayName = freezed,Object? roleContext = null,Object? rolePreset = freezed,Object? accessState = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? displayName = freezed,Object? roleContext = null,Object? rolePreset = freezed,Object? side = freezed,Object? accessState = null,}) {
   return _then(_MemberView(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,rolePreset: freezed == rolePreset ? _self.rolePreset : rolePreset // ignore: cast_nullable_to_non_nullable
+as String?,side: freezed == side ? _self.side : side // ignore: cast_nullable_to_non_nullable
 as String?,accessState: null == accessState ? _self.accessState : accessState // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -296,7 +297,7 @@ as String,
 /// @nodoc
 mixin _$StructureItem {
 
- String get definitionId; String get kind; String get title; bool get active;
+ String get taskId; String get kind; String get title; bool get active;
 /// Create a copy of StructureItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -309,16 +310,16 @@ $StructureItemCopyWith<StructureItem> get copyWith => _$StructureItemCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StructureItem&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.title, title) || other.title == title)&&(identical(other.active, active) || other.active == active));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StructureItem&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.title, title) || other.title == title)&&(identical(other.active, active) || other.active == active));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,kind,title,active);
+int get hashCode => Object.hash(runtimeType,taskId,kind,title,active);
 
 @override
 String toString() {
-  return 'StructureItem(definitionId: $definitionId, kind: $kind, title: $title, active: $active)';
+  return 'StructureItem(taskId: $taskId, kind: $kind, title: $title, active: $active)';
 }
 
 
@@ -329,7 +330,7 @@ abstract mixin class $StructureItemCopyWith<$Res>  {
   factory $StructureItemCopyWith(StructureItem value, $Res Function(StructureItem) _then) = _$StructureItemCopyWithImpl;
 @useResult
 $Res call({
- String definitionId, String kind, String title, bool active
+ String taskId, String kind, String title, bool active
 });
 
 
@@ -346,9 +347,9 @@ class _$StructureItemCopyWithImpl<$Res>
 
 /// Create a copy of StructureItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? definitionId = null,Object? kind = null,Object? title = null,Object? active = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? taskId = null,Object? kind = null,Object? title = null,Object? active = null,}) {
   return _then(_self.copyWith(
-definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
+taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,active: null == active ? _self.active : active // ignore: cast_nullable_to_non_nullable
@@ -437,10 +438,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String definitionId,  String kind,  String title,  bool active)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String taskId,  String kind,  String title,  bool active)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StructureItem() when $default != null:
-return $default(_that.definitionId,_that.kind,_that.title,_that.active);case _:
+return $default(_that.taskId,_that.kind,_that.title,_that.active);case _:
   return orElse();
 
 }
@@ -458,10 +459,10 @@ return $default(_that.definitionId,_that.kind,_that.title,_that.active);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String definitionId,  String kind,  String title,  bool active)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String taskId,  String kind,  String title,  bool active)  $default,) {final _that = this;
 switch (_that) {
 case _StructureItem():
-return $default(_that.definitionId,_that.kind,_that.title,_that.active);case _:
+return $default(_that.taskId,_that.kind,_that.title,_that.active);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -478,10 +479,10 @@ return $default(_that.definitionId,_that.kind,_that.title,_that.active);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String definitionId,  String kind,  String title,  bool active)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String taskId,  String kind,  String title,  bool active)?  $default,) {final _that = this;
 switch (_that) {
 case _StructureItem() when $default != null:
-return $default(_that.definitionId,_that.kind,_that.title,_that.active);case _:
+return $default(_that.taskId,_that.kind,_that.title,_that.active);case _:
   return null;
 
 }
@@ -493,10 +494,10 @@ return $default(_that.definitionId,_that.kind,_that.title,_that.active);case _:
 @JsonSerializable()
 
 class _StructureItem implements StructureItem {
-  const _StructureItem({required this.definitionId, required this.kind, required this.title, required this.active});
+  const _StructureItem({required this.taskId, required this.kind, required this.title, required this.active});
   factory _StructureItem.fromJson(Map<String, dynamic> json) => _$StructureItemFromJson(json);
 
-@override final  String definitionId;
+@override final  String taskId;
 @override final  String kind;
 @override final  String title;
 @override final  bool active;
@@ -514,16 +515,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StructureItem&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.title, title) || other.title == title)&&(identical(other.active, active) || other.active == active));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StructureItem&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.title, title) || other.title == title)&&(identical(other.active, active) || other.active == active));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,kind,title,active);
+int get hashCode => Object.hash(runtimeType,taskId,kind,title,active);
 
 @override
 String toString() {
-  return 'StructureItem(definitionId: $definitionId, kind: $kind, title: $title, active: $active)';
+  return 'StructureItem(taskId: $taskId, kind: $kind, title: $title, active: $active)';
 }
 
 
@@ -534,7 +535,7 @@ abstract mixin class _$StructureItemCopyWith<$Res> implements $StructureItemCopy
   factory _$StructureItemCopyWith(_StructureItem value, $Res Function(_StructureItem) _then) = __$StructureItemCopyWithImpl;
 @override @useResult
 $Res call({
- String definitionId, String kind, String title, bool active
+ String taskId, String kind, String title, bool active
 });
 
 
@@ -551,9 +552,9 @@ class __$StructureItemCopyWithImpl<$Res>
 
 /// Create a copy of StructureItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? definitionId = null,Object? kind = null,Object? title = null,Object? active = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? taskId = null,Object? kind = null,Object? title = null,Object? active = null,}) {
   return _then(_StructureItem(
-definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
+taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,active: null == active ? _self.active : active // ignore: cast_nullable_to_non_nullable
@@ -568,7 +569,7 @@ as bool,
 /// @nodoc
 mixin _$DynamicDetail {
 
- String get dynamicId; String get state; String get desiredOutcome; String get structureLevel; String get referenceTimezone; int get dayBoundaryMinutes; DateTime? get pausedAt; List<MemberView> get members; List<StructureItem> get structure;/// Agency no role can ever remove (red line #4). The UI must always be
+ String get dynamicId; String get state; String get desiredOutcome; String get structureLevel; String get referenceTimezone; int get dayBoundaryMinutes; DateTime? get pausedAt; List<MemberView> get members; List<StructureItem> get structure;/// Agency no role can ever remove. The UI must always be
 /// able to surface these, whatever the viewer's role.
  List<String> get alwaysAvailable;
 /// Create a copy of DynamicDetail
@@ -797,10 +798,10 @@ class _DynamicDetail implements DynamicDetail {
   return EqualUnmodifiableListView(_structure);
 }
 
-/// Agency no role can ever remove (red line #4). The UI must always be
+/// Agency no role can ever remove. The UI must always be
 /// able to surface these, whatever the viewer's role.
  final  List<String> _alwaysAvailable;
-/// Agency no role can ever remove (red line #4). The UI must always be
+/// Agency no role can ever remove. The UI must always be
 /// able to surface these, whatever the viewer's role.
 @override@JsonKey() List<String> get alwaysAvailable {
   if (_alwaysAvailable is EqualUnmodifiableListView) return _alwaysAvailable;

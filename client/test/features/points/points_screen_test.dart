@@ -146,14 +146,14 @@ void main() {
       _FakePoints(
         balance: 1,
         entries: const [
-          PointEntry(id: 'e1', amount: 1, reason: PointReason.completion),
+          PointEntry(id: 'e1', amount: 1, reason: PointReason.taskEarn),
         ],
       ),
     );
 
     await _scrollToBottom(tester);
     expect(find.text('Alex noticed'), findsOneWidget);
-    expect(find.textContaining('COMPLETION'), findsNothing);
+    expect(find.textContaining('task_earn'), findsNothing);
   });
 
   testWidgets('a reward can be given outright, without the partner affording it', (

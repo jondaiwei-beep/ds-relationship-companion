@@ -12,9 +12,7 @@ import '../features/dynamic/presentation/pause_screen.dart';
 import '../features/settings/presentation/leave_screen.dart';
 import '../features/points/presentation/points_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
-import '../features/expectation/presentation/create_expectation_screen.dart';
 import '../features/explore/presentation/explore_screen.dart';
-import '../features/expectation/presentation/occurrence_detail_screen.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
@@ -43,12 +41,6 @@ abstract final class Routes {
   /// The sending side. Authenticated and inside a Dynamic, unlike
   /// `/invite/:token`, which is the public page the link opens.
   static const invitePartner = '/dynamics/:id/invite';
-
-  /// Asking one thing of the other person (SCR-20).
-  static const createExpectation = '/dynamics/:id/ask';
-
-  /// One occurrence in full (SCR-14). Entered from Today or Attention.
-  static const occurrence = '/dynamics/:id/occurrences/:occurrenceId';
 
   /// Pausing or returning.
   static const pause = '/dynamics/:id/pause';
@@ -168,8 +160,6 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
-            onOpenOccurrence: (id) =>
-                context.go('/dynamics/$dynamicId/occurrences/$id'),
             onSettings: () => context.go('/dynamics/$dynamicId/settings'),
           );
         },
@@ -211,32 +201,6 @@ GoRouter createRouter(Ref ref) {
         },
       ),
       GoRoute(
-        path: Routes.occurrence,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return OccurrenceDetailScreen(
-            dynamicId: dynamicId,
-            occurrenceId: s.pathParameters['occurrenceId']!,
-            onClose: () => context.go('/dynamics/$dynamicId/today'),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.createExpectation,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return CreateExpectationScreen(
-            dynamicId: dynamicId,
-            initialTitle: s.uri.queryParameters['title'],
-            initialPurpose: s.uri.queryParameters['purpose'],
-            onCancel: () => context.go(_navPath(dynamicId, NavSurface.rules)),
-            // Back to Today, where the thing that was just asked now lives for
-            // the other person — and where the asker sees it waiting.
-            onDone: (_) => context.go('/dynamics/$dynamicId/today'),
-          );
-        },
-      ),
-      GoRoute(
         path: _navPath(':id', NavSurface.rules),
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
@@ -244,7 +208,6 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
-            onAsk: () => context.go('/dynamics/$dynamicId/ask'),
             onPause: () => context.go('/dynamics/$dynamicId/pause'),
             onExplore: () => context.go('/dynamics/$dynamicId/explore'),
           );
@@ -268,15 +231,6 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
-            onUse: (idea) => context.go(
-              Uri(
-                path: '/dynamics/$dynamicId/ask',
-                queryParameters: {
-                  'title': idea.title,
-                  'purpose': idea.purpose,
-                },
-              ).toString(),
-            ),
           );
         },
       ),

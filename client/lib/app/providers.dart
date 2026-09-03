@@ -2,16 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain_client/api_client.dart';
 import '../domain_client/models/points.dart';
 import '../domain_client/repositories/points_repository.dart';
-import '../domain_client/repositories/attention_repository.dart';
-import '../domain_client/repositories/adjustment_repository.dart';
 import '../domain_client/repositories/auth_repository.dart';
 import '../domain_client/repositories/dynamic_repository.dart';
 import '../domain_client/repositories/invite_repository.dart';
-import '../domain_client/repositories/occurrence_repository.dart';
 import '../domain_client/repositories/starter_rhythm_repository.dart';
-import '../domain_client/repositories/expectation_repository.dart';
 import '../domain_client/repositories/explore_repository.dart';
 import '../domain_client/repositories/settings_repository.dart';
+import '../domain_client/repositories/task_repository.dart';
+import '../domain_client/repositories/d_note_repository.dart';
 import '../domain_client/repositories/today_repository.dart';
 import '../platform/storage/auth_flow_store.dart';
 
@@ -39,16 +37,16 @@ final inviteRepositoryProvider = Provider<InviteRepository>(
   (ref) => InviteRepository(ref.watch(apiClientProvider)),
 );
 
-final occurrenceRepositoryProvider = Provider<OccurrenceRepository>(
-  (ref) => OccurrenceRepository(ref.watch(apiClientProvider)),
-);
-
-final attentionRepositoryProvider = Provider<AttentionRepository>(
-  (ref) => AttentionRepository(ref.watch(apiClientProvider)),
-);
-
 final todayRepositoryProvider = Provider<TodayRepository>(
   (ref) => TodayRepository(ref.watch(apiClientProvider)),
+);
+
+final taskRepositoryProvider = Provider<TaskRepository>(
+  (ref) => TaskRepository(ref.watch(apiClientProvider)),
+);
+
+final dNoteRepositoryProvider = Provider<DNoteRepository>(
+  (ref) => DNoteRepository(ref.watch(apiClientProvider)),
 );
 
 final dynamicRepositoryProvider = Provider<DynamicRepository>(
@@ -73,20 +71,12 @@ final agreementsProvider =
   (ref, dynamicId) => ref.watch(pointsRepositoryProvider).agreements(dynamicId),
 );
 
-final adjustmentRepositoryProvider = Provider<AdjustmentRepository>(
-  (ref) => AdjustmentRepository(ref.watch(apiClientProvider)),
-);
-
 final starterRhythmRepositoryProvider = Provider<StarterRhythmRepository>(
   (ref) => StarterRhythmRepository(ref.watch(apiClientProvider)),
 );
 
 final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepository(ref.watch(apiClientProvider)),
-);
-
-final expectationRepositoryProvider = Provider<ExpectationRepository>(
-  (ref) => ExpectationRepository(ref.watch(apiClientProvider)),
 );
 
 final exploreRepositoryProvider = Provider<ExploreRepository>(

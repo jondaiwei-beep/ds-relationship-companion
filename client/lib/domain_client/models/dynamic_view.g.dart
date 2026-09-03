@@ -11,6 +11,7 @@ _MemberView _$MemberViewFromJson(Map<String, dynamic> json) => _MemberView(
   displayName: json['displayName'] as String?,
   roleContext: json['roleContext'] as String,
   rolePreset: json['rolePreset'] as String?,
+  side: json['side'] as String?,
   accessState: json['accessState'] as String,
 );
 
@@ -20,12 +21,13 @@ Map<String, dynamic> _$MemberViewToJson(_MemberView instance) =>
       'displayName': instance.displayName,
       'roleContext': instance.roleContext,
       'rolePreset': instance.rolePreset,
+      'side': instance.side,
       'accessState': instance.accessState,
     };
 
 _StructureItem _$StructureItemFromJson(Map<String, dynamic> json) =>
     _StructureItem(
-      definitionId: json['definitionId'] as String,
+      taskId: json['taskId'] as String,
       kind: json['kind'] as String,
       title: json['title'] as String,
       active: json['active'] as bool,
@@ -33,7 +35,7 @@ _StructureItem _$StructureItemFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$StructureItemToJson(_StructureItem instance) =>
     <String, dynamic>{
-      'definitionId': instance.definitionId,
+      'taskId': instance.taskId,
       'kind': instance.kind,
       'title': instance.title,
       'active': instance.active,

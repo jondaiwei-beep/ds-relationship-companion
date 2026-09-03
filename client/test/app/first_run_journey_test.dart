@@ -5,8 +5,6 @@ import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/models/dynamic_summary.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
-import 'package:dsapp/domain_client/repositories/today_repository.dart';
-import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 import 'package:dsapp/features/activation/presentation/activation_wizard.dart';
 import 'package:dsapp/features/activation/presentation/timezone_unavailable.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
@@ -17,6 +15,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+
+import '../support/today_fakes.dart';
 
 /// The journey a real person takes on their first run, through the real
 /// router.
@@ -39,9 +39,7 @@ void main() {
         apiClientProvider.overrideWithValue(ApiClient(baseUrl: 'http://test')),
         autoRefreshProvider.overrideWithValue(false),
         dynamicRepositoryProvider.overrideWithValue(dynamics),
-        todayRepositoryProvider.overrideWithValue(
-          FixtureTodayRepository(todayFixture()) as TodayRepository,
-        ),
+        todayRepositoryProvider.overrideWithValue(FakeTodayRepository(view: sView())),
       ],
     );
   }

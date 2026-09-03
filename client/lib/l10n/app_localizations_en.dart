@@ -2434,4 +2434,357 @@ class LEn extends L {
 
   @override
   String get pointsSpendable => 'TO SPEND';
+
+  @override
+  String todayDayStartsAt(String clock) {
+    return 'Today counts from $clock';
+  }
+
+  @override
+  String todayBalance(int count) {
+    return '$count points';
+  }
+
+  @override
+  String todayDaysTogether(int count) {
+    return '$count days together';
+  }
+
+  @override
+  String get todayNoteOptional => 'A line, if you want';
+
+  @override
+  String get todaySend => 'Send';
+
+  @override
+  String get todayCancel => 'Cancel';
+
+  @override
+  String get todayPartnerFallback => 'your partner';
+
+  @override
+  String todayDueBy(String time) {
+    return 'by $time';
+  }
+
+  @override
+  String todayPointsEarn(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get todayProofPhotoNote => 'Photo';
+
+  @override
+  String get todayRefreshed => 'Reloaded.';
+
+  @override
+  String get sTodayEmpty => 'Nothing is asked of you today.';
+
+  @override
+  String get sTodaySectionCheckin => 'Check-in';
+
+  @override
+  String get sTodaySectionList => 'Today';
+
+  @override
+  String get sTodaySectionOpen => 'When you feel like it';
+
+  @override
+  String sTodayDelivered(String name) {
+    return 'Delivered · waiting for $name';
+  }
+
+  @override
+  String sTodayDeliveredLate(String name) {
+    return 'Delivered late · waiting for $name';
+  }
+
+  @override
+  String sTodaySeen(String name, String time) {
+    return '$name saw it · $time';
+  }
+
+  @override
+  String sTodayPraised(String name) {
+    return '$name: good';
+  }
+
+  @override
+  String sTodayPraisedNote(String name, String note) {
+    return '$name: $note';
+  }
+
+  @override
+  String sTodayLetGo(String name) {
+    return '$name: let it go';
+  }
+
+  @override
+  String sTodayMakeUp(String name, String day) {
+    return '$name: make it up on $day';
+  }
+
+  @override
+  String sTodayPunished(String name, String title) {
+    return '$name: $title';
+  }
+
+  @override
+  String sTodayPaused(String name) {
+    return '$name is away · paused';
+  }
+
+  @override
+  String get sTodayMissed => 'Not done';
+
+  @override
+  String get sTodayCantDo => 'Can\'t do';
+
+  @override
+  String sTodayNewTime(String time) {
+    return 'Asked for $time';
+  }
+
+  @override
+  String get sTodayDiscuss => 'Want to talk';
+
+  @override
+  String sTodayYourNote(String note) {
+    return 'You: $note';
+  }
+
+  @override
+  String get sTodayActionDeliver => 'Done';
+
+  @override
+  String get sTodayActionCantDo => 'Can\'t do';
+
+  @override
+  String get sTodayActionNewTime => 'Ask for a new time';
+
+  @override
+  String get sTodayActionDiscuss => 'Want to talk';
+
+  @override
+  String get sTodayActionWithdraw => 'Take it back';
+
+  @override
+  String get sTodayWriteLine => 'Write a line';
+
+  @override
+  String get sTodayPhotoRef => 'Photo';
+
+  @override
+  String get sTodayPhotoHint =>
+      'Paste a photo reference for now; the camera comes in a later build.';
+
+  @override
+  String get sTodayPickTime => 'Pick a time';
+
+  @override
+  String sTodayNewTimeAt(String time) {
+    return 'New time: $time';
+  }
+
+  @override
+  String sTodayConflictPaused(String name) {
+    return '$name paused this.';
+  }
+
+  @override
+  String sTodayConflictDisposed(String name) {
+    return '$name already answered this.';
+  }
+
+  @override
+  String get sTodayConflictChanged => 'This changed elsewhere.';
+
+  @override
+  String get sTodayConflictOther => 'Not sent. Try again.';
+
+  @override
+  String get dTodayEmpty => 'Nothing waiting for you.';
+
+  @override
+  String get dTodaySectionNeedsMe => 'Waiting on me';
+
+  @override
+  String dTodaySectionOverview(String name) {
+    return 'Today for $name';
+  }
+
+  @override
+  String dTodayOverviewDelivered(int done, int total) {
+    return '$done/$total delivered';
+  }
+
+  @override
+  String dTodayOverviewFlagged(int count) {
+    return '$count said something';
+  }
+
+  @override
+  String dTodaySaidDelivered(String time) {
+    return 'Delivered · $time';
+  }
+
+  @override
+  String dTodaySaidLate(String time) {
+    return 'Delivered late · $time';
+  }
+
+  @override
+  String get dTodaySaidCantDo => 'Can\'t do';
+
+  @override
+  String dTodaySaidNewTime(String time) {
+    return 'Asks for $time';
+  }
+
+  @override
+  String get dTodaySaidDiscuss => 'Wants to talk';
+
+  @override
+  String get dTodaySaidMissed => 'Not done';
+
+  @override
+  String dTodaySaidNote(String name, String note) {
+    return '$name: $note';
+  }
+
+  @override
+  String dTodayProofPhoto(String ref) {
+    return 'Photo: $ref';
+  }
+
+  @override
+  String dTodayOnDay(String day) {
+    return '$day';
+  }
+
+  @override
+  String get dTodayActionSeen => 'Seen';
+
+  @override
+  String get dTodayActionPraise => 'Good';
+
+  @override
+  String get dTodayActionLetGo => 'Let it go';
+
+  @override
+  String get dTodayActionMakeUp => 'Make it up';
+
+  @override
+  String get dTodayActionPunish => 'Consequence';
+
+  @override
+  String get dTodayMakeUpWhich => 'Which day?';
+
+  @override
+  String get dTodayPunishWhich => 'Which consequence?';
+
+  @override
+  String get dTodayPunishOwn => 'Your own words';
+
+  @override
+  String get dTodayPunishTitle => 'Consequence';
+
+  @override
+  String get dTodayConflictOpen => 'Nothing to answer yet.';
+
+  @override
+  String get dTodayConflictPaused => 'This one is paused.';
+
+  @override
+  String get dTodayConflictChanged => 'This changed elsewhere.';
+
+  @override
+  String get dTodayConflictOther => 'Not sent. Try again.';
+
+  @override
+  String get dTodaySectionQuickAdd => 'Add one';
+
+  @override
+  String get dTodayQuickTitle => 'What';
+
+  @override
+  String get dTodayQuickToday => 'Just today';
+
+  @override
+  String get dTodayQuickDaily => 'Every day';
+
+  @override
+  String get dTodayQuickPoints => 'Points (optional)';
+
+  @override
+  String get dTodayQuickAdd => 'Add';
+
+  @override
+  String get dTodayQuickAdded => 'Added.';
+
+  @override
+  String get dTodayQuickFailed => 'Not added. Try again.';
+
+  @override
+  String get dTodaySectionNotes => 'To remember';
+
+  @override
+  String get dTodayNoteBody => 'Note to self';
+
+  @override
+  String get dTodayNoteRemind => 'Remind me';
+
+  @override
+  String dTodayNoteRemindAt(String time) {
+    return 'Remind · $time';
+  }
+
+  @override
+  String get dTodayNoteDone => 'Done';
+
+  @override
+  String get dTodayNoteDelete => 'Delete';
+
+  @override
+  String get dTodayNoteAdd => 'Keep it';
+
+  @override
+  String get dTodayNotesPrivate => 'Only you see these.';
+
+  @override
+  String get pointsEntryRefunded => 'Returned to you';
+
+  @override
+  String pointsEntryMoved(int amount) {
+    return '$amount';
+  }
+
+  @override
+  String settingsDayStart(String time) {
+    return 'The day starts at $time';
+  }
+
+  @override
+  String get settingsDayStartReadOnly => 'Changing it comes in a later build.';
+
+  @override
+  String get settingsDeviceLock => 'Device lock';
+
+  @override
+  String get settingsDeviceLockSupport =>
+      'Ask for fingerprint, face or the device PIN when the app opens, or comes back after half a minute away.';
+
+  @override
+  String get settingsDeviceLockUnavailable =>
+      'This device cannot lock the app.';
+
+  @override
+  String get lockTitle => 'Locked';
+
+  @override
+  String get lockUnlock => 'Unlock';
+
+  @override
+  String get lockReason => 'Unlock to continue';
 }

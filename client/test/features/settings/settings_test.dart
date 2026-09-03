@@ -249,7 +249,9 @@ void main() {
       expect(find.text('Asia/Shanghai'), findsOneWidget);
       // The clock is formatted through intl for the reader's locale, so the
       // assertion is on the sentence around it rather than a hardcoded render.
-      expect(find.textContaining('4:00'), findsOneWidget);
+      expect(find.textContaining('day ends at 4:00'), findsOneWidget);
+      // 一天从几点开始, read-only until the server can change it.
+      expect(find.textContaining('The day starts at 04:00'), findsOneWidget);
       expect(
         find.textContaining('not in whichever one your phone is in'),
         findsOneWidget,

@@ -24,7 +24,7 @@ import '../../today/presentation/widgets/today_layout.dart';
 ///    or face — a number next to a face is a rating of that face. Obedience
 ///    shows `♥ -152`, which tells someone their affection account is
 ///    overdrawn.
-/// 2. **Every entry names a person.** "Alex noticed", not "+1 COMPLETION".
+/// 2. **Every entry names a person.** "Alex noticed", not "+1 task_earn".
 ///    Even the automatic award is attributable, because Alex configured it.
 /// 3. **Giving is first-class.** A reward can be handed over outright, with
 ///    no cost and no balance check. None of the three competitors can do this,
@@ -404,11 +404,12 @@ class _EntryRow extends StatelessWidget {
     final who = partnerName ?? l.askYourPartnerFallback;
 
     final sentence = switch (entry.reason) {
-      PointReason.completion => l.pointsEntryNoticed(who),
-      PointReason.manualAward => l.pointsEntryGave(who, entry.amount.abs()),
-      PointReason.manualDeduct => l.pointsEntryHeld(who),
-      PointReason.rewardPurchase => l.pointsEntryTook,
-      PointReason.consequence => l.pointsEntryHeld(who),
+      PointReason.taskEarn => l.pointsEntryNoticed(who),
+      PointReason.dAward => l.pointsEntryGave(who, entry.amount.abs()),
+      PointReason.dDeduct => l.pointsEntryHeld(who),
+      PointReason.redemption => l.pointsEntryTook,
+      PointReason.redemptionRefund => l.pointsEntryRefunded,
+      PointReason.unknown => l.pointsEntryMoved(entry.amount),
     };
 
     return Padding(

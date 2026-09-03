@@ -3,118 +3,163 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'today_view.freezed.dart';
 part 'today_view.g.dart';
 
-@freezed
-abstract class TodayItem with _$TodayItem {
-  const factory TodayItem({
-    required String occurrenceId,
-    required String title,
-    String? purpose,
-    /// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001).
-    ///
-    /// The default is a rollout concession, not a fact: the current server
-    /// always sends this, but staging has not been redeployed (plan item
-    /// T1.6) and a required field would hard-fail the build the owner tests
-    /// with. It is deliberately `''` rather than `'TASK'` — an absent kind is
-    /// unknown, not a task, and [kindLabel] keeps the claim neutral instead of
-    /// asserting one. Make it required once staging is redeployed.
-    @Default('') String kind,
-    required String state,
+/// The s axis (product/03-domain.md). Written by the s, or by the day-end
+/// sweep (`missed`, `paused`). Nothing here is a judgement.
+enum Outcome {
+  open,
+  delivered,
+  @JsonValue('delivered_late')
+  deliveredLate,
+  @JsonValue('cant_do')
+  cantDo,
+  @JsonValue('new_time_requested')
+  newTimeRequested,
+  @JsonValue('discuss_requested')
+  discussRequested,
+  missed,
+  paused;
 
-    /// What this person may do with this item right now, stated by the server.
-    /// REQ-STATE-001 names entitlement explicitly: the screen used to offer
-    /// all four actions unconditionally, including on items whose only
-    /// permitted action was to withdraw an open adjustment.
-    @Default(<String>[]) List<String> allowedActions,
+  /// The wire spelling the backend expects in `POST .../outcome`.
+  String get wire => switch (this) {
+        Outcome.open => 'open',
+        Outcome.delivered => 'delivered',
+        Outcome.deliveredLate => 'delivered_late',
+        Outcome.cantDo => 'cant_do',
+        Outcome.newTimeRequested => 'new_time_requested',
+        Outcome.discussRequested => 'discuss_requested',
+        Outcome.missed => 'missed',
+        Outcome.paused => 'paused',
+      };
+
+  bool get isDelivered => this == delivered || this == deliveredLate;
+
+  /// Something the s has said and can still take back before the D answers.
+  bool get saidByS =>
+      this == delivered ||
+      this == deliveredLate ||
+      this == cantDo ||
+      this == newTimeRequested ||
+      this == discussRequested;
+}
+
+/// The D axis. Written only by the D, never by a job, never expiring.
+enum Disposition {
+  none,
+  seen,
+  praised,
+  @JsonValue('let_go')
+  letGo,
+  @JsonValue('make_up')
+  makeUp,
+  punished;
+
+  String get wire => switch (this) {
+        Disposition.none => 'none',
+        Disposition.seen => 'seen',
+        Disposition.praised => 'praised',
+        Disposition.letGo => 'let_go',
+        Disposition.makeUp => 'make_up',
+        Disposition.punished => 'punished',
+      };
+}
+
+@freezed
+abstract class ConsequenceView with _$ConsequenceView {
+  const factory ConsequenceView({
+    required String id,
+    required String title,
+    String? detail,
+    required String status,
+    required DateTime issuedAt,
+  }) = _ConsequenceView;
+
+  factory ConsequenceView.fromJson(Map<String, dynamic> json) =>
+      _$ConsequenceViewFromJson(json);
+}
+
+/// One task on one relationship day, on both axes.
+@freezed
+abstract class OccurrenceView with _$OccurrenceView {
+  const OccurrenceView._();
+
+  const factory OccurrenceView({
+    required String id,
+    required String taskId,
+    required String title,
+    String? detail,
+    /// `recurring | one_off | open | checkin | measure`.
+    required String kind,
+    /// `check | photo | text | any`.
+    required String proof,
+    @Default(0) int pointsEarn,
+    @Default(false) bool requiresDPresent,
+    /// The relationship day, `yyyy-MM-dd`, in the Dynamic's zone.
+    required String day,
+    @Default(0) int slot,
     DateTime? dueAt,
-    /// Who set this. Direction comes from a person, not from the app.
-    String? fromDisplayName,
+    @Default(Outcome.open) Outcome outcome,
+    DateTime? outcomeAt,
+    String? outcomeNote,
+    String? proofKind,
+    String? proofRef,
+    DateTime? proposedTime,
+    @Default(Disposition.none) Disposition disposition,
+    DateTime? dispositionAt,
+    String? dispositionNote,
+    ConsequenceView? consequence,
+    String? makeUpDay,
+    String? makeUpOf,
+    DateTime? seenAt,
+    @Default(0) int version,
+  }) = _OccurrenceView;
 
-    /// Who this was given to, when the viewer is the one who gave it.
-    String? assigneeDisplayName,
+  factory OccurrenceView.fromJson(Map<String, dynamic> json) =>
+      _$OccurrenceViewFromJson(json);
 
-    /// When the receiving person said "received". Null until they do — and
-    /// the difference between the two is the first thing the giving side
-    /// looks for.
-    DateTime? receivedAt,
-
-    /// The words the other person attached when they asked to adjust. Shown
-    /// to the person who now has to answer; never paraphrased by the app.
-    String? actorNote,
-  }) = _TodayItem;
-
-  factory TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
+  bool get isCheckin => kind == 'checkin';
+  bool get isRecurring => kind == 'recurring';
+  bool get isPaused => outcome == Outcome.paused;
 }
 
-/// The most recent human response — presence, even when apart.
+/// A `kind=open` task: no schedule, delivered whenever, as often as wanted.
 @freezed
-abstract class RecentResponse with _$RecentResponse {
-  const factory RecentResponse({
-    required String occurrenceId,
+abstract class OpenTaskView with _$OpenTaskView {
+  const factory OpenTaskView({
+    required String id,
     required String title,
-    required String type,
-    required String text,
-    required DateTime sentAt,
-    String? senderDisplayName,
-  }) = _RecentResponse;
+    String? detail,
+    required String proof,
+    @Default(0) int pointsEarn,
+  }) = _OpenTaskView;
 
-  factory RecentResponse.fromJson(Map<String, dynamic> json) =>
-      _$RecentResponseFromJson(json);
+  factory OpenTaskView.fromJson(Map<String, dynamic> json) =>
+      _$OpenTaskViewFromJson(json);
 }
 
+/// `GET /v1/dynamics/{id}/today`. Both faces read the same shape.
 @freezed
 abstract class TodayView with _$TodayView {
+  const TodayView._();
+
   const factory TodayView({
-    /// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
-    @Default('PARTNER') String roleContext,
-    /// How many things are waiting on my human response, stated by the
-    /// server. Today shows the direction-giving face when this is non-zero.
-    @Default(0) int needsMyResponseCount,
-
-    /// The relationship day this list belongs to, resolved by the server in
-    /// the Dynamic's own timezone. The client never derives it from the
-    /// device clock.
-    DateTime? relationshipDay,
-
-    /// Minutes past midnight at which the relationship day rolls over, in the
-    /// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
-    /// which was wrong for any Dynamic that chose another boundary.
-    ///
-    /// `null` when an older server did not send it, in which case the line is
-    /// omitted rather than stating a boundary nobody chose. Make it required
-    /// once staging is redeployed (plan item T1.6).
-    int? dayBoundaryMinutes,
-
-    /// The Dynamic's IANA zone. REQ-TIME-001: due times are rendered here, not
-    /// in the device's zone, so a travelling partner reads the same hour their
-    /// partner set. `null` from a server that predates the field, in which
-    /// case the device's zone is the only thing left to use.
-    String? referenceTimezone,
-
-    /// When the server last confirmed this list. Offline shows the last
-    /// confirmed list with this timestamp rather than implying it is current.
-    DateTime? lastConfirmedAt,
-
-    /// Total actionable items for the day, stated by the server.
-    @Default(0) int totalCount,
-
-    /// At most three, in server order: the first carries editorial emphasis,
-    /// the next two are timeline rows. Never re-sorted on the client.
-    @Default(<TodayItem>[]) List<TodayItem> priorityItems,
-
-    /// Everything else for the day, behind one count-bearing disclosure.
-    @Default(<TodayItem>[]) List<TodayItem> laterItems,
-    @Default(<TodayItem>[]) List<TodayItem> awaitingResponse,
-    RecentResponse? recentResponse,
-
-    /// What the other person did that now waits on me: completions to
-    /// acknowledge, adjustments to answer, past-due items to look at. Most
-    /// urgent first, ordered by the server.
-    @Default(<TodayItem>[]) List<TodayItem> needsMyResponse,
-
-    /// What I gave that is still open on their side, with whether it has
-    /// been received.
-    @Default(<TodayItem>[]) List<TodayItem> given,
+    required String dynamicId,
+    /// The relationship day shown, `yyyy-MM-dd`.
+    required String day,
+    required String timezone,
+    @Default(240) int dayBoundaryMinutes,
+    /// `D` or `S` — the caller's side, as the server sees it.
+    required String side,
+    @Default(<OccurrenceView>[]) List<OccurrenceView> items,
+    @Default(<OpenTaskView>[]) List<OpenTaskView> openTasks,
+    @Default(0) int balance,
+    @Default(0) int daysTogether,
+    /// D face: things the s has said that have no answer yet, all days.
+    @Default(0) int needsMe,
+    String? partnerDisplayName,
   }) = _TodayView;
 
-  factory TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
+  factory TodayView.fromJson(Map<String, dynamic> json) =>
+      _$TodayViewFromJson(json);
+
+  bool get isD => side == 'D';
 }

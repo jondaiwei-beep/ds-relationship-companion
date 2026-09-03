@@ -11,6 +11,7 @@ import '../../../app/shell/ds_refreshable.dart';
 import '../../../domain_client/models/dynamic_view.dart';
 import '../../../domain_client/models/notification_settings.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../device_lock/application/device_lock_controller.dart';
 import '../../dynamic/presentation/dynamic_screen.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
@@ -195,6 +196,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
                       const SizedBox(height: DsSpacing.space10),
                       _Section(l.settingsDeviceSection),
+                      const _DeviceLock(),
+                      const SizedBox(height: DsSpacing.space4),
                       if (widget.onSignOut != null)
                         Padding(
                           padding: todayInset,
@@ -320,10 +323,56 @@ class _Time extends StatelessWidget {
                   height: todaySupportHeight,
                 ),
               ),
+              const SizedBox(height: DsSpacing.space4),
+              // 一天从几点开始. Read-only: the server has no endpoint yet to
+              // change a Dynamic's day boundary, so the value is shown and the
+              // sentence says so rather than offering a control that cannot act.
+              Text(
+                l.settingsDayStart(
+                  intl.DateFormat.Hm(l.localeName).format(
+                    DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60),
+                  ),
+                ),
+                style: DsTextStyles.bodyPrimary.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                ),
+              ),
+              const SizedBox(height: DsSpacing.space1),
+              Text(
+                l.settingsDayStartReadOnly,
+                style: DsTextStyles.bodySecondary.copyWith(
+                  color: DsColors.textOnRitualMuted,
+                  fontSize: todaySupportSize,
+                  height: todaySupportHeight,
+                ),
+              ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The device lock: on or off, with the support line beneath. Turning it on
+/// asks the device first; a device that cannot authenticate says so and
+/// offers nothing.
+class _DeviceLock extends ConsumerWidget {
+  const _DeviceLock();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = L.of(context);
+    final lock = ref.watch(deviceLockProvider);
+    if (!lock.ready) return const SizedBox.shrink();
+    if (!lock.available) return _Quiet(l.settingsDeviceLockUnavailable);
+    return _Choice(
+      label: l.settingsDeviceLock,
+      support: l.settingsDeviceLockSupport,
+      selected: lock.enabled,
+      onTap: () => ref
+          .read(deviceLockProvider.notifier)
+          .setEnabled(!lock.enabled, reason: l.lockReason),
     );
   }
 }

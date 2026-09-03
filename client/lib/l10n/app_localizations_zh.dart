@@ -2290,4 +2290,354 @@ class LZh extends L {
 
   @override
   String get pointsSpendable => '可用';
+
+  @override
+  String todayDayStartsAt(String clock) {
+    return '今天从 $clock 算';
+  }
+
+  @override
+  String todayBalance(int count) {
+    return '$count 分';
+  }
+
+  @override
+  String todayDaysTogether(int count) {
+    return '在一起 $count 天';
+  }
+
+  @override
+  String get todayNoteOptional => '附一句（可不写）';
+
+  @override
+  String get todaySend => '送出';
+
+  @override
+  String get todayCancel => '取消';
+
+  @override
+  String get todayPartnerFallback => '对方';
+
+  @override
+  String todayDueBy(String time) {
+    return '$time 前';
+  }
+
+  @override
+  String todayPointsEarn(int count) {
+    return '+$count 分';
+  }
+
+  @override
+  String get todayProofPhotoNote => '照片';
+
+  @override
+  String get todayRefreshed => '已刷新。';
+
+  @override
+  String get sTodayEmpty => '今天没有要求你什么。';
+
+  @override
+  String get sTodaySectionCheckin => '问安';
+
+  @override
+  String get sTodaySectionList => '今日清单';
+
+  @override
+  String get sTodaySectionOpen => '想做就做';
+
+  @override
+  String sTodayDelivered(String name) {
+    return '已送到 · 等 $name 看';
+  }
+
+  @override
+  String sTodayDeliveredLate(String name) {
+    return '晚送到 · 等 $name 看';
+  }
+
+  @override
+  String sTodaySeen(String name, String time) {
+    return '$name 看到了 · $time';
+  }
+
+  @override
+  String sTodayPraised(String name) {
+    return '$name：很好';
+  }
+
+  @override
+  String sTodayPraisedNote(String name, String note) {
+    return '$name：$note';
+  }
+
+  @override
+  String sTodayLetGo(String name) {
+    return '$name：算了';
+  }
+
+  @override
+  String sTodayMakeUp(String name, String day) {
+    return '$name：$day 补上';
+  }
+
+  @override
+  String sTodayPunished(String name, String title) {
+    return '$name：罚 · $title';
+  }
+
+  @override
+  String sTodayPaused(String name) {
+    return '$name 不在，先停';
+  }
+
+  @override
+  String get sTodayMissed => '没做';
+
+  @override
+  String get sTodayCantDo => '做不了';
+
+  @override
+  String sTodayNewTime(String time) {
+    return '求个新时间 · $time';
+  }
+
+  @override
+  String get sTodayDiscuss => '想谈谈';
+
+  @override
+  String sTodayYourNote(String note) {
+    return '你：$note';
+  }
+
+  @override
+  String get sTodayActionDeliver => '交付';
+
+  @override
+  String get sTodayActionCantDo => '做不了';
+
+  @override
+  String get sTodayActionNewTime => '求个新时间';
+
+  @override
+  String get sTodayActionDiscuss => '想谈谈';
+
+  @override
+  String get sTodayActionWithdraw => '撤回';
+
+  @override
+  String get sTodayWriteLine => '写一句';
+
+  @override
+  String get sTodayPhotoRef => '照片';
+
+  @override
+  String get sTodayPhotoHint => '先填一个照片引用；拍照下个版本加。';
+
+  @override
+  String get sTodayPickTime => '选时间';
+
+  @override
+  String sTodayNewTimeAt(String time) {
+    return '新时间：$time';
+  }
+
+  @override
+  String sTodayConflictPaused(String name) {
+    return '$name 停了这条。';
+  }
+
+  @override
+  String sTodayConflictDisposed(String name) {
+    return '$name 已经处置了这条。';
+  }
+
+  @override
+  String get sTodayConflictChanged => '这条在别处改过了。';
+
+  @override
+  String get sTodayConflictOther => '没送出去，再试一次。';
+
+  @override
+  String get dTodayEmpty => '没有等你的。';
+
+  @override
+  String get dTodaySectionNeedsMe => '等我处置的';
+
+  @override
+  String dTodaySectionOverview(String name) {
+    return '今天 $name 的概况';
+  }
+
+  @override
+  String dTodayOverviewDelivered(int done, int total) {
+    return '$done/$total 已交付';
+  }
+
+  @override
+  String dTodayOverviewFlagged(int count) {
+    return '$count 条说了情况';
+  }
+
+  @override
+  String dTodaySaidDelivered(String time) {
+    return '已交付 · $time';
+  }
+
+  @override
+  String dTodaySaidLate(String time) {
+    return '晚交付 · $time';
+  }
+
+  @override
+  String get dTodaySaidCantDo => '说做不了';
+
+  @override
+  String dTodaySaidNewTime(String time) {
+    return '求新时间 · $time';
+  }
+
+  @override
+  String get dTodaySaidDiscuss => '想谈谈';
+
+  @override
+  String get dTodaySaidMissed => '没做';
+
+  @override
+  String dTodaySaidNote(String name, String note) {
+    return '$name：$note';
+  }
+
+  @override
+  String dTodayProofPhoto(String ref) {
+    return '照片：$ref';
+  }
+
+  @override
+  String dTodayOnDay(String day) {
+    return '$day';
+  }
+
+  @override
+  String get dTodayActionSeen => '看到了';
+
+  @override
+  String get dTodayActionPraise => '很好';
+
+  @override
+  String get dTodayActionLetGo => '算了';
+
+  @override
+  String get dTodayActionMakeUp => '补上';
+
+  @override
+  String get dTodayActionPunish => '罚';
+
+  @override
+  String get dTodayMakeUpWhich => '哪天补？';
+
+  @override
+  String get dTodayPunishWhich => '罚什么？';
+
+  @override
+  String get dTodayPunishOwn => '自己写';
+
+  @override
+  String get dTodayPunishTitle => '罚什么';
+
+  @override
+  String get dTodayConflictOpen => '还没说什么，不用处置。';
+
+  @override
+  String get dTodayConflictPaused => '这条停着。';
+
+  @override
+  String get dTodayConflictChanged => '这条在别处改过了。';
+
+  @override
+  String get dTodayConflictOther => '没送出去，再试一次。';
+
+  @override
+  String get dTodaySectionQuickAdd => '快速加一条';
+
+  @override
+  String get dTodayQuickTitle => '做什么';
+
+  @override
+  String get dTodayQuickToday => '只今天';
+
+  @override
+  String get dTodayQuickDaily => '每天';
+
+  @override
+  String get dTodayQuickPoints => '分（可不填）';
+
+  @override
+  String get dTodayQuickAdd => '加上';
+
+  @override
+  String get dTodayQuickAdded => '加上了。';
+
+  @override
+  String get dTodayQuickFailed => '没加上，再试一次。';
+
+  @override
+  String get dTodaySectionNotes => '我要记得的';
+
+  @override
+  String get dTodayNoteBody => '记一句';
+
+  @override
+  String get dTodayNoteRemind => '提醒我';
+
+  @override
+  String dTodayNoteRemindAt(String time) {
+    return '提醒 · $time';
+  }
+
+  @override
+  String get dTodayNoteDone => '好了';
+
+  @override
+  String get dTodayNoteDelete => '删掉';
+
+  @override
+  String get dTodayNoteAdd => '记下';
+
+  @override
+  String get dTodayNotesPrivate => '只有你看得到。';
+
+  @override
+  String get pointsEntryRefunded => '退回给你';
+
+  @override
+  String pointsEntryMoved(int amount) {
+    return '$amount';
+  }
+
+  @override
+  String settingsDayStart(String time) {
+    return '一天从 $time 开始';
+  }
+
+  @override
+  String get settingsDayStartReadOnly => '改这个要等下个版本。';
+
+  @override
+  String get settingsDeviceLock => '设备锁';
+
+  @override
+  String get settingsDeviceLockSupport => '打开时、或离开半分钟再回来时，先验指纹、面容或设备密码。';
+
+  @override
+  String get settingsDeviceLockUnavailable => '这台设备不支持设备锁。';
+
+  @override
+  String get lockTitle => '已锁定';
+
+  @override
+  String get lockUnlock => '解锁';
+
+  @override
+  String get lockReason => '解锁后继续';
 }

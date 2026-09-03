@@ -21,7 +21,7 @@ import 'package:dsapp/features/today/presentation/today_screen.dart';
 /// A repository that never answers, so the loading state stays on screen.
 class _Hanging implements TodayRepository, DynamicRepository, ExploreRepository {
   @override
-  Future<TodayView> forDynamic(String id) => Completer<TodayView>().future;
+  Future<TodayView> today(String id, {String? day}) => Completer<TodayView>().future;
 
   @override
   Future<DynamicDetail> detail(String id) => Completer<DynamicDetail>().future;

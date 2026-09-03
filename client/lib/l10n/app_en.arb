@@ -1100,5 +1100,336 @@
   "agreementsAddOpen": "Write an agreement",
   "agreementsAddCancel": "Never mind",
   "agreementsAddSave": "Agree to this",
-  "pointsSpendable": "TO SPEND"
+  "pointsSpendable": "TO SPEND",
+  "todayDayStartsAt": "Today counts from {clock}",
+  "@todayDayStartsAt": {
+    "placeholders": {
+      "clock": {
+        "type": "String"
+      }
+    }
+  },
+  "todayBalance": "{count} points",
+  "@todayBalance": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayDaysTogether": "{count} days together",
+  "@todayDaysTogether": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayNoteOptional": "A line, if you want",
+  "todaySend": "Send",
+  "todayCancel": "Cancel",
+  "todayPartnerFallback": "your partner",
+  "todayDueBy": "by {time}",
+  "@todayDueBy": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPointsEarn": "+{count}",
+  "@todayPointsEarn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "todayProofPhotoNote": "Photo",
+  "todayRefreshed": "Reloaded.",
+  "sTodayEmpty": "Nothing is asked of you today.",
+  "sTodaySectionCheckin": "Check-in",
+  "sTodaySectionList": "Today",
+  "sTodaySectionOpen": "When you feel like it",
+  "sTodayDelivered": "Delivered · waiting for {name}",
+  "@sTodayDelivered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayDeliveredLate": "Delivered late · waiting for {name}",
+  "@sTodayDeliveredLate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodaySeen": "{name} saw it · {time}",
+  "@sTodaySeen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayPraised": "{name}: good",
+  "@sTodayPraised": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayPraisedNote": "{name}: {note}",
+  "@sTodayPraisedNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayLetGo": "{name}: let it go",
+  "@sTodayLetGo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayMakeUp": "{name}: make it up on {day}",
+  "@sTodayMakeUp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayPunished": "{name}: {title}",
+  "@sTodayPunished": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayPaused": "{name} is away · paused",
+  "@sTodayPaused": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayMissed": "Not done",
+  "sTodayCantDo": "Can't do",
+  "sTodayNewTime": "Asked for {time}",
+  "@sTodayNewTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayDiscuss": "Want to talk",
+  "sTodayYourNote": "You: {note}",
+  "@sTodayYourNote": {
+    "placeholders": {
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayActionDeliver": "Done",
+  "sTodayActionCantDo": "Can't do",
+  "sTodayActionNewTime": "Ask for a new time",
+  "sTodayActionDiscuss": "Want to talk",
+  "sTodayActionWithdraw": "Take it back",
+  "sTodayWriteLine": "Write a line",
+  "sTodayPhotoRef": "Photo",
+  "sTodayPhotoHint": "Paste a photo reference for now; the camera comes in a later build.",
+  "sTodayPickTime": "Pick a time",
+  "sTodayNewTimeAt": "New time: {time}",
+  "@sTodayNewTimeAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayConflictPaused": "{name} paused this.",
+  "@sTodayConflictPaused": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayConflictDisposed": "{name} already answered this.",
+  "@sTodayConflictDisposed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "sTodayConflictChanged": "This changed elsewhere.",
+  "sTodayConflictOther": "Not sent. Try again.",
+  "dTodayEmpty": "Nothing waiting for you.",
+  "dTodaySectionNeedsMe": "Waiting on me",
+  "dTodaySectionOverview": "Today for {name}",
+  "@dTodaySectionOverview": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodayOverviewDelivered": "{done}/{total} delivered",
+  "@dTodayOverviewDelivered": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dTodayOverviewFlagged": "{count} said something",
+  "@dTodayOverviewFlagged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dTodaySaidDelivered": "Delivered · {time}",
+  "@dTodaySaidDelivered": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodaySaidLate": "Delivered late · {time}",
+  "@dTodaySaidLate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodaySaidCantDo": "Can't do",
+  "dTodaySaidNewTime": "Asks for {time}",
+  "@dTodaySaidNewTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodaySaidDiscuss": "Wants to talk",
+  "dTodaySaidMissed": "Not done",
+  "dTodaySaidNote": "{name}: {note}",
+  "@dTodaySaidNote": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "note": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodayProofPhoto": "Photo: {ref}",
+  "@dTodayProofPhoto": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodayOnDay": "{day}",
+  "@dTodayOnDay": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodayActionSeen": "Seen",
+  "dTodayActionPraise": "Good",
+  "dTodayActionLetGo": "Let it go",
+  "dTodayActionMakeUp": "Make it up",
+  "dTodayActionPunish": "Consequence",
+  "dTodayMakeUpWhich": "Which day?",
+  "dTodayPunishWhich": "Which consequence?",
+  "dTodayPunishOwn": "Your own words",
+  "dTodayPunishTitle": "Consequence",
+  "dTodayConflictOpen": "Nothing to answer yet.",
+  "dTodayConflictPaused": "This one is paused.",
+  "dTodayConflictChanged": "This changed elsewhere.",
+  "dTodayConflictOther": "Not sent. Try again.",
+  "dTodaySectionQuickAdd": "Add one",
+  "dTodayQuickTitle": "What",
+  "dTodayQuickToday": "Just today",
+  "dTodayQuickDaily": "Every day",
+  "dTodayQuickPoints": "Points (optional)",
+  "dTodayQuickAdd": "Add",
+  "dTodayQuickAdded": "Added.",
+  "dTodayQuickFailed": "Not added. Try again.",
+  "dTodaySectionNotes": "To remember",
+  "dTodayNoteBody": "Note to self",
+  "dTodayNoteRemind": "Remind me",
+  "dTodayNoteRemindAt": "Remind · {time}",
+  "@dTodayNoteRemindAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dTodayNoteDone": "Done",
+  "dTodayNoteDelete": "Delete",
+  "dTodayNoteAdd": "Keep it",
+  "dTodayNotesPrivate": "Only you see these.",
+  "pointsEntryRefunded": "Returned to you",
+  "pointsEntryMoved": "{amount}",
+  "@pointsEntryMoved": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDayStart": "The day starts at {time}",
+  "@settingsDayStart": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsDayStartReadOnly": "Changing it comes in a later build.",
+  "settingsDeviceLock": "Device lock",
+  "settingsDeviceLockSupport": "Ask for fingerprint, face or the device PIN when the app opens, or comes back after half a minute away.",
+  "settingsDeviceLockUnavailable": "This device cannot lock the app.",
+  "lockTitle": "Locked",
+  "lockUnlock": "Unlock",
+  "lockReason": "Unlock to continue"
 }

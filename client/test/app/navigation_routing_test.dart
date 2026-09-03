@@ -9,8 +9,6 @@ import 'package:dsapp/domain_client/models/explore_view.dart';
 import 'package:dsapp/domain_client/models/points.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
-import 'package:dsapp/domain_client/repositories/today_repository.dart';
-import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
@@ -19,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+
+import '../support/today_fakes.dart';
 
 /// The bar used to ignore every tap, on the theory that silence beat a
 /// placeholder. On a real device three dead tabs out of four read as a broken
@@ -34,9 +34,7 @@ void main() {
         refreshStoreProvider.overrideWithValue(_MemoryStore()),
         apiClientProvider.overrideWithValue(ApiClient(baseUrl: 'http://test')),
         autoRefreshProvider.overrideWithValue(false),
-        todayRepositoryProvider.overrideWithValue(
-          FixtureTodayRepository(todayFixture()) as TodayRepository,
-        ),
+        todayRepositoryProvider.overrideWithValue(FakeTodayRepository(view: sView())),
         dynamicRepositoryProvider.overrideWithValue(_StubDynamic()),
         exploreRepositoryProvider.overrideWithValue(_StubExplore()),
         // Points reads three things on entry; none of them may hit the wire.

@@ -6,13 +6,13 @@ part 'dynamic_view.g.dart';
 @freezed
 abstract class MemberView with _$MemberView {
   const factory MemberView({
-    /// Needed to address an expectation to a person. Without it nothing can
-    /// be assigned, so nothing can be created.
     required String userId,
     String? displayName,
     required String roleContext,
     /// How they describe their role. Never used for authorization.
     String? rolePreset,
+    /// `D` or `S` — which face of the app this member sees.
+    String? side,
     required String accessState,
   }) = _MemberView;
 
@@ -22,7 +22,7 @@ abstract class MemberView with _$MemberView {
 @freezed
 abstract class StructureItem with _$StructureItem {
   const factory StructureItem({
-    required String definitionId,
+    required String taskId,
     required String kind,
     required String title,
     required bool active,

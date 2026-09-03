@@ -13,61 +13,42 @@ part of 'today_view.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$TodayItem {
+mixin _$ConsequenceView {
 
- String get occurrenceId; String get title; String? get purpose;/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001).
-///
-/// The default is a rollout concession, not a fact: the current server
-/// always sends this, but staging has not been redeployed (plan item
-/// T1.6) and a required field would hard-fail the build the owner tests
-/// with. It is deliberately `''` rather than `'TASK'` — an absent kind is
-/// unknown, not a task, and [kindLabel] keeps the claim neutral instead of
-/// asserting one. Make it required once staging is redeployed.
- String get kind; String get state;/// What this person may do with this item right now, stated by the server.
-/// REQ-STATE-001 names entitlement explicitly: the screen used to offer
-/// all four actions unconditionally, including on items whose only
-/// permitted action was to withdraw an open adjustment.
- List<String> get allowedActions; DateTime? get dueAt;/// Who set this. Direction comes from a person, not from the app.
- String? get fromDisplayName;/// Who this was given to, when the viewer is the one who gave it.
- String? get assigneeDisplayName;/// When the receiving person said "received". Null until they do — and
-/// the difference between the two is the first thing the giving side
-/// looks for.
- DateTime? get receivedAt;/// The words the other person attached when they asked to adjust. Shown
-/// to the person who now has to answer; never paraphrased by the app.
- String? get actorNote;
-/// Create a copy of TodayItem
+ String get id; String get title; String? get detail; String get status; DateTime get issuedAt;
+/// Create a copy of ConsequenceView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TodayItemCopyWith<TodayItem> get copyWith => _$TodayItemCopyWithImpl<TodayItem>(this as TodayItem, _$identity);
+$ConsequenceViewCopyWith<ConsequenceView> get copyWith => _$ConsequenceViewCopyWithImpl<ConsequenceView>(this as ConsequenceView, _$identity);
 
-  /// Serializes this TodayItem to a JSON map.
+  /// Serializes this ConsequenceView to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other.allowedActions, allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName)&&(identical(other.assigneeDisplayName, assigneeDisplayName) || other.assigneeDisplayName == assigneeDisplayName)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.actorNote, actorNote) || other.actorNote == actorNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConsequenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.status, status) || other.status == status)&&(identical(other.issuedAt, issuedAt) || other.issuedAt == issuedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(allowedActions),dueAt,fromDisplayName,assigneeDisplayName,receivedAt,actorNote);
+int get hashCode => Object.hash(runtimeType,id,title,detail,status,issuedAt);
 
 @override
 String toString() {
-  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName, assigneeDisplayName: $assigneeDisplayName, receivedAt: $receivedAt, actorNote: $actorNote)';
+  return 'ConsequenceView(id: $id, title: $title, detail: $detail, status: $status, issuedAt: $issuedAt)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $TodayItemCopyWith<$Res>  {
-  factory $TodayItemCopyWith(TodayItem value, $Res Function(TodayItem) _then) = _$TodayItemCopyWithImpl;
+abstract mixin class $ConsequenceViewCopyWith<$Res>  {
+  factory $ConsequenceViewCopyWith(ConsequenceView value, $Res Function(ConsequenceView) _then) = _$ConsequenceViewCopyWithImpl;
 @useResult
 $Res call({
- String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName, String? assigneeDisplayName, DateTime? receivedAt, String? actorNote
+ String id, String title, String? detail, String status, DateTime issuedAt
 });
 
 
@@ -75,37 +56,31 @@ $Res call({
 
 }
 /// @nodoc
-class _$TodayItemCopyWithImpl<$Res>
-    implements $TodayItemCopyWith<$Res> {
-  _$TodayItemCopyWithImpl(this._self, this._then);
+class _$ConsequenceViewCopyWithImpl<$Res>
+    implements $ConsequenceViewCopyWith<$Res> {
+  _$ConsequenceViewCopyWithImpl(this._self, this._then);
 
-  final TodayItem _self;
-  final $Res Function(TodayItem) _then;
+  final ConsequenceView _self;
+  final $Res Function(ConsequenceView) _then;
 
-/// Create a copy of TodayItem
+/// Create a copy of ConsequenceView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,Object? assigneeDisplayName = freezed,Object? receivedAt = freezed,Object? actorNote = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? detail = freezed,Object? status = null,Object? issuedAt = null,}) {
   return _then(_self.copyWith(
-occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,purpose: freezed == purpose ? _self.purpose : purpose // ignore: cast_nullable_to_non_nullable
-as String?,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
-as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
-as String,allowedActions: null == allowedActions ? _self.allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
-as List<String>,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,assigneeDisplayName: freezed == assigneeDisplayName ? _self.assigneeDisplayName : assigneeDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,receivedAt: freezed == receivedAt ? _self.receivedAt : receivedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,actorNote: freezed == actorNote ? _self.actorNote : actorNote // ignore: cast_nullable_to_non_nullable
-as String?,
+as String,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,issuedAt: null == issuedAt ? _self.issuedAt : issuedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [TodayItem].
-extension TodayItemPatterns on TodayItem {
+/// Adds pattern-matching-related methods to [ConsequenceView].
+extension ConsequenceViewPatterns on ConsequenceView {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -118,10 +93,10 @@ extension TodayItemPatterns on TodayItem {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TodayItem value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ConsequenceView value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _TodayItem() when $default != null:
+case _ConsequenceView() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -140,10 +115,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TodayItem value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ConsequenceView value)  $default,){
 final _that = this;
 switch (_that) {
-case _TodayItem():
+case _ConsequenceView():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -161,10 +136,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TodayItem value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ConsequenceView value)?  $default,){
 final _that = this;
 switch (_that) {
-case _TodayItem() when $default != null:
+case _ConsequenceView() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -182,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName,  String? assigneeDisplayName,  DateTime? receivedAt,  String? actorNote)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String? detail,  String status,  DateTime issuedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _TodayItem() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName,_that.assigneeDisplayName,_that.receivedAt,_that.actorNote);case _:
+case _ConsequenceView() when $default != null:
+return $default(_that.id,_that.title,_that.detail,_that.status,_that.issuedAt);case _:
   return orElse();
 
 }
@@ -203,10 +178,10 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName,  String? assigneeDisplayName,  DateTime? receivedAt,  String? actorNote)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String? detail,  String status,  DateTime issuedAt)  $default,) {final _that = this;
 switch (_that) {
-case _TodayItem():
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName,_that.assigneeDisplayName,_that.receivedAt,_that.actorNote);case _:
+case _ConsequenceView():
+return $default(_that.id,_that.title,_that.detail,_that.status,_that.issuedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -223,10 +198,10 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName,  String? assigneeDisplayName,  DateTime? receivedAt,  String? actorNote)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String? detail,  String status,  DateTime issuedAt)?  $default,) {final _that = this;
 switch (_that) {
-case _TodayItem() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName,_that.assigneeDisplayName,_that.receivedAt,_that.actorNote);case _:
+case _ConsequenceView() when $default != null:
+return $default(_that.id,_that.title,_that.detail,_that.status,_that.issuedAt);case _:
   return null;
 
 }
@@ -237,159 +212,483 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// @nodoc
 @JsonSerializable()
 
-class _TodayItem implements TodayItem {
-  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = '', required this.state, final  List<String> allowedActions = const <String>[], this.dueAt, this.fromDisplayName, this.assigneeDisplayName, this.receivedAt, this.actorNote}): _allowedActions = allowedActions;
-  factory _TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
+class _ConsequenceView implements ConsequenceView {
+  const _ConsequenceView({required this.id, required this.title, this.detail, required this.status, required this.issuedAt});
+  factory _ConsequenceView.fromJson(Map<String, dynamic> json) => _$ConsequenceViewFromJson(json);
 
-@override final  String occurrenceId;
+@override final  String id;
 @override final  String title;
-@override final  String? purpose;
-/// `TASK` or `RITUAL`, stated by the server (REQ-STATE-001).
-///
-/// The default is a rollout concession, not a fact: the current server
-/// always sends this, but staging has not been redeployed (plan item
-/// T1.6) and a required field would hard-fail the build the owner tests
-/// with. It is deliberately `''` rather than `'TASK'` — an absent kind is
-/// unknown, not a task, and [kindLabel] keeps the claim neutral instead of
-/// asserting one. Make it required once staging is redeployed.
-@override@JsonKey() final  String kind;
-@override final  String state;
-/// What this person may do with this item right now, stated by the server.
-/// REQ-STATE-001 names entitlement explicitly: the screen used to offer
-/// all four actions unconditionally, including on items whose only
-/// permitted action was to withdraw an open adjustment.
- final  List<String> _allowedActions;
-/// What this person may do with this item right now, stated by the server.
-/// REQ-STATE-001 names entitlement explicitly: the screen used to offer
-/// all four actions unconditionally, including on items whose only
-/// permitted action was to withdraw an open adjustment.
-@override@JsonKey() List<String> get allowedActions {
-  if (_allowedActions is EqualUnmodifiableListView) return _allowedActions;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_allowedActions);
+@override final  String? detail;
+@override final  String status;
+@override final  DateTime issuedAt;
+
+/// Create a copy of ConsequenceView
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ConsequenceViewCopyWith<_ConsequenceView> get copyWith => __$ConsequenceViewCopyWithImpl<_ConsequenceView>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ConsequenceViewToJson(this, );
 }
 
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConsequenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.status, status) || other.status == status)&&(identical(other.issuedAt, issuedAt) || other.issuedAt == issuedAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,title,detail,status,issuedAt);
+
+@override
+String toString() {
+  return 'ConsequenceView(id: $id, title: $title, detail: $detail, status: $status, issuedAt: $issuedAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ConsequenceViewCopyWith<$Res> implements $ConsequenceViewCopyWith<$Res> {
+  factory _$ConsequenceViewCopyWith(_ConsequenceView value, $Res Function(_ConsequenceView) _then) = __$ConsequenceViewCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String title, String? detail, String status, DateTime issuedAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$ConsequenceViewCopyWithImpl<$Res>
+    implements _$ConsequenceViewCopyWith<$Res> {
+  __$ConsequenceViewCopyWithImpl(this._self, this._then);
+
+  final _ConsequenceView _self;
+  final $Res Function(_ConsequenceView) _then;
+
+/// Create a copy of ConsequenceView
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? detail = freezed,Object? status = null,Object? issuedAt = null,}) {
+  return _then(_ConsequenceView(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,issuedAt: null == issuedAt ? _self.issuedAt : issuedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$OccurrenceView {
+
+ String get id; String get taskId; String get title; String? get detail;/// `recurring | one_off | open | checkin | measure`.
+ String get kind;/// `check | photo | text | any`.
+ String get proof; int get pointsEarn; bool get requiresDPresent;/// The relationship day, `yyyy-MM-dd`, in the Dynamic's zone.
+ String get day; int get slot; DateTime? get dueAt; Outcome get outcome; DateTime? get outcomeAt; String? get outcomeNote; String? get proofKind; String? get proofRef; DateTime? get proposedTime; Disposition get disposition; DateTime? get dispositionAt; String? get dispositionNote; ConsequenceView? get consequence; String? get makeUpDay; String? get makeUpOf; DateTime? get seenAt; int get version;
+/// Create a copy of OccurrenceView
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$OccurrenceViewCopyWith<OccurrenceView> get copyWith => _$OccurrenceViewCopyWithImpl<OccurrenceView>(this as OccurrenceView, _$identity);
+
+  /// Serializes this OccurrenceView to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn)&&(identical(other.requiresDPresent, requiresDPresent) || other.requiresDPresent == requiresDPresent)&&(identical(other.day, day) || other.day == day)&&(identical(other.slot, slot) || other.slot == slot)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.outcome, outcome) || other.outcome == outcome)&&(identical(other.outcomeAt, outcomeAt) || other.outcomeAt == outcomeAt)&&(identical(other.outcomeNote, outcomeNote) || other.outcomeNote == outcomeNote)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.proposedTime, proposedTime) || other.proposedTime == proposedTime)&&(identical(other.disposition, disposition) || other.disposition == disposition)&&(identical(other.dispositionAt, dispositionAt) || other.dispositionAt == dispositionAt)&&(identical(other.dispositionNote, dispositionNote) || other.dispositionNote == dispositionNote)&&(identical(other.consequence, consequence) || other.consequence == consequence)&&(identical(other.makeUpDay, makeUpDay) || other.makeUpDay == makeUpDay)&&(identical(other.makeUpOf, makeUpOf) || other.makeUpOf == makeUpOf)&&(identical(other.seenAt, seenAt) || other.seenAt == seenAt)&&(identical(other.version, version) || other.version == version));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hashAll([runtimeType,id,taskId,title,detail,kind,proof,pointsEarn,requiresDPresent,day,slot,dueAt,outcome,outcomeAt,outcomeNote,proofKind,proofRef,proposedTime,disposition,dispositionAt,dispositionNote,consequence,makeUpDay,makeUpOf,seenAt,version]);
+
+@override
+String toString() {
+  return 'OccurrenceView(id: $id, taskId: $taskId, title: $title, detail: $detail, kind: $kind, proof: $proof, pointsEarn: $pointsEarn, requiresDPresent: $requiresDPresent, day: $day, slot: $slot, dueAt: $dueAt, outcome: $outcome, outcomeAt: $outcomeAt, outcomeNote: $outcomeNote, proofKind: $proofKind, proofRef: $proofRef, proposedTime: $proposedTime, disposition: $disposition, dispositionAt: $dispositionAt, dispositionNote: $dispositionNote, consequence: $consequence, makeUpDay: $makeUpDay, makeUpOf: $makeUpOf, seenAt: $seenAt, version: $version)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $OccurrenceViewCopyWith<$Res>  {
+  factory $OccurrenceViewCopyWith(OccurrenceView value, $Res Function(OccurrenceView) _then) = _$OccurrenceViewCopyWithImpl;
+@useResult
+$Res call({
+ String id, String taskId, String title, String? detail, String kind, String proof, int pointsEarn, bool requiresDPresent, String day, int slot, DateTime? dueAt, Outcome outcome, DateTime? outcomeAt, String? outcomeNote, String? proofKind, String? proofRef, DateTime? proposedTime, Disposition disposition, DateTime? dispositionAt, String? dispositionNote, ConsequenceView? consequence, String? makeUpDay, String? makeUpOf, DateTime? seenAt, int version
+});
+
+
+$ConsequenceViewCopyWith<$Res>? get consequence;
+
+}
+/// @nodoc
+class _$OccurrenceViewCopyWithImpl<$Res>
+    implements $OccurrenceViewCopyWith<$Res> {
+  _$OccurrenceViewCopyWithImpl(this._self, this._then);
+
+  final OccurrenceView _self;
+  final $Res Function(OccurrenceView) _then;
+
+/// Create a copy of OccurrenceView
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? taskId = null,Object? title = null,Object? detail = freezed,Object? kind = null,Object? proof = null,Object? pointsEarn = null,Object? requiresDPresent = null,Object? day = null,Object? slot = null,Object? dueAt = freezed,Object? outcome = null,Object? outcomeAt = freezed,Object? outcomeNote = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? proposedTime = freezed,Object? disposition = null,Object? dispositionAt = freezed,Object? dispositionNote = freezed,Object? consequence = freezed,Object? makeUpDay = freezed,Object? makeUpOf = freezed,Object? seenAt = freezed,Object? version = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
+as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String?,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as String,proof: null == proof ? _self.proof : proof // ignore: cast_nullable_to_non_nullable
+as String,pointsEarn: null == pointsEarn ? _self.pointsEarn : pointsEarn // ignore: cast_nullable_to_non_nullable
+as int,requiresDPresent: null == requiresDPresent ? _self.requiresDPresent : requiresDPresent // ignore: cast_nullable_to_non_nullable
+as bool,day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
+as String,slot: null == slot ? _self.slot : slot // ignore: cast_nullable_to_non_nullable
+as int,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,outcome: null == outcome ? _self.outcome : outcome // ignore: cast_nullable_to_non_nullable
+as Outcome,outcomeAt: freezed == outcomeAt ? _self.outcomeAt : outcomeAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,outcomeNote: freezed == outcomeNote ? _self.outcomeNote : outcomeNote // ignore: cast_nullable_to_non_nullable
+as String?,proofKind: freezed == proofKind ? _self.proofKind : proofKind // ignore: cast_nullable_to_non_nullable
+as String?,proofRef: freezed == proofRef ? _self.proofRef : proofRef // ignore: cast_nullable_to_non_nullable
+as String?,proposedTime: freezed == proposedTime ? _self.proposedTime : proposedTime // ignore: cast_nullable_to_non_nullable
+as DateTime?,disposition: null == disposition ? _self.disposition : disposition // ignore: cast_nullable_to_non_nullable
+as Disposition,dispositionAt: freezed == dispositionAt ? _self.dispositionAt : dispositionAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,dispositionNote: freezed == dispositionNote ? _self.dispositionNote : dispositionNote // ignore: cast_nullable_to_non_nullable
+as String?,consequence: freezed == consequence ? _self.consequence : consequence // ignore: cast_nullable_to_non_nullable
+as ConsequenceView?,makeUpDay: freezed == makeUpDay ? _self.makeUpDay : makeUpDay // ignore: cast_nullable_to_non_nullable
+as String?,makeUpOf: freezed == makeUpOf ? _self.makeUpOf : makeUpOf // ignore: cast_nullable_to_non_nullable
+as String?,seenAt: freezed == seenAt ? _self.seenAt : seenAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+/// Create a copy of OccurrenceView
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConsequenceViewCopyWith<$Res>? get consequence {
+    if (_self.consequence == null) {
+    return null;
+  }
+
+  return $ConsequenceViewCopyWith<$Res>(_self.consequence!, (value) {
+    return _then(_self.copyWith(consequence: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [OccurrenceView].
+extension OccurrenceViewPatterns on OccurrenceView {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OccurrenceView value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _OccurrenceView() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OccurrenceView value)  $default,){
+final _that = this;
+switch (_that) {
+case _OccurrenceView():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OccurrenceView value)?  $default,){
+final _that = this;
+switch (_that) {
+case _OccurrenceView() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _OccurrenceView() when $default != null:
+return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)  $default,) {final _that = this;
+switch (_that) {
+case _OccurrenceView():
+return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)?  $default,) {final _that = this;
+switch (_that) {
+case _OccurrenceView() when $default != null:
+return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _OccurrenceView extends OccurrenceView {
+  const _OccurrenceView({required this.id, required this.taskId, required this.title, this.detail, required this.kind, required this.proof, this.pointsEarn = 0, this.requiresDPresent = false, required this.day, this.slot = 0, this.dueAt, this.outcome = Outcome.open, this.outcomeAt, this.outcomeNote, this.proofKind, this.proofRef, this.proposedTime, this.disposition = Disposition.none, this.dispositionAt, this.dispositionNote, this.consequence, this.makeUpDay, this.makeUpOf, this.seenAt, this.version = 0}): super._();
+  factory _OccurrenceView.fromJson(Map<String, dynamic> json) => _$OccurrenceViewFromJson(json);
+
+@override final  String id;
+@override final  String taskId;
+@override final  String title;
+@override final  String? detail;
+/// `recurring | one_off | open | checkin | measure`.
+@override final  String kind;
+/// `check | photo | text | any`.
+@override final  String proof;
+@override@JsonKey() final  int pointsEarn;
+@override@JsonKey() final  bool requiresDPresent;
+/// The relationship day, `yyyy-MM-dd`, in the Dynamic's zone.
+@override final  String day;
+@override@JsonKey() final  int slot;
 @override final  DateTime? dueAt;
-/// Who set this. Direction comes from a person, not from the app.
-@override final  String? fromDisplayName;
-/// Who this was given to, when the viewer is the one who gave it.
-@override final  String? assigneeDisplayName;
-/// When the receiving person said "received". Null until they do — and
-/// the difference between the two is the first thing the giving side
-/// looks for.
-@override final  DateTime? receivedAt;
-/// The words the other person attached when they asked to adjust. Shown
-/// to the person who now has to answer; never paraphrased by the app.
-@override final  String? actorNote;
+@override@JsonKey() final  Outcome outcome;
+@override final  DateTime? outcomeAt;
+@override final  String? outcomeNote;
+@override final  String? proofKind;
+@override final  String? proofRef;
+@override final  DateTime? proposedTime;
+@override@JsonKey() final  Disposition disposition;
+@override final  DateTime? dispositionAt;
+@override final  String? dispositionNote;
+@override final  ConsequenceView? consequence;
+@override final  String? makeUpDay;
+@override final  String? makeUpOf;
+@override final  DateTime? seenAt;
+@override@JsonKey() final  int version;
 
-/// Create a copy of TodayItem
+/// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$TodayItemCopyWith<_TodayItem> get copyWith => __$TodayItemCopyWithImpl<_TodayItem>(this, _$identity);
+_$OccurrenceViewCopyWith<_OccurrenceView> get copyWith => __$OccurrenceViewCopyWithImpl<_OccurrenceView>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$TodayItemToJson(this, );
+  return _$OccurrenceViewToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other._allowedActions, _allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName)&&(identical(other.assigneeDisplayName, assigneeDisplayName) || other.assigneeDisplayName == assigneeDisplayName)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.actorNote, actorNote) || other.actorNote == actorNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn)&&(identical(other.requiresDPresent, requiresDPresent) || other.requiresDPresent == requiresDPresent)&&(identical(other.day, day) || other.day == day)&&(identical(other.slot, slot) || other.slot == slot)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.outcome, outcome) || other.outcome == outcome)&&(identical(other.outcomeAt, outcomeAt) || other.outcomeAt == outcomeAt)&&(identical(other.outcomeNote, outcomeNote) || other.outcomeNote == outcomeNote)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.proposedTime, proposedTime) || other.proposedTime == proposedTime)&&(identical(other.disposition, disposition) || other.disposition == disposition)&&(identical(other.dispositionAt, dispositionAt) || other.dispositionAt == dispositionAt)&&(identical(other.dispositionNote, dispositionNote) || other.dispositionNote == dispositionNote)&&(identical(other.consequence, consequence) || other.consequence == consequence)&&(identical(other.makeUpDay, makeUpDay) || other.makeUpDay == makeUpDay)&&(identical(other.makeUpOf, makeUpOf) || other.makeUpOf == makeUpOf)&&(identical(other.seenAt, seenAt) || other.seenAt == seenAt)&&(identical(other.version, version) || other.version == version));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(_allowedActions),dueAt,fromDisplayName,assigneeDisplayName,receivedAt,actorNote);
+int get hashCode => Object.hashAll([runtimeType,id,taskId,title,detail,kind,proof,pointsEarn,requiresDPresent,day,slot,dueAt,outcome,outcomeAt,outcomeNote,proofKind,proofRef,proposedTime,disposition,dispositionAt,dispositionNote,consequence,makeUpDay,makeUpOf,seenAt,version]);
 
 @override
 String toString() {
-  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName, assigneeDisplayName: $assigneeDisplayName, receivedAt: $receivedAt, actorNote: $actorNote)';
+  return 'OccurrenceView(id: $id, taskId: $taskId, title: $title, detail: $detail, kind: $kind, proof: $proof, pointsEarn: $pointsEarn, requiresDPresent: $requiresDPresent, day: $day, slot: $slot, dueAt: $dueAt, outcome: $outcome, outcomeAt: $outcomeAt, outcomeNote: $outcomeNote, proofKind: $proofKind, proofRef: $proofRef, proposedTime: $proposedTime, disposition: $disposition, dispositionAt: $dispositionAt, dispositionNote: $dispositionNote, consequence: $consequence, makeUpDay: $makeUpDay, makeUpOf: $makeUpOf, seenAt: $seenAt, version: $version)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$TodayItemCopyWith<$Res> implements $TodayItemCopyWith<$Res> {
-  factory _$TodayItemCopyWith(_TodayItem value, $Res Function(_TodayItem) _then) = __$TodayItemCopyWithImpl;
+abstract mixin class _$OccurrenceViewCopyWith<$Res> implements $OccurrenceViewCopyWith<$Res> {
+  factory _$OccurrenceViewCopyWith(_OccurrenceView value, $Res Function(_OccurrenceView) _then) = __$OccurrenceViewCopyWithImpl;
 @override @useResult
 $Res call({
- String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName, String? assigneeDisplayName, DateTime? receivedAt, String? actorNote
+ String id, String taskId, String title, String? detail, String kind, String proof, int pointsEarn, bool requiresDPresent, String day, int slot, DateTime? dueAt, Outcome outcome, DateTime? outcomeAt, String? outcomeNote, String? proofKind, String? proofRef, DateTime? proposedTime, Disposition disposition, DateTime? dispositionAt, String? dispositionNote, ConsequenceView? consequence, String? makeUpDay, String? makeUpOf, DateTime? seenAt, int version
 });
 
 
-
+@override $ConsequenceViewCopyWith<$Res>? get consequence;
 
 }
 /// @nodoc
-class __$TodayItemCopyWithImpl<$Res>
-    implements _$TodayItemCopyWith<$Res> {
-  __$TodayItemCopyWithImpl(this._self, this._then);
+class __$OccurrenceViewCopyWithImpl<$Res>
+    implements _$OccurrenceViewCopyWith<$Res> {
+  __$OccurrenceViewCopyWithImpl(this._self, this._then);
 
-  final _TodayItem _self;
-  final $Res Function(_TodayItem) _then;
+  final _OccurrenceView _self;
+  final $Res Function(_OccurrenceView) _then;
 
-/// Create a copy of TodayItem
+/// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,Object? assigneeDisplayName = freezed,Object? receivedAt = freezed,Object? actorNote = freezed,}) {
-  return _then(_TodayItem(
-occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? taskId = null,Object? title = null,Object? detail = freezed,Object? kind = null,Object? proof = null,Object? pointsEarn = null,Object? requiresDPresent = null,Object? day = null,Object? slot = null,Object? dueAt = freezed,Object? outcome = null,Object? outcomeAt = freezed,Object? outcomeNote = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? proposedTime = freezed,Object? disposition = null,Object? dispositionAt = freezed,Object? dispositionNote = freezed,Object? consequence = freezed,Object? makeUpDay = freezed,Object? makeUpOf = freezed,Object? seenAt = freezed,Object? version = null,}) {
+  return _then(_OccurrenceView(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,purpose: freezed == purpose ? _self.purpose : purpose // ignore: cast_nullable_to_non_nullable
+as String,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
 as String?,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
-as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
-as String,allowedActions: null == allowedActions ? _self._allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
-as List<String>,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,assigneeDisplayName: freezed == assigneeDisplayName ? _self.assigneeDisplayName : assigneeDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,receivedAt: freezed == receivedAt ? _self.receivedAt : receivedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,actorNote: freezed == actorNote ? _self.actorNote : actorNote // ignore: cast_nullable_to_non_nullable
-as String?,
+as String,proof: null == proof ? _self.proof : proof // ignore: cast_nullable_to_non_nullable
+as String,pointsEarn: null == pointsEarn ? _self.pointsEarn : pointsEarn // ignore: cast_nullable_to_non_nullable
+as int,requiresDPresent: null == requiresDPresent ? _self.requiresDPresent : requiresDPresent // ignore: cast_nullable_to_non_nullable
+as bool,day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
+as String,slot: null == slot ? _self.slot : slot // ignore: cast_nullable_to_non_nullable
+as int,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,outcome: null == outcome ? _self.outcome : outcome // ignore: cast_nullable_to_non_nullable
+as Outcome,outcomeAt: freezed == outcomeAt ? _self.outcomeAt : outcomeAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,outcomeNote: freezed == outcomeNote ? _self.outcomeNote : outcomeNote // ignore: cast_nullable_to_non_nullable
+as String?,proofKind: freezed == proofKind ? _self.proofKind : proofKind // ignore: cast_nullable_to_non_nullable
+as String?,proofRef: freezed == proofRef ? _self.proofRef : proofRef // ignore: cast_nullable_to_non_nullable
+as String?,proposedTime: freezed == proposedTime ? _self.proposedTime : proposedTime // ignore: cast_nullable_to_non_nullable
+as DateTime?,disposition: null == disposition ? _self.disposition : disposition // ignore: cast_nullable_to_non_nullable
+as Disposition,dispositionAt: freezed == dispositionAt ? _self.dispositionAt : dispositionAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,dispositionNote: freezed == dispositionNote ? _self.dispositionNote : dispositionNote // ignore: cast_nullable_to_non_nullable
+as String?,consequence: freezed == consequence ? _self.consequence : consequence // ignore: cast_nullable_to_non_nullable
+as ConsequenceView?,makeUpDay: freezed == makeUpDay ? _self.makeUpDay : makeUpDay // ignore: cast_nullable_to_non_nullable
+as String?,makeUpOf: freezed == makeUpOf ? _self.makeUpOf : makeUpOf // ignore: cast_nullable_to_non_nullable
+as String?,seenAt: freezed == seenAt ? _self.seenAt : seenAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
+/// Create a copy of OccurrenceView
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConsequenceViewCopyWith<$Res>? get consequence {
+    if (_self.consequence == null) {
+    return null;
+  }
 
+  return $ConsequenceViewCopyWith<$Res>(_self.consequence!, (value) {
+    return _then(_self.copyWith(consequence: value));
+  });
+}
 }
 
 
 /// @nodoc
-mixin _$RecentResponse {
+mixin _$OpenTaskView {
 
- String get occurrenceId; String get title; String get type; String get text; DateTime get sentAt; String? get senderDisplayName;
-/// Create a copy of RecentResponse
+ String get id; String get title; String? get detail; String get proof; int get pointsEarn;
+/// Create a copy of OpenTaskView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$RecentResponseCopyWith<RecentResponse> get copyWith => _$RecentResponseCopyWithImpl<RecentResponse>(this as RecentResponse, _$identity);
+$OpenTaskViewCopyWith<OpenTaskView> get copyWith => _$OpenTaskViewCopyWithImpl<OpenTaskView>(this as OpenTaskView, _$identity);
 
-  /// Serializes this RecentResponse to a JSON map.
+  /// Serializes this OpenTaskView to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RecentResponse&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.type, type) || other.type == type)&&(identical(other.text, text) || other.text == text)&&(identical(other.sentAt, sentAt) || other.sentAt == sentAt)&&(identical(other.senderDisplayName, senderDisplayName) || other.senderDisplayName == senderDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OpenTaskView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,type,text,sentAt,senderDisplayName);
+int get hashCode => Object.hash(runtimeType,id,title,detail,proof,pointsEarn);
 
 @override
 String toString() {
-  return 'RecentResponse(occurrenceId: $occurrenceId, title: $title, type: $type, text: $text, sentAt: $sentAt, senderDisplayName: $senderDisplayName)';
+  return 'OpenTaskView(id: $id, title: $title, detail: $detail, proof: $proof, pointsEarn: $pointsEarn)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $RecentResponseCopyWith<$Res>  {
-  factory $RecentResponseCopyWith(RecentResponse value, $Res Function(RecentResponse) _then) = _$RecentResponseCopyWithImpl;
+abstract mixin class $OpenTaskViewCopyWith<$Res>  {
+  factory $OpenTaskViewCopyWith(OpenTaskView value, $Res Function(OpenTaskView) _then) = _$OpenTaskViewCopyWithImpl;
 @useResult
 $Res call({
- String occurrenceId, String title, String type, String text, DateTime sentAt, String? senderDisplayName
+ String id, String title, String? detail, String proof, int pointsEarn
 });
 
 
@@ -397,32 +696,31 @@ $Res call({
 
 }
 /// @nodoc
-class _$RecentResponseCopyWithImpl<$Res>
-    implements $RecentResponseCopyWith<$Res> {
-  _$RecentResponseCopyWithImpl(this._self, this._then);
+class _$OpenTaskViewCopyWithImpl<$Res>
+    implements $OpenTaskViewCopyWith<$Res> {
+  _$OpenTaskViewCopyWithImpl(this._self, this._then);
 
-  final RecentResponse _self;
-  final $Res Function(RecentResponse) _then;
+  final OpenTaskView _self;
+  final $Res Function(OpenTaskView) _then;
 
-/// Create a copy of RecentResponse
+/// Create a copy of OpenTaskView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? type = null,Object? text = null,Object? sentAt = null,Object? senderDisplayName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? detail = freezed,Object? proof = null,Object? pointsEarn = null,}) {
   return _then(_self.copyWith(
-occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,sentAt: null == sentAt ? _self.sentAt : sentAt // ignore: cast_nullable_to_non_nullable
-as DateTime,senderDisplayName: freezed == senderDisplayName ? _self.senderDisplayName : senderDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String?,proof: null == proof ? _self.proof : proof // ignore: cast_nullable_to_non_nullable
+as String,pointsEarn: null == pointsEarn ? _self.pointsEarn : pointsEarn // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [RecentResponse].
-extension RecentResponsePatterns on RecentResponse {
+/// Adds pattern-matching-related methods to [OpenTaskView].
+extension OpenTaskViewPatterns on OpenTaskView {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -435,10 +733,10 @@ extension RecentResponsePatterns on RecentResponse {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _RecentResponse value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _OpenTaskView value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _RecentResponse() when $default != null:
+case _OpenTaskView() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -457,10 +755,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _RecentResponse value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _OpenTaskView value)  $default,){
 final _that = this;
 switch (_that) {
-case _RecentResponse():
+case _OpenTaskView():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -478,10 +776,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _RecentResponse value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _OpenTaskView value)?  $default,){
 final _that = this;
 switch (_that) {
-case _RecentResponse() when $default != null:
+case _OpenTaskView() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -499,10 +797,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String type,  String text,  DateTime sentAt,  String? senderDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String? detail,  String proof,  int pointsEarn)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _RecentResponse() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentAt,_that.senderDisplayName);case _:
+case _OpenTaskView() when $default != null:
+return $default(_that.id,_that.title,_that.detail,_that.proof,_that.pointsEarn);case _:
   return orElse();
 
 }
@@ -520,10 +818,10 @@ return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentA
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String type,  String text,  DateTime sentAt,  String? senderDisplayName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String? detail,  String proof,  int pointsEarn)  $default,) {final _that = this;
 switch (_that) {
-case _RecentResponse():
-return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentAt,_that.senderDisplayName);case _:
+case _OpenTaskView():
+return $default(_that.id,_that.title,_that.detail,_that.proof,_that.pointsEarn);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -540,10 +838,10 @@ return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentA
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String type,  String text,  DateTime sentAt,  String? senderDisplayName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String? detail,  String proof,  int pointsEarn)?  $default,) {final _that = this;
 switch (_that) {
-case _RecentResponse() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentAt,_that.senderDisplayName);case _:
+case _OpenTaskView() when $default != null:
+return $default(_that.id,_that.title,_that.detail,_that.proof,_that.pointsEarn);case _:
   return null;
 
 }
@@ -554,51 +852,50 @@ return $default(_that.occurrenceId,_that.title,_that.type,_that.text,_that.sentA
 /// @nodoc
 @JsonSerializable()
 
-class _RecentResponse implements RecentResponse {
-  const _RecentResponse({required this.occurrenceId, required this.title, required this.type, required this.text, required this.sentAt, this.senderDisplayName});
-  factory _RecentResponse.fromJson(Map<String, dynamic> json) => _$RecentResponseFromJson(json);
+class _OpenTaskView implements OpenTaskView {
+  const _OpenTaskView({required this.id, required this.title, this.detail, required this.proof, this.pointsEarn = 0});
+  factory _OpenTaskView.fromJson(Map<String, dynamic> json) => _$OpenTaskViewFromJson(json);
 
-@override final  String occurrenceId;
+@override final  String id;
 @override final  String title;
-@override final  String type;
-@override final  String text;
-@override final  DateTime sentAt;
-@override final  String? senderDisplayName;
+@override final  String? detail;
+@override final  String proof;
+@override@JsonKey() final  int pointsEarn;
 
-/// Create a copy of RecentResponse
+/// Create a copy of OpenTaskView
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$RecentResponseCopyWith<_RecentResponse> get copyWith => __$RecentResponseCopyWithImpl<_RecentResponse>(this, _$identity);
+_$OpenTaskViewCopyWith<_OpenTaskView> get copyWith => __$OpenTaskViewCopyWithImpl<_OpenTaskView>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$RecentResponseToJson(this, );
+  return _$OpenTaskViewToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RecentResponse&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.type, type) || other.type == type)&&(identical(other.text, text) || other.text == text)&&(identical(other.sentAt, sentAt) || other.sentAt == sentAt)&&(identical(other.senderDisplayName, senderDisplayName) || other.senderDisplayName == senderDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OpenTaskView&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,type,text,sentAt,senderDisplayName);
+int get hashCode => Object.hash(runtimeType,id,title,detail,proof,pointsEarn);
 
 @override
 String toString() {
-  return 'RecentResponse(occurrenceId: $occurrenceId, title: $title, type: $type, text: $text, sentAt: $sentAt, senderDisplayName: $senderDisplayName)';
+  return 'OpenTaskView(id: $id, title: $title, detail: $detail, proof: $proof, pointsEarn: $pointsEarn)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$RecentResponseCopyWith<$Res> implements $RecentResponseCopyWith<$Res> {
-  factory _$RecentResponseCopyWith(_RecentResponse value, $Res Function(_RecentResponse) _then) = __$RecentResponseCopyWithImpl;
+abstract mixin class _$OpenTaskViewCopyWith<$Res> implements $OpenTaskViewCopyWith<$Res> {
+  factory _$OpenTaskViewCopyWith(_OpenTaskView value, $Res Function(_OpenTaskView) _then) = __$OpenTaskViewCopyWithImpl;
 @override @useResult
 $Res call({
- String occurrenceId, String title, String type, String text, DateTime sentAt, String? senderDisplayName
+ String id, String title, String? detail, String proof, int pointsEarn
 });
 
 
@@ -606,24 +903,23 @@ $Res call({
 
 }
 /// @nodoc
-class __$RecentResponseCopyWithImpl<$Res>
-    implements _$RecentResponseCopyWith<$Res> {
-  __$RecentResponseCopyWithImpl(this._self, this._then);
+class __$OpenTaskViewCopyWithImpl<$Res>
+    implements _$OpenTaskViewCopyWith<$Res> {
+  __$OpenTaskViewCopyWithImpl(this._self, this._then);
 
-  final _RecentResponse _self;
-  final $Res Function(_RecentResponse) _then;
+  final _OpenTaskView _self;
+  final $Res Function(_OpenTaskView) _then;
 
-/// Create a copy of RecentResponse
+/// Create a copy of OpenTaskView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? type = null,Object? text = null,Object? sentAt = null,Object? senderDisplayName = freezed,}) {
-  return _then(_RecentResponse(
-occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? detail = freezed,Object? proof = null,Object? pointsEarn = null,}) {
+  return _then(_OpenTaskView(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,sentAt: null == sentAt ? _self.sentAt : sentAt // ignore: cast_nullable_to_non_nullable
-as DateTime,senderDisplayName: freezed == senderDisplayName ? _self.senderDisplayName : senderDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String,detail: freezed == detail ? _self.detail : detail // ignore: cast_nullable_to_non_nullable
+as String?,proof: null == proof ? _self.proof : proof // ignore: cast_nullable_to_non_nullable
+as String,pointsEarn: null == pointsEarn ? _self.pointsEarn : pointsEarn // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -634,35 +930,10 @@ as String?,
 /// @nodoc
 mixin _$TodayView {
 
-/// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
- String get roleContext;/// How many things are waiting on my human response, stated by the
-/// server. Today shows the direction-giving face when this is non-zero.
- int get needsMyResponseCount;/// The relationship day this list belongs to, resolved by the server in
-/// the Dynamic's own timezone. The client never derives it from the
-/// device clock.
- DateTime? get relationshipDay;/// Minutes past midnight at which the relationship day rolls over, in the
-/// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
-/// which was wrong for any Dynamic that chose another boundary.
-///
-/// `null` when an older server did not send it, in which case the line is
-/// omitted rather than stating a boundary nobody chose. Make it required
-/// once staging is redeployed (plan item T1.6).
- int? get dayBoundaryMinutes;/// The Dynamic's IANA zone. REQ-TIME-001: due times are rendered here, not
-/// in the device's zone, so a travelling partner reads the same hour their
-/// partner set. `null` from a server that predates the field, in which
-/// case the device's zone is the only thing left to use.
- String? get referenceTimezone;/// When the server last confirmed this list. Offline shows the last
-/// confirmed list with this timestamp rather than implying it is current.
- DateTime? get lastConfirmedAt;/// Total actionable items for the day, stated by the server.
- int get totalCount;/// At most three, in server order: the first carries editorial emphasis,
-/// the next two are timeline rows. Never re-sorted on the client.
- List<TodayItem> get priorityItems;/// Everything else for the day, behind one count-bearing disclosure.
- List<TodayItem> get laterItems; List<TodayItem> get awaitingResponse; RecentResponse? get recentResponse;/// What the other person did that now waits on me: completions to
-/// acknowledge, adjustments to answer, past-due items to look at. Most
-/// urgent first, ordered by the server.
- List<TodayItem> get needsMyResponse;/// What I gave that is still open on their side, with whether it has
-/// been received.
- List<TodayItem> get given;
+ String get dynamicId;/// The relationship day shown, `yyyy-MM-dd`.
+ String get day; String get timezone; int get dayBoundaryMinutes;/// `D` or `S` — the caller's side, as the server sees it.
+ String get side; List<OccurrenceView> get items; List<OpenTaskView> get openTasks; int get balance; int get daysTogether;/// D face: things the s has said that have no answer yet, all days.
+ int get needsMe; String? get partnerDisplayName;
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -675,16 +946,16 @@ $TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.priorityItems, priorityItems)&&const DeepCollectionEquality().equals(other.laterItems, laterItems)&&const DeepCollectionEquality().equals(other.awaitingResponse, awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse)&&const DeepCollectionEquality().equals(other.needsMyResponse, needsMyResponse)&&const DeepCollectionEquality().equals(other.given, given));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.day, day) || other.day == day)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.side, side) || other.side == side)&&const DeepCollectionEquality().equals(other.items, items)&&const DeepCollectionEquality().equals(other.openTasks, openTasks)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.daysTogether, daysTogether) || other.daysTogether == daysTogether)&&(identical(other.needsMe, needsMe) || other.needsMe == needsMe)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(priorityItems),const DeepCollectionEquality().hash(laterItems),const DeepCollectionEquality().hash(awaitingResponse),recentResponse,const DeepCollectionEquality().hash(needsMyResponse),const DeepCollectionEquality().hash(given));
+int get hashCode => Object.hash(runtimeType,dynamicId,day,timezone,dayBoundaryMinutes,side,const DeepCollectionEquality().hash(items),const DeepCollectionEquality().hash(openTasks),balance,daysTogether,needsMe,partnerDisplayName);
 
 @override
 String toString() {
-  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse, needsMyResponse: $needsMyResponse, given: $given)';
+  return 'TodayView(dynamicId: $dynamicId, day: $day, timezone: $timezone, dayBoundaryMinutes: $dayBoundaryMinutes, side: $side, items: $items, openTasks: $openTasks, balance: $balance, daysTogether: $daysTogether, needsMe: $needsMe, partnerDisplayName: $partnerDisplayName)';
 }
 
 
@@ -695,11 +966,11 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse, List<TodayItem> needsMyResponse, List<TodayItem> given
+ String dynamicId, String day, String timezone, int dayBoundaryMinutes, String side, List<OccurrenceView> items, List<OpenTaskView> openTasks, int balance, int daysTogether, int needsMe, String? partnerDisplayName
 });
 
 
-$RecentResponseCopyWith<$Res>? get recentResponse;
+
 
 }
 /// @nodoc
@@ -712,37 +983,23 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,Object? needsMyResponse = null,Object? given = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? dynamicId = null,Object? day = null,Object? timezone = null,Object? dayBoundaryMinutes = null,Object? side = null,Object? items = null,Object? openTasks = null,Object? balance = null,Object? daysTogether = null,Object? needsMe = null,Object? partnerDisplayName = freezed,}) {
   return _then(_self.copyWith(
-roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
-as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
-as int,relationshipDay: freezed == relationshipDay ? _self.relationshipDay : relationshipDay // ignore: cast_nullable_to_non_nullable
-as DateTime?,dayBoundaryMinutes: freezed == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
-as int?,referenceTimezone: freezed == referenceTimezone ? _self.referenceTimezone : referenceTimezone // ignore: cast_nullable_to_non_nullable
-as String?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
-as int,priorityItems: null == priorityItems ? _self.priorityItems : priorityItems // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,laterItems: null == laterItems ? _self.laterItems : laterItems // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,awaitingResponse: null == awaitingResponse ? _self.awaitingResponse : awaitingResponse // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,recentResponse: freezed == recentResponse ? _self.recentResponse : recentResponse // ignore: cast_nullable_to_non_nullable
-as RecentResponse?,needsMyResponse: null == needsMyResponse ? _self.needsMyResponse : needsMyResponse // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,given: null == given ? _self.given : given // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,
+dynamicId: null == dynamicId ? _self.dynamicId : dynamicId // ignore: cast_nullable_to_non_nullable
+as String,day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
+as String,timezone: null == timezone ? _self.timezone : timezone // ignore: cast_nullable_to_non_nullable
+as String,dayBoundaryMinutes: null == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
+as int,side: null == side ? _self.side : side // ignore: cast_nullable_to_non_nullable
+as String,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
+as List<OccurrenceView>,openTasks: null == openTasks ? _self.openTasks : openTasks // ignore: cast_nullable_to_non_nullable
+as List<OpenTaskView>,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
+as int,daysTogether: null == daysTogether ? _self.daysTogether : daysTogether // ignore: cast_nullable_to_non_nullable
+as int,needsMe: null == needsMe ? _self.needsMe : needsMe // ignore: cast_nullable_to_non_nullable
+as int,partnerDisplayName: freezed == partnerDisplayName ? _self.partnerDisplayName : partnerDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
-/// Create a copy of TodayView
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$RecentResponseCopyWith<$Res>? get recentResponse {
-    if (_self.recentResponse == null) {
-    return null;
-  }
 
-  return $RecentResponseCopyWith<$Res>(_self.recentResponse!, (value) {
-    return _then(_self.copyWith(recentResponse: value));
-  });
-}
 }
 
 
@@ -824,10 +1081,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse,  List<TodayItem> needsMyResponse,  List<TodayItem> given)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse,_that.needsMyResponse,_that.given);case _:
+return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName);case _:
   return orElse();
 
 }
@@ -845,10 +1102,10 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse,  List<TodayItem> needsMyResponse,  List<TodayItem> given)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse,_that.needsMyResponse,_that.given);case _:
+return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -865,10 +1122,10 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse,  List<TodayItem> needsMyResponse,  List<TodayItem> given)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse,_that.needsMyResponse,_that.given);case _:
+return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName);case _:
   return null;
 
 }
@@ -879,89 +1136,36 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// @nodoc
 @JsonSerializable()
 
-class _TodayView implements TodayView {
-  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes, this.referenceTimezone, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse, final  List<TodayItem> needsMyResponse = const <TodayItem>[], final  List<TodayItem> given = const <TodayItem>[]}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse,_needsMyResponse = needsMyResponse,_given = given;
+class _TodayView extends TodayView {
+  const _TodayView({required this.dynamicId, required this.day, required this.timezone, this.dayBoundaryMinutes = 240, required this.side, final  List<OccurrenceView> items = const <OccurrenceView>[], final  List<OpenTaskView> openTasks = const <OpenTaskView>[], this.balance = 0, this.daysTogether = 0, this.needsMe = 0, this.partnerDisplayName}): _items = items,_openTasks = openTasks,super._();
   factory _TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
 
-/// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
-@override@JsonKey() final  String roleContext;
-/// How many things are waiting on my human response, stated by the
-/// server. Today shows the direction-giving face when this is non-zero.
-@override@JsonKey() final  int needsMyResponseCount;
-/// The relationship day this list belongs to, resolved by the server in
-/// the Dynamic's own timezone. The client never derives it from the
-/// device clock.
-@override final  DateTime? relationshipDay;
-/// Minutes past midnight at which the relationship day rolls over, in the
-/// Dynamic's own timezone. The screen used to state a hard-coded 2:00 AM,
-/// which was wrong for any Dynamic that chose another boundary.
-///
-/// `null` when an older server did not send it, in which case the line is
-/// omitted rather than stating a boundary nobody chose. Make it required
-/// once staging is redeployed (plan item T1.6).
-@override final  int? dayBoundaryMinutes;
-/// The Dynamic's IANA zone. REQ-TIME-001: due times are rendered here, not
-/// in the device's zone, so a travelling partner reads the same hour their
-/// partner set. `null` from a server that predates the field, in which
-/// case the device's zone is the only thing left to use.
-@override final  String? referenceTimezone;
-/// When the server last confirmed this list. Offline shows the last
-/// confirmed list with this timestamp rather than implying it is current.
-@override final  DateTime? lastConfirmedAt;
-/// Total actionable items for the day, stated by the server.
-@override@JsonKey() final  int totalCount;
-/// At most three, in server order: the first carries editorial emphasis,
-/// the next two are timeline rows. Never re-sorted on the client.
- final  List<TodayItem> _priorityItems;
-/// At most three, in server order: the first carries editorial emphasis,
-/// the next two are timeline rows. Never re-sorted on the client.
-@override@JsonKey() List<TodayItem> get priorityItems {
-  if (_priorityItems is EqualUnmodifiableListView) return _priorityItems;
+@override final  String dynamicId;
+/// The relationship day shown, `yyyy-MM-dd`.
+@override final  String day;
+@override final  String timezone;
+@override@JsonKey() final  int dayBoundaryMinutes;
+/// `D` or `S` — the caller's side, as the server sees it.
+@override final  String side;
+ final  List<OccurrenceView> _items;
+@override@JsonKey() List<OccurrenceView> get items {
+  if (_items is EqualUnmodifiableListView) return _items;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_priorityItems);
+  return EqualUnmodifiableListView(_items);
 }
 
-/// Everything else for the day, behind one count-bearing disclosure.
- final  List<TodayItem> _laterItems;
-/// Everything else for the day, behind one count-bearing disclosure.
-@override@JsonKey() List<TodayItem> get laterItems {
-  if (_laterItems is EqualUnmodifiableListView) return _laterItems;
+ final  List<OpenTaskView> _openTasks;
+@override@JsonKey() List<OpenTaskView> get openTasks {
+  if (_openTasks is EqualUnmodifiableListView) return _openTasks;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_laterItems);
+  return EqualUnmodifiableListView(_openTasks);
 }
 
- final  List<TodayItem> _awaitingResponse;
-@override@JsonKey() List<TodayItem> get awaitingResponse {
-  if (_awaitingResponse is EqualUnmodifiableListView) return _awaitingResponse;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_awaitingResponse);
-}
-
-@override final  RecentResponse? recentResponse;
-/// What the other person did that now waits on me: completions to
-/// acknowledge, adjustments to answer, past-due items to look at. Most
-/// urgent first, ordered by the server.
- final  List<TodayItem> _needsMyResponse;
-/// What the other person did that now waits on me: completions to
-/// acknowledge, adjustments to answer, past-due items to look at. Most
-/// urgent first, ordered by the server.
-@override@JsonKey() List<TodayItem> get needsMyResponse {
-  if (_needsMyResponse is EqualUnmodifiableListView) return _needsMyResponse;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_needsMyResponse);
-}
-
-/// What I gave that is still open on their side, with whether it has
-/// been received.
- final  List<TodayItem> _given;
-/// What I gave that is still open on their side, with whether it has
-/// been received.
-@override@JsonKey() List<TodayItem> get given {
-  if (_given is EqualUnmodifiableListView) return _given;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_given);
-}
-
+@override@JsonKey() final  int balance;
+@override@JsonKey() final  int daysTogether;
+/// D face: things the s has said that have no answer yet, all days.
+@override@JsonKey() final  int needsMe;
+@override final  String? partnerDisplayName;
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
@@ -976,16 +1180,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._priorityItems, _priorityItems)&&const DeepCollectionEquality().equals(other._laterItems, _laterItems)&&const DeepCollectionEquality().equals(other._awaitingResponse, _awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse)&&const DeepCollectionEquality().equals(other._needsMyResponse, _needsMyResponse)&&const DeepCollectionEquality().equals(other._given, _given));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.day, day) || other.day == day)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.side, side) || other.side == side)&&const DeepCollectionEquality().equals(other._items, _items)&&const DeepCollectionEquality().equals(other._openTasks, _openTasks)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.daysTogether, daysTogether) || other.daysTogether == daysTogether)&&(identical(other.needsMe, needsMe) || other.needsMe == needsMe)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(_priorityItems),const DeepCollectionEquality().hash(_laterItems),const DeepCollectionEquality().hash(_awaitingResponse),recentResponse,const DeepCollectionEquality().hash(_needsMyResponse),const DeepCollectionEquality().hash(_given));
+int get hashCode => Object.hash(runtimeType,dynamicId,day,timezone,dayBoundaryMinutes,side,const DeepCollectionEquality().hash(_items),const DeepCollectionEquality().hash(_openTasks),balance,daysTogether,needsMe,partnerDisplayName);
 
 @override
 String toString() {
-  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse, needsMyResponse: $needsMyResponse, given: $given)';
+  return 'TodayView(dynamicId: $dynamicId, day: $day, timezone: $timezone, dayBoundaryMinutes: $dayBoundaryMinutes, side: $side, items: $items, openTasks: $openTasks, balance: $balance, daysTogether: $daysTogether, needsMe: $needsMe, partnerDisplayName: $partnerDisplayName)';
 }
 
 
@@ -996,11 +1200,11 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse, List<TodayItem> needsMyResponse, List<TodayItem> given
+ String dynamicId, String day, String timezone, int dayBoundaryMinutes, String side, List<OccurrenceView> items, List<OpenTaskView> openTasks, int balance, int daysTogether, int needsMe, String? partnerDisplayName
 });
 
 
-@override $RecentResponseCopyWith<$Res>? get recentResponse;
+
 
 }
 /// @nodoc
@@ -1013,38 +1217,24 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,Object? needsMyResponse = null,Object? given = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? dynamicId = null,Object? day = null,Object? timezone = null,Object? dayBoundaryMinutes = null,Object? side = null,Object? items = null,Object? openTasks = null,Object? balance = null,Object? daysTogether = null,Object? needsMe = null,Object? partnerDisplayName = freezed,}) {
   return _then(_TodayView(
-roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
-as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
-as int,relationshipDay: freezed == relationshipDay ? _self.relationshipDay : relationshipDay // ignore: cast_nullable_to_non_nullable
-as DateTime?,dayBoundaryMinutes: freezed == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
-as int?,referenceTimezone: freezed == referenceTimezone ? _self.referenceTimezone : referenceTimezone // ignore: cast_nullable_to_non_nullable
-as String?,lastConfirmedAt: freezed == lastConfirmedAt ? _self.lastConfirmedAt : lastConfirmedAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,totalCount: null == totalCount ? _self.totalCount : totalCount // ignore: cast_nullable_to_non_nullable
-as int,priorityItems: null == priorityItems ? _self._priorityItems : priorityItems // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,laterItems: null == laterItems ? _self._laterItems : laterItems // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,awaitingResponse: null == awaitingResponse ? _self._awaitingResponse : awaitingResponse // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,recentResponse: freezed == recentResponse ? _self.recentResponse : recentResponse // ignore: cast_nullable_to_non_nullable
-as RecentResponse?,needsMyResponse: null == needsMyResponse ? _self._needsMyResponse : needsMyResponse // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,given: null == given ? _self._given : given // ignore: cast_nullable_to_non_nullable
-as List<TodayItem>,
+dynamicId: null == dynamicId ? _self.dynamicId : dynamicId // ignore: cast_nullable_to_non_nullable
+as String,day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
+as String,timezone: null == timezone ? _self.timezone : timezone // ignore: cast_nullable_to_non_nullable
+as String,dayBoundaryMinutes: null == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
+as int,side: null == side ? _self.side : side // ignore: cast_nullable_to_non_nullable
+as String,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
+as List<OccurrenceView>,openTasks: null == openTasks ? _self._openTasks : openTasks // ignore: cast_nullable_to_non_nullable
+as List<OpenTaskView>,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
+as int,daysTogether: null == daysTogether ? _self.daysTogether : daysTogether // ignore: cast_nullable_to_non_nullable
+as int,needsMe: null == needsMe ? _self.needsMe : needsMe // ignore: cast_nullable_to_non_nullable
+as int,partnerDisplayName: freezed == partnerDisplayName ? _self.partnerDisplayName : partnerDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
-/// Create a copy of TodayView
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$RecentResponseCopyWith<$Res>? get recentResponse {
-    if (_self.recentResponse == null) {
-    return null;
-  }
 
-  return $RecentResponseCopyWith<$Res>(_self.recentResponse!, (value) {
-    return _then(_self.copyWith(recentResponse: value));
-  });
-}
 }
 
 // dart format on

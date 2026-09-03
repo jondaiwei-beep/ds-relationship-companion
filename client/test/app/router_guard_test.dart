@@ -2,10 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/app/router.dart';
 import 'package:dsapp/domain_client/api_client.dart';
-import 'package:dsapp/domain_client/models/today_view.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
-import 'package:dsapp/domain_client/repositories/today_repository.dart';
-import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dsapp/features/invite/presentation/join_screen.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
@@ -16,6 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:dsapp/l10n/app_localizations.dart';
+
+import '../support/today_fakes.dart';
 
 /// The guard is the only thing standing between an unauthenticated visitor
 /// and relationship content. These tests state what it must do; each was
@@ -37,7 +36,7 @@ void main() {
         // schedule is covered directly in session_test.dart.
         autoRefreshProvider.overrideWithValue(false),
         todayRepositoryProvider.overrideWithValue(
-          FixtureTodayRepository(_view()) as TodayRepository,
+          FakeTodayRepository(view: sView()),
         ),
       ],
     );
@@ -325,8 +324,6 @@ class GoRouterHarness {
   String get location =>
       router.routerDelegate.currentConfiguration.uri.toString();
 }
-
-TodayView _view() => todayFixture();
 
 class _FakeAuth implements AuthRepository {
   @override

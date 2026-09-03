@@ -283,7 +283,7 @@ void main() {
       _detail(
         structure: const [
           StructureItem(
-            definitionId: 'd1',
+            taskId: 'd1',
             kind: 'RITUAL',
             title: 'Evening check-in',
             active: true,

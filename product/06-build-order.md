@@ -50,6 +50,8 @@
 - D 今天：等我处置列表（两下）、概况、快速加、我要记得的。
 - 设备锁（系统生物识别/PIN）。
 - 验收：Day A（01-users）从早到晚每一步都能在真机上走通；不变量 1–7 有测试。
+- ✅ 2026-09-03 客户端 Phase 1 落地：旧 expectation/response/attention 模型与页面删除；新 `TodayView/OccurrenceView/OpenTaskView/TaskView/DNote` 模型与 today/task/d-note 仓库；`domain/relationship_day.dart` 与服务端同一测试向量；`/dynamics/:id/today` 按 `TodayView.side` 渲染 s 面或 D 面；设置页显示 day_start 并加设备锁（local_auth + secure storage，>30s 回前台重锁）；zh/en 文案齐；`flutter analyze` 0，`flutter test` 全绿。
+  - 偏差/待办：`day_start` 只读（服务端无修改端点）；照片证明先用一行引用文字代替拍照；「我认，晚了」不单独出口（服务端按到点自动记 `delivered_late`）；无 Dynamic 级 paused 提示（TodayView 无该字段，按行灰显）；规矩页「问一件事」与探索「用这个」入口随旧模型下线，新建走 D 今天「快速加一条」；真机 Day A 走查未做。
 
 ## Phase 2 · 记录（1–2 周）
 - 日历（每天一格：交付数/未交付/有留言/有处置）、这一天时间线（occurrence + disposition + DayComment 按时间）。

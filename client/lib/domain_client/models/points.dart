@@ -58,21 +58,33 @@ class PointEntry {
   final String? note;
 }
 
-/// Why a movement happened. Each renders as a sentence with a person in it —
-/// "Alex noticed", not "+1 COMPLETION".
+/// Why a movement happened (product/03-domain.md · PointsLedger). Each renders
+/// as a sentence with a person in it — "Alex gave 2", not "+2 d_award".
+///
+/// Only `taskEarn` is ever written by the system, and it only ever adds.
+/// Every negative entry was made by a person (decision D-04).
 enum PointReason {
-  completion,
-  manualAward,
-  manualDeduct,
-  rewardPurchase,
-  consequence;
+  /// An occurrence was delivered and its task carried points.
+  taskEarn,
+  /// The D gave points outright.
+  dAward,
+  /// The D took points. Always a person.
+  dDeduct,
+  /// Spent on a reward the D approved.
+  redemption,
+  /// A redemption was undone.
+  redemptionRefund,
+  /// Anything this build does not know. Shown as a plain movement, never
+  /// invented into a sentence.
+  unknown;
 
   static PointReason fromWire(String w) => switch (w) {
-        'COMPLETION' => PointReason.completion,
-        'MANUAL_AWARD' => PointReason.manualAward,
-        'MANUAL_DEDUCT' => PointReason.manualDeduct,
-        'REWARD_PURCHASE' => PointReason.rewardPurchase,
-        _ => PointReason.consequence,
+        'task_earn' => PointReason.taskEarn,
+        'd_award' => PointReason.dAward,
+        'd_deduct' => PointReason.dDeduct,
+        'redemption' => PointReason.redemption,
+        'redemption_refund' => PointReason.redemptionRefund,
+        _ => PointReason.unknown,
       };
 }
 

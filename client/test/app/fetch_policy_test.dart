@@ -4,46 +4,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:dsapp/app/providers.dart';
-import 'package:dsapp/domain_client/models/today_view.dart';
-import 'package:dsapp/domain_client/repositories/today_repository.dart';
+import 'package:dsapp/features/today/application/today_providers.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/l10n/app_localizations.dart';
 
+import '../support/today_fakes.dart';
+
 /// Counts how many times the server was actually asked.
-class _CountingRepository implements TodayRepository {
-  int reads = 0;
-
-  @override
-  Future<TodayView> forDynamic(String dynamicId) async {
-    reads++;
-    return TodayView(
-      relationshipDay: DateTime.utc(2026, 9, 1),
-      referenceTimezone: 'Asia/Shanghai',
-      totalCount: 1,
-      priorityItems: const [
-        TodayItem(
-          occurrenceId: 'o1',
-          title: 'Prepare the bedroom',
-          kind: 'TASK',
-          state: 'ACTIVE',
-          allowedActions: ['complete'],
-        ),
-      ],
+FakeTodayRepository _countingRepository() => FakeTodayRepository(
+      view: sView(items: [occ(id: 'o1', title: 'Prepare the bedroom')]),
     );
-  }
 
-  @override
-  dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
-}
-
-Future<(ProviderContainer, _CountingRepository)> _pump(
+Future<(ProviderContainer, FakeTodayRepository)> _pump(
   WidgetTester tester,
 ) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
-  final repo = _CountingRepository();
+  final repo = _countingRepository();
   final container = ProviderContainer(
     overrides: [todayRepositoryProvider.overrideWithValue(repo)],
   );

@@ -12,6 +12,7 @@ import 'app/router.dart';
 import 'platform/deeplink/callback_params.dart';
 import 'platform/session/session_controller.dart';
 import 'platform/time/device_timezone.dart';
+import 'features/device_lock/presentation/lock_screen.dart';
 
 /// The product entry point.
 ///
@@ -22,9 +23,6 @@ import 'platform/time/device_timezone.dart';
 ///   --dart-define=API_BASE_URL=https://ds-api.beforeweplay.com \
 ///   --dart-define=WEB_BASE_URL=https://ds-staging.beforeweplay.com
 /// ```
-///
-/// `main_preview.dart` is still the way to see every approved state of one
-/// screen without a server behind it.
 Future<void> main() async {
   // The plugin that reads the device zone speaks over a platform channel, so
   // the bindings have to exist before it is called.
@@ -120,6 +118,8 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
       localizationsDelegates: L.localizationsDelegates,
       supportedLocales: L.supportedLocales,
       routerConfig: ref.watch(routerProvider),
+      // The device lock stands in front of every route, including the entrance.
+      builder: (context, child) => DeviceLockShell(child: child ?? const SizedBox.shrink()),
     );
   }
 }

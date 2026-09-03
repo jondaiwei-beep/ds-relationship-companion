@@ -4266,6 +4266,582 @@ abstract class L {
   /// In en, this message translates to:
   /// **'TO SPEND'**
   String get pointsSpendable;
+
+  /// No description provided for @todayDayStartsAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Today counts from {clock}'**
+  String todayDayStartsAt(String clock);
+
+  /// No description provided for @todayBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} points'**
+  String todayBalance(int count);
+
+  /// No description provided for @todayDaysTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days together'**
+  String todayDaysTogether(int count);
+
+  /// No description provided for @todayNoteOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'A line, if you want'**
+  String get todayNoteOptional;
+
+  /// No description provided for @todaySend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get todaySend;
+
+  /// No description provided for @todayCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get todayCancel;
+
+  /// No description provided for @todayPartnerFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'your partner'**
+  String get todayPartnerFallback;
+
+  /// No description provided for @todayDueBy.
+  ///
+  /// In en, this message translates to:
+  /// **'by {time}'**
+  String todayDueBy(String time);
+
+  /// No description provided for @todayPointsEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count}'**
+  String todayPointsEarn(int count);
+
+  /// No description provided for @todayProofPhotoNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get todayProofPhotoNote;
+
+  /// No description provided for @todayRefreshed.
+  ///
+  /// In en, this message translates to:
+  /// **'Reloaded.'**
+  String get todayRefreshed;
+
+  /// No description provided for @sTodayEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is asked of you today.'**
+  String get sTodayEmpty;
+
+  /// No description provided for @sTodaySectionCheckin.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get sTodaySectionCheckin;
+
+  /// No description provided for @sTodaySectionList.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get sTodaySectionList;
+
+  /// No description provided for @sTodaySectionOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'When you feel like it'**
+  String get sTodaySectionOpen;
+
+  /// No description provided for @sTodayDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered · waiting for {name}'**
+  String sTodayDelivered(String name);
+
+  /// No description provided for @sTodayDeliveredLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered late · waiting for {name}'**
+  String sTodayDeliveredLate(String name);
+
+  /// No description provided for @sTodaySeen.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} saw it · {time}'**
+  String sTodaySeen(String name, String time);
+
+  /// No description provided for @sTodayPraised.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: good'**
+  String sTodayPraised(String name);
+
+  /// No description provided for @sTodayPraisedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {note}'**
+  String sTodayPraisedNote(String name, String note);
+
+  /// No description provided for @sTodayLetGo.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: let it go'**
+  String sTodayLetGo(String name);
+
+  /// No description provided for @sTodayMakeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: make it up on {day}'**
+  String sTodayMakeUp(String name, String day);
+
+  /// No description provided for @sTodayPunished.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {title}'**
+  String sTodayPunished(String name, String title);
+
+  /// No description provided for @sTodayPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is away · paused'**
+  String sTodayPaused(String name);
+
+  /// No description provided for @sTodayMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not done'**
+  String get sTodayMissed;
+
+  /// No description provided for @sTodayCantDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t do'**
+  String get sTodayCantDo;
+
+  /// No description provided for @sTodayNewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Asked for {time}'**
+  String sTodayNewTime(String time);
+
+  /// No description provided for @sTodayDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to talk'**
+  String get sTodayDiscuss;
+
+  /// No description provided for @sTodayYourNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You: {note}'**
+  String sTodayYourNote(String note);
+
+  /// No description provided for @sTodayActionDeliver.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get sTodayActionDeliver;
+
+  /// No description provided for @sTodayActionCantDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t do'**
+  String get sTodayActionCantDo;
+
+  /// No description provided for @sTodayActionNewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for a new time'**
+  String get sTodayActionNewTime;
+
+  /// No description provided for @sTodayActionDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to talk'**
+  String get sTodayActionDiscuss;
+
+  /// No description provided for @sTodayActionWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Take it back'**
+  String get sTodayActionWithdraw;
+
+  /// No description provided for @sTodayWriteLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a line'**
+  String get sTodayWriteLine;
+
+  /// No description provided for @sTodayPhotoRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get sTodayPhotoRef;
+
+  /// No description provided for @sTodayPhotoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste a photo reference for now; the camera comes in a later build.'**
+  String get sTodayPhotoHint;
+
+  /// No description provided for @sTodayPickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time'**
+  String get sTodayPickTime;
+
+  /// No description provided for @sTodayNewTimeAt.
+  ///
+  /// In en, this message translates to:
+  /// **'New time: {time}'**
+  String sTodayNewTimeAt(String time);
+
+  /// No description provided for @sTodayConflictPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} paused this.'**
+  String sTodayConflictPaused(String name);
+
+  /// No description provided for @sTodayConflictDisposed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} already answered this.'**
+  String sTodayConflictDisposed(String name);
+
+  /// No description provided for @sTodayConflictChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'This changed elsewhere.'**
+  String get sTodayConflictChanged;
+
+  /// No description provided for @sTodayConflictOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent. Try again.'**
+  String get sTodayConflictOther;
+
+  /// No description provided for @dTodayEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waiting for you.'**
+  String get dTodayEmpty;
+
+  /// No description provided for @dTodaySectionNeedsMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting on me'**
+  String get dTodaySectionNeedsMe;
+
+  /// No description provided for @dTodaySectionOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Today for {name}'**
+  String dTodaySectionOverview(String name);
+
+  /// No description provided for @dTodayOverviewDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'{done}/{total} delivered'**
+  String dTodayOverviewDelivered(int done, int total);
+
+  /// No description provided for @dTodayOverviewFlagged.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} said something'**
+  String dTodayOverviewFlagged(int count);
+
+  /// No description provided for @dTodaySaidDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered · {time}'**
+  String dTodaySaidDelivered(String time);
+
+  /// No description provided for @dTodaySaidLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered late · {time}'**
+  String dTodaySaidLate(String time);
+
+  /// No description provided for @dTodaySaidCantDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t do'**
+  String get dTodaySaidCantDo;
+
+  /// No description provided for @dTodaySaidNewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Asks for {time}'**
+  String dTodaySaidNewTime(String time);
+
+  /// No description provided for @dTodaySaidDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'Wants to talk'**
+  String get dTodaySaidDiscuss;
+
+  /// No description provided for @dTodaySaidMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not done'**
+  String get dTodaySaidMissed;
+
+  /// No description provided for @dTodaySaidNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: {note}'**
+  String dTodaySaidNote(String name, String note);
+
+  /// No description provided for @dTodayProofPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo: {ref}'**
+  String dTodayProofPhoto(String ref);
+
+  /// No description provided for @dTodayOnDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{day}'**
+  String dTodayOnDay(String day);
+
+  /// No description provided for @dTodayActionSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Seen'**
+  String get dTodayActionSeen;
+
+  /// No description provided for @dTodayActionPraise.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get dTodayActionPraise;
+
+  /// No description provided for @dTodayActionLetGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it go'**
+  String get dTodayActionLetGo;
+
+  /// No description provided for @dTodayActionMakeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it up'**
+  String get dTodayActionMakeUp;
+
+  /// No description provided for @dTodayActionPunish.
+  ///
+  /// In en, this message translates to:
+  /// **'Consequence'**
+  String get dTodayActionPunish;
+
+  /// No description provided for @dTodayMakeUpWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which day?'**
+  String get dTodayMakeUpWhich;
+
+  /// No description provided for @dTodayPunishWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which consequence?'**
+  String get dTodayPunishWhich;
+
+  /// No description provided for @dTodayPunishOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own words'**
+  String get dTodayPunishOwn;
+
+  /// No description provided for @dTodayPunishTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Consequence'**
+  String get dTodayPunishTitle;
+
+  /// No description provided for @dTodayConflictOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to answer yet.'**
+  String get dTodayConflictOpen;
+
+  /// No description provided for @dTodayConflictPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'This one is paused.'**
+  String get dTodayConflictPaused;
+
+  /// No description provided for @dTodayConflictChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'This changed elsewhere.'**
+  String get dTodayConflictChanged;
+
+  /// No description provided for @dTodayConflictOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent. Try again.'**
+  String get dTodayConflictOther;
+
+  /// No description provided for @dTodaySectionQuickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one'**
+  String get dTodaySectionQuickAdd;
+
+  /// No description provided for @dTodayQuickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What'**
+  String get dTodayQuickTitle;
+
+  /// No description provided for @dTodayQuickToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Just today'**
+  String get dTodayQuickToday;
+
+  /// No description provided for @dTodayQuickDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get dTodayQuickDaily;
+
+  /// No description provided for @dTodayQuickPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Points (optional)'**
+  String get dTodayQuickPoints;
+
+  /// No description provided for @dTodayQuickAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get dTodayQuickAdd;
+
+  /// No description provided for @dTodayQuickAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added.'**
+  String get dTodayQuickAdded;
+
+  /// No description provided for @dTodayQuickFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not added. Try again.'**
+  String get dTodayQuickFailed;
+
+  /// No description provided for @dTodaySectionNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'To remember'**
+  String get dTodaySectionNotes;
+
+  /// No description provided for @dTodayNoteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Note to self'**
+  String get dTodayNoteBody;
+
+  /// No description provided for @dTodayNoteRemind.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me'**
+  String get dTodayNoteRemind;
+
+  /// No description provided for @dTodayNoteRemindAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind · {time}'**
+  String dTodayNoteRemindAt(String time);
+
+  /// No description provided for @dTodayNoteDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get dTodayNoteDone;
+
+  /// No description provided for @dTodayNoteDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get dTodayNoteDelete;
+
+  /// No description provided for @dTodayNoteAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it'**
+  String get dTodayNoteAdd;
+
+  /// No description provided for @dTodayNotesPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you see these.'**
+  String get dTodayNotesPrivate;
+
+  /// No description provided for @pointsEntryRefunded.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned to you'**
+  String get pointsEntryRefunded;
+
+  /// No description provided for @pointsEntryMoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount}'**
+  String pointsEntryMoved(int amount);
+
+  /// No description provided for @settingsDayStart.
+  ///
+  /// In en, this message translates to:
+  /// **'The day starts at {time}'**
+  String settingsDayStart(String time);
+
+  /// No description provided for @settingsDayStartReadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing it comes in a later build.'**
+  String get settingsDayStartReadOnly;
+
+  /// No description provided for @settingsDeviceLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Device lock'**
+  String get settingsDeviceLock;
+
+  /// No description provided for @settingsDeviceLockSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for fingerprint, face or the device PIN when the app opens, or comes back after half a minute away.'**
+  String get settingsDeviceLockSupport;
+
+  /// No description provided for @settingsDeviceLockUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This device cannot lock the app.'**
+  String get settingsDeviceLockUnavailable;
+
+  /// No description provided for @lockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get lockTitle;
+
+  /// No description provided for @lockUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get lockUnlock;
+
+  /// No description provided for @lockReason.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock to continue'**
+  String get lockReason;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
