@@ -1,0 +1,68 @@
+[
+  {"id": "service_ritual.kneel_greeting", "group": "service_ritual", "title_zh": "跪迎/跪送", "title_en": "Kneel to greet or see off", "detail_zh": "对方出门或到家时以约定的姿势迎接", "detail_en": "A set posture when they leave or return home"},
+  {"id": "service_ritual.morning_evening_checkin", "group": "service_ritual", "title_zh": "早晚问安", "title_en": "Morning and evening check-in", "detail_zh": "固定时间发一句问候或状态", "detail_en": "A short greeting or status message at set times"},
+  {"id": "service_ritual.honorific", "group": "service_ritual", "title_zh": "使用称呼", "title_en": "Using an honorific", "detail_zh": "在约定的场合使用先生/主人等称呼", "detail_en": "Sir, Master, Ma'am — used at agreed moments"},
+  {"id": "service_ritual.standing_service", "group": "service_ritual", "title_zh": "一项固定服务", "title_en": "One standing act of service", "detail_zh": "咖啡、洗漱、衣物准备等固定服务", "detail_en": "Coffee made their way, clothes laid out, a bath run"},
+  {"id": "service_ritual.inspection", "group": "service_ritual", "title_zh": "检查/验收", "title_en": "Inspection", "detail_zh": "对方检查完成情况并给出评价", "detail_en": "Being looked over and told what was seen"},
+  {"id": "service_ritual.report_before_out", "group": "service_ritual", "title_zh": "出门前呈报", "title_en": "Report before going out", "detail_zh": "出门前拍照/告知时间", "detail_en": "A photo and the time, sent before leaving"},
+  {"id": "service_ritual.report_after_out", "group": "service_ritual", "title_zh": "回家后呈报", "title_en": "Report after coming home", "detail_zh": "到家后告知平安到达", "detail_en": "A message confirming safe return"},
+  {"id": "service_ritual.chore_list", "group": "service_ritual", "title_zh": "每日家务清单", "title_en": "Daily chore list", "detail_zh": "对方每天早上指定当日家务", "detail_en": "Chores assigned each morning"},
+  {"id": "service_ritual.serve_their_way", "group": "service_ritual", "title_zh": "照对方指定的方式做事", "title_en": "Doing things their specified way", "detail_zh": "不是效率最高的做法，而是被要求的做法", "detail_en": "Not the efficient way — the way they asked for"},
+
+  {"id": "rules_limits.written_rules", "group": "rules_limits", "title_zh": "几条写下来的规矩", "title_en": "A few written-down rules", "detail_zh": "必须做/禁止做/需请示，写清楚而非默认", "detail_en": "Required, forbidden, needs permission — written, not assumed"},
+  {"id": "rules_limits.ask_permission", "group": "rules_limits", "title_zh": "某件事需请示", "title_en": "Asking permission for one thing", "detail_zh": "吃东西、就寝、外出等一件事先问过", "detail_en": "Eating, bedtime, going out — one thing asked first"},
+  {"id": "rules_limits.daily_abstinence", "group": "rules_limits", "title_zh": "日常禁慾", "title_en": "Standing abstinence rule", "detail_zh": "未经许可不得自我满足", "detail_en": "No release without permission"},
+  {"id": "rules_limits.self_report_violation", "group": "rules_limits", "title_zh": "自首", "title_en": "Confessing a missed or broken rule", "detail_zh": "违规后主动说明，不等对方发现", "detail_en": "Owning up before being caught"},
+  {"id": "rules_limits.explain_when_cant", "group": "rules_limits", "title_zh": "做不到时必须说明原因", "title_en": "Explaining when a task can't be done", "detail_zh": "而不是默默跳过", "detail_en": "Instead of silently skipping it"},
+  {"id": "rules_limits.hard_limits", "group": "rules_limits", "title_zh": "写下硬限制", "title_en": "Writing down hard limits", "detail_zh": "绝不做的事，双方各自列出", "detail_en": "Things that are simply off the table, named by each of you"},
+  {"id": "rules_limits.soft_limits", "group": "rules_limits", "title_zh": "写下软限制", "title_en": "Writing down soft limits", "detail_zh": "视情况而定、需要额外沟通的事", "detail_en": "Maybe, only under some conditions — needs more talk"},
+  {"id": "rules_limits.revisit_agreements", "group": "rules_limits", "title_zh": "定期重新确认规矩还成立", "title_en": "Revisiting whether an agreement still holds", "detail_zh": "同意不是签一次就永久有效", "detail_en": "Consent is a subscription, not a signature"},
+
+  {"id": "sensation.impact", "group": "sensation", "title_zh": "打", "title_en": "Impact play", "detail_zh": "手、拍子等造成的痛感", "detail_en": "Hand, paddle, or similar — negotiated intensity"},
+  {"id": "sensation.temperature", "group": "sensation", "title_zh": "冷热刺激", "title_en": "Temperature play", "detail_zh": "冰、蜡等温度类感官刺激", "detail_en": "Ice, wax, or similar sensation"},
+  {"id": "sensation.tickling", "group": "sensation", "title_zh": "痒/触感刺激", "title_en": "Tickling or texture play", "detail_zh": "羽毛、刷子等触觉刺激", "detail_en": "Feathers, brushes, varied textures"},
+  {"id": "sensation.sensory_deprivation", "group": "sensation", "title_zh": "感官剥夺", "title_en": "Sensory deprivation", "detail_zh": "蒙眼或耳塞等", "detail_en": "Blindfold, earplugs, or similar"},
+  {"id": "sensation.orgasm_control", "group": "sensation", "title_zh": "高潮控制", "title_en": "Orgasm control", "detail_zh": "由对方决定是否/何时允许", "detail_en": "The other decides whether and when"},
+
+  {"id": "bondage.hand_rope", "group": "bondage", "title_zh": "手部束缚", "title_en": "Hand bondage", "detail_zh": "绳、手铐等", "detail_en": "Rope, cuffs, or similar"},
+  {"id": "bondage.full_rope", "group": "bondage", "title_zh": "较复杂的绳缚", "title_en": "More elaborate rope work", "detail_zh": "需要练习和安全知识", "detail_en": "Needs practice and safety awareness"},
+  {"id": "bondage.spreader_furniture", "group": "bondage", "title_zh": "固定器材", "title_en": "Restraint furniture or spreaders", "detail_zh": "较长时间的固定", "detail_en": "Longer-duration restraint"},
+  {"id": "bondage.chastity_device", "group": "bondage", "title_zh": "贞操锁", "title_en": "Chastity device", "detail_zh": "由对方保管钥匙/密码", "detail_en": "The other holds the key or code"},
+
+  {"id": "humiliation_language.pet_names", "group": "humiliation_language", "title_zh": "昵称/贬称", "title_en": "Pet names or teasing names", "detail_zh": "私下或特定场合使用", "detail_en": "Used privately or in agreed contexts"},
+  {"id": "humiliation_language.verbal_teasing", "group": "humiliation_language", "title_zh": "言语调侃", "title_en": "Verbal teasing", "detail_zh": "轻度、事先谈过边界", "detail_en": "Light teasing, boundaries discussed first"},
+  {"id": "humiliation_language.public_light", "group": "humiliation_language", "title_zh": "轻度当众展示", "title_en": "Light public display", "detail_zh": "仅限私下的两人朋友圈或极小范围", "detail_en": "Only among a very small trusted circle"},
+  {"id": "humiliation_language.praise_words", "group": "humiliation_language", "title_zh": "特定夸奖用语", "title_en": "Specific praise phrasing", "detail_zh": "对方用固定的话肯定你", "detail_en": "A fixed phrase the other uses to affirm you"},
+
+  {"id": "display_appearance.dress_code", "group": "display_appearance", "title_zh": "着装规范", "title_en": "Dress code", "detail_zh": "对方指定当日/在家穿着", "detail_en": "What to wear today or at home, specified by the other"},
+  {"id": "display_appearance.approved_wardrobe", "group": "display_appearance", "title_zh": "指定衣物清单", "title_en": "Approved-clothing list", "detail_zh": "只穿清单内的衣物", "detail_en": "Only wear what's on the list"},
+  {"id": "display_appearance.collar_symbol", "group": "display_appearance", "title_zh": "项圈或象征物", "title_en": "Collar or symbolic item", "detail_zh": "日用项圈、手环等", "detail_en": "A day collar, bracelet, or similar"},
+  {"id": "display_appearance.grooming", "group": "display_appearance", "title_zh": "指定的仪容要求", "title_en": "Grooming requirements", "detail_zh": "对方要求的仪容标准", "detail_en": "A grooming standard the other sets"},
+  {"id": "display_appearance.photo_report", "group": "display_appearance", "title_zh": "着装拍照汇报", "title_en": "Photo report of outfit", "detail_zh": "出门前拍照给对方看", "detail_en": "A photo sent before leaving the house"},
+
+  {"id": "punishment.extra_chores", "group": "punishment", "title_zh": "额外家务", "title_en": "Extra chores", "detail_zh": "违规后追加的家务", "detail_en": "Added chores after a rule is broken"},
+  {"id": "punishment.writing_lines", "group": "punishment", "title_zh": "写检讨/抄写", "title_en": "Writing lines or a reflection", "detail_zh": "书面反省", "detail_en": "A written reflection"},
+  {"id": "punishment.privilege_loss", "group": "punishment", "title_zh": "取消一项特权", "title_en": "Loss of a privilege", "detail_zh": "暂停某个平时的待遇", "detail_en": "A usual privilege paused for a while"},
+  {"id": "punishment.corner_time", "group": "punishment", "title_zh": "罚站/罚跪", "title_en": "Corner time or kneeling", "detail_zh": "限时的姿势惩罚", "detail_en": "A timed posture as consequence"},
+  {"id": "punishment.spanking", "group": "punishment", "title_zh": "打屁股类惩罚", "title_en": "Spanking as punishment", "detail_zh": "需要事先谈好强度与工具", "detail_en": "Intensity and implement negotiated beforehand"},
+  {"id": "punishment.no_punishment", "group": "punishment", "title_zh": "不使用惩罚，只用奖励", "title_en": "No punishments, praise/rewards only", "detail_zh": "很多关系只靠肯定推进", "detail_en": "Many dynamics run entirely on positive reinforcement"},
+  {"id": "punishment.explained_not_automatic", "group": "punishment", "title_zh": "惩罚需说明理由，不自动触发", "title_en": "Punishment must be explained, never automatic", "detail_zh": "由人决定并说明，而非系统自动", "detail_en": "A person decides and explains it — never the system"},
+
+  {"id": "reward.praise", "group": "reward", "title_zh": "口头肯定", "title_en": "Verbal praise", "detail_zh": "具体地说出做得好的地方", "detail_en": "Naming specifically what was done well"},
+  {"id": "reward.small_treat", "group": "reward", "title_zh": "小奖励/礼物", "title_en": "A small treat or gift", "detail_zh": "对方兑现一个小心愿", "detail_en": "The other grants a small wish"},
+  {"id": "reward.extra_attention", "group": "reward", "title_zh": "专属陪伴时间", "title_en": "Extra one-on-one time", "detail_zh": "不被打扰的相处时间", "detail_en": "Undistracted time together"},
+  {"id": "reward.privilege_grant", "group": "reward", "title_zh": "临时放宽一条规矩", "title_en": "A rule loosened for a while", "detail_zh": "由对方决定暂时放宽", "detail_en": "The other decides to ease a standing rule"},
+  {"id": "reward.points_shop", "group": "reward", "title_zh": "积分兑换奖励商店", "title_en": "A points-based reward store", "detail_zh": "攒够分数换取自定义奖励", "detail_en": "Earn points toward a custom reward list"},
+
+  {"id": "scenario.roleplay_light", "group": "scenario", "title_zh": "轻度角色扮演", "title_en": "Light roleplay", "detail_zh": "特定情境下的角色互动", "detail_en": "A scripted context for interacting differently"},
+  {"id": "scenario.public_outing", "group": "scenario", "title_zh": "带着约定出门", "title_en": "An outing with an agreed rule in place", "detail_zh": "例如出门佩戴象征物但不公开", "detail_en": "e.g. wearing a symbol discreetly while out"},
+  {"id": "scenario.scene_night", "group": "scenario", "title_zh": "安排一个专门的夜晚", "title_en": "A dedicated scene night", "detail_zh": "提前谈好内容与安全词", "detail_en": "Content and safeword agreed in advance"},
+  {"id": "scenario.travel_together", "group": "scenario", "title_zh": "旅行中维持协议", "title_en": "Keeping the dynamic while traveling", "detail_zh": "在外仍保留某些仪式", "detail_en": "Some rituals kept even away from home"},
+
+  {"id": "daily_protocol.water_meal_report", "group": "daily_protocol", "title_zh": "饮水/饮食汇报", "title_en": "Water or meal reporting", "detail_zh": "每天告知吃了什么、喝了多少水", "detail_en": "What was eaten, how much water was drunk"},
+  {"id": "daily_protocol.bedtime_report", "group": "daily_protocol", "title_zh": "就寝汇报", "title_en": "Bedtime report", "detail_zh": "睡前告知一天的情况", "detail_en": "A short account of the day before sleep"},
+  {"id": "daily_protocol.d_away_pause", "group": "daily_protocol", "title_zh": "D 不在家时自动暂停", "title_en": "Auto-pause when D is away", "detail_zh": "对方出差/不在时相关任务暂停", "detail_en": "Related tasks pause while the D is away"},
+  {"id": "daily_protocol.three_things_today", "group": "daily_protocol", "title_zh": "今天想完成的三件事", "title_en": "Three things to accomplish today", "detail_zh": "一方提议，另一方接受或调整", "detail_en": "One side proposes, the other accepts or reorders"},
+  {"id": "daily_protocol.calendar_note", "group": "daily_protocol", "title_zh": "在日历某天留言", "title_en": "Leaving a note on a calendar day", "detail_zh": "求饶或提议惩罚可写在当天", "detail_en": "A plea for mercy or a proposed consequence, on that day"},
+  {"id": "daily_protocol.feelings_log", "group": "daily_protocol", "title_zh": "事后感受记录", "title_en": "A feelings log after a task", "detail_zh": "完成任务后写下当时的感受", "detail_en": "Writing down how it felt, after the fact"}
+]

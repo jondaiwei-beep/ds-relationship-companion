@@ -77,10 +77,6 @@ class SecurityConfig(
                 // relationship content — readable before a session exists so
                 // the sign-in screen can honour the same switches.
                 it.requestMatchers(HttpMethod.GET, "/v1/features").permitAll()
-                // Editorial content, identical for everyone, carrying nothing
-                // private. Readable before an account exists so the product
-                // can show its judgement before asking for trust.
-                it.requestMatchers(HttpMethod.GET, "/v1/explore").permitAll()
                 if (staging) {
                     it.requestMatchers(HttpMethod.GET, "/v1/staging/**").permitAll()
                 }

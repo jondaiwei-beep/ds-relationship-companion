@@ -41,3 +41,4 @@
 - D-05 基础项默认 0 分（可能让新用户觉得"没分"）
 - 04-explore 起步包名单
 - D-09 五个处置词的中文措辞
+- 起步包 7 个的名字与内容为推断，待 owner 确认（内容在 backend/src/main/resources/explore/starter_packs.json，可直接改）

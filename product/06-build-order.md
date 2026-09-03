@@ -86,10 +86,18 @@
 - 验收：s 建规矩为 proposed 且在 D 接受前不算 active；s 不能改 D 的规矩；away 只暂停 `requires_d_present` 的任务，`back` 只恢复它自己暂停的那些；`requested` 状态兑换不扣分，denied 不扣分，approve 恰好写一条归属 D 的 `redemption` 流水；「D 决定」奖励 approve 时若无 cost 报错；consequence done/confirm/waive 的双边规则；所有扣分流水都有 actor（既有 CHECK 约束）。
 
 ## Phase 4 · 探索（1–2 周）
-- 题库 + `PreferenceAnswer` + 比对视图（双答才互见、不归属「不要」）。
-- IdeaCard 库 + 动作（加到今天/规矩、提议、试过了）；「今晚要什么？」入口。
-- StarterPack 首日流程（可编辑草稿→一键启用）。
-- 验收：首日路线（02-surfaces）10 分钟内走完并产生第一条 occurrence。
+后端 ✅ 2026-09-03（`backend/…/explore/`；`ExploreIT` 13 例覆盖；全仓 209 测试通过）
+- V20：新表 `preference_items_custom`（dynamic 自定义题库条目）、`preference_answers`（`item_id text` 兼容系统 slug 与自定义 UUID，`answer CHECK (want/ok/no/talk)`，唯一键 dynamic+item+member）、`idea_card_states`（`status CHECK (saved/tried_again/tried_never)`，唯一键 dynamic+card）。
+- 静态内容 = JSON，非表：`backend/src/main/resources/explore/{preference_items,idea_cards,starter_packs}.json`，启动时由 `ExploreCatalog`（Jackson snake_case→camelCase）读入内存。preference_items 57 条（10 组，含从 voices-zh/voices-reddit 提炼的呈报/自首/D不在家等本土条目）；idea_cards 34 张（全部 related_item_ids 已用测试断言对齐 preference_items）；starter_packs 7 个（日常问安/家务服务/身体与健康/着装与呈现/语言与称呼/D 不在家时/新手第一周）。
+- `PreferenceService`：`items`（只返回调用者自己的答案）、`answer`（upsert，itemId 兼容系统 slug/自定义 UUID）、`addCustom`（D/s 皆可）、`compare`（隐私核心：双答才互见；桶优先级 notDoing > someoneTalks > bothWant > wantAndOk；notDoing 的 DTO 只有 `{itemId,title}`，测试用反射断言字段名不含 member/side/user 任何字样；单人 dynamic 返回全空桶 + `partnerAnswered=false`）。
+- `IdeaCardService`：`cards`（按调用者 side 默认过滤 for_d/for_s + for_both，`audience` 参数可再收窄；排除与 mutual notDoing 关联的卡；talk 关联卡置顶）；`draw`（D only，随机抽卡，不写 outbox——测试直接查 `outbox_records` 计数断言）；`act`（add_today/add_rule/save/tried_again/tried_never，复用 TaskService/RuleService/DNoteService，proposed/active 由被调用方按 side 原生决定，未特殊处理）。
+- `StarterPackService`：`packs()` 返回静态草稿；`apply` 只操作客户端传入的 draft（不重读静态包），`@Transactional`，幂等交给 controller 层 `IdempotentPost`。
+- `ExploreController`：9 个路由，见下方"实现的端点"。删除旧 `activation/api/ExploreController.kt`（`GET /v1/explore`）及 `ExploreLibrary.kt`（471 行内容已按 04-explore 的字段重构进三份 JSON，非机械搬运）；`SecurityConfig` 移除对应的 permitAll 行。`StarterRhythmController`/`StarterRhythmService`/`StarterContent.kt`（激活向导，读 `StarterContent` 非 `ExploreLibrary`）未动。
+- ⚠️ 偏差：`research/practice.md` 不存在，改用 `research/voices-zh.md`（PTT BDSM 板 + Kizuna）与 `research/voices-reddit.md` 做内容依据（呈報/叮囑/自首/早晚問安/日常禁慾/月历求饶-处罚等真实语言已吸收进 preference_items 与 idea_cards）。
+- ⚠️ 偏差：04-explore.md 未写死 idea_cards 的语言字段落地字段名，采用 `titleZh/titleEn/howZh/howEn/needsZh/needsEn`（`_zh`/`_en` 对，API 全量返回两者，客户端自选）。
+- ⚠️ 偏差：`wantAndOk` 桶 vs `someoneTalks`/`notDoing` 的优先级 04-explore.md 未逐条列出组合矩阵，按其"不变量补充"段落推断：`no` 最高优先级（永不归属到人），其次 `talk`（想聊置顶但不如"不要"敏感），再是 want∩want 与 want+ok。
+- 验收：见 `ExploreIT.kt`——双答才互见（未互答条目在双方 `items()` 视图均不含对方答案）；`no` 从不归属到人（反射断言 DTO 字段）；四桶组合正确；单人 dynamic 空桶 + 标志位；卡片过滤（mutual-no 排除、talk 置顶）；`draw` 不入 outbox；`act(add_today)` 的 s→proposed / D→active+今日 occurrence；起步包 apply 精确匹配裁剪后的 draft（未落地字段真的不创建）；幂等重放不重复创建。
+- 起步包 7 个的名字与内容为推断，已同步记入 `product/05-decisions.md` 待 owner 拍板列表。
 
 ## Phase 5 · 打磨（并行/收尾）
 - widget（iOS/Android）与锁屏中性文案；导出；付费（单人解锁、免费不限条数）；`kind=measure` 曲线；主题。
