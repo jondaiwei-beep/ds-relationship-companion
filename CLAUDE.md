@@ -1,71 +1,28 @@
-# Claude Code implementation contract
+# Claude Code contract
 
 ## Start here
 
-New session? Read `progress/STATE.md` first — where the project stands, what is
-verified, what is blocked, and what comes next.
+1. `product/README.md` → `00-thesis` → `02-surfaces` → `03-domain`. 这是产品的唯一事实来源；代码与文档冲突时改代码。
+2. `product/06-build-order.md` 告诉你现在做到哪一阶段、下一步是什么。
+3. `research/` 是所有产品决定的出处。要加或改一个产品行为，先在 `product/05-decisions.md` 追加一条带原话+URL 的记录，再动代码。
 
-Three skills carry what earlier sessions learned:
+## 硬约束（来自 `product/03-domain.md` 不变量）
 
-| Skill | Use it for |
-|---|---|
-| `ds-screen-build` | Building or revising any screen. The order that works. |
-| `ds-design-lookup` | Any question about the design system. Query the manifests rather than guessing. |
-| `ds-pitfalls` | Before debugging something that looks broken while the code looks right. |
+- 系统从不替伴侣开口：一切评价性文字都有 `by_user_id`。
+- 没有自动扣分、自动惩罚、审批计时。`missed` 只是事实标记。
+- D 的处置永不过期；D 缺席不产生债。
+- 所有"今天"按 `Dynamic.timezone + day_start` 计算，不用设备日期。
+- `PrivateNote` / `DNote` 不返回给对方。
 
-`docs/rebuild/how-we-built-scr01.md` is the long form: how the first screen was
-built, and the two ways the first attempts failed.
+## 视觉基础
 
+- 设计 token：`design/tokens/design-tokens.json` 与生成的 `ds_design_tokens.dart`；不散写 Hex 或随意间距。
+- 字体、SVG、纹理：`design/assets/`，通过 `manifests/assets.json` / `svg-freeze.v1.json` / `texture-freeze.b4.v1.json` 引用。改动前跑 `npm run foundation:check`。
+- `app/` 是可移植的 Flutter 设计系统包；`client/` 是运行中的应用。新界面逐步迁到 `app/` 的主题与组件上。
+- 最小触控 48dp；语气 playful but serious，用 D/s 词汇；不写"哲学"句子。
 
-## Deterministic reading sequence
+## 工作方式
 
-For any UI task, follow this exact sequence:
-
-1. Read `manifests/screen-index.json` and locate the requested Screen ID.
-2. Read `manifests/design-coverage.json` to understand whether the surface is retained, redesigned, missing, state-only, or future scope.
-3. Open the linked `design/screens/SCR-*/screen.md` contract.
-4. Read every linked product requirement, flow and domain contract. An empty Core Beta requirement reference is a blocker.
-5. View the approved co-located preview and required state/platform variants; use them for hierarchy and visual comparison only. A null preview or `missing_required_design` status is a blocker.
-6. Read `manifests/svg-freeze.v1.json` and `design/assets/svg/SVG-FREEZE.md`.
-7. Resolve every asset ID through `manifests/assets.json`, then load its registered SVG master.
-8. Read `manifests/token-freeze.b2.v1.json`, `design/tokens/B2-FREEZE.md` and the generated Flutter/Web token binding for the target platform.
-9. Read linked component contracts.
-10. Implement only when the screen gate is `ready_for_build` and every required asset is available.
-11. Render and record QA evidence at the paths required by the screen contract.
-
-Do not search the repository for a visually similar page and assume it is the target. Screen IDs and manifest links are authoritative.
-
-## Build gates
-
-- Only implement screens marked `ready_for_build` in the active screen manifest.
-- Raster images are visual references, not behavioral specifications.
-- Missing states, copy, permission rules, or responsive behavior are blockers.
-- Never silently replace missing fonts or SVG assets with local system alternatives.
-- Never infer product behavior, state transitions, permissions, or acceptance criteria from `preview.webp`.
-
-## Visual implementation
-
-- Reference mobile viewport: 390 × 844 logical pixels.
-- Use `design/tokens/design-tokens.json`; do not scatter raw Hex values or arbitrary spacing.
-- Ritual Canvas is `color.semantic.canvas.ritual` (`#080B07` through the token layer), not pure black or Material dark defaults.
-- 48dp is the minimum target; standard buttons are 56dp and ritual/hero CTAs are 64dp.
-- Bundle and load the fonts in `design/assets/fonts/`.
-- Use registered SVG masters; do not trace or redraw icons from PNG files during implementation.
-- Apply SVG colors through semantic tokens and `currentColor`; do not add raw colors or duplicate path data in screen code.
-- Preserve hierarchy, whitespace, typography, partner presence, ritual marks, and restrained texture.
-- Minimum interaction target: 48 × 48 logical pixels.
-
-## Foundation package
-
-`app/` is a portable Flutter design-system package, not a product-screen shell.
-Before adding UI, run the repository-root generators and validator documented in
-`app/README.md`. Import `package:ds_relationship_companion/ds_design_system.dart`
-and consume `DsTheme`, `DsTextStyles`, generated B-2 tokens, `DsAssets`/`DsSvg`
-and `DsRitualSurface`; do not create parallel theme, font, SVG or texture layers.
-
-The foundation package does not bypass a Screen Package gate. Do not add
-`lib/main.dart` or product navigation until the target screen is `ready_for_build`.
-
-## Verification
-
-For every screen, render the reference viewport, store the result under `design/qa/implementation/`, compare it with the approved reference, and record remaining differences. Geometry should normally remain within 1–2 logical pixels. Texture/grain regions may use a controlled comparison mask; typography, layout, copy, SVG geometry, and state visibility may not.
+- 小步提交；每个 Phase 结束跑 `backend ./gradlew test`、`client flutter analyze && flutter test`。
+- 不要为了保留旧功能而绕路：`06-build-order` 标了删的就删。
+- 不确定的产品问题：查 `research/`，找不到出处就在 `05-decisions` 标「推断」并继续，不要停下来等。

@@ -2,42 +2,30 @@
 
 Private product, design, and implementation source of truth for the Android app and Web Companion.
 
-## Current direction
+## Current direction (2026-09-03 重写)
 
-- Product: a consent-aware D/s relationship companion organized around six Core Daily Loops.
-- Visual system: **V5 · Warm Authority**, evolved from Quiet Authority.
-- Design principles: authority, human warmth, ritual identity, partner presence, emblem system, restrained botanical/editorial detail.
-- Platforms: Flutter Android first; Flutter Web Companion for invitation and iOS access.
-- Figma: intentionally removed. This repository is the canonical handoff source.
+给"白天分开、晚上见面"的 D/s 两人用的日常记录。四个 tab：今天 / 规矩 / 记录 / 分。全部产品决定来自真实用户原话（`research/`），见 `product/00-thesis.md`。
 
 ## Reading order
 
-1. `CLAUDE.md` or `AGENTS.md`
-2. `manifests/screen-index.json`
-3. Target `design/screens/SCR-*/screen.md`
-4. Product references linked from that screen contract
-5. Target `preview.webp`
-6. `manifests/svg-freeze.v1.json` and `design/assets/svg/SVG-FREEZE.md`
-7. `manifests/assets.json` and the linked SVG masters
-8. `manifests/token-freeze.b2.v1.json`, `design/tokens/B2-FREEZE.md` and generated bindings
-9. `design/tokens/design-tokens.json` and `design/system/`
-10. `progress/status.md`
-
-No implementation may infer missing behavior from a raster image. A screen must be marked `ready_for_build` in the active manifest before development begins.
+1. `product/README.md` → `00-thesis` → `01-users` → `02-surfaces` → `03-domain` → `04-explore` → `05-decisions` → `06-build-order`
+2. `research/synthesis.md`（为什么是这样），`competitors.md` / `voices-*.md`（原话）
+3. `design/tokens/design-tokens.json`、`design/system/`、`manifests/assets.json`（视觉基础）
+4. `CLAUDE.md` / `AGENTS.md`
 
 ## Repository layout
 
 | Directory | What it holds | Authority |
 |---|---|---|
-| `product/` | Requirements, flows, domain and state contracts | Product truth |
-| `design/` | Approved visual system: screens, tokens, SVG masters, fonts, textures | Visual truth |
-| `manifests/` | Machine-readable freezes, screen index, gates, traceability | Gate truth |
+| `product/` | 7 份文档：命题、用户、界面、领域模型、探索、决策记录、开发顺序 | Product truth |
+| `research/` | 用户原话、竞品评论、综合 | 出处 |
+| `design/` | 视觉基础：tokens、SVG masters、fonts、textures、system | Visual truth |
+| `manifests/` | 资产与 token 冻结清单 | Asset truth |
 | `app/` | Gate-independent Flutter design-system package | Foundation |
 | `client/` | Flutter application: routing, features, domain client, platform adapters | Implementation |
 | `backend/` | Kotlin/Spring modular monolith, Flyway migrations, jOOQ | Implementation |
 | `ops/` | Deployment and journey scripts | Operations |
 | `tool/` | Foundation generators, sync and drift validation | Tooling |
-| `docs/legacy/` | Pre-migration history. Not authoritative | Archive |
 
 ### `app/` versus `client/`
 
@@ -46,15 +34,11 @@ roles, B-2 tokens, all 33 semantic SVG assets, Ritual/Living themes and the
 deterministic B-4 ritual surface. It carries no product screen and no
 navigation shell, and it stays that way while screen gates remain blocked.
 
-`client/` is the running Flutter application that predates this design system.
-It is retained because it holds working product behavior — activation, the
-human response loop, adjustments, and their tests — that the frozen design has
-not yet been applied to. It still consumes its own pre-migration token layer.
+`client/` is the running Flutter application. It holds working product behavior
+(activation, occurrences, response loop, points) that is being reshaped to
+`product/03-domain.md`.
 
-**These two are not yet joined, and joining them is a gated task.** `client/`
-screens migrate onto the `app/` foundation only as each Screen Package reaches
-`ready_for_build`. Until then, do not import `app/` from `client/`, and do not
-extend the pre-migration token layer in `client/lib/design_system/`.
+`client/` 界面按 `product/06-build-order.md` 逐阶段迁到 `app/` 的主题与组件上。
 
 ## Verification
 
@@ -72,10 +56,6 @@ cd client && flutter pub get && flutter analyze && flutter test
 cd backend && ./gradlew test
 ```
 
-## Traceability rule
+## Rule
 
-Every buildable UI must form one unbroken chain:
-
-`Product requirement → Screen contract → Visual reference → Asset ID/SVG → Component/code → QA evidence`
-
-If any link is missing, the screen remains blocked.
+产品行为改动先写进 `product/05-decisions.md`（带出处），再改代码。违反 `product/03-domain.md` 不变量的代码不合并。

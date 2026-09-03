@@ -5,6 +5,7 @@ import com.dsapp.backend.expectation.application.CheckInService
 import com.dsapp.backend.expectation.application.CheckInVisibility
 import com.dsapp.backend.expectation.application.CreateExpectationService
 import com.dsapp.backend.expectation.application.OccurrenceQueryService
+import com.dsapp.backend.expectation.application.ReceiveOccurrenceService
 import com.dsapp.backend.expectation.application.TodayQueryService
 import com.dsapp.backend.response.application.AcknowledgementType
 import com.dsapp.backend.response.application.AdjustmentResolution
@@ -50,6 +51,8 @@ data class CreateExpectationResponse(val definitionId: UUID, val occurrenceId: U
 data class CompleteRequest(val note: String? = null, val proofMediaId: String? = null)
 
 data class CompleteResponse(val completionId: UUID, val state: String)
+
+data class ReceiveResponse(val occurrenceId: UUID, val receivedAt: Instant)
 
 /**
  * A human response to a completion.
@@ -121,6 +124,7 @@ data class CreateCheckInBody(
 class OccurrenceController(
     private val createExpectation: CreateExpectationService,
     private val complete: CompleteOccurrenceService,
+    private val receive: ReceiveOccurrenceService,
     private val acknowledge: SendAcknowledgementService,
     private val adjustments: AdjustmentService,
     private val query: OccurrenceQueryService,
@@ -204,6 +208,20 @@ class OccurrenceController(
     ): ResponseEntity<Any> = ResponseEntity.ok()
         .cacheControl(CacheControl.noStore())
         .body(attention.forDynamic(jwt.actorId(), dynamicId))
+
+    /** "Received." The first bilateral event: they have seen what was given. */
+    @PostMapping("/occurrences/{occurrenceId}/receive")
+    fun receiveOccurrence(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable occurrenceId: UUID,
+        @RequestHeader("Idempotency-Key", required = false) key: String?,
+    ): ResponseEntity<Any> = runOnce(
+        jwt, key, "receive_occurrence",
+        "/v1/occurrences/{id}/receive", listOf(occurrenceId.toString()), null,
+    ) {
+        val at = receive.receive(jwt.actorId(), occurrenceId)
+        200 to ReceiveResponse(occurrenceId, at)
+    }
 
     @PostMapping("/occurrences/{occurrenceId}/complete")
     fun completeOccurrence(

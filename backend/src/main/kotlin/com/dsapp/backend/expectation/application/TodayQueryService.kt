@@ -62,6 +62,17 @@ class TodayQueryService(
         val dueAt: Instant?,
         /** Who set this expectation — it comes from a person, not the app. */
         val fromDisplayName: String?,
+        /** Who it was given to. Named so the giving side reads a person, not a row. */
+        val assigneeDisplayName: String? = null,
+        /**
+         * When the receiving person said they had seen it. Null until they do.
+         * The giving side's Today shows this before anything is completed:
+         * "received" is the first link of the loop, and the first proof that
+         * the other person is there.
+         */
+        val receivedAt: Instant? = null,
+        /** What the receiving person said, or asked, when they acted. */
+        val actorNote: String? = null,
     )
 
     data class RecentResponse(
@@ -138,6 +149,18 @@ class TodayQueryService(
         val laterItems: List<TodayItem>,
         /** What I finished that a real person has not yet responded to. */
         val awaitingResponse: List<TodayItem>,
+        /**
+         * The giving side's inbox: what the other person did, or asked, on
+         * something I gave them, and which now waits on ME. Server-ordered:
+         * open adjustments first (a person asking is more urgent than a
+         * person finishing), then completions, then past-due reviews.
+         */
+        val needsMyResponse: List<TodayItem> = emptyList(),
+        /**
+         * What I have given that is still open on their side — with
+         * `receivedAt` so I can see whether they have seen it yet.
+         */
+        val given: List<TodayItem> = emptyList(),
         /** The most recent human response — presence, even when apart. */
         val recentResponse: RecentResponse?,
     )
@@ -166,7 +189,7 @@ class TodayQueryService(
 
         val rows = dsl.fetch(
             """
-            SELECT o.id, o.state, o.due_at, d.title, d.purpose, d.kind,
+            SELECT o.id, o.state, o.due_at, o.received_at, d.title, d.purpose, d.kind,
                    cu.display_name AS from_name
               FROM occurrences o
               JOIN expectation_definitions d ON d.id = o.definition_id
@@ -187,11 +210,65 @@ class TodayQueryService(
                 state = it.get("state", String::class.java),
                 allowedActions = AllowedActions.forOccurrence(
                     it.get("state", String::class.java), ctx.role, ctx.mayMutate,
+                    received = it.get("received_at", Instant::class.java) != null,
                 ),
                 dueAt = it.get("due_at", Instant::class.java),
                 fromDisplayName = it.get("from_name", String::class.java),
+                receivedAt = it.get("received_at", Instant::class.java),
             )
         }
+
+        // The other face of the same day: everything I gave to the other
+        // person that is still open. Ordered so what waits on me comes first,
+        // then what they have not yet seen, then what they have.
+        val mine = dsl.fetch(
+            """
+            SELECT o.id, o.state, o.due_at, o.received_at, d.title, d.purpose, d.kind,
+                   au.display_name AS to_name,
+                   COALESCE(c.note, adj.note) AS actor_note,
+                   CASE o.state
+                       WHEN 'NEED_TO_DISCUSS' THEN 1
+                       WHEN 'RESCHEDULE_REQUESTED' THEN 1
+                       WHEN 'EXCUSE_REQUESTED' THEN 1
+                       WHEN 'WAITING_ACK' THEN 2
+                       WHEN 'NEEDS_REVIEW' THEN 3
+                       ELSE 4
+                   END AS priority
+              FROM occurrences o
+              JOIN expectation_definitions d ON d.id = o.definition_id
+              LEFT JOIN users au ON au.id = d.assignee_user_id
+              LEFT JOIN occurrence_completions c ON c.occurrence_id = o.id
+              LEFT JOIN LATERAL (
+                   SELECT a.note FROM adjustment_requests a
+                    WHERE a.occurrence_id = o.id AND a.status = 'OPEN'
+                    ORDER BY a.created_at DESC LIMIT 1) adj ON true
+             WHERE o.dynamic_id = {0}
+               AND d.creator_user_id = {1}
+               AND d.assignee_user_id <> {1}
+               AND o.state IN ('ACTIVE','WAITING_ACK','NEED_TO_DISCUSS',
+                               'RESCHEDULE_REQUESTED','EXCUSE_REQUESTED','NEEDS_REVIEW')
+             ORDER BY priority, o.received_at NULLS FIRST, o.due_at NULLS LAST, o.created_at
+            """.trimIndent(),
+            dynamicId, actorUserId,
+        ).map {
+            TodayItem(
+                occurrenceId = it.get("id", UUID::class.java),
+                title = it.get("title", String::class.java),
+                purpose = it.get("purpose", String::class.java),
+                kind = it.get("kind", String::class.java),
+                state = it.get("state", String::class.java),
+                allowedActions = AllowedActions.forOccurrence(
+                    it.get("state", String::class.java), ctx.role, ctx.mayMutate,
+                ),
+                dueAt = it.get("due_at", Instant::class.java),
+                fromDisplayName = null,
+                assigneeDisplayName = it.get("to_name", String::class.java),
+                receivedAt = it.get("received_at", Instant::class.java),
+                actorNote = it.get("actor_note", String::class.java),
+            )
+        }
+        val needsMe = mine.filter { it.state != "ACTIVE" }
+        val given = mine.filter { it.state == "ACTIVE" }
 
         // Notion 02 §3 asks for 1-3 important expectations first, and SCR-01
         // rev 2 keeps the rest reachable behind one disclosure rather than
@@ -225,22 +302,9 @@ class TodayQueryService(
             )
         }
 
-        // Counted here rather than inferred client-side: business state has
-        // exactly one authority.
-        val needsMyResponse = dsl.fetchOne(
-            """
-            SELECT count(*) AS n
-              FROM occurrences o
-              JOIN expectation_definitions d ON d.id = o.definition_id
-             WHERE o.dynamic_id = {0}
-               AND d.creator_user_id = {1}
-               AND d.assignee_user_id <> {1}
-               AND o.state IN ('WAITING_ACK','NEED_TO_DISCUSS',
-                               'RESCHEDULE_REQUESTED','EXCUSE_REQUESTED',
-                               'NEEDS_REVIEW')
-            """.trimIndent(),
-            dynamicId, actorUserId,
-        )!!.get("n", Int::class.java)
+        // Counted from the same rows the inbox shows, so the badge and the
+        // list can never disagree.
+        val needsMyResponse = needsMe.size
 
         return Today(
             roleContext = ctx.role.name,
@@ -253,6 +317,8 @@ class TodayQueryService(
             priorityItems = priority,
             laterItems = later,
             awaitingResponse = waiting,
+            needsMyResponse = needsMe,
+            given = given,
             recentResponse = recent,
         )
     }

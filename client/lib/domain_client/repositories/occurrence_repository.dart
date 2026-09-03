@@ -12,6 +12,14 @@ class OccurrenceRepository {
   Future<OccurrenceView> get(String occurrenceId) async =>
       OccurrenceView.fromJson(await _api.get('/v1/occurrences/$occurrenceId'));
 
+  /// The receiving person says "received". Changes no state; records the
+  /// moment the direction landed so the giving side can see it did.
+  Future<void> receive(String occurrenceId, {required String idempotencyKey}) =>
+      _api.post(
+        '/v1/occurrences/$occurrenceId/receive',
+        idempotencyKey: idempotencyKey,
+      );
+
   /// `ACTIVE -> WAITING_ACK`. Completing is not being seen.
   Future<void> complete(String occurrenceId, {String? note, required String idempotencyKey}) =>
       _api.post(

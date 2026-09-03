@@ -14,9 +14,19 @@ import com.dsapp.backend.dynamic.domain.RoleContext
  * only thing they could actually do was withdraw the request.
  */
 object AllowedActions {
-    fun forOccurrence(state: String, role: RoleContext, mayMutate: Boolean): List<String> {
+    fun forOccurrence(
+        state: String,
+        role: RoleContext,
+        mayMutate: Boolean,
+        received: Boolean = true,
+    ): List<String> {
         if (!mayMutate) return emptyList()
-        return when (state) {
+        // Receiving comes before everything else on the receiving side. Offered
+        // only while unreceived; completing without receiving is still allowed
+        // — the action is a courtesy of the dynamic, not a gate.
+        val receive = if (!received && role == RoleContext.PARTNER &&
+            state in setOf("ACTIVE", "NEEDS_REVIEW")) listOf("receive") else emptyList()
+        return receive + when (state) {
             // Adjustment is always offered alongside completion — it is a normal
             // path, not a failure (red line #3, Notion 02 §5).
             "ACTIVE" -> if (role == RoleContext.PARTNER) {

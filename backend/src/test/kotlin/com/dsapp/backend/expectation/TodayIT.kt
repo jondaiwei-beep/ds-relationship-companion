@@ -1,5 +1,6 @@
 package com.dsapp.backend.expectation
 
+import com.dsapp.backend.expectation.application.ReceiveOccurrenceService
 import com.dsapp.backend.expectation.application.TodayQueryService
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
@@ -21,6 +22,7 @@ class TodayIT {
 
     @Autowired lateinit var dsl: DSLContext
     @Autowired lateinit var today: TodayQueryService
+    @Autowired lateinit var receive: ReceiveOccurrenceService
 
     private lateinit var creator: UUID
     private lateinit var partner: UUID
@@ -124,7 +126,7 @@ class TodayIT {
         // Complete when the only permitted action was to withdraw.
         val occurrenceId = expectation("Prepare the evening space", "ACTIVE")
         assertEquals(
-            listOf("complete", "discuss", "reschedule", "cant_do"),
+            listOf("receive", "complete", "discuss", "reschedule", "cant_do"),
             today.forDynamic(partner, dynamicId).priorityItems.single().allowedActions,
         )
 
@@ -256,5 +258,55 @@ class TodayIT {
         expectation("private", "ACTIVE")
 
         assertFailsWith<Exception> { today.forDynamic(stranger, dynamicId) }
+    }
+
+    // ── The two faces of one day ─────────────────────────────────────────
+
+    @Test
+    fun `the giving side sees what it gave and whether it was received`() {
+        val occ = expectation("Kneel when I get home", "ACTIVE")
+
+        var mine = today.forDynamic(creator, dynamicId)
+        assertTrue(mine.priorityItems.isEmpty(), "nothing is assigned to the giver")
+        assertEquals(listOf("Kneel when I get home"), mine.given.map { it.title })
+        assertNull(mine.given.single().receivedAt, "not yet seen")
+        assertEquals("Jamie", mine.given.single().assigneeDisplayName)
+
+        receive.receive(partner, occ)
+
+        mine = today.forDynamic(creator, dynamicId)
+        assertNotNull(mine.given.single().receivedAt, "the first bilateral event")
+        // And the receiving side is no longer offered "receive".
+        assertEquals(
+            listOf("complete", "discuss", "reschedule", "cant_do"),
+            today.forDynamic(partner, dynamicId).priorityItems.single().allowedActions,
+        )
+    }
+
+    @Test
+    fun `receiving is idempotent and only the receiving person may do it`() {
+        val occ = expectation("Nightly report", "ACTIVE")
+        val first = receive.receive(partner, occ)
+        val second = receive.receive(partner, occ)
+        assertEquals(first, second)
+        assertFailsWith<Exception> { receive.receive(creator, occ) }
+    }
+
+    @Test
+    fun `the inbox is what waits on me, most urgent first, and matches the count`() {
+        expectation("finished", "WAITING_ACK")
+        expectation("asked to talk", "NEED_TO_DISCUSS")
+        expectation("still open", "ACTIVE")
+        // The other direction: something the partner gave ME is never in my inbox.
+        expectation("given to Alex", "WAITING_ACK", assignee = creator)
+
+        val mine = today.forDynamic(creator, dynamicId)
+        assertEquals(listOf("asked to talk", "finished"), mine.needsMyResponse.map { it.title })
+        assertEquals(mine.needsMyResponse.size, mine.needsMyResponseCount)
+        assertEquals(listOf("still open"), mine.given.map { it.title })
+
+        val theirs = today.forDynamic(partner, dynamicId)
+        assertTrue(theirs.needsMyResponse.isEmpty())
+        assertTrue(theirs.given.isEmpty())
     }
 }

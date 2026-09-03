@@ -249,6 +249,7 @@ class _AdjustmentActions extends StatelessWidget {
     TodayAction.cantDo => l.actionCantDo,
     TodayAction.withdraw => l.actionTakeItBack,
     TodayAction.complete => l.actionComplete,
+    TodayAction.receive => l.actionReceived,
   };
 
   @override

@@ -64,11 +64,16 @@ class AttentionQueryService(
               LEFT JOIN occurrence_completions c ON c.occurrence_id = o.id
               LEFT JOIN users cu ON cu.id = c.actor_user_id
              WHERE o.dynamic_id = {0}
+               -- Owed by ME: things I gave that the other person acted on.
+               -- Before this filter the list also carried my own completions
+               -- waiting on them, which is the opposite of attention.
+               AND d.creator_user_id = {1}
+               AND d.assignee_user_id <> {1}
                AND o.state IN ('NEED_TO_DISCUSS','RESCHEDULE_REQUESTED',
                                'EXCUSE_REQUESTED','WAITING_ACK','NEEDS_REVIEW')
              ORDER BY priority, c.completed_at NULLS LAST
             """.trimIndent(),
-            dynamicId,
+            dynamicId, actorUserId,
         )
 
         val items = rows.map {

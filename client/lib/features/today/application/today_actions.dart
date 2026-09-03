@@ -12,6 +12,9 @@ import '../presentation/today_screen.dart';
 /// Complete succeeds cleanly and Can't Do fails obscurely would make adjustment
 /// feel like the lesser choice.
 enum TodayAction {
+  /// "Received." Said by the person the direction was given to, before
+  /// anything is done about it. The first link of the loop.
+  receive('receive'),
   complete('complete'),
   discuss('discuss'),
   requestNewTime('reschedule'),
@@ -78,6 +81,10 @@ class TodayActions {
     final key = _keyFor(occurrenceId, action);
     try {
       switch (action) {
+        case TodayAction.receive:
+          await _ref
+              .read(occurrenceRepositoryProvider)
+              .receive(occurrenceId, idempotencyKey: key);
         case TodayAction.complete:
           await _ref
               .read(occurrenceRepositoryProvider)

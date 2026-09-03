@@ -28,6 +28,18 @@ abstract class TodayItem with _$TodayItem {
     DateTime? dueAt,
     /// Who set this. Direction comes from a person, not from the app.
     String? fromDisplayName,
+
+    /// Who this was given to, when the viewer is the one who gave it.
+    String? assigneeDisplayName,
+
+    /// When the receiving person said "received". Null until they do — and
+    /// the difference between the two is the first thing the giving side
+    /// looks for.
+    DateTime? receivedAt,
+
+    /// The words the other person attached when they asked to adjust. Shown
+    /// to the person who now has to answer; never paraphrased by the app.
+    String? actorNote,
   }) = _TodayItem;
 
   factory TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
@@ -93,6 +105,15 @@ abstract class TodayView with _$TodayView {
     @Default(<TodayItem>[]) List<TodayItem> laterItems,
     @Default(<TodayItem>[]) List<TodayItem> awaitingResponse,
     RecentResponse? recentResponse,
+
+    /// What the other person did that now waits on me: completions to
+    /// acknowledge, adjustments to answer, past-due items to look at. Most
+    /// urgent first, ordered by the server.
+    @Default(<TodayItem>[]) List<TodayItem> needsMyResponse,
+
+    /// What I gave that is still open on their side, with whether it has
+    /// been received.
+    @Default(<TodayItem>[]) List<TodayItem> given,
   }) = _TodayView;
 
   factory TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);

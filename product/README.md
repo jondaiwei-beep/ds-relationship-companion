@@ -1,29 +1,15 @@
-# Product specification
+# product/ — 产品文档（2026-09-03 重写）
 
-This directory is replacing Notion as the canonical product source. Migration must preserve feature intent, role/permission semantics, consent and privacy invariants, platform scope, state transitions, and acceptance criteria.
+旧文档已删除（git 历史里有）。这套文档从 `../research/` 的用户语料长出来；每条产品决定都能在 research 里找到出处。没有出处的地方标了「推断」。
 
-## Current migrated entry points
+| 文件 | 回答什么 |
+|---|---|
+| `00-thesis.md` | 做给谁、为什么是我们、不做什么 |
+| `01-users.md` | 语料里的四类人 + 两条真实的一天 |
+| `02-surfaces.md` | 四个 tab 各管什么、两种角色各看什么、首日、通知与 widget |
+| `03-domain.md` | 对象、状态、权限、不变量 —— 开发照这个写 |
+| `04-explore.md` | 探索：两人比对、灵感卡、起步包 |
+| `05-decisions.md` | 决定记录（含对旧红线的裁决、付费、tab、代码保留/删除清单） |
+| `06-build-order.md` | 开发顺序 |
 
-1. `00-overview.md`
-2. `requirements/core-beta.md`
-3. `flows/core-beta-flows.md`
-4. `domain/core-beta-state-contracts.md`
-5. `notion-source-map.md`
-
-`design/coverage/core-beta-coverage.md` records how these product contracts map to existing, redesigned, missing and future visual families.
-
-## Target structure
-
-- `00-overview.md`
-- `01-positioning.md`
-- `02-core-daily-loop.md`
-- `03-role-permissions.md`
-- `requirements/` — stable, testable requirement IDs referenced by screens
-- `flows/` — entry, transition, recovery, and exit behavior across screens
-- `domain/` — roles, consent, privacy, pairing, task, ritual, and notification state models
-- `feature-specs/`
-- `decisions/`
-
-Notion content is not automatically authoritative. During migration it must be challenged against the current product direction and approved visual system. Conflicts remain blocked until resolved.
-
-Product files must define behavior without describing pixel layout. Every approved requirement receives a stable ID, for example `REQ-TODAY-001`, and is referenced from both `manifests/screen-index.json` and the relevant screen contract.
+规则：改产品行为先改这里；文档和代码冲突以文档为准；新决定追加到 `05-decisions.md` 并写出处。

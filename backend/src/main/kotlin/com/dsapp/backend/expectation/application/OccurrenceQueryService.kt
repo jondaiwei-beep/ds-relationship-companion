@@ -34,6 +34,8 @@ class OccurrenceQueryService(
         val state: String,
         val dueAt: Instant?,
         val completedAt: Instant?,
+        /** When the receiving person said they had seen it. */
+        val receivedAt: Instant? = null,
         val acknowledgement: AcknowledgementView?,
         /**
          * The other person in this dynamic, by name.
@@ -64,7 +66,7 @@ class OccurrenceQueryService(
 
         val r = dsl.fetchOne(
             """
-            SELECT o.id, o.state, o.due_at, d.title, d.purpose,
+            SELECT o.id, o.state, o.due_at, o.received_at, d.title, d.purpose,
                    c.completed_at,
                    -- Only to the person who wrote it. The design labels this
                    -- "PRIVATE NOTE · ONLY YOU", and the filter is here rather
@@ -99,6 +101,7 @@ class OccurrenceQueryService(
             state = state,
             dueAt = r.get("due_at", Instant::class.java),
             completedAt = r.get("completed_at", Instant::class.java),
+            receivedAt = r.get("received_at", Instant::class.java),
             partnerDisplayName = r.get("partner_name", String::class.java),
             privateNote = r.get("private_note", String::class.java),
             acknowledgement = ackSentAt?.let {
@@ -109,7 +112,10 @@ class OccurrenceQueryService(
                     senderDisplayName = r.get("ack_sender", String::class.java),
                 )
             },
-            allowedActions = AllowedActions.forOccurrence(state, ctx.role, ctx.mayMutate),
+            allowedActions = AllowedActions.forOccurrence(
+                state, ctx.role, ctx.mayMutate,
+                received = r.get("received_at", Instant::class.java) != null,
+            ),
         )
     }
 }
