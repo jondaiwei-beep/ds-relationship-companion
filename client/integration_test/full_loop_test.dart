@@ -372,7 +372,11 @@ class _Driver {
   }
 
   Future<void> openToday() async {
-    final now = DateTime.now();
+    // The relationship day starts at 04:00 (D-04), so before that hour the
+    // day still on the record is yesterday's — a run at 01:00 that opened
+    // the device's date would find an empty day.
+    var now = DateTime.now();
+    if (now.hour < 4) now = now.subtract(const Duration(days: 1));
     String iso(DateTime d) =>
         '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     final today = find.byKey(ValueKey('cell-${iso(now)}'));
