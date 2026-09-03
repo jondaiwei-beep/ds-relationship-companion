@@ -118,6 +118,18 @@
 ## Phase 5 · 打磨（并行/收尾）
 - widget（iOS/Android）与锁屏中性文案；导出；付费（单人解锁、免费不限条数）；`kind=measure` 曲线；主题。
 
+后端 ✅ 2026-09-03（`64445c9`；全仓 215 测试通过）
+- V21：`occurrences.value numeric(12,3)`。`POST /v1/occurrences/{id}/outcome` 接受 `value`：measure 任务交付时必填，非 measure 任务传值报错。
+- `GET /record/series?taskId=&from=&to=` → `{taskId, unit, points:[{day,value}]}`（仅 delivered/delivered_late）。
+- `GET /record/export?from=&to=&format=json|csv`（≤366 天，双方可导），内容只有事实字段（任务、结果、处置、数值、当天留言）。⚠️ 偏差：私密笔记完全不导出（含本人的），避免任何不对称。
+- 锁屏/通知中性文案在 Phase 1 `OutboxDispatcher.neutralBodyFor` 已落，无新改动。
+
+客户端 ✅ 2026-09-03（`004264c`；319 测试通过，`flutter analyze` 0 issues）
+- s 今天：measure 任务交付弹数字输入（带单位），行内显示 `72.5 kg`。记录：`/record/series/:taskId` 30 天折线（CustomPaint，无新图表依赖）；当天条目「曲线」入口 + 记录页底部 measure 任务列表。
+- 导出：记录页「导出记录」→ 90/30/365 天或自定义区间 → CSV 经 `share_plus` 分享。⚠️ 新增依赖 `share_plus`。
+
+⏸ 推迟（写入 05-decisions 待拍板）：付费（单人解锁的定价/商店账号是外部事实）、桌面 widget（平台原生工程量大，锁屏文案已中性）、主题。
+
 ## 每个 Phase 的门
 1. 对照 `05-decisions` 检查没有引入自动扣分/自动惩罚/审批计时。
 2. 文案全部过一遍：没有系统替人说话的句子。
