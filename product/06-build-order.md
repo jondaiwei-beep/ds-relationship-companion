@@ -134,3 +134,11 @@
 1. 对照 `05-decisions` 检查没有引入自动扣分/自动惩罚/审批计时。
 2. 文案全部过一遍：没有系统替人说话的句子。
 3. 关系日测试向量跑过（跨午夜、跨时区、改 day_start 当天）。
+
+## 成熟度冲刺 M1（2026-09-03，为第一个体验包）
+Owner 要求：不发 demo/MVP，只发各功能自验过的成熟版本。
+- 后端 `efbc631`…`9167f88`（243 测试）：照片凭证 `POST /dynamics/{id}/media` + 成员限定 `GET /media/{id}`；通知落库 `notifications` + `GET /me/notifications`/`read`/`unread-count` + `notification-mute-settings`（中性锁屏/合并/静音类型）；02-surfaces 通知表逐条有事件与文案（`NotificationCoverageIT`）；`PUT /dynamics/{id}/settings`（时区/一天起点/称呼/安全词，V24）；任务 `PATCH`（此前没有改任务的接口）；`INVITE_ALREADY_PENDING` 带 inviteId；`mode` 暴露。
+- 修的真 bug：V24 重复加 V18 字段导致 staging 迁移回滚；记录摘要同日两条已决定任务 500；`dAwayUntil` 序列化成 `dawayUntil` 客户端读不到。
+- 客户端 `87d90b7` `f3645c2` `1750a99`：任务编辑器全字段；首次进入→建动态→邀请→加入→今天 全链路修复（邀请页不可达、tab 丢状态、加入死路、暂停/不在不显示、一天起点默认 0）；文案通稿，删 357 死键。
+- 验收：`ops/journey_v2.py` 对 staging 跑完整闭环（配对→起步包→交付/照片/数值→处置→记录→兑换→惩罚→探索→通知→我不在），39 步全过。
+- ⚠️ 通知投递：无 FCM/APNs 凭证，采用「服务端落库 + 客户端前台轮询 + Android WorkManager 15 分钟后台拉取 + 本地通知」；iOS 后台为尽力而为。接入真推送需 owner 提供 Firebase/APNs 项目（05-decisions）。

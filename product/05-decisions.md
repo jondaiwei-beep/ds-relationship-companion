@@ -44,3 +44,5 @@
 - 起步包 7 个的名字与内容为推断，待 owner 确认（内容在 backend/src/main/resources/explore/starter_packs.json，可直接改）
 - Phase 5 推迟项（2026-09-03）：付费（单人解锁、免费不限条数——需要商店账号、定价、地区）、桌面 widget、主题。代码侧未做任何铺垫，决定后再开。
 - 导出不含私密笔记（连本人的也不含），若要"只导本人私密笔记"需 owner 确认。
+- 推送通知（2026-09-03）：无 FCM/APNs 凭证，先用轮询 + 本地通知。要即时推送需 owner 建 Firebase 项目并提供 `google-services.json` / APNs key。
+- 任务改动权（推断）：只有 D 能直接改任务；s 改 = 提议一条新的。依据 competitors.md「limits can be established of who can edit what. It gives it yet another D/s feel.」
