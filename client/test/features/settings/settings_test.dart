@@ -56,9 +56,32 @@ class _FakeDynamic implements DynamicRepository {
   int blocks = 0;
   String? blockedUser;
   bool fail = false;
+  String? safeword;
+  final saved = <Map<String, Object?>>[];
 
   @override
-  Future<DynamicDetail> detail(String id) async => const DynamicDetail(
+  Future<DynamicDetail> updateSettings(
+    String dynamicId, {
+    String? timezone,
+    int? dayBoundaryMinutes,
+    String? honorificForD,
+    String? honorificForS,
+    String? safeword,
+  }) async {
+    saved.add({
+      'timezone': timezone,
+      'dayBoundaryMinutes': dayBoundaryMinutes,
+      'honorificForD': honorificForD,
+      'honorificForS': honorificForS,
+      'safeword': safeword,
+    });
+    if (safeword != null) this.safeword = safeword;
+    return await detail(dynamicId);
+  }
+
+  @override
+  Future<DynamicDetail> detail(String id) async => DynamicDetail(
+    safeword: safeword,
     dynamicId: 'dyn-1',
     state: 'ACTIVE',
     desiredOutcome: 'SERVICE',
@@ -250,12 +273,56 @@ void main() {
       // The clock is formatted through intl for the reader's locale, so the
       // assertion is on the sentence around it rather than a hardcoded render.
       expect(find.textContaining('day ends at 4:00'), findsOneWidget);
-      // 一天从几点开始, read-only until the server can change it.
-      expect(find.textContaining('The day starts at 04:00'), findsOneWidget);
+      // 一天从几点开始, editable.
+      expect(find.byKey(const ValueKey('setting-day-start')), findsOneWidget);
+      expect(find.text('04:00'), findsOneWidget);
       expect(
         find.textContaining('not in whichever one your phone is in'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('the safeword is saved through the Dynamic and shown back', (tester) async {
+      final (_, dynamic) = await _pumpSettings(tester);
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('setting-safeword')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.byKey(const ValueKey('setting-safeword')));
+      await tester.pumpAndSettle();
+      expect(find.text('Not set yet'), findsWidgets);
+      await tester.tap(find.byKey(const ValueKey('setting-safeword')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const ValueKey('edit-field')), '红灯');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(dynamic.saved.single['safeword'], '红灯');
+      expect(dynamic.saved.single['timezone'], isNull);
+      expect(find.text('红灯'), findsOneWidget);
+    });
+
+    testWidgets('picking a day start sends minutes', (tester) async {
+      final (_, dynamic) = await _pumpSettings(tester);
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('setting-day-start')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(find.byKey(const ValueKey('setting-day-start')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('setting-day-start')));
+      await tester.pumpAndSettle();
+      // Switch the material picker to keyboard entry and type 06:30.
+      await tester.tap(find.byIcon(Icons.keyboard_outlined));
+      await tester.pumpAndSettle();
+      final fields = find.byType(TextField);
+      await tester.enterText(fields.at(0), '06');
+      await tester.enterText(fields.at(1), '30');
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      expect(dynamic.saved.single['dayBoundaryMinutes'], 6 * 60 + 30);
     });
   });
 

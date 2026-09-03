@@ -61,6 +61,24 @@ class DynamicRepository {
   Future<DynamicDetail> detail(String dynamicId) async =>
       DynamicDetail.fromJson(await _api.get('/v1/dynamics/$dynamicId'));
 
+  /// `PUT /v1/dynamics/{id}/settings`. Only the fields given travel; the
+  /// server returns the whole detail afterwards.
+  Future<DynamicDetail> updateSettings(
+    String dynamicId, {
+    String? timezone,
+    int? dayBoundaryMinutes,
+    String? honorificForD,
+    String? honorificForS,
+    String? safeword,
+  }) async =>
+      DynamicDetail.fromJson(await _api.put('/v1/dynamics/$dynamicId/settings', body: {
+        'timezone': ?timezone,
+        'dayBoundaryMinutes': ?dayBoundaryMinutes,
+        'honorificForD': ?honorificForD,
+        'honorificForS': ?honorificForS,
+        'safeword': ?safeword,
+      }));
+
   /// Pause is inviolable agency — either member may call it (Notion 04 §4).
   Future<void> pause(String dynamicId, {required String idempotencyKey}) =>
       _api.post('/v1/dynamics/$dynamicId/pause', idempotencyKey: idempotencyKey);

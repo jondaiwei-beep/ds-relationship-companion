@@ -11,13 +11,14 @@ import 'package:dsapp/domain_client/repositories/rule_repository.dart';
 import 'package:dsapp/domain_client/repositories/task_repository.dart';
 
 /// The pair as the server describes it. `u-d` is the D, `u-s` is the s.
-DynamicDetail pairDetail({DateTime? dAwayUntil}) => DynamicDetail(
+DynamicDetail pairDetail({DateTime? dAwayUntil, String? safeword}) => DynamicDetail(
       dynamicId: 'dyn-1',
       state: 'active',
       desiredOutcome: 'closer',
       structureLevel: 'light',
       referenceTimezone: 'Asia/Shanghai',
       dAwayUntil: dAwayUntil,
+      safeword: safeword,
       members: const [
         MemberView(userId: 'u-d', displayName: 'Nia', roleContext: 'd', side: 'D', accessState: 'active'),
         MemberView(userId: 'u-s', displayName: 'Mara', roleContext: 's', side: 'S', accessState: 'active'),
@@ -44,6 +45,34 @@ class FakeDynamicRepository implements DynamicRepository {
   Future<void> back(String dynamicId, {required String idempotencyKey}) async {
     backs++;
     _detail = _detail.copyWith(dAwayUntil: null);
+  }
+
+  final settingsCalls = <Map<String, Object?>>[];
+
+  @override
+  Future<DynamicDetail> updateSettings(
+    String dynamicId, {
+    String? timezone,
+    int? dayBoundaryMinutes,
+    String? honorificForD,
+    String? honorificForS,
+    String? safeword,
+  }) async {
+    settingsCalls.add({
+      'timezone': timezone,
+      'dayBoundaryMinutes': dayBoundaryMinutes,
+      'honorificForD': honorificForD,
+      'honorificForS': honorificForS,
+      'safeword': safeword,
+    });
+    _detail = _detail.copyWith(
+      referenceTimezone: timezone ?? _detail.referenceTimezone,
+      dayBoundaryMinutes: dayBoundaryMinutes ?? _detail.dayBoundaryMinutes,
+      honorificForD: honorificForD ?? _detail.honorificForD,
+      honorificForS: honorificForS ?? _detail.honorificForS,
+      safeword: safeword ?? _detail.safeword,
+    );
+    return _detail;
   }
 
   @override

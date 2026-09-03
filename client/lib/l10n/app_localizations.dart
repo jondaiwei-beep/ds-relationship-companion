@@ -2581,17 +2581,77 @@ abstract class L {
   /// **'Only you see these.'**
   String get dTodayNotesPrivate;
 
-  /// No description provided for @settingsDayStart.
+  /// No description provided for @settingsTimezoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'The day starts at {time}'**
-  String settingsDayStart(String time);
+  /// **'Timezone'**
+  String get settingsTimezoneLabel;
 
-  /// No description provided for @settingsDayStartReadOnly.
+  /// No description provided for @settingsTimezoneSearch.
   ///
   /// In en, this message translates to:
-  /// **'Changing it comes in a later build.'**
-  String get settingsDayStartReadOnly;
+  /// **'Find a city or timezone'**
+  String get settingsTimezoneSearch;
+
+  /// No description provided for @settingsDayStartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'When the day starts'**
+  String get settingsDayStartLabel;
+
+  /// No description provided for @settingsHonorificD.
+  ///
+  /// In en, this message translates to:
+  /// **'What you call the D'**
+  String get settingsHonorificD;
+
+  /// No description provided for @settingsHonorificS.
+  ///
+  /// In en, this message translates to:
+  /// **'What you call the S'**
+  String get settingsHonorificS;
+
+  /// No description provided for @settingsSafeword.
+  ///
+  /// In en, this message translates to:
+  /// **'Safeword'**
+  String get settingsSafeword;
+
+  /// No description provided for @settingsSafewordSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Say it and everything stops. Both of you can see it and change it.'**
+  String get settingsSafewordSupport;
+
+  /// No description provided for @settingsUnset.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set yet'**
+  String get settingsUnset;
+
+  /// No description provided for @settingsEditSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get settingsEditSave;
+
+  /// No description provided for @settingsEditCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get settingsEditCancel;
+
+  /// No description provided for @settingsEditClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get settingsEditClear;
+
+  /// No description provided for @rulesSafewordMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'Safeword'**
+  String get rulesSafewordMeta;
 
   /// No description provided for @settingsDeviceLock.
   ///

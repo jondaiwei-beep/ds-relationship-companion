@@ -1436,12 +1436,41 @@ class LEn extends L {
   String get dTodayNotesPrivate => 'Only you see these.';
 
   @override
-  String settingsDayStart(String time) {
-    return 'The day starts at $time';
-  }
+  String get settingsTimezoneLabel => 'Timezone';
 
   @override
-  String get settingsDayStartReadOnly => 'Changing it comes in a later build.';
+  String get settingsTimezoneSearch => 'Find a city or timezone';
+
+  @override
+  String get settingsDayStartLabel => 'When the day starts';
+
+  @override
+  String get settingsHonorificD => 'What you call the D';
+
+  @override
+  String get settingsHonorificS => 'What you call the S';
+
+  @override
+  String get settingsSafeword => 'Safeword';
+
+  @override
+  String get settingsSafewordSupport =>
+      'Say it and everything stops. Both of you can see it and change it.';
+
+  @override
+  String get settingsUnset => 'Not set yet';
+
+  @override
+  String get settingsEditSave => 'Save';
+
+  @override
+  String get settingsEditCancel => 'Cancel';
+
+  @override
+  String get settingsEditClear => 'Clear';
+
+  @override
+  String get rulesSafewordMeta => 'Safeword';
 
   @override
   String get settingsDeviceLock => 'Device lock';

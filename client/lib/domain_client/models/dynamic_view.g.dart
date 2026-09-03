@@ -55,6 +55,9 @@ _DynamicDetail _$DynamicDetailFromJson(Map<String, dynamic> json) =>
       dAwayUntil: json['dAwayUntil'] == null
           ? null
           : DateTime.parse(json['dAwayUntil'] as String),
+      honorificForD: json['honorificForD'] as String?,
+      honorificForS: json['honorificForS'] as String?,
+      safeword: json['safeword'] as String?,
       members:
           (json['members'] as List<dynamic>?)
               ?.map((e) => MemberView.fromJson(e as Map<String, dynamic>))
@@ -82,6 +85,9 @@ Map<String, dynamic> _$DynamicDetailToJson(_DynamicDetail instance) =>
       'dayBoundaryMinutes': instance.dayBoundaryMinutes,
       'pausedAt': instance.pausedAt?.toIso8601String(),
       'dAwayUntil': instance.dAwayUntil?.toIso8601String(),
+      'honorificForD': instance.honorificForD,
+      'honorificForS': instance.honorificForS,
+      'safeword': instance.safeword,
       'members': instance.members,
       'structure': instance.structure,
       'alwaysAvailable': instance.alwaysAvailable,

@@ -47,6 +47,7 @@ Future<
     })> _pump(
   WidgetTester tester, {
   required TodayView view,
+  String? safeword,
 }) async {
   tester.view.physicalSize = const Size(390, 1600);
   tester.view.devicePixelRatio = 1.0;
@@ -54,7 +55,7 @@ Future<
 
   final rules = FakeRuleRepository(rules: _rules);
   final tasks = FakeTaskDefinitions(tasks: _tasks);
-  final dyn = FakeDynamicRepository();
+  final dyn = FakeDynamicRepository(detail: pairDetail(safeword: safeword));
   final points = FakePointsRepository(rewardList: _rewards);
   final today = FakeTodayRepository(view: view);
 
@@ -83,6 +84,12 @@ Future<
 
 void main() {
   setUpAll(tzdata.initializeTimeZones);
+
+  testWidgets('the safeword sits under 底线与安全词 when the pair has one', (tester) async {
+    await _pump(tester, view: sView(), safeword: '红灯');
+    expect(find.byKey(const ValueKey('safeword')), findsOneWidget);
+    expect(find.text('红灯'), findsOneWidget);
+  });
 
   testWidgets('D sees groups, add doors, and the proposal decisions', (tester) async {
     await _pump(tester, view: dView());

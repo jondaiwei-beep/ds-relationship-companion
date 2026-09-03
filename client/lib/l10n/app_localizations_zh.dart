@@ -1338,12 +1338,40 @@ class LZh extends L {
   String get dTodayNotesPrivate => '只有你看得到。';
 
   @override
-  String settingsDayStart(String time) {
-    return '一天从 $time 开始';
-  }
+  String get settingsTimezoneLabel => '时区';
 
   @override
-  String get settingsDayStartReadOnly => '改这个要等下个版本。';
+  String get settingsTimezoneSearch => '找一个城市或时区';
+
+  @override
+  String get settingsDayStartLabel => '一天从几点开始';
+
+  @override
+  String get settingsHonorificD => '你们叫 D 什么';
+
+  @override
+  String get settingsHonorificS => '你们叫 S 什么';
+
+  @override
+  String get settingsSafeword => '安全词';
+
+  @override
+  String get settingsSafewordSupport => '说出来就全停。两个人都能看、都能改。';
+
+  @override
+  String get settingsUnset => '还没定';
+
+  @override
+  String get settingsEditSave => '保存';
+
+  @override
+  String get settingsEditCancel => '取消';
+
+  @override
+  String get settingsEditClear => '清掉';
+
+  @override
+  String get rulesSafewordMeta => '安全词';
 
   @override
   String get settingsDeviceLock => '设备锁';

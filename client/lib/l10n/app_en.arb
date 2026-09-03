@@ -693,15 +693,18 @@
   "dTodayNoteDelete": "Delete",
   "dTodayNoteAdd": "Keep it",
   "dTodayNotesPrivate": "Only you see these.",
-  "settingsDayStart": "The day starts at {time}",
-  "@settingsDayStart": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsDayStartReadOnly": "Changing it comes in a later build.",
+  "settingsTimezoneLabel": "Timezone",
+  "settingsTimezoneSearch": "Find a city or timezone",
+  "settingsDayStartLabel": "When the day starts",
+  "settingsHonorificD": "What you call the D",
+  "settingsHonorificS": "What you call the S",
+  "settingsSafeword": "Safeword",
+  "settingsSafewordSupport": "Say it and everything stops. Both of you can see it and change it.",
+  "settingsUnset": "Not set yet",
+  "settingsEditSave": "Save",
+  "settingsEditCancel": "Cancel",
+  "settingsEditClear": "Clear",
+  "rulesSafewordMeta": "Safeword",
   "settingsDeviceLock": "Device lock",
   "settingsDeviceLockSupport": "Ask for fingerprint, face or the device PIN when the app opens, or comes back after half a minute away.",
   "settingsDeviceLockUnavailable": "This device cannot lock the app.",

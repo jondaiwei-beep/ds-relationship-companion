@@ -527,6 +527,9 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
               ),
             ),
         },
+        // The safeword itself, when the pair has one. Set in 设置 by either.
+        if (ref.watch(dynamicDetailProvider(_id)).value?.safeword case final String word when word.isNotEmpty)
+          _Row(key: const ValueKey('safeword'), title: word, meta: l.rulesSafewordMeta),
         if (widget.onExplore != null)
           _Door(label: l.rulesLimitsGo, onTap: () => widget.onExplore!(ExploreSection.compare)),
 

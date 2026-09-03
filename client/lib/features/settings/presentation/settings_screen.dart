@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../app/shell/ds_glyph.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:timezone/timezone.dart' as tz;
 
 import '../../../app/locale_controller.dart';
 import '../../../app/providers.dart';
@@ -15,6 +16,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../device_lock/application/device_lock_controller.dart';
 import '../../dynamic/application/dynamic_providers.dart';
 import '../../notifications/application/notification_providers.dart';
+import '../../today/application/today_providers.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
@@ -139,6 +141,37 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  /// The Dynamic's own settings — shared by both, so 今天 is re-read too.
+  Future<void> _updateDynamic({
+    String? timezone,
+    int? dayBoundaryMinutes,
+    String? honorificForD,
+    String? honorificForS,
+    String? safeword,
+  }) async {
+    setState(() {
+      _busy = true;
+      _failure = null;
+    });
+    try {
+      await ref.read(dynamicRepositoryProvider).updateSettings(
+            widget.dynamicId,
+            timezone: timezone,
+            dayBoundaryMinutes: dayBoundaryMinutes,
+            honorificForD: honorificForD,
+            honorificForS: honorificForS,
+            safeword: safeword,
+          );
+      ref.invalidate(dynamicDetailProvider(widget.dynamicId));
+      ref.invalidate(todayProvider(widget.dynamicId));
+    } on Object {
+      if (!mounted) return;
+      setState(() => _failure = L.of(context).settingsSaveFailed);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   /// One answer to "what may the lockscreen say", written to both places
   /// that read it: the server's preview setting and the device's mute
   /// settings, which this app's own notifications follow.
@@ -208,8 +241,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
                       const SizedBox(height: DsSpacing.space10),
 
-                      // SCR-34, read-only.
-                      if (detail.hasValue) _Time(view: detail.value!),
+                      // SCR-34.
+                      if (detail.hasValue)
+                        _SharedDay(
+                          view: detail.value!,
+                          busy: _busy,
+                          onTimezone: (z) => _updateDynamic(timezone: z),
+                          onDayStart: (m) => _updateDynamic(dayBoundaryMinutes: m),
+                          onHonorificD: (v) => _updateDynamic(honorificForD: v),
+                          onHonorificS: (v) => _updateDynamic(honorificForS: v),
+                          onSafeword: (v) => _updateDynamic(safeword: v),
+                        ),
 
                       const SizedBox(height: DsSpacing.space10),
                       _Section(l.settingsPointsSection),
@@ -388,75 +430,295 @@ class _Notifications extends StatelessWidget {
 
 /// SCR-34 — which clock governs the relationship day. Stated, not editable:
 /// both values are fixed at creation and no endpoint changes them.
-class _Time extends StatelessWidget {
-  const _Time({required this.view});
+class _SharedDay extends StatelessWidget {
+  const _SharedDay({
+    required this.view,
+    required this.busy,
+    required this.onTimezone,
+    required this.onDayStart,
+    required this.onHonorificD,
+    required this.onHonorificS,
+    required this.onSafeword,
+  });
 
   final DynamicDetail view;
+  final bool busy;
+  final ValueChanged<String> onTimezone;
+  final ValueChanged<int> onDayStart;
+  final ValueChanged<String> onHonorificD;
+  final ValueChanged<String> onHonorificS;
+  final ValueChanged<String> onSafeword;
+
+  Future<void> _pickDayStart(BuildContext context) async {
+    final m = view.dayBoundaryMinutes;
+    final t = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: (m ~/ 60) % 24, minute: m % 60),
+    );
+    if (t == null) return;
+    final minutes = t.hour * 60 + t.minute;
+    if (minutes != m) onDayStart(minutes);
+  }
+
+  Future<void> _pickTimezone(BuildContext context) async {
+    final zone = await showTimezonePicker(context, current: view.referenceTimezone);
+    if (zone != null && zone != view.referenceTimezone) onTimezone(zone);
+  }
+
+  Future<void> _edit(
+    BuildContext context, {
+    required String title,
+    required String? initial,
+    required ValueChanged<String> onSave,
+  }) async {
+    final v = await showTextEditDialog(context, title: title, initial: initial);
+    if (v != null && v != (initial ?? '')) onSave(v);
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
     final minutes = view.dayBoundaryMinutes;
+    final clock = DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60);
     // Rendered with the reader's own clock convention: "10:00 PM" in English,
     // "下午10:00" in Chinese. Hard-coding AM/PM would leak English into a
     // sentence that is otherwise translated.
-    final label = intl.DateFormat.jm(
-      l.localeName,
-    ).format(DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60));
+    final label = intl.DateFormat.jm(l.localeName).format(clock);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _Section(l.settingsSharedDaySection),
         Padding(
-          padding: todayInset,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                view.referenceTimezone,
-                style: DsTextStyles.displayRitual.copyWith(
-                  color: DsColors.textOnRitualPrimary,
-                  fontSize: 22,
-                  height: 27 / 22,
-                ),
-              ),
-              const SizedBox(height: DsSpacing.space2),
-              Text(
-                l.settingsDayBoundaryExplain(label),
-                style: DsTextStyles.bodySecondary.copyWith(
-                  color: DsColors.textOnRitualMuted,
-                  fontSize: todaySupportSize,
-                  height: todaySupportHeight,
-                ),
-              ),
-              const SizedBox(height: DsSpacing.space4),
-              // 一天从几点开始. Read-only: the server has no endpoint yet to
-              // change a Dynamic's day boundary, so the value is shown and the
-              // sentence says so rather than offering a control that cannot act.
-              Text(
-                l.settingsDayStart(
-                  intl.DateFormat.Hm(l.localeName).format(
-                    DateTime(2000, 1, 1, (minutes ~/ 60) % 24, minutes % 60),
-                  ),
-                ),
-                style: DsTextStyles.bodyPrimary.copyWith(
-                  color: DsColors.textOnRitualPrimary,
-                ),
-              ),
-              const SizedBox(height: DsSpacing.space1),
-              Text(
-                l.settingsDayStartReadOnly,
-                style: DsTextStyles.bodySecondary.copyWith(
-                  color: DsColors.textOnRitualMuted,
-                  fontSize: todaySupportSize,
-                  height: todaySupportHeight,
-                ),
-              ),
-            ],
+          padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space4)),
+          child: Text(
+            l.settingsDayBoundaryExplain(label),
+            style: DsTextStyles.bodySecondary.copyWith(
+              color: DsColors.textOnRitualMuted,
+              fontSize: todaySupportSize,
+              height: todaySupportHeight,
+            ),
           ),
         ),
+        _ValueRow(
+          key: const ValueKey('setting-timezone'),
+          label: l.settingsTimezoneLabel,
+          value: view.referenceTimezone,
+          onTap: busy ? null : () => _pickTimezone(context),
+        ),
+        _ValueRow(
+          key: const ValueKey('setting-day-start'),
+          label: l.settingsDayStartLabel,
+          value: intl.DateFormat.Hm(l.localeName).format(clock),
+          onTap: busy ? null : () => _pickDayStart(context),
+        ),
+        _ValueRow(
+          key: const ValueKey('setting-honorific-d'),
+          label: l.settingsHonorificD,
+          value: view.honorificForD,
+          onTap: busy
+              ? null
+              : () => _edit(context, title: l.settingsHonorificD, initial: view.honorificForD, onSave: onHonorificD),
+        ),
+        _ValueRow(
+          key: const ValueKey('setting-honorific-s'),
+          label: l.settingsHonorificS,
+          value: view.honorificForS,
+          onTap: busy
+              ? null
+              : () => _edit(context, title: l.settingsHonorificS, initial: view.honorificForS, onSave: onHonorificS),
+        ),
+        _ValueRow(
+          key: const ValueKey('setting-safeword'),
+          label: l.settingsSafeword,
+          value: view.safeword,
+          support: l.settingsSafewordSupport,
+          onTap: busy
+              ? null
+              : () => _edit(context, title: l.settingsSafeword, initial: view.safeword, onSave: onSafeword),
+        ),
       ],
+    );
+  }
+}
+
+/// One editable fact: a small label, the value beneath (or "还没定"), and a
+/// tap that opens whatever picker the fact needs.
+class _ValueRow extends StatelessWidget {
+  const _ValueRow({super.key, required this.label, required this.value, this.support, required this.onTap});
+
+  final String label;
+  final String? value;
+  final String? support;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final unset = value == null || value!.isEmpty;
+    return Padding(
+      padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space3)),
+      child: Semantics(
+        button: true,
+        label: label,
+        value: unset ? l.settingsUnset : value,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            padding: const EdgeInsets.all(DsSpacing.space4),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(DsRadii.card),
+              border: Border.all(color: DsColors.borderOnRitualHairline),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(label, style: DsTextStyles.labelRitual.copyWith(color: DsColors.textOnRitualMuted)),
+                      const SizedBox(height: DsSpacing.space1),
+                      Text(
+                        unset ? l.settingsUnset : value!,
+                        style: DsTextStyles.bodyPrimary.copyWith(
+                          color: unset ? DsColors.textOnRitualMuted : DsColors.textOnRitualPrimary,
+                        ),
+                      ),
+                      if (support != null) ...[
+                        const SizedBox(height: DsSpacing.space1),
+                        Text(
+                          support!,
+                          style: DsTextStyles.bodySecondary.copyWith(
+                            color: DsColors.textOnRitualMuted,
+                            fontSize: todaySupportSize,
+                            height: todaySupportHeight,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right, color: DsColors.textOnRitualMuted),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A one-line edit: title, a field, 取消 / 保存. Returns the trimmed text
+/// (possibly empty, which clears) or null when dismissed.
+Future<String?> showTextEditDialog(BuildContext context, {required String title, String? initial}) =>
+    showDialog<String>(
+      context: context,
+      builder: (_) => _TextEditDialog(title: title, initial: initial),
+    );
+
+class _TextEditDialog extends StatefulWidget {
+  const _TextEditDialog({required this.title, this.initial});
+
+  final String title;
+  final String? initial;
+
+  @override
+  State<_TextEditDialog> createState() => _TextEditDialogState();
+}
+
+class _TextEditDialogState extends State<_TextEditDialog> {
+  late final TextEditingController _controller = TextEditingController(text: widget.initial ?? '');
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    return AlertDialog(
+      title: Text(widget.title),
+      content: TextField(
+        key: const ValueKey('edit-field'),
+        controller: _controller,
+        autofocus: true,
+        maxLength: 40,
+        textInputAction: TextInputAction.done,
+        onSubmitted: (v) => Navigator.of(context).pop(v.trim()),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.settingsEditCancel)),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(_controller.text.trim()),
+          child: Text(l.settingsEditSave),
+        ),
+      ],
+    );
+  }
+}
+
+/// Every IANA zone the app knows, narrowed by typing. Returns the chosen
+/// zone name or null.
+Future<String?> showTimezonePicker(BuildContext context, {required String current}) {
+  final all = tz.timeZoneDatabase.locations.keys.toList()..sort();
+  return showDialog<String>(
+    context: context,
+    builder: (ctx) => _TimezoneDialog(all: all, current: current),
+  );
+}
+
+class _TimezoneDialog extends StatefulWidget {
+  const _TimezoneDialog({required this.all, required this.current});
+
+  final List<String> all;
+  final String current;
+
+  @override
+  State<_TimezoneDialog> createState() => _TimezoneDialogState();
+}
+
+class _TimezoneDialogState extends State<_TimezoneDialog> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final q = _query.trim().toLowerCase().replaceAll(' ', '_');
+    final shown = q.isEmpty ? widget.all : widget.all.where((z) => z.toLowerCase().contains(q)).toList();
+    return Dialog(
+      child: SizedBox(
+        width: 360,
+        height: 480,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(DsSpacing.space4),
+              child: TextField(
+                key: const ValueKey('timezone-search'),
+                autofocus: true,
+                decoration: InputDecoration(hintText: l.settingsTimezoneSearch, prefixIcon: const Icon(Icons.search)),
+                onChanged: (v) => setState(() => _query = v),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: shown.length,
+                itemBuilder: (_, i) {
+                  final z = shown[i];
+                  return ListTile(
+                    title: Text(z),
+                    selected: z == widget.current,
+                    onTap: () => Navigator.of(context).pop(z),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

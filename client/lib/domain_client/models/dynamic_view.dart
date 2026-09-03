@@ -44,6 +44,11 @@ abstract class DynamicDetail with _$DynamicDetail {
     DateTime? pausedAt,
     /// D-26: the D is away until this instant; tasks needing them are paused.
     DateTime? dAwayUntil,
+    /// What each side is called here. Chosen by the pair, empty until then.
+    String? honorificForD,
+    String? honorificForS,
+    /// One word that stops everything. Visible to both, editable by both.
+    String? safeword,
     @Default(<MemberView>[]) List<MemberView> members,
     @Default(<StructureItem>[]) List<StructureItem> structure,
     /// Agency no role can ever remove. The UI must always be
