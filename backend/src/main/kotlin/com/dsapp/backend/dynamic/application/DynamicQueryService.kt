@@ -48,6 +48,7 @@ class DynamicQueryService(
 
     data class DynamicDetail(
         val dynamicId: UUID,
+        val mode: String,
         val state: String,
         val desiredOutcome: String,
         val structureLevel: String,
@@ -117,7 +118,7 @@ class DynamicQueryService(
 
         val d = dsl.fetchOne(
             """
-            SELECT state, desired_outcome, structure_level, reference_timezone,
+            SELECT mode, state, desired_outcome, structure_level, reference_timezone,
                    day_boundary_minutes, paused_at, d_away_until,
                    honorific_for_d, honorific_for_s, safeword
               FROM dynamics WHERE id = {0}
@@ -161,6 +162,7 @@ class DynamicQueryService(
 
         return DynamicDetail(
             dynamicId = dynamicId,
+            mode = d.get("mode", String::class.java),
             state = d.get("state", String::class.java),
             desiredOutcome = d.get("desired_outcome", String::class.java),
             structureLevel = d.get("structure_level", String::class.java),

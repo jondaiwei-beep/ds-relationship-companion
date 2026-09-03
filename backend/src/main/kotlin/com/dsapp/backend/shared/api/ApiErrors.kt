@@ -112,7 +112,9 @@ class ApiErrorHandler {
         // A live invitation already exists. The Creator revokes it to make a
         // new one; the partial unique index would otherwise surface this as a
         // 500, and the screen contract requires retry to be recoverable.
-        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("INVITE_ALREADY_PENDING"))
+        // `detail` carries the pending invite's id so the client can revoke
+        // it and recreate without a separate lookup round-trip.
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("INVITE_ALREADY_PENDING", e.inviteId.toString()))
 
     @ExceptionHandler(InviteNotJoinable::class)
     fun onInvite(e: InviteNotJoinable): ResponseEntity<ApiError> =

@@ -62,6 +62,7 @@ class TodayQueryService(
 
     data class TodayView(
         val dynamicId: UUID,
+        val mode: String,
         val day: LocalDate,
         val timezone: String,
         val dayBoundaryMinutes: Int,
@@ -104,11 +105,12 @@ class TodayQueryService(
             dynamicId, actorUserId,
         )?.get("display_name", String::class.java)
         val extras = dsl.fetchOne(
-            "SELECT d_away_until, honorific_for_d, honorific_for_s, safeword FROM dynamics WHERE id = {0}",
+            "SELECT mode, d_away_until, honorific_for_d, honorific_for_s, safeword FROM dynamics WHERE id = {0}",
             dynamicId,
         )
         return TodayView(
             dynamicId = dynamicId,
+            mode = extras?.get("mode", String::class.java) ?: "SOLO",
             day = day,
             timezone = settings.zone.id,
             dayBoundaryMinutes = settings.boundaryMinutes,

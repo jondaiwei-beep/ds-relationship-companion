@@ -45,6 +45,21 @@ class TaskService(
         val unit: String? = null,
     )
 
+    /** Partial update — every field null means "leave unchanged". */
+    data class TaskPatch(
+        val title: String? = null,
+        val detail: String? = null,
+        val kind: TaskKind? = null,
+        val schedule: Map<String, Any?>? = null,
+        val timesPerDay: Int? = null,
+        val dueTime: LocalTime? = null,
+        val dueAt: Instant? = null,
+        val proof: Proof? = null,
+        val pointsEarn: Int? = null,
+        val requiresDPresent: Boolean? = null,
+        val unit: String? = null,
+    )
+
     data class TaskView(
         val id: UUID,
         val title: String,
@@ -96,6 +111,96 @@ class TaskService(
             events.enqueueOutbox("task", id, "task_proposed", "task_proposed:$id")
         }
         return get(dynamicId, id)
+    }
+
+    /**
+     * Edit a task. D only — an s who wants a change proposes a new task
+     * instead (same asymmetry as create). Allowed on `active`/`proposed`/
+     * `paused` tasks; `archived` tasks are done and cannot be reopened this
+     * way (invariant 5: history stays, but it does not come back to life).
+     *
+     * A schedule/dueTime/timesPerDay change never touches an occurrence
+     * that has already been decided — only today's still-`open` occurrences
+     * for this task are regenerated, so someone's answered day never
+     * silently changes shape under them.
+     */
+    @Transactional
+    fun update(actorUserId: UUID, dynamicId: UUID, taskId: UUID, p: TaskPatch): TaskView {
+        authorizer.requireSide(authorizer.contextForDynamic(actorUserId, dynamicId), Side.D)
+
+        val current = dsl.fetchOne(
+            "SELECT kind, status, schedule, times_per_day, due_time FROM tasks WHERE id = {0} AND dynamic_id = {1}",
+            taskId, dynamicId,
+        ) ?: throw NoSuchItem()
+        val status = current.get("status", String::class.java)
+        if (status == "archived") throw TaskNotActionable("TASK_ARCHIVED")
+
+        p.title?.let { require(it.isNotBlank() && it.length <= 120) { "title" } }
+        p.timesPerDay?.let { require(it in 1..12) { "timesPerDay" } }
+        p.pointsEarn?.let { require(it in 0..1000) { "pointsEarn" } }
+
+        val newKind = p.kind ?: TaskKind.valueOf(current.get("kind", String::class.java))
+        val scheduleTouched = p.kind != null || p.schedule != null
+        val newScheduleJson: String? = if (p.schedule != null) {
+            mapper.writeValueAsString(p.schedule).also { generator.parseSchedule(it) }
+        } else if (p.kind != null) {
+            // kind changed but no explicit schedule given: keep the invariant honest.
+            if (newKind == TaskKind.recurring) {
+                current.get("schedule", JSONB::class.java)?.data()
+                    ?: throw IllegalArgumentException("schedule")
+            } else null
+        } else null
+        if (newKind == TaskKind.recurring) {
+            val effective = newScheduleJson ?: current.get("schedule", JSONB::class.java)?.data()
+            requireNotNull(effective) { "schedule" }
+        }
+
+        dsl.query(
+            """
+            UPDATE tasks SET
+                title = COALESCE({2}, title),
+                detail = CASE WHEN {3} THEN {4} ELSE detail END,
+                kind = COALESCE({5}, kind),
+                schedule = CASE WHEN {6} THEN CAST({7} AS jsonb) ELSE schedule END,
+                times_per_day = COALESCE({8}, times_per_day),
+                due_time = CASE WHEN {9} THEN {10} ELSE due_time END,
+                due_at = CASE WHEN {11} THEN {12} ELSE due_at END,
+                proof = COALESCE({13}, proof),
+                points_earn = COALESCE({14}, points_earn),
+                requires_d_present = COALESCE({15}, requires_d_present),
+                unit = CASE WHEN {16} THEN {17} ELSE unit END,
+                updated_at = now()
+            WHERE id = {0} AND dynamic_id = {1}
+            """.trimIndent(),
+            taskId, dynamicId,
+            p.title,
+            p.detail != null, p.detail,
+            p.kind?.name,
+            (p.kind != null || p.schedule != null), newScheduleJson,
+            p.timesPerDay,
+            p.dueTime != null, p.dueTime,
+            p.dueAt != null, p.dueAt,
+            p.proof?.name,
+            p.pointsEarn,
+            p.requiresDPresent,
+            p.unit != null, p.unit,
+        ).execute()
+
+        events.append(dynamicId, actorUserId, "task_updated", """{"task_id":"$taskId"}""")
+
+        // Schedule/dueTime/timesPerDay change: regenerate only today's still-open
+        // occurrences — decided ones (delivered/missed/etc.) are left alone.
+        val scheduleShaped = scheduleTouched || p.timesPerDay != null || p.dueTime != null
+        if (scheduleShaped && status != "proposed") {
+            val today = days.today(dynamicId)
+            dsl.query(
+                "DELETE FROM occurrences WHERE task_id = {0} AND day = {1} AND outcome = 'open' AND disposition = 'none'",
+                taskId, today,
+            ).execute()
+            if (status == "active") generator.generate(dynamicId, today)
+        }
+
+        return get(dynamicId, taskId)
     }
 
     /** The D takes an s proposal live. */

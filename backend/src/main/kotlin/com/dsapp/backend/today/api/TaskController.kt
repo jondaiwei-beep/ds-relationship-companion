@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -35,6 +36,21 @@ data class CreateTaskBody(
     val proof: Proof = Proof.check,
     val pointsEarn: Int = 0,
     val requiresDPresent: Boolean = false,
+    val unit: String? = null,
+)
+
+/** Same shape as [CreateTaskBody], but every field is optional: null means unchanged. */
+data class UpdateTaskBody(
+    @field:Size(max = 120) val title: String? = null,
+    @field:Size(max = 1000) val detail: String? = null,
+    val kind: TaskKind? = null,
+    val schedule: Map<String, Any?>? = null,
+    val timesPerDay: Int? = null,
+    val dueTime: LocalTime? = null,
+    val dueAt: Instant? = null,
+    val proof: Proof? = null,
+    val pointsEarn: Int? = null,
+    val requiresDPresent: Boolean? = null,
     val unit: String? = null,
 )
 
@@ -73,6 +89,24 @@ class TaskController(
             ),
         )
     }
+
+    @PatchMapping("/{taskId}")
+    fun update(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable taskId: UUID,
+        @Valid @RequestBody body: UpdateTaskBody,
+    ): ResponseEntity<Any> = ResponseEntity.ok(
+        tasks.update(
+            jwt.actorId(), dynamicId, taskId,
+            TaskService.TaskPatch(
+                title = body.title, detail = body.detail, kind = body.kind, schedule = body.schedule,
+                timesPerDay = body.timesPerDay, dueTime = body.dueTime, dueAt = body.dueAt,
+                proof = body.proof, pointsEarn = body.pointsEarn, requiresDPresent = body.requiresDPresent,
+                unit = body.unit,
+            ),
+        ),
+    )
 
     @PostMapping("/{taskId}/accept")
     fun accept(
