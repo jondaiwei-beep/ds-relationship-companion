@@ -440,7 +440,7 @@ class LEn extends L {
 
   @override
   String get entranceErrorOffline =>
-      'You\'re offline. Connect to the internet, then try again.';
+      'Couldn\'t reach the server. Check your connection and try again — if this network blocks some sites, try another network.';
 
   @override
   String get entranceErrorGeneric => 'Something went wrong. Try again.';
@@ -2696,4 +2696,8 @@ class LEn extends L {
 
   @override
   String get inboxDNoteReminderBody => 'A reminder is due.';
+
+  @override
+  String get entranceErrorRegisterConflict =>
+      'This address couldn\'t be used. If you\'ve created an account before, sign in instead.';
 }

@@ -411,7 +411,7 @@ class LZh extends L {
   String get entranceErrorAgeNotConfirmed => '确认你已满 18 岁，才能创建账号。';
 
   @override
-  String get entranceErrorOffline => '现在没有网络。连上网，再试一次。';
+  String get entranceErrorOffline => '连不上服务器。检查一下网络再试；如果这个网络访问部分网站不稳定，换个网络试试。';
 
   @override
   String get entranceErrorGeneric => '出了点问题。再试一次。';
@@ -2581,4 +2581,7 @@ class LZh extends L {
 
   @override
   String get inboxDNoteReminderBody => '一条提醒到时间了。';
+
+  @override
+  String get entranceErrorRegisterConflict => '这个邮箱没能用来创建账号。如果你之前注册过，直接登录。';
 }

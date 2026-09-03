@@ -16,6 +16,7 @@ import 'platform/push/background_sync.dart';
 import 'platform/push/local_notifier.dart';
 import 'platform/push/notification_sync.dart';
 import 'platform/push/sync_store.dart';
+import 'platform/session/session.dart';
 import 'platform/session/session_controller.dart';
 import 'platform/time/device_timezone.dart';
 import 'features/device_lock/presentation/lock_screen.dart';
@@ -96,7 +97,15 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
     _syncStore.setForeground(true);
 
     final notifier = ref.read(localNotifierProvider);
-    notifier.init().then((_) => notifier.requestPermission());
+    // The permission is asked for once someone is signed in — a system
+    // dialog over the welcome screen, before a single word has been read,
+    // is the first thing a new person would see of the app.
+    notifier.init().then((_) {
+      ref.listenManual<Session>(sessionProvider, fireImmediately: true,
+          (_, next) {
+        if (next is Authenticated) notifier.requestPermission();
+      });
+    });
     _tray = notifier.opened.listen(_openFromTray);
   }
 

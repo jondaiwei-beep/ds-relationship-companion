@@ -886,7 +886,7 @@ abstract class L {
   /// No description provided for @entranceErrorOffline.
   ///
   /// In en, this message translates to:
-  /// **'You\'re offline. Connect to the internet, then try again.'**
+  /// **'Couldn\'t reach the server. Check your connection and try again — if this network blocks some sites, try another network.'**
   String get entranceErrorOffline;
 
   /// No description provided for @entranceErrorGeneric.
@@ -4794,6 +4794,12 @@ abstract class L {
   /// In en, this message translates to:
   /// **'A reminder is due.'**
   String get inboxDNoteReminderBody;
+
+  /// No description provided for @entranceErrorRegisterConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'This address couldn\'t be used. If you\'ve created an account before, sign in instead.'**
+  String get entranceErrorRegisterConflict;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

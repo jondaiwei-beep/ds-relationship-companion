@@ -84,6 +84,7 @@ enum AuthMessage {
   accountNotActive,
   registerUncertain,
   registerGeneric,
+  registerConflict,
   emailInvalid,
   passwordMissing,
   checkDetails,
@@ -122,6 +123,7 @@ String entranceMessage(L l, AuthMessage key) => switch (key) {
       AuthMessage.accountNotActive => l.entranceErrorAccountNotActive,
       AuthMessage.registerUncertain => l.entranceErrorRegisterUncertain,
       AuthMessage.registerGeneric => l.entranceErrorRegisterGeneric,
+      AuthMessage.registerConflict => l.entranceErrorRegisterConflict,
       AuthMessage.emailInvalid => l.entranceErrorEmailInvalid,
       AuthMessage.passwordMissing => l.entranceErrorPasswordMissing,
       AuthMessage.checkDetails => l.entranceErrorCheckDetails,
@@ -339,6 +341,15 @@ class AuthActions {
           AuthMessage.passwordTooLong,
           'Use no more than $maxPasswordLength characters.',
           field: AuthField.password,
+        ),
+      // The server will not say whether the address is taken. The status
+      // still tells the person the useful thing: this is not a network or
+      // server fault, and if they registered before, signing in is the way.
+      'COULD_NOT_REGISTER' => const AuthFailed(
+          AuthMessage.registerConflict,
+          "This address couldn't be used. If you've created an account "
+          'before, sign in instead.',
+          field: AuthField.email,
         ),
       _ => const AuthFailed(
           AuthMessage.registerGeneric,

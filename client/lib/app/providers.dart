@@ -25,6 +25,11 @@ const kApiBaseUrl = String.fromEnvironment(
   defaultValue: 'http://localhost:8082',
 );
 
+/// Second route to the same backend, bypassing the edge network. Empty on
+/// Web: the browser app is served from the edge anyway, and cookies would not
+/// follow a host change.
+const kApiFallbackBaseUrl = String.fromEnvironment('API_FALLBACK_BASE_URL');
+
 /// Where the Web companion is served. An invite link must point at the
 /// browser app, not at the API host — the partner opens it on their phone
 /// without installing anything.
@@ -36,7 +41,10 @@ const kWebBaseUrl = String.fromEnvironment(
 String webBaseUrl() => kWebBaseUrl;
 
 final apiClientProvider = Provider<ApiClient>(
-  (ref) => ApiClient(baseUrl: kApiBaseUrl),
+  (ref) => ApiClient(
+    baseUrl: kApiBaseUrl,
+    fallbackBaseUrls: [if (kApiFallbackBaseUrl.isNotEmpty) kApiFallbackBaseUrl],
+  ),
 );
 
 final inviteRepositoryProvider = Provider<InviteRepository>(

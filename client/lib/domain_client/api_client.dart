@@ -14,12 +14,17 @@ import 'credentials_io.dart'
 /// network, a double tap — can never produce a second business action
 /// (Notion 03 §6).
 class ApiClient {
-  ApiClient({required String baseUrl, Dio? dio})
-      : _dio = dio ?? Dio(BaseOptions(baseUrl: baseUrl)) {
+  ApiClient({
+    required String baseUrl,
+    List<String> fallbackBaseUrls = const [],
+    Dio? dio,
+  })  : _dio = dio ?? Dio(BaseOptions(baseUrl: baseUrl)),
+        _hosts = [baseUrl, ...fallbackBaseUrls] {
     _dio.options
       ..connectTimeout = const Duration(seconds: 10)
       ..receiveTimeout = const Duration(seconds: 15)
       ..headers['Content-Type'] = 'application/json';
+    _dio.interceptors.add(InterceptorsWrapper(onError: _retryConnect));
 
     // Browsers omit cookies from cross-origin requests unless asked, and the
     // Web app and the API are separate hosts. Without this the refresh cookie
@@ -33,6 +38,44 @@ class ApiClient {
   }
 
   final Dio _dio;
+
+  /// Every host that serves the API, primary first. The edge host is not
+  /// reachable from every network at every moment — a phone on a mobile
+  /// carrier can see a connection reset that a laptop next to it does not —
+  /// so a failed connect is retried, rotating through the hosts, before it
+  /// is reported. Once a host answers, the client stays on it.
+  final List<String> _hosts;
+
+  /// Connect attempts per request, across all hosts.
+  static const _maxAttempts = 3;
+
+  /// The base URL requests currently go to.
+  String get baseUrl => _dio.options.baseUrl;
+
+  /// A connect that never reached the server can be retried without a
+  /// second business action: nothing was received, so nothing was done.
+  /// Timeouts after sending are NOT retried here — the request may have
+  /// landed, and idempotency keys exist for exactly that case.
+  Future<void> _retryConnect(DioException e, ErrorInterceptorHandler h) async {
+    final reachedServer = e.type != DioExceptionType.connectionError &&
+        e.type != DioExceptionType.connectionTimeout;
+    final attempt = (e.requestOptions.extra['attempt'] as int?) ?? 1;
+    if (reachedServer || attempt >= _maxAttempts) return h.next(e);
+
+    final current = e.requestOptions.baseUrl;
+    final index = _hosts.indexOf(current);
+    final next = _hosts[(index < 0 ? 0 : index + 1) % _hosts.length];
+    final options = e.requestOptions
+      ..baseUrl = next
+      ..extra['attempt'] = attempt + 1;
+    try {
+      final r = await _dio.fetch<dynamic>(options);
+      if (next != _dio.options.baseUrl) _dio.options.baseUrl = next;
+      h.resolve(r);
+    } on DioException catch (again) {
+      h.next(again);
+    }
+  }
 
   /// Called when the server says this token is dead.
   ///

@@ -131,7 +131,7 @@
   "entranceCallbackUnexpectedLink": "这次登录没能完成。重新要一条链接吧。",
   "entranceRequestNewLink": "重新要一条链接",
   "entranceErrorAgeNotConfirmed": "确认你已满 18 岁，才能创建账号。",
-  "entranceErrorOffline": "现在没有网络。连上网，再试一次。",
+  "entranceErrorOffline": "连不上服务器。检查一下网络再试；如果这个网络访问部分网站不稳定，换个网络试试。",
   "entranceErrorGeneric": "出了点问题。再试一次。",
   "entranceErrorUnexpected": "发生了意料之外的情况。再试一次。",
   "entranceErrorLinkWrongDevice": "在你当初索取这条链接的那台设备上打开它，或者重新要一条。",
@@ -1024,14 +1024,32 @@
   "notificationsLoadFailed": "没能读到消息。",
   "notificationsReminderTitle": "Companion",
   "notificationsReminderDue": "{title}，到点了。",
-  "@notificationsReminderDue": {"placeholders": {"title": {"type": "String"}}},
+  "@notificationsReminderDue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "notificationsReminderDayEnd": "这一天还有 {count} 项没说。",
-  "@notificationsReminderDayEnd": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsReminderDayEnd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "settingsDigestSection": "交付通知",
   "settingsDigestOff": "每条即时",
   "settingsDigestOffSupport": "对方每送到一项，你都会立刻知道。",
   "settingsDigestEvery": "每 {hours} 小时合并一次",
-  "@settingsDigestEvery": {"placeholders": {"hours": {"type": "int"}}},
+  "@settingsDigestEvery": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "settingsMutedTypesSection": "哪些事要通知",
   "settingsMutedTypesSupport": "关掉的还会留在消息里，只是不会响。",
   "settingsTypeDelivered": "对方送到了",
@@ -1072,5 +1090,6 @@
   "inboxDAwardTitle": "积分",
   "inboxDAwardBody": "你收到了积分。",
   "inboxDNoteReminderTitle": "提醒",
-  "inboxDNoteReminderBody": "一条提醒到时间了。"
+  "inboxDNoteReminderBody": "一条提醒到时间了。",
+  "entranceErrorRegisterConflict": "这个邮箱没能用来创建账号。如果你之前注册过，直接登录。"
 }

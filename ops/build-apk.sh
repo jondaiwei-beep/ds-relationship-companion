@@ -13,6 +13,7 @@ OPS="$(cd "$(dirname "$0")" && pwd)"
 cd "$(dirname "$0")/../client"
 
 API="${DS_API_BASE_URL:-https://ds-api.beforeweplay.com}"
+API_FALLBACK="${DS_API_FALLBACK_BASE_URL:-https://ds-api-direct.beforeweplay.com}"
 WEB="${DS_WEB_BASE_URL:-https://ds-staging.beforeweplay.com}"
 
 # Google publishes API 37 as `platforms;android-37.0`; Gradle looks for
@@ -42,6 +43,7 @@ echo "WEB_BASE_URL=$WEB"
 # arm64 alone is ~19MB and covers every phone made in the last several years.
 flutter build apk --release --split-per-abi \
   --dart-define=API_BASE_URL="$API" \
+  --dart-define=API_FALLBACK_BASE_URL="$API_FALLBACK" \
   --dart-define=WEB_BASE_URL="$WEB"
 
 APK=build/app/outputs/flutter-apk/app-arm64-v8a-release.apk

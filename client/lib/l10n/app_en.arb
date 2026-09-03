@@ -156,7 +156,7 @@
   "entranceCallbackUnexpectedLink": "We couldn't complete that sign-in. Request a new link.",
   "entranceRequestNewLink": "Request a new link",
   "entranceErrorAgeNotConfirmed": "Confirm that you are 18 or older to create an account.",
-  "entranceErrorOffline": "You're offline. Connect to the internet, then try again.",
+  "entranceErrorOffline": "Couldn't reach the server. Check your connection and try again — if this network blocks some sites, try another network.",
   "entranceErrorGeneric": "Something went wrong. Try again.",
   "entranceErrorUnexpected": "Something unexpected happened. Try again.",
   "entranceErrorLinkWrongDevice": "Open the link on the device where you asked for it, or request a new one.",
@@ -1553,14 +1553,32 @@
   "notificationsLoadFailed": "Messages could not be read.",
   "notificationsReminderTitle": "Companion",
   "notificationsReminderDue": "{title} — it's time.",
-  "@notificationsReminderDue": {"placeholders": {"title": {"type": "String"}}},
+  "@notificationsReminderDue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "notificationsReminderDayEnd": "{count} still unsaid before the day ends.",
-  "@notificationsReminderDayEnd": {"placeholders": {"count": {"type": "int"}}},
+  "@notificationsReminderDayEnd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "settingsDigestSection": "Deliveries",
   "settingsDigestOff": "Each one, at once",
   "settingsDigestOffSupport": "You hear about every delivery as it lands.",
   "settingsDigestEvery": "Folded every {hours} hours",
-  "@settingsDigestEvery": {"placeholders": {"hours": {"type": "int"}}},
+  "@settingsDigestEvery": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "settingsMutedTypesSection": "What rings",
   "settingsMutedTypesSupport": "What you turn off still lands in Messages; it just stays quiet.",
   "settingsTypeDelivered": "A delivery",
@@ -1601,5 +1619,6 @@
   "inboxDAwardTitle": "Points",
   "inboxDAwardBody": "Points were awarded to you.",
   "inboxDNoteReminderTitle": "A reminder",
-  "inboxDNoteReminderBody": "A reminder is due."
+  "inboxDNoteReminderBody": "A reminder is due.",
+  "entranceErrorRegisterConflict": "This address couldn't be used. If you've created an account before, sign in instead."
 }
