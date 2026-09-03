@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestHeader
@@ -98,6 +99,14 @@ data class JoinInviteRequest(@field:NotBlank val token: String)
 
 data class JoinInviteResponse(val membershipId: UUID)
 
+data class UpdateDynamicSettingsRequest(
+    val timezone: String? = null,
+    val dayBoundaryMinutes: Int? = null,
+    val honorificForD: String? = null,
+    val honorificForS: String? = null,
+    val safeword: String? = null,
+)
+
 data class LeaveBody(val reason: String? = null)
 
 /** Blocking names the person being blocked. They are never told who did it. */
@@ -164,6 +173,26 @@ class DynamicController(
     ): ResponseEntity<Any> = ResponseEntity.ok()
         .cacheControl(CacheControl.noStore())
         .body(dynamics.detail(jwt.actorId(), dynamicId))
+
+    /** Settings — timezone, day boundary, honorifics, safeword. Either side may edit (pre-launch decision). */
+    @PutMapping("/dynamics/{dynamicId}/settings")
+    fun updateSettings(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @RequestBody body: UpdateDynamicSettingsRequest,
+    ): ResponseEntity<Any> = ResponseEntity.ok()
+        .cacheControl(CacheControl.noStore())
+        .body(
+            dynamics.updateSettings(
+                actorUserId = jwt.actorId(),
+                dynamicId = dynamicId,
+                timezone = body.timezone,
+                dayBoundaryMinutes = body.dayBoundaryMinutes,
+                honorificForD = body.honorificForD,
+                honorificForS = body.honorificForS,
+                safeword = body.safeword,
+            ),
+        )
 
     /** Pause — inviolable agency: either member may pause (Notion 04 §4). */
     @PostMapping("/dynamics/{dynamicId}/pause")

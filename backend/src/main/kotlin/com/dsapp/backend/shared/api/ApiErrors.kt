@@ -4,6 +4,7 @@ import com.dsapp.backend.dynamic.application.InviteAlreadyPending
 import com.dsapp.backend.dynamic.application.InviteNotRevocable
 import com.dsapp.backend.dynamic.application.InviteNotJoinable
 import com.dsapp.backend.dynamic.application.DynamicNotPausable
+import com.dsapp.backend.dynamic.application.InvalidDynamicSettings
 import com.dsapp.backend.dynamic.domain.AuthorizationException
 import com.dsapp.backend.points.application.InsufficientPoints
 import com.dsapp.backend.today.application.NoSuchItem
@@ -122,6 +123,10 @@ class ApiErrorHandler {
     @ExceptionHandler(DynamicNotPausable::class)
     fun onNotPausable(e: DynamicNotPausable): ResponseEntity<ApiError> =
         ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("DYNAMIC_${e.state}"))
+
+    @ExceptionHandler(InvalidDynamicSettings::class)
+    fun onInvalidDynamicSettings(e: InvalidDynamicSettings): ResponseEntity<ApiError> =
+        ResponseEntity.badRequest().body(ApiError("INVALID_REQUEST", e.message))
 
     @ExceptionHandler(NotificationSettingsService.InvalidSettings::class)
     fun onInvalidSettings(

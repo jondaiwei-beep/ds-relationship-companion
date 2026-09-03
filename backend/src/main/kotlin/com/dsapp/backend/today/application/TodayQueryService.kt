@@ -75,6 +75,10 @@ class TodayQueryService(
         val partnerDisplayName: String?,
         /** D「我不在」until this instant, or null when the D is present. */
         val dAwayUntil: Instant?,
+        /** How the s addresses the D, and vice versa. Null means "use the display name". */
+        val honorificForD: String?,
+        val honorificForS: String?,
+        val safeword: String?,
     )
 
     @Transactional
@@ -98,6 +102,10 @@ class TodayQueryService(
                 WHERE m.dynamic_id = {0} AND m.user_id <> {1} AND m.access_state = 'ACTIVE' LIMIT 1""",
             dynamicId, actorUserId,
         )?.get("display_name", String::class.java)
+        val extras = dsl.fetchOne(
+            "SELECT d_away_until, honorific_for_d, honorific_for_s, safeword FROM dynamics WHERE id = {0}",
+            dynamicId,
+        )
         return TodayView(
             dynamicId = dynamicId,
             day = day,
@@ -113,8 +121,10 @@ class TodayQueryService(
                 dynamicId,
             )!!.get("n", Int::class.java),
             partnerDisplayName = partner,
-            dAwayUntil = dsl.fetchOne("SELECT d_away_until FROM dynamics WHERE id = {0}", dynamicId)
-                ?.get("d_away_until", Instant::class.java),
+            dAwayUntil = extras?.get("d_away_until", Instant::class.java),
+            honorificForD = extras?.get("honorific_for_d", String::class.java),
+            honorificForS = extras?.get("honorific_for_s", String::class.java),
+            safeword = extras?.get("safeword", String::class.java),
         )
     }
 

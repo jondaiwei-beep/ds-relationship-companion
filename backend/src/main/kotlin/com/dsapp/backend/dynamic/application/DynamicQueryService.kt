@@ -11,6 +11,8 @@ import java.util.UUID
 class DynamicNotPausable(val state: String) :
     RuntimeException("Dynamic is $state")
 
+class InvalidDynamicSettings(message: String) : IllegalArgumentException(message)
+
 /**
  * Dynamic — the relationship's current shape (Notion 02 §10).
  *
@@ -57,6 +59,10 @@ class DynamicQueryService(
         val alwaysAvailable: List<String>,
         /** D「我不在」until this instant, or null when the D is present. */
         val dAwayUntil: Instant?,
+        /** How the s addresses the D, and vice versa. Null means "use the display name" (product/02-surfaces.md). */
+        val honorificForD: String?,
+        val honorificForS: String?,
+        val safeword: String?,
     )
 
     @Transactional(readOnly = true)
@@ -111,7 +117,8 @@ class DynamicQueryService(
         val d = dsl.fetchOne(
             """
             SELECT state, desired_outcome, structure_level, reference_timezone,
-                   day_boundary_minutes, paused_at, d_away_until
+                   day_boundary_minutes, paused_at, d_away_until,
+                   honorific_for_d, honorific_for_s, safeword
               FROM dynamics WHERE id = {0}
             """.trimIndent(),
             dynamicId,
@@ -165,7 +172,64 @@ class DynamicQueryService(
             // role. These can never be switched off (Notion 04 §4).
             alwaysAvailable = listOf("discuss", "reschedule", "cant_do", "pause", "leave", "block"),
             dAwayUntil = d.get("d_away_until", Instant::class.java),
+            honorificForD = d.get("honorific_for_d", String::class.java),
+            honorificForS = d.get("honorific_for_s", String::class.java),
+            safeword = d.get("safeword", String::class.java),
         )
+    }
+
+    /**
+     * Settings — timezone, day boundary, honorifics, safeword. Partial
+     * update: any field left null keeps its current value.
+     *
+     * Either side may edit any of these fields — a deliberate pre-launch
+     * decision (owner 2026-09) not to gate this behind D/s, unlike most
+     * mutations in this app.
+     */
+    @Transactional
+    fun updateSettings(
+        actorUserId: UUID,
+        dynamicId: UUID,
+        timezone: String?,
+        dayBoundaryMinutes: Int?,
+        honorificForD: String?,
+        honorificForS: String?,
+        safeword: String?,
+    ): DynamicDetail {
+        val ctx = authorizer.requireActive(authorizer.contextForDynamic(actorUserId, dynamicId))
+
+        if (timezone != null) {
+            try {
+                java.time.ZoneId.of(timezone)
+            } catch (e: java.time.DateTimeException) {
+                throw InvalidDynamicSettings("timezone")
+            }
+        }
+        if (dayBoundaryMinutes != null && dayBoundaryMinutes !in 0..1439) {
+            throw InvalidDynamicSettings("dayBoundaryMinutes")
+        }
+
+        dsl.query(
+            """
+            UPDATE dynamics
+               SET reference_timezone = COALESCE({1}, reference_timezone),
+                   day_boundary_minutes = COALESCE({2}, day_boundary_minutes),
+                   honorific_for_d = COALESCE({3}, honorific_for_d),
+                   honorific_for_s = COALESCE({4}, honorific_for_s),
+                   safeword = COALESCE({5}, safeword),
+                   updated_at = now(), version = version + 1
+             WHERE id = {0}
+            """.trimIndent(),
+            dynamicId, timezone, dayBoundaryMinutes, honorificForD, honorificForS, safeword,
+        ).execute()
+
+        // Visible to the partner via normal relationship-event visibility
+        // (dynamic-scoped, not author-scoped) — same pattern as
+        // dynamic_paused/dynamic_resumed above. No push notification: this is
+        // a quiet settings change, not something that needs an alert.
+        events.append(dynamicId, actorUserId, "dynamic_settings_changed", """{"dynamic_id":"$dynamicId"}""")
+
+        return detail(actorUserId, dynamicId)
     }
 
     /**
