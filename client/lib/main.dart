@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import 'app/locale_controller.dart';
@@ -10,6 +11,10 @@ import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/router.dart';
 import 'platform/deeplink/callback_params.dart';
+import 'platform/push/background_sync.dart';
+import 'platform/push/local_notifier.dart';
+import 'platform/push/notification_sync.dart';
+import 'platform/push/sync_store.dart';
 import 'platform/session/session_controller.dart';
 import 'platform/time/device_timezone.dart';
 import 'features/device_lock/presentation/lock_screen.dart';
@@ -42,6 +47,12 @@ Future<void> main() async {
   // asynchronously, while the screen that consumes it asks during build.
   await CallbackParams.prime();
 
+  // Device notifications: the tray plugin, and on Android a periodic fetch
+  // that runs while the app is closed. No push service is involved.
+  if (!kIsWeb) {
+    await registerBackgroundNotificationSync();
+  }
+
   runApp(const ProviderScope(child: CompanionApp()));
 }
 
@@ -70,9 +81,31 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
     // alone misses the common case: tapping an invite while the app sits in
     // the background hands the URI to the live process.
     _links = CallbackParams.incoming().listen(_open);
+
+    // The background fetch stands down while the app is on screen; the bell
+    // is polling then, and two isolates must not refresh one session.
+    _foreground = AppLifecycleListener(
+      onResume: () => _syncStore.setForeground(true),
+      onInactive: () => _syncStore.setForeground(false),
+      onHide: () => _syncStore.setForeground(false),
+    );
+    _syncStore.setForeground(true);
+
+    final notifier = ref.read(localNotifierProvider);
+    notifier.init().then((_) => notifier.requestPermission());
+    _tray = notifier.opened.listen(_openFromTray);
   }
 
   StreamSubscription<Uri>? _links;
+  StreamSubscription<String>? _tray;
+  AppLifecycleListener? _foreground;
+  final _syncStore = NotificationSyncStore();
+
+  void _openFromTray(String payload) {
+    final parsed = parseTrayPayload(payload);
+    if (parsed == null) return;
+    ref.read(routerProvider).go(routeForDeepLink(parsed.$2, parsed.$1));
+  }
 
   /// Route an incoming link the way the browser would route the same URL.
   ///
@@ -93,6 +126,8 @@ class _CompanionAppState extends ConsumerState<CompanionApp> {
   @override
   void dispose() {
     _links?.cancel();
+    _tray?.cancel();
+    _foreground?.dispose();
     super.dispose();
   }
 

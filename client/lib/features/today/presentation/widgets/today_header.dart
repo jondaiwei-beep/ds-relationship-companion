@@ -20,6 +20,8 @@ class TodayHeader extends StatelessWidget {
     this.context_,
     this.editorialTitle = false,
     this.onSettings,
+    this.onNotifications,
+    this.unread = 0,
   });
 
   /// The surface name shown at the left.
@@ -48,6 +50,11 @@ class TodayHeader extends StatelessWidget {
 
   /// When set, a settings mark sits at the trailing edge.
   final VoidCallback? onSettings;
+
+  /// When set, a bell sits before the settings mark, with [unread] on it
+  /// while there is anything unread.
+  final VoidCallback? onNotifications;
+  final int unread;
 
   /// A named context wins over presence: while access is unconfirmed the
   /// header must say so rather than imply a partner is there.
@@ -113,6 +120,53 @@ class TodayHeader extends StatelessWidget {
               ],
             ),
           ),
+          if (onNotifications != null) ...[
+            const SizedBox(width: DsSpacing.space2),
+            Semantics(
+              button: true,
+              label: L.of(context).notificationsTitle,
+              value: unread > 0 ? '$unread' : null,
+              child: InkWell(
+                onTap: onNotifications,
+                borderRadius: BorderRadius.circular(24),
+                child: SizedBox(
+                  width: 44,
+                  height: 48,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const Icon(
+                        Icons.notifications_none_outlined,
+                        size: 22,
+                        color: DsColors.textOnRitualSecondary,
+                      ),
+                      if (unread > 0)
+                        Positioned(
+                          top: 8,
+                          right: 6,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                            decoration: BoxDecoration(
+                              color: DsColors.textOnRitualPrimary,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              unread > 99 ? '99+' : '$unread',
+                              key: const ValueKey('unread-badge'),
+                              style: DsTextStyles.bodySecondary.copyWith(
+                                color: DsColors.canvasRitual,
+                                fontSize: 11,
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
           if (onSettings != null) ...[
             const SizedBox(width: DsSpacing.space2),
             Semantics(

@@ -32,6 +32,8 @@ class STodayScreen extends ConsumerStatefulWidget {
     required this.view,
     required this.dynamicId,
     this.onSettings,
+    this.onNotifications,
+    this.unread = 0,
     this.notice,
     this.onRules,
   });
@@ -39,6 +41,8 @@ class STodayScreen extends ConsumerStatefulWidget {
   final TodayView view;
   final String dynamicId;
   final VoidCallback? onSettings;
+  final VoidCallback? onNotifications;
+  final int unread;
 
   /// The Dynamic's own state — paused, D away, partner not joined — shown
   /// between the day's meta and its list. Built by the frame, which is the
@@ -404,6 +408,8 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
           title: l.todayTitle,
           partnerName: view.partnerDisplayName,
           onSettings: widget.onSettings,
+          onNotifications: widget.onNotifications,
+          unread: widget.unread,
         ),
         const SizedBox(height: DsSpacing.space4),
         TodayMeta(view: view),

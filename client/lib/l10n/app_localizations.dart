@@ -4428,6 +4428,120 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Until they are in, you can start putting rules and tasks in place.'**
   String get todayWaitingPartnerBodyD;
+
+  /// No description provided for @notificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages'**
+  String get notificationsTitle;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet.'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Messages could not be read.'**
+  String get notificationsLoadFailed;
+
+  /// No description provided for @notificationsReminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Companion'**
+  String get notificationsReminderTitle;
+
+  /// No description provided for @notificationsReminderDue.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} — it\'s time.'**
+  String notificationsReminderDue(String title);
+
+  /// No description provided for @notificationsReminderDayEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} still unsaid before the day ends.'**
+  String notificationsReminderDayEnd(int count);
+
+  /// No description provided for @settingsDigestSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Deliveries'**
+  String get settingsDigestSection;
+
+  /// No description provided for @settingsDigestOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one, at once'**
+  String get settingsDigestOff;
+
+  /// No description provided for @settingsDigestOffSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'You hear about every delivery as it lands.'**
+  String get settingsDigestOffSupport;
+
+  /// No description provided for @settingsDigestEvery.
+  ///
+  /// In en, this message translates to:
+  /// **'Folded every {hours} hours'**
+  String settingsDigestEvery(int hours);
+
+  /// No description provided for @settingsMutedTypesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'What rings'**
+  String get settingsMutedTypesSection;
+
+  /// No description provided for @settingsMutedTypesSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'What you turn off still lands in Messages; it just stays quiet.'**
+  String get settingsMutedTypesSupport;
+
+  /// No description provided for @settingsTypeDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'A delivery'**
+  String get settingsTypeDelivered;
+
+  /// No description provided for @settingsTypeFlagged.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t / new time / talk'**
+  String get settingsTypeFlagged;
+
+  /// No description provided for @settingsTypeDisposition.
+  ///
+  /// In en, this message translates to:
+  /// **'Their answer'**
+  String get settingsTypeDisposition;
+
+  /// No description provided for @settingsTypeComment.
+  ///
+  /// In en, this message translates to:
+  /// **'A comment'**
+  String get settingsTypeComment;
+
+  /// No description provided for @settingsTypeAward.
+  ///
+  /// In en, this message translates to:
+  /// **'Points added'**
+  String get settingsTypeAward;
+
+  /// No description provided for @settingsTypeRedemption.
+  ///
+  /// In en, this message translates to:
+  /// **'A redemption request'**
+  String get settingsTypeRedemption;
+
+  /// No description provided for @settingsTypeDNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note reminder'**
+  String get settingsTypeDNote;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -2503,4 +2503,69 @@ class LEn extends L {
   @override
   String get todayWaitingPartnerBodyD =>
       'Until they are in, you can start putting rules and tasks in place.';
+
+  @override
+  String get notificationsTitle => 'Messages';
+
+  @override
+  String get notificationsEmpty => 'Nothing here yet.';
+
+  @override
+  String get notificationsLoadFailed => 'Messages could not be read.';
+
+  @override
+  String get notificationsReminderTitle => 'Companion';
+
+  @override
+  String notificationsReminderDue(String title) {
+    return '$title — it\'s time.';
+  }
+
+  @override
+  String notificationsReminderDayEnd(int count) {
+    return '$count still unsaid before the day ends.';
+  }
+
+  @override
+  String get settingsDigestSection => 'Deliveries';
+
+  @override
+  String get settingsDigestOff => 'Each one, at once';
+
+  @override
+  String get settingsDigestOffSupport =>
+      'You hear about every delivery as it lands.';
+
+  @override
+  String settingsDigestEvery(int hours) {
+    return 'Folded every $hours hours';
+  }
+
+  @override
+  String get settingsMutedTypesSection => 'What rings';
+
+  @override
+  String get settingsMutedTypesSupport =>
+      'What you turn off still lands in Messages; it just stays quiet.';
+
+  @override
+  String get settingsTypeDelivered => 'A delivery';
+
+  @override
+  String get settingsTypeFlagged => 'Can\'t / new time / talk';
+
+  @override
+  String get settingsTypeDisposition => 'Their answer';
+
+  @override
+  String get settingsTypeComment => 'A comment';
+
+  @override
+  String get settingsTypeAward => 'Points added';
+
+  @override
+  String get settingsTypeRedemption => 'A redemption request';
+
+  @override
+  String get settingsTypeDNote => 'Note reminder';
 }

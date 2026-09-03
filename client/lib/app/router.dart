@@ -21,6 +21,7 @@ import '../features/invite/presentation/invite_partner_screen.dart';
 import '../features/invite/presentation/join_screen.dart';
 import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
+import '../features/notifications/presentation/notifications_screen.dart';
 import '../features/record/presentation/record_screen.dart';
 import '../features/record/presentation/day_screen.dart';
 import '../features/record/presentation/series_screen.dart';
@@ -84,6 +85,7 @@ abstract final class Routes {
   /// have to be expressed as "let it through", and a protected screen would
   /// fetch relationship data before anyone had established a right to read it.
   static const holding = '/holding';
+  static const notifications = '/notifications';
 
   /// Reachable without a session. Everything else is guarded.
   ///
@@ -200,6 +202,7 @@ GoRouter createRouter(Ref ref) {
                         context.go('/dynamics/$dynamicId/settings'),
                     onInvite: () => context.go('/dynamics/$dynamicId/invite'),
                     onPause: () => context.go('/dynamics/$dynamicId/pause'),
+                    onNotifications: () => context.push(Routes.notifications),
                   );
                 },
               ),
@@ -403,6 +406,13 @@ GoRouter createRouter(Ref ref) {
             onSignIn: () => context.go(Routes.signIn),
           );
         },
+      ),
+      GoRoute(
+        path: Routes.notifications,
+        builder: (context, _) => NotificationsScreen(
+          onClose: () => context.canPop() ? context.pop() : context.go(Routes.today),
+          onOpen: (route) => context.go(route),
+        ),
       ),
       GoRoute(
         path: Routes.holding,

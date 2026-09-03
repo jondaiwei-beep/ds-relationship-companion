@@ -9,10 +9,12 @@ import '../../../app/locale_controller.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/ds_refreshable.dart';
 import '../../../domain_client/models/dynamic_view.dart';
+import '../../../domain_client/models/notification.dart';
 import '../../../domain_client/models/notification_settings.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../device_lock/application/device_lock_controller.dart';
 import '../../dynamic/application/dynamic_providers.dart';
+import '../../notifications/application/notification_providers.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 
@@ -109,10 +111,47 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
+  /// The device-side preferences: what the lockscreen may say, whether
+  /// deliveries are folded, and which kinds stay quiet. Partial by design.
+  Future<void> _updateMute({
+    bool? neutral,
+    int? digestHours,
+    bool clearDigest = false,
+    Set<String>? mutedTypes,
+  }) async {
+    setState(() {
+      _busy = true;
+      _failure = null;
+    });
+    try {
+      await ref.read(notificationRepositoryProvider).updateMuteSettings(
+            neutralLockscreen: neutral,
+            deliverDigestHours: digestHours,
+            clearDigest: clearDigest,
+            mutedTypes: mutedTypes,
+          );
+      ref.invalidate(muteSettingsProvider);
+    } on Object {
+      if (!mounted) return;
+      setState(() => _failure = L.of(context).settingsSaveFailed);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// One answer to "what may the lockscreen say", written to both places
+  /// that read it: the server's preview setting and the device's mute
+  /// settings, which this app's own notifications follow.
+  Future<void> _setNeutral(bool neutral) async {
+    await _update(preview: neutral ? 'NEUTRAL' : 'RICH');
+    await _updateMute(neutral: neutral);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
     final settings = ref.watch(notificationSettingsProvider);
+    final mute = ref.watch(muteSettingsProvider).value;
     final detail = ref.watch(dynamicDetailProvider(widget.dynamicId));
 
     return Scaffold(
@@ -149,8 +188,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             _Quiet(l.settingsLoadFailed, prominent: true),
                         data: (value) => _Notifications(
                           value: value,
+                          mute: mute,
                           busy: _busy,
-                          onPreview: (p) => _update(preview: p),
+                          onNeutral: _setNeutral,
+                          onDigest: (h) => h == null
+                              ? _updateMute(clearDigest: true)
+                              : _updateMute(digestHours: h),
+                          onMutedTypes: (t) => _updateMute(mutedTypes: t),
                           onQuietHours: (start, end) => start == null
                               ? _update(clearQuietHours: true)
                               : _update(startMin: start, endMin: end),
@@ -225,21 +269,42 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 class _Notifications extends StatelessWidget {
   const _Notifications({
     required this.value,
-    required this.onPreview,
+    required this.mute,
+    required this.onNeutral,
+    required this.onDigest,
+    required this.onMutedTypes,
     required this.onQuietHours,
     this.busy = false,
   });
 
   final NotificationSettings value;
-  final ValueChanged<String> onPreview;
+
+  /// Null while the device-side settings have not been read; the lockscreen
+  /// choice then falls back to the server's preview setting.
+  final NotificationMuteSettings? mute;
+  final ValueChanged<bool> onNeutral;
+  final ValueChanged<int?> onDigest;
+  final ValueChanged<Set<String>> onMutedTypes;
 
   /// A null start clears the window; both bounds always travel together.
   final void Function(int? startMin, int? endMin) onQuietHours;
   final bool busy;
 
+  static String _typeLabel(String type, L l) => switch (type) {
+        'occurrence_delivered' => l.settingsTypeDelivered,
+        'occurrence_flagged' => l.settingsTypeFlagged,
+        'disposition_set' => l.settingsTypeDisposition,
+        'day_comment' => l.settingsTypeComment,
+        'd_award' => l.settingsTypeAward,
+        'redemption_requested' => l.settingsTypeRedemption,
+        'd_note_reminder' => l.settingsTypeDNote,
+        _ => type,
+      };
+
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
+    final neutral = mute?.neutralLockscreen ?? (value.notificationPreview == 'NEUTRAL');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -247,14 +312,56 @@ class _Notifications extends StatelessWidget {
         _Choice(
           label: l.settingsPreviewNeutralLabel,
           support: l.settingsPreviewNeutralSupport,
-          selected: value.notificationPreview == 'NEUTRAL',
-          onTap: busy ? null : () => onPreview('NEUTRAL'),
+          selected: neutral,
+          onTap: busy ? null : () => onNeutral(true),
         ),
         _Choice(
           label: l.settingsPreviewRichLabel,
           support: l.settingsPreviewRichSupport,
-          selected: value.notificationPreview == 'RICH',
-          onTap: busy ? null : () => onPreview('RICH'),
+          selected: !neutral,
+          onTap: busy ? null : () => onNeutral(false),
+        ),
+
+        const SizedBox(height: DsSpacing.space8),
+        _Section(l.settingsDigestSection),
+        _Choice(
+          label: l.settingsDigestOff,
+          support: l.settingsDigestOffSupport,
+          selected: mute?.deliverDigestHours == null,
+          onTap: busy ? null : () => onDigest(null),
+        ),
+        for (final h in const [2, 4, 8])
+          _Choice(
+            label: l.settingsDigestEvery(h),
+            selected: mute?.deliverDigestHours == h,
+            onTap: busy ? null : () => onDigest(h),
+          ),
+
+        const SizedBox(height: DsSpacing.space8),
+        _Section(l.settingsMutedTypesSection),
+        for (final type in NotificationMuteSettings.mutableTypes)
+          _Choice(
+            label: _typeLabel(type, l),
+            selected: !(mute?.mutedTypes.contains(type) ?? false),
+            onTap: busy || mute == null
+                ? null
+                : () {
+                    final next = {...mute!.mutedTypes};
+                    if (!next.remove(type)) next.add(type);
+                    onMutedTypes(next);
+                  },
+          ),
+        const SizedBox(height: DsSpacing.space2),
+        Padding(
+          padding: todayInset,
+          child: Text(
+            l.settingsMutedTypesSupport,
+            style: DsTextStyles.bodySecondary.copyWith(
+              color: DsColors.textOnRitualMuted,
+              fontSize: todaySupportSize,
+              height: todaySupportHeight,
+            ),
+          ),
         ),
 
         const SizedBox(height: DsSpacing.space8),

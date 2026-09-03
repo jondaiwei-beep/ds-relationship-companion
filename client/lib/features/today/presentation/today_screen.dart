@@ -8,6 +8,7 @@ import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../dynamic/application/dynamic_providers.dart';
+import '../../notifications/application/notification_providers.dart';
 import '../application/today_providers.dart';
 import 'd_today_screen.dart';
 import 's_today_screen.dart';
@@ -31,6 +32,7 @@ class TodayScreen extends ConsumerWidget {
     this.onSettings,
     this.onInvite,
     this.onPause,
+    this.onNotifications,
   });
 
   final String dynamicId;
@@ -44,12 +46,31 @@ class TodayScreen extends ConsumerWidget {
   /// The pause/return screen, offered from a paused day.
   final VoidCallback? onPause;
 
+  /// The inbox. When set, the header carries the bell and its unread count.
+  final VoidCallback? onNotifications;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final today = ref.watch(todayProvider(dynamicId));
     // Paused, D away, or still alone: facts about the Dynamic, not the day.
     // Read alongside rather than awaited — a day must not wait on its frame.
     final detail = ref.watch(dynamicDetailProvider(dynamicId)).value;
+    final unread = onNotifications == null ? 0 : (ref.watch(unreadCountProvider).value ?? 0);
+    // The s's device reminds them itself: rescheduled on every read of the
+    // day, so a delivery or a pause drops its reminder without a cancel.
+    final l = L.of(context);
+    ref.listen(todayProvider(dynamicId), (_, next) {
+      final view = next.value;
+      if (view == null || view.isD) return;
+      ref.read(taskReminderSchedulerProvider).reschedule(
+            view,
+            now: DateTime.now(),
+            title: l.notificationsReminderTitle,
+            dueText: l.notificationsReminderDue,
+            dayEndText: l.notificationsReminderDayEnd,
+            payload: '$dynamicId|/today',
+          );
+    });
     void reload() {
       ref.invalidate(todayProvider(dynamicId));
       ref.invalidate(dynamicDetailProvider(dynamicId));
@@ -68,7 +89,7 @@ class TodayScreen extends ConsumerWidget {
       await Future.wait(futures);
     }
 
-    return Scaffold(
+    final screen = Scaffold(
       backgroundColor: DsColors.canvasRitual,
       body: DsRitualSurface(
         child: SafeArea(
@@ -100,12 +121,16 @@ class TodayScreen extends ConsumerWidget {
                               view: view,
                               dynamicId: dynamicId,
                               onSettings: onSettings,
+                              onNotifications: onNotifications,
+                              unread: unread,
                               notice: notice,
                             )
                           : STodayScreen(
                               view: view,
                               dynamicId: dynamicId,
                               onSettings: onSettings,
+                              onNotifications: onNotifications,
+                              unread: unread,
                               notice: notice,
                               onRules: onSelectTab == null ? null : () => onSelectTab!(NavSurface.rules),
                             );
@@ -119,6 +144,7 @@ class TodayScreen extends ConsumerWidget {
         ),
       ),
     );
+    return onNotifications == null ? screen : UnreadPoll(child: screen);
   }
 }
 

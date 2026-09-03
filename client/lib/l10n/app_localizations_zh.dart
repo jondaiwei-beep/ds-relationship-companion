@@ -2394,4 +2394,67 @@ class LZh extends L {
 
   @override
   String get todayWaitingPartnerBodyD => 'TA 进来之前，你可以先把规矩和任务立起来。';
+
+  @override
+  String get notificationsTitle => '消息';
+
+  @override
+  String get notificationsEmpty => '这里还没有什么。';
+
+  @override
+  String get notificationsLoadFailed => '没能读到消息。';
+
+  @override
+  String get notificationsReminderTitle => 'Companion';
+
+  @override
+  String notificationsReminderDue(String title) {
+    return '$title，到点了。';
+  }
+
+  @override
+  String notificationsReminderDayEnd(int count) {
+    return '这一天还有 $count 项没说。';
+  }
+
+  @override
+  String get settingsDigestSection => '交付通知';
+
+  @override
+  String get settingsDigestOff => '每条即时';
+
+  @override
+  String get settingsDigestOffSupport => '对方每送到一项，你都会立刻知道。';
+
+  @override
+  String settingsDigestEvery(int hours) {
+    return '每 $hours 小时合并一次';
+  }
+
+  @override
+  String get settingsMutedTypesSection => '哪些事要通知';
+
+  @override
+  String get settingsMutedTypesSupport => '关掉的还会留在消息里，只是不会响。';
+
+  @override
+  String get settingsTypeDelivered => '对方送到了';
+
+  @override
+  String get settingsTypeFlagged => '做不了 / 求新时间 / 想谈谈';
+
+  @override
+  String get settingsTypeDisposition => '对方的处置';
+
+  @override
+  String get settingsTypeComment => '留言';
+
+  @override
+  String get settingsTypeAward => '加分';
+
+  @override
+  String get settingsTypeRedemption => '兑换申请';
+
+  @override
+  String get settingsTypeDNote => '备忘提醒';
 }

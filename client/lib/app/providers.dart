@@ -15,6 +15,7 @@ import '../domain_client/repositories/record_repository.dart';
 import '../domain_client/repositories/rule_repository.dart';
 import '../domain_client/repositories/consequence_repository.dart';
 import '../domain_client/repositories/media_repository.dart';
+import '../domain_client/repositories/notification_repository.dart';
 import '../features/dynamic/application/dynamic_providers.dart';
 import '../platform/storage/auth_flow_store.dart';
 
@@ -64,6 +65,10 @@ final dynamicRepositoryProvider = Provider<DynamicRepository>(
 
 final mediaRepositoryProvider = Provider<MediaRepository>(
   (ref) => MediaRepository(ref.watch(apiClientProvider)),
+);
+
+final notificationRepositoryProvider = Provider<NotificationRepository>(
+  (ref) => NotificationRepository(ref.watch(apiClientProvider)),
 );
 
 final pointsRepositoryProvider = Provider<PointsRepository>(
