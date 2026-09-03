@@ -19,8 +19,13 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.http.ResponseEntity
 import com.dsapp.backend.identity.application.NotificationSettingsService
+import com.dsapp.backend.media.application.MediaAccessDenied
+import com.dsapp.backend.media.application.MediaTooLarge
+import com.dsapp.backend.media.application.NoSuchMedia
+import com.dsapp.backend.media.application.UnsupportedMediaType
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.multipart.MaxUploadSizeExceededException
 
 /** Stable machine-readable error codes. Backend state names never leak (Notion 05 §12). */
 data class ApiError(val code: String, val detail: String? = null)
@@ -122,6 +127,22 @@ class ApiErrorHandler {
         e: NotificationSettingsService.InvalidSettings,
     ): ResponseEntity<ApiError> =
         ResponseEntity.badRequest().body(ApiError("INVALID_NOTIFICATION_SETTINGS"))
+
+    @ExceptionHandler(UnsupportedMediaType::class)
+    fun onUnsupportedMediaType(e: UnsupportedMediaType): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(ApiError("UNSUPPORTED_MEDIA_TYPE"))
+
+    @ExceptionHandler(MediaTooLarge::class, MaxUploadSizeExceededException::class)
+    fun onMediaTooLarge(e: Exception): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(ApiError("MEDIA_TOO_LARGE"))
+
+    @ExceptionHandler(NoSuchMedia::class)
+    fun onNoSuchMedia(e: NoSuchMedia): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
+
+    @ExceptionHandler(MediaAccessDenied::class)
+    fun onMediaAccessDenied(e: MediaAccessDenied): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError("FORBIDDEN"))
 
     @ExceptionHandler(MissingIdempotencyKeyException::class)
     fun onMissingKey(e: MissingIdempotencyKeyException): ResponseEntity<ApiError> =

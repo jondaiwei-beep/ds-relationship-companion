@@ -1,5 +1,9 @@
 spring:
   application.name: dsapp-backend
+  servlet:
+    multipart:
+      max-file-size: 12MB
+      max-request-size: 12MB
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5433/dsapp}
     username: ${DB_USER:postgres}
@@ -38,3 +42,6 @@ dsapp:
   generation:
     enabled: ${GENERATION_ENABLED:true}
     poll-ms: ${GENERATION_POLL_MS:60000}
+  media:
+    dir: ${MEDIA_DIR:./media}
+    max-bytes: ${MEDIA_MAX_BYTES:10485760}

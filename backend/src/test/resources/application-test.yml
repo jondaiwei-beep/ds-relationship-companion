@@ -15,6 +15,10 @@ spring:
     locations: classpath:db/migration
   jooq:
     sql-dialect: POSTGRES
+  servlet:
+    multipart:
+      max-file-size: 12MB
+      max-request-size: 12MB
 
 # Background jobs are DISABLED in tests. Otherwise the scheduler races the
 # test: it can claim and send an outbox record between the arrange and assert
@@ -25,3 +29,6 @@ dsapp:
     enabled: false
   generation:
     enabled: false
+  media:
+    dir: ${MEDIA_DIR:./build/test-media}
+    max-bytes: 10485760
