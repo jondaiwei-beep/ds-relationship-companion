@@ -1431,5 +1431,269 @@
   "settingsDeviceLockUnavailable": "This device cannot lock the app.",
   "lockTitle": "Locked",
   "lockUnlock": "Unlock",
-  "lockReason": "Unlock to continue"
+  "lockReason": "Unlock to continue",
+  "recordTogether": "Together {days} days · {streak} in a row",
+  "@recordTogether": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "streak": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPrevMonth": "Previous month",
+  "recordNextMonth": "Next month",
+  "recordFactsTitle": "This week · this month",
+  "recordFactsWeek": "Week",
+  "recordFactsMonth": "Month",
+  "recordFactDelivered": "Delivered",
+  "recordFactLate": "Delivered late",
+  "recordFactFlagged": "Explained",
+  "recordFactMissed": "Missed",
+  "recordFactLetGo": "Let go",
+  "recordFactPraised": "Good",
+  "recordFactMadeUp": "Make it up",
+  "recordFactPunished": "Consequence",
+  "recordFactComments": "Comments",
+  "recordFactPointsEarned": "Points earned",
+  "recordFactPointsDeducted": "Points deducted",
+  "recordFactRedemptions": "Redemptions",
+  "recordCouldNotLoad": "The record could not be loaded.",
+  "recordDayCouldNotLoad": "This day could not be loaded.",
+  "recordDayEmpty": "Nothing was written on this day.",
+  "recordMe": "You",
+  "recordBack": "Back to the record",
+  "recordDelivered": "{name} delivered “{title}”",
+  "@recordDelivered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDeliveredLate": "{name} delivered “{title}”, late",
+  "@recordDeliveredLate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordCantDo": "{name} said “{title}” can't be done",
+  "@recordCantDo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordNewTime": "{name} asked for a new time on “{title}”",
+  "@recordNewTime": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDiscuss": "{name} wants to talk about “{title}”",
+  "@recordDiscuss": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordWithdrew": "{name} took back “{title}”",
+  "@recordWithdrew": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordMissed": "“{title}” was not delivered that day",
+  "@recordMissed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPausedEntry": "“{title}” was paused",
+  "@recordPausedEntry": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordSeen": "{name} saw “{title}”",
+  "@recordSeen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPraised": "{name}: good — “{title}”",
+  "@recordPraised": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordLetGo": "{name} let “{title}” go",
+  "@recordLetGo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordMakeUp": "{name}: make up “{title}” on {day}",
+  "@recordMakeUp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPunished": "{name}: consequence for “{title}” — {consequence}",
+  "@recordPunished": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "consequence": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDispositionCleared": "{name} took back the answer on “{title}”",
+  "@recordDispositionCleared": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPhotoRef": "Photo: {ref}",
+  "@recordPhotoRef": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "recordCommented": "{name} left a line",
+  "@recordCommented": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPointsEarnedAuto": "+{amount} points · {reason}",
+  "@recordPointsEarnedAuto": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPointsAdded": "{name} added {amount} points",
+  "@recordPointsAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPointsDeducted": "{name} deducted {amount} points",
+  "@recordPointsDeducted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordReasonTaskEarn": "task",
+  "recordReasonAward": "given",
+  "recordReasonDeduct": "deducted",
+  "recordReasonRedemption": "redeemed",
+  "recordReasonRefund": "refunded",
+  "recordRedeemed": "{name} redeemed “{title}”",
+  "@recordRedeemed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordActionDeliverLate": "Deliver now",
+  "recordActionCantDo": "Explain: can't do",
+  "recordComments": "A line on this day",
+  "recordCommentHint": "Either of you can leave one",
+  "recordCommentLabel": "Your line",
+  "recordDeleteCommentTitle": "Remove this line?",
+  "recordDelete": "Remove",
+  "recordPrivateNote": "Private note",
+  "recordPrivateNoteHint": "Only you can see this. Saved when you leave the field.",
+  "recordPrivateNoteSaved": "Saved",
+  "recordPrivateNoteFailed": "Not saved. Try again.",
+  "recordCommentFailed": "Not sent. Try again."
 }

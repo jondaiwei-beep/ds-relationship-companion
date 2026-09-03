@@ -11,6 +11,7 @@ import '../domain_client/repositories/settings_repository.dart';
 import '../domain_client/repositories/task_repository.dart';
 import '../domain_client/repositories/d_note_repository.dart';
 import '../domain_client/repositories/today_repository.dart';
+import '../domain_client/repositories/record_repository.dart';
 import '../platform/storage/auth_flow_store.dart';
 
 /// Backend base URL. Overridden at build time with --dart-define.
@@ -39,6 +40,10 @@ final inviteRepositoryProvider = Provider<InviteRepository>(
 
 final todayRepositoryProvider = Provider<TodayRepository>(
   (ref) => TodayRepository(ref.watch(apiClientProvider)),
+);
+
+final recordRepositoryProvider = Provider<RecordRepository>(
+  (ref) => RecordRepository(ref.watch(apiClientProvider)),
 );
 
 final taskRepositoryProvider = Provider<TaskRepository>(

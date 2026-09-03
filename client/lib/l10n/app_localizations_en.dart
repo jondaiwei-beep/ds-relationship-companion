@@ -2787,4 +2787,227 @@ class LEn extends L {
 
   @override
   String get lockReason => 'Unlock to continue';
+
+  @override
+  String recordTogether(int days, int streak) {
+    return 'Together $days days · $streak in a row';
+  }
+
+  @override
+  String get recordPrevMonth => 'Previous month';
+
+  @override
+  String get recordNextMonth => 'Next month';
+
+  @override
+  String get recordFactsTitle => 'This week · this month';
+
+  @override
+  String get recordFactsWeek => 'Week';
+
+  @override
+  String get recordFactsMonth => 'Month';
+
+  @override
+  String get recordFactDelivered => 'Delivered';
+
+  @override
+  String get recordFactLate => 'Delivered late';
+
+  @override
+  String get recordFactFlagged => 'Explained';
+
+  @override
+  String get recordFactMissed => 'Missed';
+
+  @override
+  String get recordFactLetGo => 'Let go';
+
+  @override
+  String get recordFactPraised => 'Good';
+
+  @override
+  String get recordFactMadeUp => 'Make it up';
+
+  @override
+  String get recordFactPunished => 'Consequence';
+
+  @override
+  String get recordFactComments => 'Comments';
+
+  @override
+  String get recordFactPointsEarned => 'Points earned';
+
+  @override
+  String get recordFactPointsDeducted => 'Points deducted';
+
+  @override
+  String get recordFactRedemptions => 'Redemptions';
+
+  @override
+  String get recordCouldNotLoad => 'The record could not be loaded.';
+
+  @override
+  String get recordDayCouldNotLoad => 'This day could not be loaded.';
+
+  @override
+  String get recordDayEmpty => 'Nothing was written on this day.';
+
+  @override
+  String get recordMe => 'You';
+
+  @override
+  String get recordBack => 'Back to the record';
+
+  @override
+  String recordDelivered(String name, String title) {
+    return '$name delivered “$title”';
+  }
+
+  @override
+  String recordDeliveredLate(String name, String title) {
+    return '$name delivered “$title”, late';
+  }
+
+  @override
+  String recordCantDo(String name, String title) {
+    return '$name said “$title” can\'t be done';
+  }
+
+  @override
+  String recordNewTime(String name, String title) {
+    return '$name asked for a new time on “$title”';
+  }
+
+  @override
+  String recordDiscuss(String name, String title) {
+    return '$name wants to talk about “$title”';
+  }
+
+  @override
+  String recordWithdrew(String name, String title) {
+    return '$name took back “$title”';
+  }
+
+  @override
+  String recordMissed(String title) {
+    return '“$title” was not delivered that day';
+  }
+
+  @override
+  String recordPausedEntry(String title) {
+    return '“$title” was paused';
+  }
+
+  @override
+  String recordSeen(String name, String title) {
+    return '$name saw “$title”';
+  }
+
+  @override
+  String recordPraised(String name, String title) {
+    return '$name: good — “$title”';
+  }
+
+  @override
+  String recordLetGo(String name, String title) {
+    return '$name let “$title” go';
+  }
+
+  @override
+  String recordMakeUp(String name, String title, String day) {
+    return '$name: make up “$title” on $day';
+  }
+
+  @override
+  String recordPunished(String name, String title, String consequence) {
+    return '$name: consequence for “$title” — $consequence';
+  }
+
+  @override
+  String recordDispositionCleared(String name, String title) {
+    return '$name took back the answer on “$title”';
+  }
+
+  @override
+  String recordPhotoRef(String ref) {
+    return 'Photo: $ref';
+  }
+
+  @override
+  String recordCommented(String name) {
+    return '$name left a line';
+  }
+
+  @override
+  String recordPointsEarnedAuto(int amount, String reason) {
+    return '+$amount points · $reason';
+  }
+
+  @override
+  String recordPointsAdded(String name, int amount) {
+    return '$name added $amount points';
+  }
+
+  @override
+  String recordPointsDeducted(String name, int amount) {
+    return '$name deducted $amount points';
+  }
+
+  @override
+  String get recordReasonTaskEarn => 'task';
+
+  @override
+  String get recordReasonAward => 'given';
+
+  @override
+  String get recordReasonDeduct => 'deducted';
+
+  @override
+  String get recordReasonRedemption => 'redeemed';
+
+  @override
+  String get recordReasonRefund => 'refunded';
+
+  @override
+  String recordRedeemed(String name, String title) {
+    return '$name redeemed “$title”';
+  }
+
+  @override
+  String get recordActionDeliverLate => 'Deliver now';
+
+  @override
+  String get recordActionCantDo => 'Explain: can\'t do';
+
+  @override
+  String get recordComments => 'A line on this day';
+
+  @override
+  String get recordCommentHint => 'Either of you can leave one';
+
+  @override
+  String get recordCommentLabel => 'Your line';
+
+  @override
+  String get recordDeleteCommentTitle => 'Remove this line?';
+
+  @override
+  String get recordDelete => 'Remove';
+
+  @override
+  String get recordPrivateNote => 'Private note';
+
+  @override
+  String get recordPrivateNoteHint =>
+      'Only you can see this. Saved when you leave the field.';
+
+  @override
+  String get recordPrivateNoteSaved => 'Saved';
+
+  @override
+  String get recordPrivateNoteFailed => 'Not saved. Try again.';
+
+  @override
+  String get recordCommentFailed => 'Not sent. Try again.';
 }

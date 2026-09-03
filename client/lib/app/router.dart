@@ -21,6 +21,7 @@ import '../features/invite/presentation/join_screen.dart';
 import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../features/record/presentation/record_screen.dart';
+import '../features/record/presentation/day_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
 import 'session_resolving.dart';
@@ -55,6 +56,14 @@ abstract final class Routes {
   static const dynamicToday = '/dynamics/:id/today';
   static const dynamicRules = '/dynamics/:id/rules';
   static const dynamicRecord = '/dynamics/:id/record';
+
+  /// One day of the record. Also where a `/record/:day` notification lands
+  /// once the Dynamic is known.
+  static const dynamicRecordDay = '/dynamics/:id/record/:day';
+
+  /// The deep link a notification carries has no Dynamic in it; this resolves
+  /// one the way `/today` does and goes on to the day.
+  static const recordDay = '/record/:day';
   static const dynamicExplore = '/dynamics/:id/explore';
 
   /// Where a request waits while the session is still resolving.
@@ -219,7 +228,33 @@ GoRouter createRouter(Ref ref) {
           final dynamicId = s.pathParameters['id']!;
           return RecordScreen(
             dynamicId: dynamicId,
+            onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
+            onOpenDay: (day) => context.go('/dynamics/$dynamicId/record/$day'),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.dynamicRecordDay,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          final day = s.pathParameters['day']!;
+          return DayScreen(
+            dynamicId: dynamicId,
+            day: day,
+            onSignIn: () => context.go(Routes.signIn),
+            onBack: () => context.go(_navPath(dynamicId, NavSurface.record)),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.recordDay,
+        builder: (context, s) {
+          final day = s.pathParameters['day']!;
+          return HomeResolver(
+            onDynamic: (id) => context.go('/dynamics/$id/record/$day'),
+            onNoDynamic: () => context.go(Routes.start),
+            onSignIn: () => context.go(Routes.signIn),
           );
         },
       ),

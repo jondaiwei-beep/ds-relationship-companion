@@ -65,6 +65,13 @@
 - 未新增 V19：V18 已含 `day_comments`/`private_notes` 全部所需字段与索引。
 - 验收：`RecordIT` 覆盖月 cell 算术、这一天时间线顺序与隐私（B 的私人备注/DNote 对 A 不可见）、双方留言与只删自己、facts 纯计数、streak（let_go/paused 不断、undisposed missed 断）、daysTogether 只涨、`missed→delivered_late` 补记录、`day_comment` outbox 目标。
 
+客户端 ✅ 2026-09-03（`client/lib/features/record/`，`domain_client/models/record.dart` + `record_repository.dart`；322 测试通过，`flutter analyze` 0）
+- 记录 tab：头部「在一起 N 天 · 连续 M 天」（D-27）；周一起始月格，今天格以 `TodayView.day` 为准（不变量 7，不读设备时钟），格内 `delivered/due`、未处置点、留言角标；左右滑/箭头换月，未到的月不可进，未到的天不可点；底部 facts 表「项 | 本周 | 本月」纯计数，本周＝含关系日今天的周（周一–周日），本月＝当前显示的月。
+- 这一天 `/dynamics/:id/record/:day`：时间线按时间一列，钟点用 Dynamic 时区；人名由 `TodayView.side` + `partnerDisplayName` + JWT `sub` 推得（历史条目无 by_user_id）；留言只在时间线出现一次，底部只放输入框；自己的留言长按删；私人备注失焦即 PUT，清空即删。
+- 历史可补：每个 occurrence 的当前态由该天时间线最后一条 outcome/disposition 推出（DayView 不带），动作挂在该 occurrence 最后一行：s 对 `missed` 见「补交付 / 说明做不了」（LineSheet 可选一句，不再问凭证类型）；D 对任何非 open/paused 且未处置的 occurrence 见五个词。写入走 Phase 1 的 `setOutcome/setDisposition`，成功后失效 day/month/facts/summary/today 五个 provider。
+- 通知深链 `/record/{day}` 经 `HomeResolver` 解出 Dynamic 再跳；`ApiClient` 新增 `put`。补上的日期选择从今天关系日起。
+- 验收：`calendar_math_test`（周一起始、跨年）、`record_screen_test`（月格/标记/换月/点开）、`day_screen_test`（时间线顺序与时区、留言增删且只删自己、私人备注保存与清空、s 补交付/说明做不了、D 五词与不过期、409 回退）、`navigation_routing_test` 深链落到这一天。
+
 ## Phase 3 · 规矩 + 分（1–2 周）
 后端 ✅ 2026-09-03（`backend/…/rules/`、`points/`、`today/`；`RuleIT`/`RedemptionIT`/`AwayIT`/`ConsequenceLifecycleIT` 覆盖；203 测试通过）
 - V19：新表 `rules`（title/body/group/status/position，group CHECK 六选一）；`reward_redemptions` 加 `status`(requested/approved/denied/fulfilled)/`decided_by`/`decided_at`/`note`/`point_entry_id`；`rewards.cost` 改可空（NULL = 「D 决定」）；`dynamics.d_away_until`。`consequences` 生命周期表 V18 已建，本阶段只加流转端点，未改表。

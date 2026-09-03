@@ -150,6 +150,14 @@ class ApiClient {
     await _dio.delete<void>(path, options: _authed);
   }
 
+  /// PUT a whole value. Idempotent by nature — sending the same body twice
+  /// leaves the same state — so no key is carried.
+  Future<Map<String, dynamic>> put(String path, {Object? body}) async {
+    _requireSession(path);
+    final r = await _dio.put<Map<String, dynamic>>(path, data: body, options: _authed);
+    return r.data ?? const {};
+  }
+
   /// POST a command. [idempotencyKey] must be stable across retries of the
   /// SAME user action, and different for a new one.
   Future<Map<String, dynamic>> post(

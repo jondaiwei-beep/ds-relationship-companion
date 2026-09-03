@@ -2640,4 +2640,226 @@ class LZh extends L {
 
   @override
   String get lockReason => '解锁后继续';
+
+  @override
+  String recordTogether(int days, int streak) {
+    return '在一起 $days 天 · 连续 $streak 天';
+  }
+
+  @override
+  String get recordPrevMonth => '上个月';
+
+  @override
+  String get recordNextMonth => '下个月';
+
+  @override
+  String get recordFactsTitle => '这周 · 这月';
+
+  @override
+  String get recordFactsWeek => '本周';
+
+  @override
+  String get recordFactsMonth => '本月';
+
+  @override
+  String get recordFactDelivered => '交付';
+
+  @override
+  String get recordFactLate => '晚交';
+
+  @override
+  String get recordFactFlagged => '说明';
+
+  @override
+  String get recordFactMissed => '没交';
+
+  @override
+  String get recordFactLetGo => '算了';
+
+  @override
+  String get recordFactPraised => '很好';
+
+  @override
+  String get recordFactMadeUp => '补上';
+
+  @override
+  String get recordFactPunished => '罚';
+
+  @override
+  String get recordFactComments => '留言';
+
+  @override
+  String get recordFactPointsEarned => '得分';
+
+  @override
+  String get recordFactPointsDeducted => '扣分';
+
+  @override
+  String get recordFactRedemptions => '兑换';
+
+  @override
+  String get recordCouldNotLoad => '记录没能读到。';
+
+  @override
+  String get recordDayCouldNotLoad => '这一天没能读到。';
+
+  @override
+  String get recordDayEmpty => '这一天没写下什么。';
+
+  @override
+  String get recordMe => '你';
+
+  @override
+  String get recordBack => '回到记录';
+
+  @override
+  String recordDelivered(String name, String title) {
+    return '$name 交付了「$title」';
+  }
+
+  @override
+  String recordDeliveredLate(String name, String title) {
+    return '$name 交付了「$title」，晚了';
+  }
+
+  @override
+  String recordCantDo(String name, String title) {
+    return '$name 说「$title」做不了';
+  }
+
+  @override
+  String recordNewTime(String name, String title) {
+    return '$name 想给「$title」换个时间';
+  }
+
+  @override
+  String recordDiscuss(String name, String title) {
+    return '$name 想谈谈「$title」';
+  }
+
+  @override
+  String recordWithdrew(String name, String title) {
+    return '$name 撤回了「$title」';
+  }
+
+  @override
+  String recordMissed(String title) {
+    return '「$title」当天没交';
+  }
+
+  @override
+  String recordPausedEntry(String title) {
+    return '「$title」停了';
+  }
+
+  @override
+  String recordSeen(String name, String title) {
+    return '$name 看到了「$title」';
+  }
+
+  @override
+  String recordPraised(String name, String title) {
+    return '$name：很好——「$title」';
+  }
+
+  @override
+  String recordLetGo(String name, String title) {
+    return '$name 算了：「$title」';
+  }
+
+  @override
+  String recordMakeUp(String name, String title, String day) {
+    return '$name：「$title」$day 补上';
+  }
+
+  @override
+  String recordPunished(String name, String title, String consequence) {
+    return '$name：罚「$title」——$consequence';
+  }
+
+  @override
+  String recordDispositionCleared(String name, String title) {
+    return '$name 收回了对「$title」的处置';
+  }
+
+  @override
+  String recordPhotoRef(String ref) {
+    return '照片：$ref';
+  }
+
+  @override
+  String recordCommented(String name) {
+    return '$name 留了一句';
+  }
+
+  @override
+  String recordPointsEarnedAuto(int amount, String reason) {
+    return '+$amount 分 · $reason';
+  }
+
+  @override
+  String recordPointsAdded(String name, int amount) {
+    return '$name 加了 $amount 分';
+  }
+
+  @override
+  String recordPointsDeducted(String name, int amount) {
+    return '$name 扣了 $amount 分';
+  }
+
+  @override
+  String get recordReasonTaskEarn => '任务';
+
+  @override
+  String get recordReasonAward => '加分';
+
+  @override
+  String get recordReasonDeduct => '扣分';
+
+  @override
+  String get recordReasonRedemption => '兑换';
+
+  @override
+  String get recordReasonRefund => '退回';
+
+  @override
+  String recordRedeemed(String name, String title) {
+    return '$name 兑换了「$title」';
+  }
+
+  @override
+  String get recordActionDeliverLate => '补交付';
+
+  @override
+  String get recordActionCantDo => '说明做不了';
+
+  @override
+  String get recordComments => '给这一天留一句';
+
+  @override
+  String get recordCommentHint => '两个人都可以写';
+
+  @override
+  String get recordCommentLabel => '你的一句';
+
+  @override
+  String get recordDeleteCommentTitle => '删掉这句？';
+
+  @override
+  String get recordDelete => '删掉';
+
+  @override
+  String get recordPrivateNote => '私人备注';
+
+  @override
+  String get recordPrivateNoteHint => '只有你看得到。离开输入框时保存。';
+
+  @override
+  String get recordPrivateNoteSaved => '已保存';
+
+  @override
+  String get recordPrivateNoteFailed => '没保存上，再试一次。';
+
+  @override
+  String get recordCommentFailed => '没送出去，再试一次。';
 }

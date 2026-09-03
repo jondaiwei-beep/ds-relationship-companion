@@ -790,5 +790,269 @@
   "settingsDeviceLockUnavailable": "这台设备不支持设备锁。",
   "lockTitle": "已锁定",
   "lockUnlock": "解锁",
-  "lockReason": "解锁后继续"
+  "lockReason": "解锁后继续",
+  "recordTogether": "在一起 {days} 天 · 连续 {streak} 天",
+  "@recordTogether": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "streak": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPrevMonth": "上个月",
+  "recordNextMonth": "下个月",
+  "recordFactsTitle": "这周 · 这月",
+  "recordFactsWeek": "本周",
+  "recordFactsMonth": "本月",
+  "recordFactDelivered": "交付",
+  "recordFactLate": "晚交",
+  "recordFactFlagged": "说明",
+  "recordFactMissed": "没交",
+  "recordFactLetGo": "算了",
+  "recordFactPraised": "很好",
+  "recordFactMadeUp": "补上",
+  "recordFactPunished": "罚",
+  "recordFactComments": "留言",
+  "recordFactPointsEarned": "得分",
+  "recordFactPointsDeducted": "扣分",
+  "recordFactRedemptions": "兑换",
+  "recordCouldNotLoad": "记录没能读到。",
+  "recordDayCouldNotLoad": "这一天没能读到。",
+  "recordDayEmpty": "这一天没写下什么。",
+  "recordMe": "你",
+  "recordBack": "回到记录",
+  "recordDelivered": "{name} 交付了「{title}」",
+  "@recordDelivered": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDeliveredLate": "{name} 交付了「{title}」，晚了",
+  "@recordDeliveredLate": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordCantDo": "{name} 说「{title}」做不了",
+  "@recordCantDo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordNewTime": "{name} 想给「{title}」换个时间",
+  "@recordNewTime": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDiscuss": "{name} 想谈谈「{title}」",
+  "@recordDiscuss": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordWithdrew": "{name} 撤回了「{title}」",
+  "@recordWithdrew": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordMissed": "「{title}」当天没交",
+  "@recordMissed": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPausedEntry": "「{title}」停了",
+  "@recordPausedEntry": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordSeen": "{name} 看到了「{title}」",
+  "@recordSeen": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPraised": "{name}：很好——「{title}」",
+  "@recordPraised": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordLetGo": "{name} 算了：「{title}」",
+  "@recordLetGo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordMakeUp": "{name}：「{title}」{day} 补上",
+  "@recordMakeUp": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPunished": "{name}：罚「{title}」——{consequence}",
+  "@recordPunished": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      },
+      "consequence": {
+        "type": "String"
+      }
+    }
+  },
+  "recordDispositionCleared": "{name} 收回了对「{title}」的处置",
+  "@recordDispositionCleared": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPhotoRef": "照片：{ref}",
+  "@recordPhotoRef": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "recordCommented": "{name} 留了一句",
+  "@recordCommented": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPointsEarnedAuto": "+{amount} 分 · {reason}",
+  "@recordPointsEarnedAuto": {
+    "placeholders": {
+      "amount": {
+        "type": "int"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "recordPointsAdded": "{name} 加了 {amount} 分",
+  "@recordPointsAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordPointsDeducted": "{name} 扣了 {amount} 分",
+  "@recordPointsDeducted": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "int"
+      }
+    }
+  },
+  "recordReasonTaskEarn": "任务",
+  "recordReasonAward": "加分",
+  "recordReasonDeduct": "扣分",
+  "recordReasonRedemption": "兑换",
+  "recordReasonRefund": "退回",
+  "recordRedeemed": "{name} 兑换了「{title}」",
+  "@recordRedeemed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "recordActionDeliverLate": "补交付",
+  "recordActionCantDo": "说明做不了",
+  "recordComments": "给这一天留一句",
+  "recordCommentHint": "两个人都可以写",
+  "recordCommentLabel": "你的一句",
+  "recordDeleteCommentTitle": "删掉这句？",
+  "recordDelete": "删掉",
+  "recordPrivateNote": "私人备注",
+  "recordPrivateNoteHint": "只有你看得到。离开输入框时保存。",
+  "recordPrivateNoteSaved": "已保存",
+  "recordPrivateNoteFailed": "没保存上，再试一次。",
+  "recordCommentFailed": "没送出去，再试一次。"
 }

@@ -4842,6 +4842,366 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Unlock to continue'**
   String get lockReason;
+
+  /// No description provided for @recordTogether.
+  ///
+  /// In en, this message translates to:
+  /// **'Together {days} days · {streak} in a row'**
+  String recordTogether(int days, int streak);
+
+  /// No description provided for @recordPrevMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous month'**
+  String get recordPrevMonth;
+
+  /// No description provided for @recordNextMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Next month'**
+  String get recordNextMonth;
+
+  /// No description provided for @recordFactsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This week · this month'**
+  String get recordFactsTitle;
+
+  /// No description provided for @recordFactsWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get recordFactsWeek;
+
+  /// No description provided for @recordFactsMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month'**
+  String get recordFactsMonth;
+
+  /// No description provided for @recordFactDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get recordFactDelivered;
+
+  /// No description provided for @recordFactLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered late'**
+  String get recordFactLate;
+
+  /// No description provided for @recordFactFlagged.
+  ///
+  /// In en, this message translates to:
+  /// **'Explained'**
+  String get recordFactFlagged;
+
+  /// No description provided for @recordFactMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get recordFactMissed;
+
+  /// No description provided for @recordFactLetGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Let go'**
+  String get recordFactLetGo;
+
+  /// No description provided for @recordFactPraised.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get recordFactPraised;
+
+  /// No description provided for @recordFactMadeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Make it up'**
+  String get recordFactMadeUp;
+
+  /// No description provided for @recordFactPunished.
+  ///
+  /// In en, this message translates to:
+  /// **'Consequence'**
+  String get recordFactPunished;
+
+  /// No description provided for @recordFactComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get recordFactComments;
+
+  /// No description provided for @recordFactPointsEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Points earned'**
+  String get recordFactPointsEarned;
+
+  /// No description provided for @recordFactPointsDeducted.
+  ///
+  /// In en, this message translates to:
+  /// **'Points deducted'**
+  String get recordFactPointsDeducted;
+
+  /// No description provided for @recordFactRedemptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Redemptions'**
+  String get recordFactRedemptions;
+
+  /// No description provided for @recordCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'The record could not be loaded.'**
+  String get recordCouldNotLoad;
+
+  /// No description provided for @recordDayCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'This day could not be loaded.'**
+  String get recordDayCouldNotLoad;
+
+  /// No description provided for @recordDayEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was written on this day.'**
+  String get recordDayEmpty;
+
+  /// No description provided for @recordMe.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get recordMe;
+
+  /// No description provided for @recordBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to the record'**
+  String get recordBack;
+
+  /// No description provided for @recordDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} delivered “{title}”'**
+  String recordDelivered(String name, String title);
+
+  /// No description provided for @recordDeliveredLate.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} delivered “{title}”, late'**
+  String recordDeliveredLate(String name, String title);
+
+  /// No description provided for @recordCantDo.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} said “{title}” can\'t be done'**
+  String recordCantDo(String name, String title);
+
+  /// No description provided for @recordNewTime.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} asked for a new time on “{title}”'**
+  String recordNewTime(String name, String title);
+
+  /// No description provided for @recordDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} wants to talk about “{title}”'**
+  String recordDiscuss(String name, String title);
+
+  /// No description provided for @recordWithdrew.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} took back “{title}”'**
+  String recordWithdrew(String name, String title);
+
+  /// No description provided for @recordMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” was not delivered that day'**
+  String recordMissed(String title);
+
+  /// No description provided for @recordPausedEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'“{title}” was paused'**
+  String recordPausedEntry(String title);
+
+  /// No description provided for @recordSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} saw “{title}”'**
+  String recordSeen(String name, String title);
+
+  /// No description provided for @recordPraised.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: good — “{title}”'**
+  String recordPraised(String name, String title);
+
+  /// No description provided for @recordLetGo.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} let “{title}” go'**
+  String recordLetGo(String name, String title);
+
+  /// No description provided for @recordMakeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: make up “{title}” on {day}'**
+  String recordMakeUp(String name, String title, String day);
+
+  /// No description provided for @recordPunished.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}: consequence for “{title}” — {consequence}'**
+  String recordPunished(String name, String title, String consequence);
+
+  /// No description provided for @recordDispositionCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} took back the answer on “{title}”'**
+  String recordDispositionCleared(String name, String title);
+
+  /// No description provided for @recordPhotoRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo: {ref}'**
+  String recordPhotoRef(String ref);
+
+  /// No description provided for @recordCommented.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} left a line'**
+  String recordCommented(String name);
+
+  /// No description provided for @recordPointsEarnedAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'+{amount} points · {reason}'**
+  String recordPointsEarnedAuto(int amount, String reason);
+
+  /// No description provided for @recordPointsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added {amount} points'**
+  String recordPointsAdded(String name, int amount);
+
+  /// No description provided for @recordPointsDeducted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} deducted {amount} points'**
+  String recordPointsDeducted(String name, int amount);
+
+  /// No description provided for @recordReasonTaskEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'task'**
+  String get recordReasonTaskEarn;
+
+  /// No description provided for @recordReasonAward.
+  ///
+  /// In en, this message translates to:
+  /// **'given'**
+  String get recordReasonAward;
+
+  /// No description provided for @recordReasonDeduct.
+  ///
+  /// In en, this message translates to:
+  /// **'deducted'**
+  String get recordReasonDeduct;
+
+  /// No description provided for @recordReasonRedemption.
+  ///
+  /// In en, this message translates to:
+  /// **'redeemed'**
+  String get recordReasonRedemption;
+
+  /// No description provided for @recordReasonRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'refunded'**
+  String get recordReasonRefund;
+
+  /// No description provided for @recordRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} redeemed “{title}”'**
+  String recordRedeemed(String name, String title);
+
+  /// No description provided for @recordActionDeliverLate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deliver now'**
+  String get recordActionDeliverLate;
+
+  /// No description provided for @recordActionCantDo.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain: can\'t do'**
+  String get recordActionCantDo;
+
+  /// No description provided for @recordComments.
+  ///
+  /// In en, this message translates to:
+  /// **'A line on this day'**
+  String get recordComments;
+
+  /// No description provided for @recordCommentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Either of you can leave one'**
+  String get recordCommentHint;
+
+  /// No description provided for @recordCommentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your line'**
+  String get recordCommentLabel;
+
+  /// No description provided for @recordDeleteCommentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this line?'**
+  String get recordDeleteCommentTitle;
+
+  /// No description provided for @recordDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get recordDelete;
+
+  /// No description provided for @recordPrivateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Private note'**
+  String get recordPrivateNote;
+
+  /// No description provided for @recordPrivateNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you can see this. Saved when you leave the field.'**
+  String get recordPrivateNoteHint;
+
+  /// No description provided for @recordPrivateNoteSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get recordPrivateNoteSaved;
+
+  /// No description provided for @recordPrivateNoteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved. Try again.'**
+  String get recordPrivateNoteFailed;
+
+  /// No description provided for @recordCommentFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sent. Try again.'**
+  String get recordCommentFailed;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

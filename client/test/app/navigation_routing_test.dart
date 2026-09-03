@@ -4,11 +4,13 @@ import 'package:dsapp/app/router.dart';
 import 'package:dsapp/app/shell/bottom_navigation.dart';
 import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
+import 'package:dsapp/domain_client/models/dynamic_summary.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/models/explore_view.dart';
 import 'package:dsapp/domain_client/models/points.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
+import 'package:dsapp/features/record/presentation/day_screen.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
@@ -18,6 +20,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../support/record_fakes.dart';
 import '../support/today_fakes.dart';
 
 /// The bar used to ignore every tap, on the theory that silence beat a
@@ -37,6 +40,7 @@ void main() {
         todayRepositoryProvider.overrideWithValue(FakeTodayRepository(view: sView())),
         dynamicRepositoryProvider.overrideWithValue(_StubDynamic()),
         exploreRepositoryProvider.overrideWithValue(_StubExplore()),
+        recordRepositoryProvider.overrideWithValue(FakeRecordRepository()),
         // Points reads three things on entry; none of them may hit the wire.
         pointsProvider.overrideWith(
           (ref, id) async => const PointsSummary(balance: 0, entries: []),
@@ -91,6 +95,14 @@ void main() {
       await tester.pumpAndSettle();
       expect(where(router), path, reason: '$label must go somewhere');
     }
+  });
+
+  testWidgets('a notification about a day lands on that day', (tester) async {
+    // The push payload names the day only; the Dynamic is the one the person
+    // is in, resolved on the way.
+    final router = await pump(tester, '/record/2026-09-03');
+    expect(where(router), '/dynamics/d-1/record/2026-09-03');
+    expect(find.byType(DayScreen), findsOneWidget);
   });
 
   testWidgets('the way back to Today is always one tap', (tester) async {
@@ -186,6 +198,11 @@ class _StubDynamic implements DynamicRepository {
     structureLevel: 'STEADY',
     referenceTimezone: 'Asia/Shanghai',
   );
+
+  @override
+  Future<List<DynamicSummary>> mine() async => const [
+        DynamicSummary(dynamicId: 'd-1', state: 'ACTIVE', roleContext: 'S'),
+      ];
 
   @override
   dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
