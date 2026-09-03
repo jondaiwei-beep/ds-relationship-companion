@@ -1259,6 +1259,15 @@ class LEn extends L {
       'Paste a photo reference for now; the camera comes in a later build.';
 
   @override
+  String get sTodayProofCamera => 'Take a photo';
+
+  @override
+  String get sTodayProofGallery => 'From the gallery';
+
+  @override
+  String get sTodayPhotoFailed => 'The photo did not upload; nothing changed.';
+
+  @override
   String get sTodayPickTime => 'Pick a time';
 
   @override

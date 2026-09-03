@@ -230,9 +230,8 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
       note: occ.outcomeNote == null || occ.outcomeNote!.isEmpty
           ? null
           : l.dTodaySaidNote(_partner, occ.outcomeNote!),
-      proof: occ.proofKind == 'photo' && occ.proofRef != null
-          ? l.dTodayProofPhoto(occ.proofRef!)
-          : (occ.proofKind == 'text' ? occ.proofRef : null),
+      proof: occ.proofKind == 'text' ? occ.proofRef : null,
+      photoId: occ.proofKind == 'photo' ? occ.proofRef : null,
       error: _errors[occ.id],
       expanded: _expanded == occ.id,
       actions: _actionsFor(occ, l),

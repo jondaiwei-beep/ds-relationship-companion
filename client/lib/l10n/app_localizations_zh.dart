@@ -1161,6 +1161,15 @@ class LZh extends L {
   String get sTodayPhotoHint => '先填一个照片引用；拍照下个版本加。';
 
   @override
+  String get sTodayProofCamera => '拍照';
+
+  @override
+  String get sTodayProofGallery => '从相册选';
+
+  @override
+  String get sTodayPhotoFailed => '照片没传上去，什么都没有改。';
+
+  @override
   String get sTodayPickTime => '选时间';
 
   @override

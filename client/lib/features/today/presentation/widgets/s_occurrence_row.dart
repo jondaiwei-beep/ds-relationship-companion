@@ -1,6 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/shell/auth_image.dart';
 import 'word_button.dart';
 import 'today_layout.dart';
 
@@ -17,6 +18,7 @@ class SOccurrenceRow extends StatelessWidget {
     this.status,
     this.note,
     this.error,
+    this.photoId,
     this.muted = false,
     this.expanded = false,
     this.actions = const [],
@@ -38,6 +40,9 @@ class SOccurrenceRow extends StatelessWidget {
 
   /// Why the last attempt did not go through.
   final String? error;
+
+  /// The proof photo already sent, when there is one.
+  final String? photoId;
 
   final bool muted;
   final bool expanded;
@@ -90,6 +95,13 @@ class SOccurrenceRow extends StatelessWidget {
               Text(
                 note!,
                 style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+              ),
+            ],
+            if (photoId != null) ...[
+              const SizedBox(height: DsSpacing.space3),
+              AuthImage(
+                mediaId: photoId!,
+                onTap: () => showProofPhoto(context, photoId!),
               ),
             ],
             if (status != null) ...[

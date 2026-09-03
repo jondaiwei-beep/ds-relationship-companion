@@ -1,6 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/shell/auth_image.dart';
 import 'word_button.dart';
 import 'today_layout.dart';
 
@@ -14,26 +15,25 @@ class DNeedsMeRow extends StatelessWidget {
     this.day,
     this.note,
     this.proof,
+    this.photoId,
     this.error,
     required this.expanded,
     required this.actions,
     required this.onTap,
   });
-
   final String title;
-
   /// The s's outcome in words, with its time.
   final String said;
-
   /// Shown when the occurrence is not from today.
   final String? day;
   final String? note;
   final String? proof;
+  /// The proof photo the s sent, when there is one.
+  final String? photoId;
   final String? error;
   final bool expanded;
   final List<(String, VoidCallback)> actions;
   final VoidCallback onTap;
-
   @override
   Widget build(BuildContext context) {
     final secondary = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary);
@@ -68,6 +68,13 @@ class DNeedsMeRow extends StatelessWidget {
             if (note != null) ...[
               const SizedBox(height: DsSpacing.space1),
               Text(note!, style: secondary),
+            ],
+            if (photoId != null) ...[
+              const SizedBox(height: DsSpacing.space3),
+              AuthImage(
+                mediaId: photoId!,
+                onTap: () => showProofPhoto(context, photoId!),
+              ),
             ],
             if (proof != null) ...[
               const SizedBox(height: DsSpacing.space1),

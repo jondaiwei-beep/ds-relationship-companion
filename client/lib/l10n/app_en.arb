@@ -552,6 +552,9 @@
   "sTodayWriteLine": "Write a line",
   "sTodayPhotoRef": "Photo",
   "sTodayPhotoHint": "Paste a photo reference for now; the camera comes in a later build.",
+  "sTodayProofCamera": "Take a photo",
+  "sTodayProofGallery": "From the gallery",
+  "sTodayPhotoFailed": "The photo did not upload; nothing changed.",
   "sTodayPickTime": "Pick a time",
   "sTodayConflictPaused": "{name} paused this.",
   "@sTodayConflictPaused": {

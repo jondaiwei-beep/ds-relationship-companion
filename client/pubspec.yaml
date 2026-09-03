@@ -58,6 +58,7 @@ dependencies:
   flutter_timezone: ^5.1.0
   app_links: ^7.2.1
   share_plus: ^13.3.0
+  image_picker: ^1.2.3
 
 dev_dependencies:
   flutter_test:

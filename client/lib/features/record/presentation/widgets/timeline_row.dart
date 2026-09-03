@@ -1,6 +1,7 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/shell/auth_image.dart';
 import '../../../today/presentation/widgets/today_layout.dart';
 import '../../../today/presentation/widgets/word_button.dart';
 
@@ -12,6 +13,7 @@ class TimelineRow extends StatelessWidget {
     required this.clock,
     required this.text,
     this.sub,
+    this.photoId,
     this.error,
     this.actions = const [],
     this.onLongPress,
@@ -22,6 +24,8 @@ class TimelineRow extends StatelessWidget {
 
   /// A note, a proof, a consequence — the words that went with it.
   final String? sub;
+  /// The proof photo that went with a delivery.
+  final String? photoId;
   final String? error;
   final List<(String, VoidCallback)> actions;
   final VoidCallback? onLongPress;
@@ -63,6 +67,13 @@ class TimelineRow extends StatelessWidget {
                       style: DsTextStyles.bodySecondary.copyWith(
                         color: DsColors.textOnRitualSecondary,
                       ),
+                    ),
+                  ],
+                  if (photoId != null) ...[
+                    const SizedBox(height: DsSpacing.space2),
+                    AuthImage(
+                      mediaId: photoId!,
+                      onTap: () => showProofPhoto(context, photoId!),
                     ),
                   ],
                   if (error != null) ...[

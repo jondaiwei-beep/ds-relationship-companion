@@ -2275,6 +2275,24 @@ abstract class L {
   /// **'Paste a photo reference for now; the camera comes in a later build.'**
   String get sTodayPhotoHint;
 
+  /// No description provided for @sTodayProofCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get sTodayProofCamera;
+
+  /// No description provided for @sTodayProofGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'From the gallery'**
+  String get sTodayProofGallery;
+
+  /// No description provided for @sTodayPhotoFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo did not upload; nothing changed.'**
+  String get sTodayPhotoFailed;
+
   /// No description provided for @sTodayPickTime.
   ///
   /// In en, this message translates to:

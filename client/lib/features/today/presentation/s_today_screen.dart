@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
+import '../../../platform/media/proof_picker.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../../../domain_client/repositories/today_repository.dart';
@@ -112,9 +113,12 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
     }
   }
 
-  /// Proof, when the task asks for it. Photo capture is a later build; for now
-  /// the reference is a line the s types.
-  Future<(String?, String?)?> _proofFor(String proof, String title) async {
+  /// Proof, when the task asks for it.
+  ///
+  /// `photo` offers the camera or the gallery; the picture is uploaded first
+  /// and the delivery carries its media id. `text` needs a line, sent as the
+  /// note. `any` lets the s choose either. Null means they backed out.
+  Future<_Proof?> _proofFor(String proof, String title) async {
     final l = L.of(context);
     switch (proof) {
       case 'text':
@@ -124,19 +128,33 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
           label: l.sTodayWriteLine,
           required: true,
         );
-        return line == null ? null : ('text', line);
+        return line == null ? null : _Proof.text(line);
       case 'photo':
-        final ref = await showLineSheet(
+      case 'any':
+        final chosen = await showChoiceSheet<_ProofChoice>(
           context,
           title: title,
-          label: l.sTodayPhotoRef,
-          hint: l.sTodayPhotoHint,
-          required: true,
+          choices: [
+            (l.sTodayProofCamera, _ProofChoice.camera),
+            (l.sTodayProofGallery, _ProofChoice.gallery),
+            if (proof == 'any') (l.sTodayWriteLine, _ProofChoice.text),
+          ],
         );
-        return ref == null ? null : ('photo', ref);
+        if (chosen == null || !mounted) return null;
+        if (chosen == _ProofChoice.text) return _proofFor('text', title);
+        return _photoProof(
+          chosen == _ProofChoice.camera ? ProofSource.camera : ProofSource.gallery,
+        );
       default:
-        return (null, null);
+        return const _Proof.none();
     }
+  }
+
+  Future<_Proof?> _photoProof(ProofSource source) async {
+    final bytes = await ref.read(proofPickerProvider).pick(source);
+    if (bytes == null || !mounted) return null;
+    final upload = await ref.read(mediaRepositoryProvider).upload(widget.dynamicId, bytes);
+    return _Proof.photo(upload.id);
   }
 
   Future<void> _deliver(OccurrenceView occ) async {
@@ -145,21 +163,36 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
       value = await showMeasureSheet(context, title: occ.title, unit: occ.unit);
       if (value == null || !mounted) return;
     }
-    final proof = await _proofFor(occ.proof, occ.title);
+    final _Proof? proof;
+    try {
+      proof = await _proofFor(occ.proof, occ.title);
+    } on Object {
+      if (!mounted) return;
+      setState(() => _errors[occ.id] = L.of(context).sTodayPhotoFailed);
+      return;
+    }
     if (proof == null || !mounted) return;
     await _say(
       occ,
       OutcomeChange(
         outcome: Outcome.delivered,
-        proofKind: proof.$1,
-        proofRef: proof.$2,
+        note: proof.note,
+        proofKind: proof.kind,
+        proofRef: proof.ref,
         value: value,
       ),
     );
   }
 
   Future<void> _deliverOpen(OpenTaskView task) async {
-    final proof = await _proofFor(task.proof, task.title);
+    final _Proof? proof;
+    try {
+      proof = await _proofFor(task.proof, task.title);
+    } on Object {
+      if (!mounted) return;
+      setState(() => _errors[task.id] = L.of(context).sTodayPhotoFailed);
+      return;
+    }
     if (proof == null || !mounted) return;
     setState(() {
       _openDelivered.add(task.id);
@@ -169,8 +202,9 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
       await ref.read(taskRepositoryProvider).deliverOpen(
             widget.dynamicId,
             task.id,
-            proofKind: proof.$1,
-            proofRef: proof.$2,
+            note: proof.note,
+            proofKind: proof.kind,
+            proofRef: proof.ref,
             idempotencyKey: ApiClient.newIdempotencyKey(),
           );
       _reload();
@@ -326,6 +360,7 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
           ? null
           : l.sTodayYourNote(occ.outcomeNote!),
       error: _errors[occ.id],
+      photoId: occ.proofKind == 'photo' && outcome.isDelivered ? occ.proofRef : null,
       muted: paused,
       expanded: _expanded == occ.id,
       actions: _actionsFor(occ, l),
@@ -404,4 +439,17 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
       ],
     );
   }
+}
+
+enum _ProofChoice { camera, gallery, text }
+
+/// What goes with a delivery: a media id, a line, or nothing.
+class _Proof {
+  const _Proof.none() : kind = null, ref = null, note = null;
+  const _Proof.photo(String mediaId) : kind = 'photo', ref = mediaId, note = null;
+  const _Proof.text(String line) : kind = 'text', ref = null, note = line;
+
+  final String? kind;
+  final String? ref;
+  final String? note;
 }

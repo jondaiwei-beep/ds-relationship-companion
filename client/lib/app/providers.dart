@@ -14,6 +14,7 @@ import '../domain_client/repositories/today_repository.dart';
 import '../domain_client/repositories/record_repository.dart';
 import '../domain_client/repositories/rule_repository.dart';
 import '../domain_client/repositories/consequence_repository.dart';
+import '../domain_client/repositories/media_repository.dart';
 import '../features/dynamic/application/dynamic_providers.dart';
 import '../platform/storage/auth_flow_store.dart';
 
@@ -59,6 +60,10 @@ final dNoteRepositoryProvider = Provider<DNoteRepository>(
 
 final dynamicRepositoryProvider = Provider<DynamicRepository>(
   (ref) => DynamicRepository(ref.watch(apiClientProvider)),
+);
+
+final mediaRepositoryProvider = Provider<MediaRepository>(
+  (ref) => MediaRepository(ref.watch(apiClientProvider)),
 );
 
 final pointsRepositoryProvider = Provider<PointsRepository>(

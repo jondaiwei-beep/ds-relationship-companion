@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 
@@ -92,6 +94,13 @@ class ApiClient {
   String? get debugAccessToken => _accessToken;
 
   Options get _authed => Options(headers: _authHeaders());
+
+  /// The headers an authenticated read carries, for widgets that fetch bytes
+  /// themselves (an `Image.network` of a proof photo). Empty with no session.
+  Map<String, String> get authHeaders => _authHeaders();
+
+  /// Absolute URL for a server-relative path such as `/v1/media/{id}`.
+  String resolve(String path) => '${_dio.options.baseUrl}$path';
 
   Map<String, String> _authHeaders() {
     final token = _accessToken;
@@ -195,6 +204,31 @@ class ApiClient {
       },
     );
     final r = await _dio.post<Map<String, dynamic>>(path, data: body, options: options);
+    return r.data ?? const {};
+  }
+
+  /// POST one file as `multipart/form-data` under [field]. Bytes in memory:
+  /// a proof photo is already compressed to well under the server's 10 MB.
+  Future<Map<String, dynamic>> postFile(
+    String path, {
+    required Uint8List bytes,
+    required String filename,
+    String field = 'file',
+    String contentType = 'image/jpeg',
+  }) async {
+    _requireSession(path);
+    final form = FormData.fromMap({
+      field: MultipartFile.fromBytes(
+        bytes,
+        filename: filename,
+        contentType: DioMediaType.parse(contentType),
+      ),
+    });
+    final r = await _dio.post<Map<String, dynamic>>(
+      path,
+      data: form,
+      options: Options(headers: _authHeaders(), contentType: 'multipart/form-data'),
+    );
     return r.data ?? const {};
   }
 }

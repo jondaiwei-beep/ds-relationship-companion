@@ -381,8 +381,11 @@ class _DayScreenState extends ConsumerState<DayScreen> {
       if (o.outcome.isDelivered && o.value != null) {
         parts.add('${formatMeasure(o.value!)} ${o.unit ?? ''}'.trim());
       }
-      if (o.outcome.isDelivered && o.proofRef != null && o.proofRef!.isNotEmpty) {
-        parts.add(o.proofKind == 'photo' ? l.recordPhotoRef(o.proofRef!) : o.proofRef!);
+      if (o.outcome.isDelivered &&
+          o.proofKind != 'photo' &&
+          o.proofRef != null &&
+          o.proofRef!.isNotEmpty) {
+        parts.add(o.proofRef!);
       }
       if (o.note != null && o.note!.isNotEmpty) parts.add(o.note!);
       return (text, parts.isEmpty ? null : parts.join('\n'));
@@ -558,6 +561,9 @@ class _DayScreenState extends ConsumerState<DayScreen> {
               clock: TodayFormat.clock(e.at, view.timezone, _locale),
               text: text,
               sub: sub,
+              photoId: o != null && o.outcome.isDelivered && o.proofKind == 'photo'
+                  ? o.proofRef
+                  : null,
               error: occId == null ? null : _errors[occId],
               actions: [
                 if (state != null) ..._actionsFor(state, view, l),
