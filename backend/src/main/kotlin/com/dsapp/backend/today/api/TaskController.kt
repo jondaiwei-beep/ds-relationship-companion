@@ -84,6 +84,17 @@ class TaskController(
         200 to tasks.accept(jwt.actorId(), dynamicId, taskId)
     }
 
+    @PostMapping("/{taskId}/decline")
+    fun decline(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable taskId: UUID,
+        @RequestHeader("Idempotency-Key", required = false) key: String?,
+    ): ResponseEntity<Any> = post.run(jwt, key, "decline_task", "/v1/dynamics/{id}/tasks/{t}/decline", listOf("$dynamicId", "$taskId"), null) {
+        tasks.decline(jwt.actorId(), dynamicId, taskId)
+        200 to mapOf("status" to "archived")
+    }
+
     @PostMapping("/{taskId}/archive")
     fun archive(
         @AuthenticationPrincipal jwt: Jwt,

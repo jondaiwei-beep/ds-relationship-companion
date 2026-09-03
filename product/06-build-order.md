@@ -66,10 +66,17 @@
 - 验收：`RecordIT` 覆盖月 cell 算术、这一天时间线顺序与隐私（B 的私人备注/DNote 对 A 不可见）、双方留言与只删自己、facts 纯计数、streak（let_go/paused 不断、undisposed missed 断）、daysTogether 只涨、`missed→delivered_late` 补记录、`day_comment` outbox 目标。
 
 ## Phase 3 · 规矩 + 分（1–2 周）
-- Rule CRUD；Task 定义管理（含 per-item `paused_until`、D「我不在」一键）；s Proposal 与 D 接受。
-- Reward 目录、Redemption 流程；ConsequenseTemplate 库；D 给/扣分附一句。
-- 分 tab：余额、可兑换、申请、流水、规则可见。
-- 验收：Day B（D 出差两周）脚本可走完，且 D 不在期间 s 的 streak 不断、无 missed 债。
+后端 ✅ 2026-09-03（`backend/…/rules/`、`points/`、`today/`；`RuleIT`/`RedemptionIT`/`AwayIT`/`ConsequenceLifecycleIT` 覆盖；203 测试通过）
+- V19：新表 `rules`（title/body/group/status/position，group CHECK 六选一）；`reward_redemptions` 加 `status`(requested/approved/denied/fulfilled)/`decided_by`/`decided_at`/`note`/`point_entry_id`；`rewards.cost` 改可空（NULL = 「D 决定」）；`dynamics.d_away_until`。`consequences` 生命周期表 V18 已建，本阶段只加流转端点，未改表。
+- `RuleService`/`RuleController`（`/v1/dynamics/{id}/rules`）：list（按 group、position）、create（D→active，s→proposed）、update（D only）、archive（D 任意/s 仅自己的 proposed）、accept（D）。事件走 `RelationshipEventWriter`；outbox `rule_proposed`→D、`rule_accepted`→S。
+- Task：补 `decline`（D，proposed→archived，事件 `task_declined`）；`create`/`accept` 补上此前缺失的 outbox 入队（`task_proposed`→D、`task_accepted`→S）——原来只写了 timeline 事件，没有推送。
+- `AwayService`/`AwayController`（`POST .../away {until}`、`POST .../back`，D only）：写 `dynamics.d_away_until`；对所有 `requires_d_present` 的 active 任务设 `paused_until=until` 并 sweep 今天的 open occurrence 到 paused；`back` 只清 `paused_until` 恰等于本次 away 值的任务（手工按条设的不同暂停时间不受影响），清 `d_away_until`。`dAwayUntil` 已加入 `DynamicQueryService.DynamicDetail` 与 `TodayQueryService.TodayView`。
+- Redemption 流程（`PointsService`/`PointsController`）：`request`（s，写 `requested`，有定价的奖励仍检查可负担但不扣分）、`decide`（D，approve 写唯一一条 `redemption` 流水并回填 `point_entry_id`；deny 不扣分；「D 决定」奖励 approve 时必须给 `costOverride`，否则 409 `REDEMPTION_REQUIRES_COST`）、`fulfill`（任一方）、`redemptions`（双方可见，可按 status 过滤）。既有 `redeem()`（即时兑换）现拒绝 cost=NULL 的奖励，改走 `request`。`GET .../points/rules` 列出 `points_earn>0` 的 active 任务。outbox `redemption_requested`→D、`redemption_decided`→S。
+- Consequence 生命周期（`ConsequenceLifecycleService`/`ConsequenceController`）：`POST /v1/consequences/{id}/done`（S，issued→done_by_s）、`/confirm`、`/waive`（D，issued 或 done_by_s→confirmed/waived，写 `decided_at`）；`GET /v1/dynamics/{id}/consequences?status=`。系统不触碰这张表——只有 `DispositionService` 的 `punished` 会建行。`MembershipAuthorizer` 新增 `contextForConsequence`。
+- `OutboxDispatcher` 扩展 `recipientFor`/`isStale`/`neutralBodyFor`/`deepLinkFor` 覆盖全部新事件类型；deep link `/rules`、`/points`。
+- ⚠️ 偏差：旧的 `PointsController` `GET/POST /v1/dynamics/{id}/consequences`（操作 `consequence_agreements`/`consequence_events`，Phase 3 之前的"预先约定、手动触发"惩罚概念）与新 `ConsequenceController` 的同路径冲突（Spring ambiguous mapping），旧路由改名为 `/v1/dynamics/{id}/agreement-consequences`，服务层 `PointsService.consequenceHistory`/`issueConsequence`/`agreements` 未改；两套惩罚概念目前并存，未合并——建议后续 phase 评估是否收敛到 `consequences`/`ConsequenceLifecycleService` 一套。
+- ⚠️ jOOQ 可选参数踩坑：`WHERE (? IS NULL OR col = ?)` 在 Postgres 下报「could not determine data type of parameter」，需 `CAST(? AS text) IS NULL`（`redemptions`/`consequences` 的 status 过滤两处已修）。
+- 验收：s 建规矩为 proposed 且在 D 接受前不算 active；s 不能改 D 的规矩；away 只暂停 `requires_d_present` 的任务，`back` 只恢复它自己暂停的那些；`requested` 状态兑换不扣分，denied 不扣分，approve 恰好写一条归属 D 的 `redemption` 流水；「D 决定」奖励 approve 时若无 cost 报错；consequence done/confirm/waive 的双边规则；所有扣分流水都有 actor（既有 CHECK 约束）。
 
 ## Phase 4 · 探索（1–2 周）
 - 题库 + `PreferenceAnswer` + 比对视图（双答才互见、不归属「不要」）。

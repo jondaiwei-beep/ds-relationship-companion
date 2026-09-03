@@ -92,6 +92,9 @@ class TaskService(
         ).execute()
         events.append(dynamicId, actorUserId, "task_created", """{"task_id":"$id","status":"$status"}""")
         if (status == "active") materialize(dynamicId, id, t.kind)
+        if (status == "proposed") {
+            events.enqueueOutbox("task", id, "task_proposed", "task_proposed:$id")
+        }
         return get(dynamicId, id)
     }
 
@@ -105,8 +108,25 @@ class TaskService(
             taskId, dynamicId,
         ) ?: throw TaskNotActionable("TASK_NOT_PROPOSED")
         events.append(dynamicId, actorUserId, "task_accepted", """{"task_id":"$taskId"}""")
+        events.enqueueOutbox("task", taskId, "task_accepted", "task_accepted:$taskId")
         materialize(dynamicId, taskId, TaskKind.valueOf(row.get("kind", String::class.java)))
         return get(dynamicId, taskId)
+    }
+
+    /**
+     * The D declines an s proposal — same shape as archive, kept as its own
+     * command so the client can show "declined" rather than "archived" and a
+     * future version can attach a reason without overloading archive.
+     */
+    @Transactional
+    fun decline(actorUserId: UUID, dynamicId: UUID, taskId: UUID) {
+        authorizer.requireSide(authorizer.contextForDynamic(actorUserId, dynamicId), Side.D)
+        val n = dsl.query(
+            "UPDATE tasks SET status = 'archived', updated_at = now() WHERE id = {0} AND dynamic_id = {1} AND status = 'proposed'",
+            taskId, dynamicId,
+        ).execute()
+        if (n == 0) throw TaskNotActionable("TASK_NOT_PROPOSED")
+        events.append(dynamicId, actorUserId, "task_declined", """{"task_id":"$taskId"}""")
     }
 
     /**

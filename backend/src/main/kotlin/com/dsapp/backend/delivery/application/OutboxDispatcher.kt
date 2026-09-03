@@ -205,6 +205,57 @@ class OutboxDispatcher(
                 """.trimIndent(),
                 record.aggregateId,
             )
+            // An s proposed a rule/task -> the D side hears it. The D accepted -> the s side.
+            "rule_proposed", "rule_accepted" -> dsl.fetchOne(
+                """
+                SELECT r.dynamic_id, m.user_id AS recipient
+                  FROM rules r
+                  JOIN memberships m ON m.dynamic_id = r.dynamic_id
+                   AND m.side = CASE WHEN {1} = 'rule_proposed' THEN 'D' ELSE 'S' END
+                   AND m.access_state = 'ACTIVE'
+                 WHERE r.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId, record.eventType,
+            )
+            "task_proposed", "task_accepted" -> dsl.fetchOne(
+                """
+                SELECT t.dynamic_id, m.user_id AS recipient
+                  FROM tasks t
+                  JOIN memberships m ON m.dynamic_id = t.dynamic_id
+                   AND m.side = CASE WHEN {1} = 'task_proposed' THEN 'D' ELSE 'S' END
+                   AND m.access_state = 'ACTIVE'
+                 WHERE t.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId, record.eventType,
+            )
+            // s requested a redemption -> D. D decided -> s.
+            "redemption_requested", "redemption_decided" -> dsl.fetchOne(
+                """
+                SELECT r.dynamic_id, m.user_id AS recipient
+                  FROM reward_redemptions r
+                  JOIN memberships m ON m.dynamic_id = r.dynamic_id
+                   AND m.side = CASE WHEN {1} = 'redemption_requested' THEN 'D' ELSE 'S' END
+                   AND m.access_state = 'ACTIVE'
+                 WHERE r.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId, record.eventType,
+            )
+            // s marked a consequence done -> D. D confirmed/waived -> s.
+            "consequence_done", "consequence_decided" -> dsl.fetchOne(
+                """
+                SELECT c.dynamic_id, m.user_id AS recipient
+                  FROM consequences c
+                  JOIN memberships m ON m.dynamic_id = c.dynamic_id
+                   AND m.side = CASE WHEN {1} = 'consequence_done' THEN 'D' ELSE 'S' END
+                   AND m.access_state = 'ACTIVE'
+                 WHERE c.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId, record.eventType,
+            )
             else -> null
         } ?: return null
         val user = row.get("recipient", UUID::class.java) ?: return null
@@ -237,6 +288,24 @@ class OutboxDispatcher(
         "day_comment" -> dsl.fetchOne(
             "SELECT 1 FROM day_comments WHERE id = {0} AND deleted_at IS NOT NULL", record.aggregateId,
         ) != null
+        // Stale once the D has already acted — accepted/declined the proposal.
+        "rule_proposed" -> dsl.fetchOne(
+            "SELECT 1 FROM rules WHERE id = {0} AND status <> 'proposed'", record.aggregateId,
+        ) != null
+        "task_proposed" -> dsl.fetchOne(
+            "SELECT 1 FROM tasks WHERE id = {0} AND status <> 'proposed'", record.aggregateId,
+        ) != null
+        // A decision notice is never stale — it already happened, it is what we are announcing.
+        "rule_accepted", "task_accepted", "consequence_decided" -> false
+        // Stale once the D has already decided the request.
+        "redemption_requested" -> dsl.fetchOne(
+            "SELECT 1 FROM reward_redemptions WHERE id = {0} AND status <> 'requested'", record.aggregateId,
+        ) != null
+        "redemption_decided" -> false
+        // Stale once the D has already confirmed or waived it.
+        "consequence_done" -> dsl.fetchOne(
+            "SELECT 1 FROM consequences WHERE id = {0} AND status IN ('confirmed', 'waived')", record.aggregateId,
+        ) != null
         else -> false
     }
 
@@ -267,7 +336,11 @@ class OutboxDispatcher(
     }
 
     private fun neutralBodyFor(eventType: String): String = when (eventType) {
-        "occurrence_delivered", "occurrence_flagged", "day_comment" -> NeutralCopy.NEEDS_ATTENTION
+        "occurrence_delivered", "occurrence_flagged", "day_comment",
+        "rule_proposed", "rule_accepted", "task_proposed", "task_accepted",
+        "redemption_requested", "redemption_decided",
+        "consequence_done", "consequence_decided",
+        -> NeutralCopy.NEEDS_ATTENTION
         else -> NeutralCopy.GENERIC
     }
 
@@ -279,6 +352,10 @@ class OutboxDispatcher(
                 ?.get("day", java.time.LocalDate::class.java)
             "/record/${day ?: ""}"
         }
+        "rule_proposed", "rule_accepted" -> "/rules"
+        "task_proposed", "task_accepted" -> "/rules"
+        "redemption_requested", "redemption_decided" -> "/points"
+        "consequence_done", "consequence_decided" -> "/points"
         else -> "/occurrences/${record.aggregateId}"
     }
 

@@ -70,6 +70,8 @@ class TodayQueryService(
         /** D face: things said by the s that the D has not yet answered, all days. */
         val needsMe: Int,
         val partnerDisplayName: String?,
+        /** D「我不在」until this instant, or null when the D is present. */
+        val dAwayUntil: Instant?,
     )
 
     @Transactional
@@ -108,6 +110,8 @@ class TodayQueryService(
                 dynamicId,
             )!!.get("n", Int::class.java),
             partnerDisplayName = partner,
+            dAwayUntil = dsl.fetchOne("SELECT d_away_until FROM dynamics WHERE id = {0}", dynamicId)
+                ?.get("d_away_until", Instant::class.java),
         )
     }
 

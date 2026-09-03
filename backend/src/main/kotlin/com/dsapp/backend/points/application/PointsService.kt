@@ -1,12 +1,18 @@
 package com.dsapp.backend.points.application
 
 import com.dsapp.backend.dynamic.domain.AuthorizationException
+import com.dsapp.backend.timeline.application.RelationshipEventWriter
 import com.dsapp.backend.today.application.RelationshipStreaks
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.util.UUID
+
+class NoSuchRedemption(val redemptionId: UUID) : RuntimeException("No redemption $redemptionId")
+
+/** A "D 决定" reward (`cost IS NULL`) was approved with no cost given. */
+class RedemptionRequiresCost : RuntimeException("D-decided reward requires a cost at approval")
 
 class InsufficientPoints(val balance: Int, val cost: Int) :
     RuntimeException("Balance $balance is below the cost $cost")
@@ -38,7 +44,11 @@ class NoSuchReward(val rewardId: UUID) : RuntimeException("No reward $rewardId")
  * from its own history, and this one is about how someone is treated.
  */
 @Service
-class PointsService(private val dsl: DSLContext, private val streaks: RelationshipStreaks) {
+class PointsService(
+    private val dsl: DSLContext,
+    private val streaks: RelationshipStreaks,
+    private val events: RelationshipEventWriter,
+) {
 
     data class Entry(
         val id: UUID,
@@ -52,7 +62,8 @@ class PointsService(private val dsl: DSLContext, private val streaks: Relationsh
         val id: UUID,
         val title: String,
         val detail: String?,
-        val cost: Int,
+        /** Null = "D 决定": the D sets the cost when they approve a request. */
+        val cost: Int?,
         val affordable: Boolean,
     )
 
@@ -71,6 +82,20 @@ class PointsService(private val dsl: DSLContext, private val streaks: Relationsh
         val note: String?,
         val createdAt: Instant,
     )
+
+    data class RedemptionView(
+        val id: UUID,
+        val rewardId: UUID,
+        val rewardTitle: String,
+        val subjectUserId: UUID,
+        val status: String,
+        val note: String?,
+        val decidedBy: UUID?,
+        val decidedAt: Instant?,
+        val createdAt: Instant,
+    )
+
+    data class PointsRule(val taskId: UUID, val title: String, val pointsEarn: Int)
 
     /**
      * Relationship days since the couple were both here, ever. **Never
@@ -221,13 +246,16 @@ class PointsService(private val dsl: DSLContext, private val streaks: Relationsh
             """.trimIndent(),
             dynamicId,
         ).map {
-            val cost = it.get("cost", Int::class.java)
+            val cost = it.get("cost", Int::class.javaObjectType)
             Reward(
                 it.get("id", UUID::class.java),
                 it.get("title", String::class.java),
                 it.get("detail", String::class.java),
                 cost,
-                affordable = balance >= cost,
+                // "D 决定" rewards carry no fixed price to check against; the
+                // client shows them as always requestable and the balance
+                // check happens for real at approval time.
+                affordable = cost == null || balance >= cost,
             )
         }
     }
@@ -238,12 +266,13 @@ class PointsService(private val dsl: DSLContext, private val streaks: Relationsh
         dynamicId: UUID,
         title: String,
         detail: String?,
-        cost: Int,
+        /** Null = "D 决定": no fixed price, the D sets one when they approve a request. */
+        cost: Int?,
     ): UUID {
         requireMember(actorUserId, dynamicId)
         val t = title.trim()
         require(t.isNotEmpty() && t.length <= 120) { "title" }
-        require(cost >= 0) { "cost" }
+        require(cost == null || cost >= 0) { "cost" }
 
         val id = UUID.randomUUID()
         dsl.query(
@@ -283,7 +312,9 @@ class PointsService(private val dsl: DSLContext, private val streaks: Relationsh
             rewardId, dynamicId,
         ) ?: throw NoSuchReward(rewardId)
 
-        val cost = reward.get("cost", Int::class.java)
+        // "D 决定" rewards have no fixed price to redeem against — the s path
+        // for those is request(), which the D prices at approval.
+        val cost = reward.get("cost", Int::class.javaObjectType) ?: throw RedemptionRequiresCost()
         val balance = balanceOf(dynamicId, actorUserId)
         if (balance < cost) throw InsufficientPoints(balance, cost)
 
@@ -345,6 +376,162 @@ class PointsService(private val dsl: DSLContext, private val streaks: Relationsh
             id, dynamicId, rewardId, subjectUserId, actorUserId,
         ).execute()
         return id
+    }
+
+    // ---- redemption requests ------------------------------------------------
+    //
+    // The s asks; the D decides. `requested` writes no ledger row at all —
+    // affordability is only checked (when the reward has a fixed cost), not
+    // moved. Only `decide(approve = true)` ever writes a ledger row, and it
+    // writes exactly one, attributed to the deciding D.
+
+    /**
+     * s asks for a reward. Still requires affordability when the reward has a
+     * fixed cost — asking for something already unaffordable would just make
+     * the D say no for a reason the app could have said itself — but a
+     * "D 决定" reward (cost = NULL) has nothing to check yet.
+     */
+    @Transactional
+    fun request(actorUserId: UUID, dynamicId: UUID, rewardId: UUID, note: String?): UUID {
+        requireMember(actorUserId, dynamicId)
+        val reward = dsl.fetchOne(
+            "SELECT cost FROM rewards WHERE id = {0} AND dynamic_id = {1} AND active",
+            rewardId, dynamicId,
+        ) ?: throw NoSuchReward(rewardId)
+        val cost = reward.get("cost", Int::class.javaObjectType)
+        if (cost != null) {
+            val balance = balanceOf(dynamicId, actorUserId)
+            if (balance < cost) throw InsufficientPoints(balance, cost)
+        }
+
+        val id = UUID.randomUUID()
+        dsl.query(
+            """
+            INSERT INTO reward_redemptions (id, dynamic_id, reward_id, subject_user_id, status, note)
+            VALUES ({0}, {1}, {2}, {3}, 'requested', {4})
+            """.trimIndent(),
+            id, dynamicId, rewardId, actorUserId, note?.trim()?.takeIf { it.isNotEmpty() },
+        ).execute()
+        events.append(dynamicId, actorUserId, "redemption_requested", """{"redemption_id":"$id"}""")
+        events.enqueueOutbox("redemption", id, "redemption_requested", "redemption_requested:$id")
+        return id
+    }
+
+    /**
+     * D decides. Approving writes exactly one `redemption` ledger row and
+     * links it back; denying writes nothing — nobody owes anything for
+     * having asked. A "D 决定" reward (cost = NULL on the reward) requires
+     * [costOverride] at approval, since there is nothing else to charge.
+     */
+    @Transactional
+    fun decide(
+        actorUserId: UUID,
+        dynamicId: UUID,
+        redemptionId: UUID,
+        approve: Boolean,
+        note: String?,
+        costOverride: Int? = null,
+    ): UUID {
+        requireMember(actorUserId, dynamicId)
+        val row = dsl.fetchOne(
+            """
+            SELECT r.subject_user_id, r.reward_id, w.title, w.cost
+              FROM reward_redemptions r JOIN rewards w ON w.id = r.reward_id
+             WHERE r.id = {0} AND r.dynamic_id = {1} AND r.status = 'requested'
+            """.trimIndent(),
+            redemptionId, dynamicId,
+        ) ?: throw NoSuchRedemption(redemptionId)
+
+        if (!approve) {
+            dsl.query(
+                """UPDATE reward_redemptions
+                      SET status = 'denied', decided_by = {1}, decided_at = now(), note = COALESCE({2}, note)
+                    WHERE id = {0}""",
+                redemptionId, actorUserId, note?.trim()?.takeIf { it.isNotEmpty() },
+            ).execute()
+            events.append(dynamicId, actorUserId, "redemption_decided", """{"redemption_id":"$redemptionId","approved":false}""")
+            events.enqueueOutbox("redemption", redemptionId, "redemption_decided", "redemption_decided:$redemptionId")
+            return redemptionId
+        }
+
+        val subject = row.get("subject_user_id", UUID::class.java)
+        val fixedCost = row.get("cost", Int::class.javaObjectType)
+        val cost = costOverride ?: fixedCost ?: throw RedemptionRequiresCost()
+        require(cost >= 0) { "cost" }
+
+        val entryId = UUID.randomUUID()
+        if (cost > 0) {
+            dsl.query(
+                """
+                INSERT INTO point_entries
+                    (id, dynamic_id, subject_user_id, amount, reason, reward_id, actor_user_id, note)
+                VALUES ({0}, {1}, {2}, {3}, 'redemption', {4}, {5}, {6})
+                """.trimIndent(),
+                entryId, dynamicId, subject, -cost, row.get("reward_id", UUID::class.java), actorUserId,
+                row.get("title", String::class.java),
+            ).execute()
+        }
+        dsl.query(
+            """UPDATE reward_redemptions
+                  SET status = 'approved', decided_by = {1}, decided_at = now(),
+                      note = COALESCE({2}, note), point_entry_id = {3}
+                WHERE id = {0}""",
+            redemptionId, actorUserId, note?.trim()?.takeIf { it.isNotEmpty() }, if (cost > 0) entryId else null,
+        ).execute()
+        events.append(dynamicId, actorUserId, "redemption_decided", """{"redemption_id":"$redemptionId","approved":true}""")
+        events.enqueueOutbox("redemption", redemptionId, "redemption_decided", "redemption_decided:$redemptionId")
+        return redemptionId
+    }
+
+    /** Either side marks an approved (or already-fulfilled instant) redemption handed over. */
+    @Transactional
+    fun fulfill(actorUserId: UUID, dynamicId: UUID, redemptionId: UUID) {
+        requireMember(actorUserId, dynamicId)
+        val n = dsl.query(
+            "UPDATE reward_redemptions SET status = 'fulfilled' WHERE id = {0} AND dynamic_id = {1} AND status = 'approved'",
+            redemptionId, dynamicId,
+        ).execute()
+        if (n == 0) throw NoSuchRedemption(redemptionId)
+    }
+
+    /** Visible to both sides; optionally filtered by status. */
+    fun redemptions(actorUserId: UUID, dynamicId: UUID, status: String? = null): List<RedemptionView> {
+        requireMember(actorUserId, dynamicId)
+        return dsl.fetch(
+            """
+            SELECT r.id, r.reward_id, w.title AS reward_title, r.subject_user_id, r.status,
+                   r.note, r.decided_by, r.decided_at, r.created_at
+              FROM reward_redemptions r JOIN rewards w ON w.id = r.reward_id
+             WHERE r.dynamic_id = {0} AND (CAST({1} AS text) IS NULL OR r.status = {1})
+             ORDER BY r.created_at DESC
+            """.trimIndent(),
+            dynamicId, status,
+        ).map {
+            RedemptionView(
+                it.get("id", UUID::class.java),
+                it.get("reward_id", UUID::class.java),
+                it.get("reward_title", String::class.java),
+                it.get("subject_user_id", UUID::class.java),
+                it.get("status", String::class.java),
+                it.get("note", String::class.java),
+                it.get("decided_by", UUID::class.java),
+                it.get("decided_at", Instant::class.java),
+                it.get("created_at", Instant::class.java),
+            )
+        }
+    }
+
+    /** 分 tab "规则可见": which tasks pay, and how much. A cheap read, no balance math. */
+    fun pointsRules(actorUserId: UUID, dynamicId: UUID): List<PointsRule> {
+        requireMember(actorUserId, dynamicId)
+        return dsl.fetch(
+            """
+            SELECT id, title, points_earn FROM tasks
+             WHERE dynamic_id = {0} AND status = 'active' AND points_earn > 0
+             ORDER BY points_earn DESC, position
+            """.trimIndent(),
+            dynamicId,
+        ).map { PointsRule(it.get("id", UUID::class.java), it.get("title", String::class.java), it.get("points_earn", Int::class.java)) }
     }
 
     // ---- consequences ------------------------------------------------------

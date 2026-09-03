@@ -55,6 +55,8 @@ class DynamicQueryService(
         val structure: List<StructureItem>,
         /** Agency that no role can ever remove (Notion 03 §2). */
         val alwaysAvailable: List<String>,
+        /** D「我不在」until this instant, or null when the D is present. */
+        val dAwayUntil: Instant?,
     )
 
     @Transactional(readOnly = true)
@@ -109,7 +111,7 @@ class DynamicQueryService(
         val d = dsl.fetchOne(
             """
             SELECT state, desired_outcome, structure_level, reference_timezone,
-                   day_boundary_minutes, paused_at
+                   day_boundary_minutes, paused_at, d_away_until
               FROM dynamics WHERE id = {0}
             """.trimIndent(),
             dynamicId,
@@ -162,6 +164,7 @@ class DynamicQueryService(
             // Listed explicitly so the UI can always show them, whatever the
             // role. These can never be switched off (Notion 04 §4).
             alwaysAvailable = listOf("discuss", "reschedule", "cant_do", "pause", "leave", "block"),
+            dAwayUntil = d.get("d_away_until", Instant::class.java),
         )
     }
 

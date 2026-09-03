@@ -10,6 +10,8 @@ import com.dsapp.backend.today.application.NoSuchItem
 import com.dsapp.backend.today.application.OccurrenceNotActionable
 import com.dsapp.backend.today.application.TaskNotActionable
 import com.dsapp.backend.points.application.NoSuchReward
+import com.dsapp.backend.points.application.NoSuchRedemption
+import com.dsapp.backend.points.application.RedemptionRequiresCost
 import com.dsapp.backend.shared.idempotency.IdempotencyKeyReusedException
 import com.dsapp.backend.shared.idempotency.MissingIdempotencyKeyException
 import org.springframework.http.HttpStatus
@@ -80,6 +82,16 @@ class ApiErrorHandler {
     @ExceptionHandler(NoSuchReward::class)
     fun onNoSuchReward(e: NoSuchReward): ResponseEntity<ApiError> =
         ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
+
+    @ExceptionHandler(NoSuchRedemption::class)
+    fun onNoSuchRedemption(e: NoSuchRedemption): ResponseEntity<ApiError> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
+
+    @ExceptionHandler(RedemptionRequiresCost::class)
+    fun onRedemptionRequiresCost(e: RedemptionRequiresCost): ResponseEntity<ApiError> =
+        // 409: the request is understood, it just cannot be approved without a
+        // price the D has not given yet.
+        ResponseEntity.status(HttpStatus.CONFLICT).body(ApiError("REDEMPTION_REQUIRES_COST"))
 
     @ExceptionHandler(InviteNotRevocable::class)
     fun onInviteNotRevocable(e: InviteNotRevocable): ResponseEntity<ApiError> =

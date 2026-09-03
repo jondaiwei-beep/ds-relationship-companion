@@ -65,6 +65,29 @@ class MembershipAuthorizer(private val dsl: DSLContext) {
             )
         }
 
+    /** Resolve the actor's membership via a consequence, or null if none exists. */
+    fun contextForConsequence(actorUserId: UUID, consequenceId: UUID): MemberContext? =
+        dsl.fetchOne(
+            """
+            SELECT m.id, m.dynamic_id, m.role_context, m.side, m.access_state, d.state AS dynamic_state
+              FROM consequences c
+              JOIN memberships m ON m.dynamic_id = c.dynamic_id AND m.user_id = {0}
+              JOIN dynamics d ON d.id = c.dynamic_id
+             WHERE c.id = {1}
+            """.trimIndent(),
+            actorUserId, consequenceId,
+        )?.let { r ->
+            MemberContext(
+                userId = actorUserId,
+                dynamicId = r.get("dynamic_id", UUID::class.java),
+                membershipId = r.get("id", UUID::class.java),
+                role = RoleContext.valueOf(r.get("role_context", String::class.java)),
+                side = Side.valueOf(r.get("side", String::class.java)),
+                accessState = AccessState.valueOf(r.get("access_state", String::class.java)),
+                dynamicState = DynamicState.valueOf(r.get("dynamic_state", String::class.java)),
+            )
+        }
+
     /**
      * Require read access. Reads survive PAUSED/ENDED — a paused relationship
      * still has history — but never survive LEFT or BLOCKED (Notion 04 §8).

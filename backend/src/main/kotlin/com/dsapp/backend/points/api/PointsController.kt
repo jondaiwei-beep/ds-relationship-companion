@@ -19,7 +19,10 @@ import java.util.UUID
 
 data class AdjustPointsBody(val subjectUserId: UUID, val amount: Int, val note: String? = null)
 data class GiftBody(val subjectUserId: UUID)
-data class RewardBody(@field:NotBlank val title: String, val detail: String? = null, val cost: Int)
+/** cost = null means "D 决定": no fixed price, set at approval. */
+data class RewardBody(@field:NotBlank val title: String, val detail: String? = null, val cost: Int? = null)
+data class RequestRedemptionBody(val note: String? = null)
+data class DecideRedemptionBody(val approve: Boolean, val note: String? = null, val costOverride: Int? = null)
 data class AgreementBody(
     @field:NotBlank val label: String,
     @field:NotBlank val consequence: String,
@@ -154,6 +157,78 @@ class PointsController(private val points: PointsService) {
         return ResponseEntity.status(201).body(mapOf("id" to id))
     }
 
+    /** s asks for a reward. No ledger movement — only checked, not spent. */
+    @PostMapping("/rewards/{rewardId}/request")
+    fun requestRedemption(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable rewardId: UUID,
+        @Valid @RequestBody(required = false) body: RequestRedemptionBody?,
+    ): ResponseEntity<Map<String, Any>> {
+        val id = points.request(jwt.actorId(), dynamicId, rewardId, body?.note)
+        return ResponseEntity.status(201).body(mapOf("id" to id))
+    }
+
+    @GetMapping("/redemptions")
+    fun redemptions(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @RequestParam(required = false) status: String?,
+    ): ResponseEntity<Map<String, Any>> = ResponseEntity.ok(
+        mapOf(
+            "redemptions" to points.redemptions(jwt.actorId(), dynamicId, status).map {
+                mapOf(
+                    "id" to it.id,
+                    "rewardId" to it.rewardId,
+                    "rewardTitle" to it.rewardTitle,
+                    "subjectUserId" to it.subjectUserId,
+                    "status" to it.status,
+                    "note" to it.note,
+                    "decidedBy" to it.decidedBy,
+                    "decidedAt" to it.decidedAt,
+                    "createdAt" to it.createdAt,
+                )
+            },
+        ),
+    )
+
+    /** D decides: approve (writes one ledger row) or deny (writes nothing). */
+    @PostMapping("/redemptions/{redemptionId}/decide")
+    fun decideRedemption(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable redemptionId: UUID,
+        @Valid @RequestBody body: DecideRedemptionBody,
+    ): ResponseEntity<Map<String, Any>> {
+        val id = points.decide(
+            jwt.actorId(), dynamicId, redemptionId, body.approve, body.note, body.costOverride,
+        )
+        return ResponseEntity.ok(mapOf("id" to id))
+    }
+
+    @PostMapping("/redemptions/{redemptionId}/fulfill")
+    fun fulfillRedemption(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @PathVariable redemptionId: UUID,
+    ): ResponseEntity<Void> {
+        points.fulfill(jwt.actorId(), dynamicId, redemptionId)
+        return ResponseEntity.noContent().build()
+    }
+
+    /** 分 tab "规则可见": which active tasks pay, and how much. */
+    @GetMapping("/points/rules")
+    fun pointsRules(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+    ): ResponseEntity<Map<String, Any>> = ResponseEntity.ok(
+        mapOf(
+            "rules" to points.pointsRules(jwt.actorId(), dynamicId).map {
+                mapOf("taskId" to it.taskId, "title" to it.title, "pointsEarn" to it.pointsEarn)
+            },
+        ),
+    )
+
     @GetMapping("/agreements")
     fun agreements(
         @AuthenticationPrincipal jwt: Jwt,
@@ -193,7 +268,17 @@ class PointsController(private val points: PointsService) {
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping("/consequences")
+    /**
+     * History for the older agreed-consequence path (`consequence_agreements`
+     * / `consequence_events` — invoked directly, not disposition-driven).
+     *
+     * Renamed off `/consequences` in Phase 3: that path now belongs to the
+     * domain-doc Consequence lifecycle (today/api/ConsequenceController —
+     * issued/done_by_s/confirmed/waived, created only via a D's `punished`
+     * disposition). This older feature is unrelated and still functions
+     * through the service layer; only its HTTP route moved.
+     */
+    @GetMapping("/agreement-consequences")
     fun history(
         @AuthenticationPrincipal jwt: Jwt,
         @PathVariable dynamicId: UUID,
@@ -212,7 +297,7 @@ class PointsController(private val points: PointsService) {
         ),
     )
 
-    @PostMapping("/consequences")
+    @PostMapping("/agreement-consequences")
     fun issue(
         @AuthenticationPrincipal jwt: Jwt,
         @PathVariable dynamicId: UUID,
