@@ -150,6 +150,14 @@ class ApiClient {
     await _dio.delete<void>(path, options: _authed);
   }
 
+  /// PATCH a partial edit. Sending the same edit twice lands the same state,
+  /// so no key is carried.
+  Future<Map<String, dynamic>> patch(String path, {Object? body}) async {
+    _requireSession(path);
+    final r = await _dio.patch<Map<String, dynamic>>(path, data: body, options: _authed);
+    return r.data ?? const {};
+  }
+
   /// PUT a whole value. Idempotent by nature — sending the same body twice
   /// leaves the same state — so no key is carried.
   Future<Map<String, dynamic>> put(String path, {Object? body}) async {

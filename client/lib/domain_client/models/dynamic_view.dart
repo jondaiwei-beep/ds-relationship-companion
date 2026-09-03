@@ -42,6 +42,8 @@ abstract class DynamicDetail with _$DynamicDetail {
     required String referenceTimezone,
     @Default(0) int dayBoundaryMinutes,
     DateTime? pausedAt,
+    /// D-26: the D is away until this instant; tasks needing them are paused.
+    DateTime? dAwayUntil,
     @Default(<MemberView>[]) List<MemberView> members,
     @Default(<StructureItem>[]) List<StructureItem> structure,
     /// Agency no role can ever remove. The UI must always be

@@ -1695,5 +1695,342 @@
   "recordPrivateNoteHint": "Only you can see this. Saved when you leave the field.",
   "recordPrivateNoteSaved": "Saved",
   "recordPrivateNoteFailed": "Not saved. Try again.",
-  "recordCommentFailed": "Not sent. Try again."
+  "recordCommentFailed": "Not sent. Try again.",
+  "rulesTitle": "Rules",
+  "rulesAwayToggle": "I'm away",
+  "rulesAwayUntil": "Away until {date}",
+  "@rulesAwayUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesAwayPartner": "{name} is away until {date}",
+  "@rulesAwayPartner": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesBack": "I'm back",
+  "rulesStandingTitle": "STANDING RULES",
+  "rulesStandingEmpty": "No rules yet.",
+  "ruleGroupProtocol": "Protocol",
+  "ruleGroupRitual": "Ritual",
+  "ruleGroupRestriction": "Restrictions",
+  "ruleGroupAppearance": "Appearance",
+  "ruleGroupReporting": "Reporting",
+  "ruleGroupOther": "Other",
+  "rulesAddRule": "Add a rule",
+  "rulesProposeRule": "Propose a rule",
+  "rulesProposeChange": "Propose a change",
+  "rulesRuleTitleLabel": "The rule",
+  "rulesRuleBodyLabel": "Detail (optional)",
+  "rulesGroupLabel": "Group",
+  "rulesSave": "Save",
+  "rulesArchive": "Archive",
+  "rulesNeverMind": "Never mind",
+  "rulesTasksTitle": "RECURRING TASKS",
+  "rulesTasksEmpty": "No tasks yet.",
+  "rulesAddTask": "Add a task",
+  "rulesProposeTask": "Propose a task",
+  "rulesTaskTitleLabel": "What to do",
+  "rulesScheduleDaily": "Every day",
+  "rulesScheduleWeekdays": "Weekly {days}",
+  "@rulesScheduleWeekdays": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesScheduleEveryN": "Every {n} days",
+  "@rulesScheduleEveryN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesScheduleOneOff": "Once",
+  "rulesScheduleOpen": "Any time",
+  "rulesScheduleCheckin": "Check-in",
+  "rulesScheduleMeasure": "Measure",
+  "rulesWeekdayNames": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+  "rulesTimesPerDay": "{n} a day",
+  "@rulesTimesPerDay": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesProofCheck": "Tick",
+  "rulesProofPhoto": "Photo",
+  "rulesProofText": "Words",
+  "rulesProofAny": "Any",
+  "rulesPoints": "{n} pts",
+  "@rulesPoints": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesNeedsD": "Needs {name} there",
+  "@rulesNeedsD": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesPaused": "Paused",
+  "rulesPausedUntil": "Paused until {date}",
+  "@rulesPausedUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesPauseUntilDate": "Pause until a date",
+  "rulesPauseIndefinite": "Pause for now",
+  "rulesUnpause": "Resume",
+  "rulesPointsLabel": "Points (0 = base item)",
+  "rulesRequiresDLabel": "Needs {name} present",
+  "@rulesRequiresDLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesEveryNLabel": "Every N days",
+  "rulesProposedTitle": "PROPOSED",
+  "rulesProposedEmpty": "Nothing proposed.",
+  "rulesAccept": "Accept",
+  "rulesDecline": "No",
+  "rulesWaitingFor": "Waiting for {name}",
+  "@rulesWaitingFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesKindTask": "Task",
+  "rulesKindRule": "Rule",
+  "rulesWithdraw": "Withdraw",
+  "rulesRewardsTitle": "REWARDS",
+  "rulesRewardsEmpty": "No rewards yet.",
+  "rulesAddReward": "Add a reward",
+  "rulesRewardTitleLabel": "Reward",
+  "rulesRewardCostLabel": "Cost in points",
+  "rulesRewardDDecides": "Decide at the time",
+  "rulesRewardDDecidesName": "{name} decides",
+  "@rulesRewardDDecidesName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesRewardRetire": "Retire",
+  "rulesGoRedeem": "Redeem",
+  "rulesConsequencesTitle": "CONSEQUENCES",
+  "rulesConsequencesIntro": "Only {name} uses these, by hand, when disposing. Nothing runs from here.",
+  "@rulesConsequencesIntro": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesConsequencesEmpty": "None yet.",
+  "rulesAddConsequence": "Add one",
+  "rulesConsequenceWhen": "When",
+  "rulesConsequenceThen": "Then",
+  "rulesEndConsequence": "End",
+  "rulesLimitsTitle": "LIMITS & SAFEWORD",
+  "rulesLimitsLine": "What either of you marked \"no\" in the compare lands here.",
+  "rulesLimitsGo": "Compare",
+  "rulesExploreTitle": "EXPLORE",
+  "rulesExploreCompare": "Compare",
+  "rulesExploreInspiration": "Inspiration",
+  "rulesExploreStarter": "Starter pack",
+  "rulesPauseDynamic": "Pause for a while",
+  "rulesCouldNotLoad": "Rules could not be loaded.",
+  "rulesActionFailed": "Not saved. Try again.",
+  "rulesProposedSent": "Sent to {name}.",
+  "@rulesProposedSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesTheD": "the D",
+  "rulesTheS": "the s",
+  "rulesYou": "you",
+  "ptsBalanceOf": "{name} has {n}",
+  "@ptsBalanceOf": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ptsBalanceMine": "{n}",
+  "@ptsBalanceMine": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ptsGive": "Give",
+  "ptsDeduct": "Deduct",
+  "ptsAmountLabel": "How many",
+  "ptsWhyLabel": "Why (optional)",
+  "ptsGiveTitle": "Give {name} points",
+  "@ptsGiveTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsDeductTitle": "Deduct from {name}",
+  "@ptsDeductTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsRedeemableTitle": "REDEEMABLE",
+  "ptsRedeemableEmpty": "{name} has not set any rewards.",
+  "@ptsRedeemableEmpty": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsShort": "{n} more",
+  "@ptsShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ptsRequestTitle": "Ask for \"{title}\"",
+  "@ptsRequestTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsRequestNote": "A word with it (optional)",
+  "ptsRequestSend": "Ask",
+  "ptsRequestsTitle": "REQUESTS",
+  "ptsRequestsEmpty": "No requests.",
+  "ptsStatusRequested": "Waiting for {name}",
+  "@ptsStatusRequested": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsStatusApproved": "{name} approved",
+  "@ptsStatusApproved": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsStatusDenied": "{name} said no",
+  "@ptsStatusDenied": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsStatusFulfilled": "Done",
+  "ptsApprove": "Yes",
+  "ptsDeny": "No",
+  "ptsFulfill": "Done",
+  "ptsDecideNote": "A word (optional)",
+  "ptsDecideCost": "Set the cost",
+  "ptsLedgerTitle": "LEDGER",
+  "ptsLedgerEmpty": "Nothing yet.",
+  "ptsReasonTaskEarn": "Task",
+  "ptsReasonAward": "{name} gave",
+  "@ptsReasonAward": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsReasonDeduct": "{name} took",
+  "@ptsReasonDeduct": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsReasonRedemption": "Redeemed",
+  "ptsReasonRefund": "Returned",
+  "ptsReasonOther": "Movement",
+  "ptsRulesTitle": "WHAT PAYS",
+  "ptsRulesEmpty": "No task pays yet.",
+  "ptsRulesBase": "Everything else is a base item at 0.",
+  "ptsConsequencesTitle": "CONSEQUENCES",
+  "ptsConsequencesEmpty": "None.",
+  "ptsConsequenceDone": "Done",
+  "ptsConsequenceConfirm": "Confirm",
+  "ptsConsequenceWaive": "Let it go",
+  "ptsConsStatusIssued": "Not yet done",
+  "ptsConsStatusDoneByS": "Done, waiting for {name}",
+  "@ptsConsStatusDoneByS": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsConsStatusConfirmed": "{name} confirmed",
+  "@ptsConsStatusConfirmed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsConsStatusWaived": "{name} let it go",
+  "@ptsConsStatusWaived": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsCouldNotLoad": "Points could not be loaded.",
+  "ptsActionFailed": "Not saved. Try again."
 }

@@ -35,6 +35,11 @@ class TaskRepository {
         await _api.post('${_base(dynamicId)}/$taskId/accept', idempotencyKey: idempotencyKey),
       );
 
+  /// D says no to a proposed task. It is archived, not deleted; the s can
+  /// still see it was theirs.
+  Future<void> decline(String dynamicId, String taskId, {required String idempotencyKey}) =>
+      _api.post('${_base(dynamicId)}/$taskId/decline', idempotencyKey: idempotencyKey);
+
   Future<void> archive(String dynamicId, String taskId, {required String idempotencyKey}) =>
       _api.post('${_base(dynamicId)}/$taskId/archive', idempotencyKey: idempotencyKey);
 

@@ -7,7 +7,7 @@ import '../features/entrance/presentation/create_account_screen.dart';
 import '../features/entrance/presentation/entrance_screen.dart';
 import '../features/activation/presentation/activation_wizard.dart';
 import '../features/activation/presentation/timezone_unavailable.dart';
-import '../features/dynamic/presentation/dynamic_screen.dart';
+import '../features/rules/presentation/rules_screen.dart';
 import '../features/dynamic/presentation/pause_screen.dart';
 import '../features/settings/presentation/leave_screen.dart';
 import '../features/points/presentation/points_screen.dart';
@@ -213,7 +213,7 @@ GoRouter createRouter(Ref ref) {
         path: _navPath(':id', NavSurface.rules),
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
-          return DynamicScreen(
+          return RulesScreen(
             dynamicId: dynamicId,
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
@@ -276,7 +276,7 @@ GoRouter createRouter(Ref ref) {
           final dynamicId = state.pathParameters['id']!;
           return PointsScreen(
             dynamicId: dynamicId,
-            onBack: () => context.go(_navPath(dynamicId, NavSurface.today)),
+            onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
           );
         },

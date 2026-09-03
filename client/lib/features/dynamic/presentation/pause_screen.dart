@@ -9,7 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 import '../application/dynamic_actions.dart';
-import 'dynamic_screen.dart';
+import '../application/dynamic_providers.dart';
 
 /// SCR-24 Pause and return.
 ///

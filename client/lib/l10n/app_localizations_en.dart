@@ -3010,4 +3010,466 @@ class LEn extends L {
 
   @override
   String get recordCommentFailed => 'Not sent. Try again.';
+
+  @override
+  String get rulesTitle => 'Rules';
+
+  @override
+  String get rulesAwayToggle => 'I\'m away';
+
+  @override
+  String rulesAwayUntil(String date) {
+    return 'Away until $date';
+  }
+
+  @override
+  String rulesAwayPartner(String name, String date) {
+    return '$name is away until $date';
+  }
+
+  @override
+  String get rulesBack => 'I\'m back';
+
+  @override
+  String get rulesStandingTitle => 'STANDING RULES';
+
+  @override
+  String get rulesStandingEmpty => 'No rules yet.';
+
+  @override
+  String get ruleGroupProtocol => 'Protocol';
+
+  @override
+  String get ruleGroupRitual => 'Ritual';
+
+  @override
+  String get ruleGroupRestriction => 'Restrictions';
+
+  @override
+  String get ruleGroupAppearance => 'Appearance';
+
+  @override
+  String get ruleGroupReporting => 'Reporting';
+
+  @override
+  String get ruleGroupOther => 'Other';
+
+  @override
+  String get rulesAddRule => 'Add a rule';
+
+  @override
+  String get rulesProposeRule => 'Propose a rule';
+
+  @override
+  String get rulesProposeChange => 'Propose a change';
+
+  @override
+  String get rulesRuleTitleLabel => 'The rule';
+
+  @override
+  String get rulesRuleBodyLabel => 'Detail (optional)';
+
+  @override
+  String get rulesGroupLabel => 'Group';
+
+  @override
+  String get rulesSave => 'Save';
+
+  @override
+  String get rulesArchive => 'Archive';
+
+  @override
+  String get rulesNeverMind => 'Never mind';
+
+  @override
+  String get rulesTasksTitle => 'RECURRING TASKS';
+
+  @override
+  String get rulesTasksEmpty => 'No tasks yet.';
+
+  @override
+  String get rulesAddTask => 'Add a task';
+
+  @override
+  String get rulesProposeTask => 'Propose a task';
+
+  @override
+  String get rulesTaskTitleLabel => 'What to do';
+
+  @override
+  String get rulesScheduleDaily => 'Every day';
+
+  @override
+  String rulesScheduleWeekdays(String days) {
+    return 'Weekly $days';
+  }
+
+  @override
+  String rulesScheduleEveryN(int n) {
+    return 'Every $n days';
+  }
+
+  @override
+  String get rulesScheduleOneOff => 'Once';
+
+  @override
+  String get rulesScheduleOpen => 'Any time';
+
+  @override
+  String get rulesScheduleCheckin => 'Check-in';
+
+  @override
+  String get rulesScheduleMeasure => 'Measure';
+
+  @override
+  String get rulesWeekdayNames => 'Mon,Tue,Wed,Thu,Fri,Sat,Sun';
+
+  @override
+  String rulesTimesPerDay(int n) {
+    return '$n a day';
+  }
+
+  @override
+  String get rulesProofCheck => 'Tick';
+
+  @override
+  String get rulesProofPhoto => 'Photo';
+
+  @override
+  String get rulesProofText => 'Words';
+
+  @override
+  String get rulesProofAny => 'Any';
+
+  @override
+  String rulesPoints(int n) {
+    return '$n pts';
+  }
+
+  @override
+  String rulesNeedsD(String name) {
+    return 'Needs $name there';
+  }
+
+  @override
+  String get rulesPaused => 'Paused';
+
+  @override
+  String rulesPausedUntil(String date) {
+    return 'Paused until $date';
+  }
+
+  @override
+  String get rulesPauseUntilDate => 'Pause until a date';
+
+  @override
+  String get rulesPauseIndefinite => 'Pause for now';
+
+  @override
+  String get rulesUnpause => 'Resume';
+
+  @override
+  String get rulesPointsLabel => 'Points (0 = base item)';
+
+  @override
+  String rulesRequiresDLabel(String name) {
+    return 'Needs $name present';
+  }
+
+  @override
+  String get rulesEveryNLabel => 'Every N days';
+
+  @override
+  String get rulesProposedTitle => 'PROPOSED';
+
+  @override
+  String get rulesProposedEmpty => 'Nothing proposed.';
+
+  @override
+  String get rulesAccept => 'Accept';
+
+  @override
+  String get rulesDecline => 'No';
+
+  @override
+  String rulesWaitingFor(String name) {
+    return 'Waiting for $name';
+  }
+
+  @override
+  String get rulesKindTask => 'Task';
+
+  @override
+  String get rulesKindRule => 'Rule';
+
+  @override
+  String get rulesWithdraw => 'Withdraw';
+
+  @override
+  String get rulesRewardsTitle => 'REWARDS';
+
+  @override
+  String get rulesRewardsEmpty => 'No rewards yet.';
+
+  @override
+  String get rulesAddReward => 'Add a reward';
+
+  @override
+  String get rulesRewardTitleLabel => 'Reward';
+
+  @override
+  String get rulesRewardCostLabel => 'Cost in points';
+
+  @override
+  String get rulesRewardDDecides => 'Decide at the time';
+
+  @override
+  String rulesRewardDDecidesName(String name) {
+    return '$name decides';
+  }
+
+  @override
+  String get rulesRewardRetire => 'Retire';
+
+  @override
+  String get rulesGoRedeem => 'Redeem';
+
+  @override
+  String get rulesConsequencesTitle => 'CONSEQUENCES';
+
+  @override
+  String rulesConsequencesIntro(String name) {
+    return 'Only $name uses these, by hand, when disposing. Nothing runs from here.';
+  }
+
+  @override
+  String get rulesConsequencesEmpty => 'None yet.';
+
+  @override
+  String get rulesAddConsequence => 'Add one';
+
+  @override
+  String get rulesConsequenceWhen => 'When';
+
+  @override
+  String get rulesConsequenceThen => 'Then';
+
+  @override
+  String get rulesEndConsequence => 'End';
+
+  @override
+  String get rulesLimitsTitle => 'LIMITS & SAFEWORD';
+
+  @override
+  String get rulesLimitsLine =>
+      'What either of you marked \"no\" in the compare lands here.';
+
+  @override
+  String get rulesLimitsGo => 'Compare';
+
+  @override
+  String get rulesExploreTitle => 'EXPLORE';
+
+  @override
+  String get rulesExploreCompare => 'Compare';
+
+  @override
+  String get rulesExploreInspiration => 'Inspiration';
+
+  @override
+  String get rulesExploreStarter => 'Starter pack';
+
+  @override
+  String get rulesPauseDynamic => 'Pause for a while';
+
+  @override
+  String get rulesCouldNotLoad => 'Rules could not be loaded.';
+
+  @override
+  String get rulesActionFailed => 'Not saved. Try again.';
+
+  @override
+  String rulesProposedSent(String name) {
+    return 'Sent to $name.';
+  }
+
+  @override
+  String get rulesTheD => 'the D';
+
+  @override
+  String get rulesTheS => 'the s';
+
+  @override
+  String get rulesYou => 'you';
+
+  @override
+  String ptsBalanceOf(String name, int n) {
+    return '$name has $n';
+  }
+
+  @override
+  String ptsBalanceMine(int n) {
+    return '$n';
+  }
+
+  @override
+  String get ptsGive => 'Give';
+
+  @override
+  String get ptsDeduct => 'Deduct';
+
+  @override
+  String get ptsAmountLabel => 'How many';
+
+  @override
+  String get ptsWhyLabel => 'Why (optional)';
+
+  @override
+  String ptsGiveTitle(String name) {
+    return 'Give $name points';
+  }
+
+  @override
+  String ptsDeductTitle(String name) {
+    return 'Deduct from $name';
+  }
+
+  @override
+  String get ptsRedeemableTitle => 'REDEEMABLE';
+
+  @override
+  String ptsRedeemableEmpty(String name) {
+    return '$name has not set any rewards.';
+  }
+
+  @override
+  String ptsShort(int n) {
+    return '$n more';
+  }
+
+  @override
+  String ptsRequestTitle(String title) {
+    return 'Ask for \"$title\"';
+  }
+
+  @override
+  String get ptsRequestNote => 'A word with it (optional)';
+
+  @override
+  String get ptsRequestSend => 'Ask';
+
+  @override
+  String get ptsRequestsTitle => 'REQUESTS';
+
+  @override
+  String get ptsRequestsEmpty => 'No requests.';
+
+  @override
+  String ptsStatusRequested(String name) {
+    return 'Waiting for $name';
+  }
+
+  @override
+  String ptsStatusApproved(String name) {
+    return '$name approved';
+  }
+
+  @override
+  String ptsStatusDenied(String name) {
+    return '$name said no';
+  }
+
+  @override
+  String get ptsStatusFulfilled => 'Done';
+
+  @override
+  String get ptsApprove => 'Yes';
+
+  @override
+  String get ptsDeny => 'No';
+
+  @override
+  String get ptsFulfill => 'Done';
+
+  @override
+  String get ptsDecideNote => 'A word (optional)';
+
+  @override
+  String get ptsDecideCost => 'Set the cost';
+
+  @override
+  String get ptsLedgerTitle => 'LEDGER';
+
+  @override
+  String get ptsLedgerEmpty => 'Nothing yet.';
+
+  @override
+  String get ptsReasonTaskEarn => 'Task';
+
+  @override
+  String ptsReasonAward(String name) {
+    return '$name gave';
+  }
+
+  @override
+  String ptsReasonDeduct(String name) {
+    return '$name took';
+  }
+
+  @override
+  String get ptsReasonRedemption => 'Redeemed';
+
+  @override
+  String get ptsReasonRefund => 'Returned';
+
+  @override
+  String get ptsReasonOther => 'Movement';
+
+  @override
+  String get ptsRulesTitle => 'WHAT PAYS';
+
+  @override
+  String get ptsRulesEmpty => 'No task pays yet.';
+
+  @override
+  String get ptsRulesBase => 'Everything else is a base item at 0.';
+
+  @override
+  String get ptsConsequencesTitle => 'CONSEQUENCES';
+
+  @override
+  String get ptsConsequencesEmpty => 'None.';
+
+  @override
+  String get ptsConsequenceDone => 'Done';
+
+  @override
+  String get ptsConsequenceConfirm => 'Confirm';
+
+  @override
+  String get ptsConsequenceWaive => 'Let it go';
+
+  @override
+  String get ptsConsStatusIssued => 'Not yet done';
+
+  @override
+  String ptsConsStatusDoneByS(String name) {
+    return 'Done, waiting for $name';
+  }
+
+  @override
+  String ptsConsStatusConfirmed(String name) {
+    return '$name confirmed';
+  }
+
+  @override
+  String ptsConsStatusWaived(String name) {
+    return '$name let it go';
+  }
+
+  @override
+  String get ptsCouldNotLoad => 'Points could not be loaded.';
+
+  @override
+  String get ptsActionFailed => 'Not saved. Try again.';
 }

@@ -85,6 +85,16 @@
 - ⚠️ jOOQ 可选参数踩坑：`WHERE (? IS NULL OR col = ?)` 在 Postgres 下报「could not determine data type of parameter」，需 `CAST(? AS text) IS NULL`（`redemptions`/`consequences` 的 status 过滤两处已修）。
 - 验收：s 建规矩为 proposed 且在 D 接受前不算 active；s 不能改 D 的规矩；away 只暂停 `requires_d_present` 的任务，`back` 只恢复它自己暂停的那些；`requested` 状态兑换不扣分，denied 不扣分，approve 恰好写一条归属 D 的 `redemption` 流水；「D 决定」奖励 approve 时若无 cost 报错；consequence done/confirm/waive 的双边规则；所有扣分流水都有 actor（既有 CHECK 约束）。
 
+客户端 ✅ 2026-09-03（`client/lib/features/rules/`、`features/points/`；`rules_screen_test` 7 例 + `points_screen_test` 7 例；全仓 313 测试通过，analyze 0 issue）
+- 模型/仓库：`models/rule.dart`（RuleView/NewRule/RuleEdit，六组常量）、`models/redemption.dart`、`models/consequence.dart`；`Reward.cost` 改 `int?`（null=「D 决定」）；新增 `PointsRule`；`RuleRepository`（list/create/PATCH update/archive/accept）、`ConsequenceRepository`（list/done/confirm/waive）；`PointsRepository` 补 request/redemptions/decide/fulfill/pointsRules；`TaskRepository.decline`；`DynamicRepository.away/back`；`TodayView`/`DynamicDetail` 加 `dAwayUntil`；`ApiClient.patch`。
+- 规矩 tab（`rules_screen.dart` 取代旧 `dynamic_screen.dart`）：顶部 D「我不在」→日期选择→`/away`（until = 所选日在 Dynamic 时区 day_start 的瞬间，不用设备日期）；已设则显「不在，到 M月d日」+「回来了」→`/back`，s 只读。分区顺序：常设规矩（按 group 分组；D 点开改/归档，s 长按→「提议改一条」，以编辑后的文本 POST 出一条 proposed）→ 循环任务定义（计划/凭证/分/需要 D 在；D 加、暂停到某日/不定期、恢复、归档；s 提议→proposed）→ 提议中（任务+规矩合并，D 接受/不要，s 看自己待看的）→ 奖励目录（D 加/下架，成本可「到时候再定」=null；s 只读 + 去兑换）→ 惩罚库（`/agreements` 模板，D 加/结束；文案明说只在处置里由 D 手动用）→ 底线与安全词占位行→探索。
+- 分 tab（`points_screen.dart` 重写）：余额取 s 的（D 面显「{s} 有 N 分」）；「在一起 N 天 · 连续 M 天」复用 `recordSummaryProvider`；可兑换（不够显「还差 N 分」，null 显「{D} 定」；cost=0 直接 `/redeem`，否则 LineSheet 可选一句→`/request`）；兑换申请（s 看状态词；D 同意/不行，「D 决定」奖励同意时必填分数→`costOverride`；approved 双方可「完成了」→`/fulfill`）；罚（issued→s「做完了」；D 对 issued/done_by_s「确认」/「算了」，无计时）；流水 reason 词映射；规则可见（`/points/rules` + 「其余基础项 0 分」）；D 给分/扣分→`POST /points`。
+- 每个写操作带 `Idempotency-Key`，失败只显一句「没发出去」，成功后 invalidate 相关 provider；s 的 userId 由 `dynamicDetailProvider.members(side=S)` 推出（`sUserIdProvider`）。
+- ⚠️ 偏差：任务定义表单只做 recurring（daily/weekdays/every_n_days）+ 凭证 + 分 + 需要 D 在，未做 timesPerDay/dueTime/one_off/measure 的编辑。
+- ⚠️ 偏差：安全词模型无字段，规矩页只留「底线」一行链到探索的偏好对照，未做安全词。
+- ⚠️ 偏差：旧 Dynamic 总览页（成员对、结构行、`orbit_figure`）及其测试删除；`ConsequencePanel`/`issueConsequence`/`ConsequenceEvent`（走已改名的 `/agreement-consequences`）从客户端移除，惩罚只来自处置的 `punished`；`PointsScreen` 去掉 onBack 与 gift UI（`gift` 仓库方法保留未接线）。
+- ⚠️ 偏差：兑换申请与罚两个列表当前不按 status 过滤，全部展示（denied/fulfilled/confirmed/waived 灰显）；量大后需分页或只留最近。
+
 ## Phase 4 · 探索（1–2 周）
 后端 ✅ 2026-09-03（`backend/…/explore/`；`ExploreIT` 13 例覆盖；全仓 209 测试通过）
 - V20：新表 `preference_items_custom`（dynamic 自定义题库条目）、`preference_answers`（`item_id text` 兼容系统 slug 与自定义 UUID，`answer CHECK (want/ok/no/talk)`，唯一键 dynamic+item+member）、`idea_card_states`（`status CHECK (saved/tried_again/tried_never)`，唯一键 dynamic+card）。

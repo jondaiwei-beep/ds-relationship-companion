@@ -2,7 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/domain_client/models/record.dart';
 import 'package:dsapp/domain_client/models/today_view.dart';
-import 'package:dsapp/features/dynamic/presentation/dynamic_screen.dart' show dynamicViewerIdProvider;
+import 'package:dsapp/features/dynamic/application/dynamic_providers.dart' show dynamicViewerIdProvider;
 import 'package:dsapp/features/record/presentation/day_screen.dart';
 import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';

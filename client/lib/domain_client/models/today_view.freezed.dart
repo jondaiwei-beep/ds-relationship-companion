@@ -933,7 +933,8 @@ mixin _$TodayView {
  String get dynamicId;/// The relationship day shown, `yyyy-MM-dd`.
  String get day; String get timezone; int get dayBoundaryMinutes;/// `D` or `S` — the caller's side, as the server sees it.
  String get side; List<OccurrenceView> get items; List<OpenTaskView> get openTasks; int get balance; int get daysTogether;/// D face: things the s has said that have no answer yet, all days.
- int get needsMe; String? get partnerDisplayName;
+ int get needsMe; String? get partnerDisplayName;/// Set while the D has said「我不在」(D-26). Null when present.
+ DateTime? get dAwayUntil;
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -946,16 +947,16 @@ $TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.day, day) || other.day == day)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.side, side) || other.side == side)&&const DeepCollectionEquality().equals(other.items, items)&&const DeepCollectionEquality().equals(other.openTasks, openTasks)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.daysTogether, daysTogether) || other.daysTogether == daysTogether)&&(identical(other.needsMe, needsMe) || other.needsMe == needsMe)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.day, day) || other.day == day)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.side, side) || other.side == side)&&const DeepCollectionEquality().equals(other.items, items)&&const DeepCollectionEquality().equals(other.openTasks, openTasks)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.daysTogether, daysTogether) || other.daysTogether == daysTogether)&&(identical(other.needsMe, needsMe) || other.needsMe == needsMe)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName)&&(identical(other.dAwayUntil, dAwayUntil) || other.dAwayUntil == dAwayUntil));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,dynamicId,day,timezone,dayBoundaryMinutes,side,const DeepCollectionEquality().hash(items),const DeepCollectionEquality().hash(openTasks),balance,daysTogether,needsMe,partnerDisplayName);
+int get hashCode => Object.hash(runtimeType,dynamicId,day,timezone,dayBoundaryMinutes,side,const DeepCollectionEquality().hash(items),const DeepCollectionEquality().hash(openTasks),balance,daysTogether,needsMe,partnerDisplayName,dAwayUntil);
 
 @override
 String toString() {
-  return 'TodayView(dynamicId: $dynamicId, day: $day, timezone: $timezone, dayBoundaryMinutes: $dayBoundaryMinutes, side: $side, items: $items, openTasks: $openTasks, balance: $balance, daysTogether: $daysTogether, needsMe: $needsMe, partnerDisplayName: $partnerDisplayName)';
+  return 'TodayView(dynamicId: $dynamicId, day: $day, timezone: $timezone, dayBoundaryMinutes: $dayBoundaryMinutes, side: $side, items: $items, openTasks: $openTasks, balance: $balance, daysTogether: $daysTogether, needsMe: $needsMe, partnerDisplayName: $partnerDisplayName, dAwayUntil: $dAwayUntil)';
 }
 
 
@@ -966,7 +967,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- String dynamicId, String day, String timezone, int dayBoundaryMinutes, String side, List<OccurrenceView> items, List<OpenTaskView> openTasks, int balance, int daysTogether, int needsMe, String? partnerDisplayName
+ String dynamicId, String day, String timezone, int dayBoundaryMinutes, String side, List<OccurrenceView> items, List<OpenTaskView> openTasks, int balance, int daysTogether, int needsMe, String? partnerDisplayName, DateTime? dAwayUntil
 });
 
 
@@ -983,7 +984,7 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? dynamicId = null,Object? day = null,Object? timezone = null,Object? dayBoundaryMinutes = null,Object? side = null,Object? items = null,Object? openTasks = null,Object? balance = null,Object? daysTogether = null,Object? needsMe = null,Object? partnerDisplayName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? dynamicId = null,Object? day = null,Object? timezone = null,Object? dayBoundaryMinutes = null,Object? side = null,Object? items = null,Object? openTasks = null,Object? balance = null,Object? daysTogether = null,Object? needsMe = null,Object? partnerDisplayName = freezed,Object? dAwayUntil = freezed,}) {
   return _then(_self.copyWith(
 dynamicId: null == dynamicId ? _self.dynamicId : dynamicId // ignore: cast_nullable_to_non_nullable
 as String,day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
@@ -996,7 +997,8 @@ as List<OpenTaskView>,balance: null == balance ? _self.balance : balance // igno
 as int,daysTogether: null == daysTogether ? _self.daysTogether : daysTogether // ignore: cast_nullable_to_non_nullable
 as int,needsMe: null == needsMe ? _self.needsMe : needsMe // ignore: cast_nullable_to_non_nullable
 as int,partnerDisplayName: freezed == partnerDisplayName ? _self.partnerDisplayName : partnerDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,dAwayUntil: freezed == dAwayUntil ? _self.dAwayUntil : dAwayUntil // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -1081,10 +1083,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName,  DateTime? dAwayUntil)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName);case _:
+return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName,_that.dAwayUntil);case _:
   return orElse();
 
 }
@@ -1102,10 +1104,10 @@ return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinute
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName,  DateTime? dAwayUntil)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
-return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName);case _:
+return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName,_that.dAwayUntil);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1122,10 +1124,10 @@ return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinute
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String dynamicId,  String day,  String timezone,  int dayBoundaryMinutes,  String side,  List<OccurrenceView> items,  List<OpenTaskView> openTasks,  int balance,  int daysTogether,  int needsMe,  String? partnerDisplayName,  DateTime? dAwayUntil)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName);case _:
+return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinutes,_that.side,_that.items,_that.openTasks,_that.balance,_that.daysTogether,_that.needsMe,_that.partnerDisplayName,_that.dAwayUntil);case _:
   return null;
 
 }
@@ -1137,7 +1139,7 @@ return $default(_that.dynamicId,_that.day,_that.timezone,_that.dayBoundaryMinute
 @JsonSerializable()
 
 class _TodayView extends TodayView {
-  const _TodayView({required this.dynamicId, required this.day, required this.timezone, this.dayBoundaryMinutes = 240, required this.side, final  List<OccurrenceView> items = const <OccurrenceView>[], final  List<OpenTaskView> openTasks = const <OpenTaskView>[], this.balance = 0, this.daysTogether = 0, this.needsMe = 0, this.partnerDisplayName}): _items = items,_openTasks = openTasks,super._();
+  const _TodayView({required this.dynamicId, required this.day, required this.timezone, this.dayBoundaryMinutes = 240, required this.side, final  List<OccurrenceView> items = const <OccurrenceView>[], final  List<OpenTaskView> openTasks = const <OpenTaskView>[], this.balance = 0, this.daysTogether = 0, this.needsMe = 0, this.partnerDisplayName, this.dAwayUntil}): _items = items,_openTasks = openTasks,super._();
   factory _TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
 
 @override final  String dynamicId;
@@ -1166,6 +1168,8 @@ class _TodayView extends TodayView {
 /// D face: things the s has said that have no answer yet, all days.
 @override@JsonKey() final  int needsMe;
 @override final  String? partnerDisplayName;
+/// Set while the D has said「我不在」(D-26). Null when present.
+@override final  DateTime? dAwayUntil;
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
@@ -1180,16 +1184,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.day, day) || other.day == day)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.side, side) || other.side == side)&&const DeepCollectionEquality().equals(other._items, _items)&&const DeepCollectionEquality().equals(other._openTasks, _openTasks)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.daysTogether, daysTogether) || other.daysTogether == daysTogether)&&(identical(other.needsMe, needsMe) || other.needsMe == needsMe)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.day, day) || other.day == day)&&(identical(other.timezone, timezone) || other.timezone == timezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.side, side) || other.side == side)&&const DeepCollectionEquality().equals(other._items, _items)&&const DeepCollectionEquality().equals(other._openTasks, _openTasks)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.daysTogether, daysTogether) || other.daysTogether == daysTogether)&&(identical(other.needsMe, needsMe) || other.needsMe == needsMe)&&(identical(other.partnerDisplayName, partnerDisplayName) || other.partnerDisplayName == partnerDisplayName)&&(identical(other.dAwayUntil, dAwayUntil) || other.dAwayUntil == dAwayUntil));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,dynamicId,day,timezone,dayBoundaryMinutes,side,const DeepCollectionEquality().hash(_items),const DeepCollectionEquality().hash(_openTasks),balance,daysTogether,needsMe,partnerDisplayName);
+int get hashCode => Object.hash(runtimeType,dynamicId,day,timezone,dayBoundaryMinutes,side,const DeepCollectionEquality().hash(_items),const DeepCollectionEquality().hash(_openTasks),balance,daysTogether,needsMe,partnerDisplayName,dAwayUntil);
 
 @override
 String toString() {
-  return 'TodayView(dynamicId: $dynamicId, day: $day, timezone: $timezone, dayBoundaryMinutes: $dayBoundaryMinutes, side: $side, items: $items, openTasks: $openTasks, balance: $balance, daysTogether: $daysTogether, needsMe: $needsMe, partnerDisplayName: $partnerDisplayName)';
+  return 'TodayView(dynamicId: $dynamicId, day: $day, timezone: $timezone, dayBoundaryMinutes: $dayBoundaryMinutes, side: $side, items: $items, openTasks: $openTasks, balance: $balance, daysTogether: $daysTogether, needsMe: $needsMe, partnerDisplayName: $partnerDisplayName, dAwayUntil: $dAwayUntil)';
 }
 
 
@@ -1200,7 +1204,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- String dynamicId, String day, String timezone, int dayBoundaryMinutes, String side, List<OccurrenceView> items, List<OpenTaskView> openTasks, int balance, int daysTogether, int needsMe, String? partnerDisplayName
+ String dynamicId, String day, String timezone, int dayBoundaryMinutes, String side, List<OccurrenceView> items, List<OpenTaskView> openTasks, int balance, int daysTogether, int needsMe, String? partnerDisplayName, DateTime? dAwayUntil
 });
 
 
@@ -1217,7 +1221,7 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? dynamicId = null,Object? day = null,Object? timezone = null,Object? dayBoundaryMinutes = null,Object? side = null,Object? items = null,Object? openTasks = null,Object? balance = null,Object? daysTogether = null,Object? needsMe = null,Object? partnerDisplayName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? dynamicId = null,Object? day = null,Object? timezone = null,Object? dayBoundaryMinutes = null,Object? side = null,Object? items = null,Object? openTasks = null,Object? balance = null,Object? daysTogether = null,Object? needsMe = null,Object? partnerDisplayName = freezed,Object? dAwayUntil = freezed,}) {
   return _then(_TodayView(
 dynamicId: null == dynamicId ? _self.dynamicId : dynamicId // ignore: cast_nullable_to_non_nullable
 as String,day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
@@ -1230,7 +1234,8 @@ as List<OpenTaskView>,balance: null == balance ? _self.balance : balance // igno
 as int,daysTogether: null == daysTogether ? _self.daysTogether : daysTogether // ignore: cast_nullable_to_non_nullable
 as int,needsMe: null == needsMe ? _self.needsMe : needsMe // ignore: cast_nullable_to_non_nullable
 as int,partnerDisplayName: freezed == partnerDisplayName ? _self.partnerDisplayName : partnerDisplayName // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,dAwayUntil: freezed == dAwayUntil ? _self.dAwayUntil : dAwayUntil // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

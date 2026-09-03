@@ -569,7 +569,8 @@ as bool,
 /// @nodoc
 mixin _$DynamicDetail {
 
- String get dynamicId; String get state; String get desiredOutcome; String get structureLevel; String get referenceTimezone; int get dayBoundaryMinutes; DateTime? get pausedAt; List<MemberView> get members; List<StructureItem> get structure;/// Agency no role can ever remove. The UI must always be
+ String get dynamicId; String get state; String get desiredOutcome; String get structureLevel; String get referenceTimezone; int get dayBoundaryMinutes; DateTime? get pausedAt;/// D-26: the D is away until this instant; tasks needing them are paused.
+ DateTime? get dAwayUntil; List<MemberView> get members; List<StructureItem> get structure;/// Agency no role can ever remove. The UI must always be
 /// able to surface these, whatever the viewer's role.
  List<String> get alwaysAvailable;
 /// Create a copy of DynamicDetail
@@ -584,16 +585,16 @@ $DynamicDetailCopyWith<DynamicDetail> get copyWith => _$DynamicDetailCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DynamicDetail&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.state, state) || other.state == state)&&(identical(other.desiredOutcome, desiredOutcome) || other.desiredOutcome == desiredOutcome)&&(identical(other.structureLevel, structureLevel) || other.structureLevel == structureLevel)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.pausedAt, pausedAt) || other.pausedAt == pausedAt)&&const DeepCollectionEquality().equals(other.members, members)&&const DeepCollectionEquality().equals(other.structure, structure)&&const DeepCollectionEquality().equals(other.alwaysAvailable, alwaysAvailable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DynamicDetail&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.state, state) || other.state == state)&&(identical(other.desiredOutcome, desiredOutcome) || other.desiredOutcome == desiredOutcome)&&(identical(other.structureLevel, structureLevel) || other.structureLevel == structureLevel)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.pausedAt, pausedAt) || other.pausedAt == pausedAt)&&(identical(other.dAwayUntil, dAwayUntil) || other.dAwayUntil == dAwayUntil)&&const DeepCollectionEquality().equals(other.members, members)&&const DeepCollectionEquality().equals(other.structure, structure)&&const DeepCollectionEquality().equals(other.alwaysAvailable, alwaysAvailable));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,dynamicId,state,desiredOutcome,structureLevel,referenceTimezone,dayBoundaryMinutes,pausedAt,const DeepCollectionEquality().hash(members),const DeepCollectionEquality().hash(structure),const DeepCollectionEquality().hash(alwaysAvailable));
+int get hashCode => Object.hash(runtimeType,dynamicId,state,desiredOutcome,structureLevel,referenceTimezone,dayBoundaryMinutes,pausedAt,dAwayUntil,const DeepCollectionEquality().hash(members),const DeepCollectionEquality().hash(structure),const DeepCollectionEquality().hash(alwaysAvailable));
 
 @override
 String toString() {
-  return 'DynamicDetail(dynamicId: $dynamicId, state: $state, desiredOutcome: $desiredOutcome, structureLevel: $structureLevel, referenceTimezone: $referenceTimezone, dayBoundaryMinutes: $dayBoundaryMinutes, pausedAt: $pausedAt, members: $members, structure: $structure, alwaysAvailable: $alwaysAvailable)';
+  return 'DynamicDetail(dynamicId: $dynamicId, state: $state, desiredOutcome: $desiredOutcome, structureLevel: $structureLevel, referenceTimezone: $referenceTimezone, dayBoundaryMinutes: $dayBoundaryMinutes, pausedAt: $pausedAt, dAwayUntil: $dAwayUntil, members: $members, structure: $structure, alwaysAvailable: $alwaysAvailable)';
 }
 
 
@@ -604,7 +605,7 @@ abstract mixin class $DynamicDetailCopyWith<$Res>  {
   factory $DynamicDetailCopyWith(DynamicDetail value, $Res Function(DynamicDetail) _then) = _$DynamicDetailCopyWithImpl;
 @useResult
 $Res call({
- String dynamicId, String state, String desiredOutcome, String structureLevel, String referenceTimezone, int dayBoundaryMinutes, DateTime? pausedAt, List<MemberView> members, List<StructureItem> structure, List<String> alwaysAvailable
+ String dynamicId, String state, String desiredOutcome, String structureLevel, String referenceTimezone, int dayBoundaryMinutes, DateTime? pausedAt, DateTime? dAwayUntil, List<MemberView> members, List<StructureItem> structure, List<String> alwaysAvailable
 });
 
 
@@ -621,7 +622,7 @@ class _$DynamicDetailCopyWithImpl<$Res>
 
 /// Create a copy of DynamicDetail
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? dynamicId = null,Object? state = null,Object? desiredOutcome = null,Object? structureLevel = null,Object? referenceTimezone = null,Object? dayBoundaryMinutes = null,Object? pausedAt = freezed,Object? members = null,Object? structure = null,Object? alwaysAvailable = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? dynamicId = null,Object? state = null,Object? desiredOutcome = null,Object? structureLevel = null,Object? referenceTimezone = null,Object? dayBoundaryMinutes = null,Object? pausedAt = freezed,Object? dAwayUntil = freezed,Object? members = null,Object? structure = null,Object? alwaysAvailable = null,}) {
   return _then(_self.copyWith(
 dynamicId: null == dynamicId ? _self.dynamicId : dynamicId // ignore: cast_nullable_to_non_nullable
 as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
@@ -630,6 +631,7 @@ as String,structureLevel: null == structureLevel ? _self.structureLevel : struct
 as String,referenceTimezone: null == referenceTimezone ? _self.referenceTimezone : referenceTimezone // ignore: cast_nullable_to_non_nullable
 as String,dayBoundaryMinutes: null == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
 as int,pausedAt: freezed == pausedAt ? _self.pausedAt : pausedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,dAwayUntil: freezed == dAwayUntil ? _self.dAwayUntil : dAwayUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,members: null == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
 as List<MemberView>,structure: null == structure ? _self.structure : structure // ignore: cast_nullable_to_non_nullable
 as List<StructureItem>,alwaysAvailable: null == alwaysAvailable ? _self.alwaysAvailable : alwaysAvailable // ignore: cast_nullable_to_non_nullable
@@ -718,10 +720,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String dynamicId,  String state,  String desiredOutcome,  String structureLevel,  String referenceTimezone,  int dayBoundaryMinutes,  DateTime? pausedAt,  List<MemberView> members,  List<StructureItem> structure,  List<String> alwaysAvailable)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String dynamicId,  String state,  String desiredOutcome,  String structureLevel,  String referenceTimezone,  int dayBoundaryMinutes,  DateTime? pausedAt,  DateTime? dAwayUntil,  List<MemberView> members,  List<StructureItem> structure,  List<String> alwaysAvailable)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DynamicDetail() when $default != null:
-return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structureLevel,_that.referenceTimezone,_that.dayBoundaryMinutes,_that.pausedAt,_that.members,_that.structure,_that.alwaysAvailable);case _:
+return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structureLevel,_that.referenceTimezone,_that.dayBoundaryMinutes,_that.pausedAt,_that.dAwayUntil,_that.members,_that.structure,_that.alwaysAvailable);case _:
   return orElse();
 
 }
@@ -739,10 +741,10 @@ return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structure
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String dynamicId,  String state,  String desiredOutcome,  String structureLevel,  String referenceTimezone,  int dayBoundaryMinutes,  DateTime? pausedAt,  List<MemberView> members,  List<StructureItem> structure,  List<String> alwaysAvailable)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String dynamicId,  String state,  String desiredOutcome,  String structureLevel,  String referenceTimezone,  int dayBoundaryMinutes,  DateTime? pausedAt,  DateTime? dAwayUntil,  List<MemberView> members,  List<StructureItem> structure,  List<String> alwaysAvailable)  $default,) {final _that = this;
 switch (_that) {
 case _DynamicDetail():
-return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structureLevel,_that.referenceTimezone,_that.dayBoundaryMinutes,_that.pausedAt,_that.members,_that.structure,_that.alwaysAvailable);case _:
+return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structureLevel,_that.referenceTimezone,_that.dayBoundaryMinutes,_that.pausedAt,_that.dAwayUntil,_that.members,_that.structure,_that.alwaysAvailable);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -759,10 +761,10 @@ return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structure
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String dynamicId,  String state,  String desiredOutcome,  String structureLevel,  String referenceTimezone,  int dayBoundaryMinutes,  DateTime? pausedAt,  List<MemberView> members,  List<StructureItem> structure,  List<String> alwaysAvailable)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String dynamicId,  String state,  String desiredOutcome,  String structureLevel,  String referenceTimezone,  int dayBoundaryMinutes,  DateTime? pausedAt,  DateTime? dAwayUntil,  List<MemberView> members,  List<StructureItem> structure,  List<String> alwaysAvailable)?  $default,) {final _that = this;
 switch (_that) {
 case _DynamicDetail() when $default != null:
-return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structureLevel,_that.referenceTimezone,_that.dayBoundaryMinutes,_that.pausedAt,_that.members,_that.structure,_that.alwaysAvailable);case _:
+return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structureLevel,_that.referenceTimezone,_that.dayBoundaryMinutes,_that.pausedAt,_that.dAwayUntil,_that.members,_that.structure,_that.alwaysAvailable);case _:
   return null;
 
 }
@@ -774,7 +776,7 @@ return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structure
 @JsonSerializable()
 
 class _DynamicDetail implements DynamicDetail {
-  const _DynamicDetail({required this.dynamicId, required this.state, required this.desiredOutcome, required this.structureLevel, required this.referenceTimezone, this.dayBoundaryMinutes = 0, this.pausedAt, final  List<MemberView> members = const <MemberView>[], final  List<StructureItem> structure = const <StructureItem>[], final  List<String> alwaysAvailable = const <String>[]}): _members = members,_structure = structure,_alwaysAvailable = alwaysAvailable;
+  const _DynamicDetail({required this.dynamicId, required this.state, required this.desiredOutcome, required this.structureLevel, required this.referenceTimezone, this.dayBoundaryMinutes = 0, this.pausedAt, this.dAwayUntil, final  List<MemberView> members = const <MemberView>[], final  List<StructureItem> structure = const <StructureItem>[], final  List<String> alwaysAvailable = const <String>[]}): _members = members,_structure = structure,_alwaysAvailable = alwaysAvailable;
   factory _DynamicDetail.fromJson(Map<String, dynamic> json) => _$DynamicDetailFromJson(json);
 
 @override final  String dynamicId;
@@ -784,6 +786,8 @@ class _DynamicDetail implements DynamicDetail {
 @override final  String referenceTimezone;
 @override@JsonKey() final  int dayBoundaryMinutes;
 @override final  DateTime? pausedAt;
+/// D-26: the D is away until this instant; tasks needing them are paused.
+@override final  DateTime? dAwayUntil;
  final  List<MemberView> _members;
 @override@JsonKey() List<MemberView> get members {
   if (_members is EqualUnmodifiableListView) return _members;
@@ -823,16 +827,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DynamicDetail&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.state, state) || other.state == state)&&(identical(other.desiredOutcome, desiredOutcome) || other.desiredOutcome == desiredOutcome)&&(identical(other.structureLevel, structureLevel) || other.structureLevel == structureLevel)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.pausedAt, pausedAt) || other.pausedAt == pausedAt)&&const DeepCollectionEquality().equals(other._members, _members)&&const DeepCollectionEquality().equals(other._structure, _structure)&&const DeepCollectionEquality().equals(other._alwaysAvailable, _alwaysAvailable));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DynamicDetail&&(identical(other.dynamicId, dynamicId) || other.dynamicId == dynamicId)&&(identical(other.state, state) || other.state == state)&&(identical(other.desiredOutcome, desiredOutcome) || other.desiredOutcome == desiredOutcome)&&(identical(other.structureLevel, structureLevel) || other.structureLevel == structureLevel)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.pausedAt, pausedAt) || other.pausedAt == pausedAt)&&(identical(other.dAwayUntil, dAwayUntil) || other.dAwayUntil == dAwayUntil)&&const DeepCollectionEquality().equals(other._members, _members)&&const DeepCollectionEquality().equals(other._structure, _structure)&&const DeepCollectionEquality().equals(other._alwaysAvailable, _alwaysAvailable));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,dynamicId,state,desiredOutcome,structureLevel,referenceTimezone,dayBoundaryMinutes,pausedAt,const DeepCollectionEquality().hash(_members),const DeepCollectionEquality().hash(_structure),const DeepCollectionEquality().hash(_alwaysAvailable));
+int get hashCode => Object.hash(runtimeType,dynamicId,state,desiredOutcome,structureLevel,referenceTimezone,dayBoundaryMinutes,pausedAt,dAwayUntil,const DeepCollectionEquality().hash(_members),const DeepCollectionEquality().hash(_structure),const DeepCollectionEquality().hash(_alwaysAvailable));
 
 @override
 String toString() {
-  return 'DynamicDetail(dynamicId: $dynamicId, state: $state, desiredOutcome: $desiredOutcome, structureLevel: $structureLevel, referenceTimezone: $referenceTimezone, dayBoundaryMinutes: $dayBoundaryMinutes, pausedAt: $pausedAt, members: $members, structure: $structure, alwaysAvailable: $alwaysAvailable)';
+  return 'DynamicDetail(dynamicId: $dynamicId, state: $state, desiredOutcome: $desiredOutcome, structureLevel: $structureLevel, referenceTimezone: $referenceTimezone, dayBoundaryMinutes: $dayBoundaryMinutes, pausedAt: $pausedAt, dAwayUntil: $dAwayUntil, members: $members, structure: $structure, alwaysAvailable: $alwaysAvailable)';
 }
 
 
@@ -843,7 +847,7 @@ abstract mixin class _$DynamicDetailCopyWith<$Res> implements $DynamicDetailCopy
   factory _$DynamicDetailCopyWith(_DynamicDetail value, $Res Function(_DynamicDetail) _then) = __$DynamicDetailCopyWithImpl;
 @override @useResult
 $Res call({
- String dynamicId, String state, String desiredOutcome, String structureLevel, String referenceTimezone, int dayBoundaryMinutes, DateTime? pausedAt, List<MemberView> members, List<StructureItem> structure, List<String> alwaysAvailable
+ String dynamicId, String state, String desiredOutcome, String structureLevel, String referenceTimezone, int dayBoundaryMinutes, DateTime? pausedAt, DateTime? dAwayUntil, List<MemberView> members, List<StructureItem> structure, List<String> alwaysAvailable
 });
 
 
@@ -860,7 +864,7 @@ class __$DynamicDetailCopyWithImpl<$Res>
 
 /// Create a copy of DynamicDetail
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? dynamicId = null,Object? state = null,Object? desiredOutcome = null,Object? structureLevel = null,Object? referenceTimezone = null,Object? dayBoundaryMinutes = null,Object? pausedAt = freezed,Object? members = null,Object? structure = null,Object? alwaysAvailable = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? dynamicId = null,Object? state = null,Object? desiredOutcome = null,Object? structureLevel = null,Object? referenceTimezone = null,Object? dayBoundaryMinutes = null,Object? pausedAt = freezed,Object? dAwayUntil = freezed,Object? members = null,Object? structure = null,Object? alwaysAvailable = null,}) {
   return _then(_DynamicDetail(
 dynamicId: null == dynamicId ? _self.dynamicId : dynamicId // ignore: cast_nullable_to_non_nullable
 as String,state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
@@ -869,6 +873,7 @@ as String,structureLevel: null == structureLevel ? _self.structureLevel : struct
 as String,referenceTimezone: null == referenceTimezone ? _self.referenceTimezone : referenceTimezone // ignore: cast_nullable_to_non_nullable
 as String,dayBoundaryMinutes: null == dayBoundaryMinutes ? _self.dayBoundaryMinutes : dayBoundaryMinutes // ignore: cast_nullable_to_non_nullable
 as int,pausedAt: freezed == pausedAt ? _self.pausedAt : pausedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,dAwayUntil: freezed == dAwayUntil ? _self.dAwayUntil : dAwayUntil // ignore: cast_nullable_to_non_nullable
 as DateTime?,members: null == members ? _self._members : members // ignore: cast_nullable_to_non_nullable
 as List<MemberView>,structure: null == structure ? _self._structure : structure // ignore: cast_nullable_to_non_nullable
 as List<StructureItem>,alwaysAvailable: null == alwaysAvailable ? _self._alwaysAvailable : alwaysAvailable // ignore: cast_nullable_to_non_nullable

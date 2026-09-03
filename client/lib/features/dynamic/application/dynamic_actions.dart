@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../domain_client/api_client.dart';
-import '../presentation/dynamic_screen.dart';
+import 'dynamic_providers.dart';
 
 /// The agency actions Dynamic offers. Either member may take either one,
 /// whatever their role — agency no role can remove.

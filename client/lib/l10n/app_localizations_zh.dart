@@ -2862,4 +2862,465 @@ class LZh extends L {
 
   @override
   String get recordCommentFailed => '没送出去，再试一次。';
+
+  @override
+  String get rulesTitle => '规矩';
+
+  @override
+  String get rulesAwayToggle => '我不在';
+
+  @override
+  String rulesAwayUntil(String date) {
+    return '不在，到 $date';
+  }
+
+  @override
+  String rulesAwayPartner(String name, String date) {
+    return '$name 不在，到 $date';
+  }
+
+  @override
+  String get rulesBack => '回来了';
+
+  @override
+  String get rulesStandingTitle => '常设规矩';
+
+  @override
+  String get rulesStandingEmpty => '还没有规矩。';
+
+  @override
+  String get ruleGroupProtocol => '礼节';
+
+  @override
+  String get ruleGroupRitual => '仪式';
+
+  @override
+  String get ruleGroupRestriction => '禁止';
+
+  @override
+  String get ruleGroupAppearance => '着装';
+
+  @override
+  String get ruleGroupReporting => '汇报';
+
+  @override
+  String get ruleGroupOther => '其他';
+
+  @override
+  String get rulesAddRule => '加一条规矩';
+
+  @override
+  String get rulesProposeRule => '提议一条规矩';
+
+  @override
+  String get rulesProposeChange => '提议改一条';
+
+  @override
+  String get rulesRuleTitleLabel => '一句话';
+
+  @override
+  String get rulesRuleBodyLabel => '细说（可选）';
+
+  @override
+  String get rulesGroupLabel => '分组';
+
+  @override
+  String get rulesSave => '记下';
+
+  @override
+  String get rulesArchive => '归档';
+
+  @override
+  String get rulesNeverMind => '不改了';
+
+  @override
+  String get rulesTasksTitle => '循环任务';
+
+  @override
+  String get rulesTasksEmpty => '还没有任务。';
+
+  @override
+  String get rulesAddTask => '加一条任务';
+
+  @override
+  String get rulesProposeTask => '提议一条任务';
+
+  @override
+  String get rulesTaskTitleLabel => '做什么';
+
+  @override
+  String get rulesScheduleDaily => '每天';
+
+  @override
+  String rulesScheduleWeekdays(String days) {
+    return '每周$days';
+  }
+
+  @override
+  String rulesScheduleEveryN(int n) {
+    return '每 $n 天';
+  }
+
+  @override
+  String get rulesScheduleOneOff => '一次';
+
+  @override
+  String get rulesScheduleOpen => '随时';
+
+  @override
+  String get rulesScheduleCheckin => '问安';
+
+  @override
+  String get rulesScheduleMeasure => '记数值';
+
+  @override
+  String get rulesWeekdayNames => '一,二,三,四,五,六,日';
+
+  @override
+  String rulesTimesPerDay(int n) {
+    return '一天 $n 次';
+  }
+
+  @override
+  String get rulesProofCheck => '勾';
+
+  @override
+  String get rulesProofPhoto => '照片';
+
+  @override
+  String get rulesProofText => '文字';
+
+  @override
+  String get rulesProofAny => '任意';
+
+  @override
+  String rulesPoints(int n) {
+    return '$n 分';
+  }
+
+  @override
+  String rulesNeedsD(String name) {
+    return '要 $name 在';
+  }
+
+  @override
+  String get rulesPaused => '暂停中';
+
+  @override
+  String rulesPausedUntil(String date) {
+    return '暂停中，到 $date';
+  }
+
+  @override
+  String get rulesPauseUntilDate => '暂停到某天';
+
+  @override
+  String get rulesPauseIndefinite => '先停着';
+
+  @override
+  String get rulesUnpause => '恢复';
+
+  @override
+  String get rulesPointsLabel => '分（0 = 基础项）';
+
+  @override
+  String rulesRequiresDLabel(String name) {
+    return '要 $name 在场';
+  }
+
+  @override
+  String get rulesEveryNLabel => '每几天';
+
+  @override
+  String get rulesProposedTitle => '提议中';
+
+  @override
+  String get rulesProposedEmpty => '没有待看的提议。';
+
+  @override
+  String get rulesAccept => '接受';
+
+  @override
+  String get rulesDecline => '不要';
+
+  @override
+  String rulesWaitingFor(String name) {
+    return '等 $name 看';
+  }
+
+  @override
+  String get rulesKindTask => '任务';
+
+  @override
+  String get rulesKindRule => '规矩';
+
+  @override
+  String get rulesWithdraw => '撤回';
+
+  @override
+  String get rulesRewardsTitle => '奖励目录';
+
+  @override
+  String get rulesRewardsEmpty => '还没有奖励。';
+
+  @override
+  String get rulesAddReward => '加一条奖励';
+
+  @override
+  String get rulesRewardTitleLabel => '奖励';
+
+  @override
+  String get rulesRewardCostLabel => '多少分';
+
+  @override
+  String get rulesRewardDDecides => '到时候再定';
+
+  @override
+  String rulesRewardDDecidesName(String name) {
+    return '$name 定';
+  }
+
+  @override
+  String get rulesRewardRetire => '撤下';
+
+  @override
+  String get rulesGoRedeem => '去兑换';
+
+  @override
+  String get rulesConsequencesTitle => '惩罚库';
+
+  @override
+  String rulesConsequencesIntro(String name) {
+    return '只在处置里由 $name 手动使用，这里不能执行。';
+  }
+
+  @override
+  String get rulesConsequencesEmpty => '还没有。';
+
+  @override
+  String get rulesAddConsequence => '加一条';
+
+  @override
+  String get rulesConsequenceWhen => '什么时候';
+
+  @override
+  String get rulesConsequenceThen => '罚什么';
+
+  @override
+  String get rulesEndConsequence => '结束';
+
+  @override
+  String get rulesLimitsTitle => '底线与安全词';
+
+  @override
+  String get rulesLimitsLine => '两人在比对里标「不要」的项，会列在这里。';
+
+  @override
+  String get rulesLimitsGo => '去比对';
+
+  @override
+  String get rulesExploreTitle => '探索';
+
+  @override
+  String get rulesExploreCompare => '两人比对';
+
+  @override
+  String get rulesExploreInspiration => '灵感';
+
+  @override
+  String get rulesExploreStarter => '起步包';
+
+  @override
+  String get rulesPauseDynamic => '暂停一下';
+
+  @override
+  String get rulesCouldNotLoad => '规矩没能读到。';
+
+  @override
+  String get rulesActionFailed => '没记上。再试一次。';
+
+  @override
+  String rulesProposedSent(String name) {
+    return '提议送到了，等 $name 看。';
+  }
+
+  @override
+  String get rulesTheD => 'D';
+
+  @override
+  String get rulesTheS => 's';
+
+  @override
+  String get rulesYou => '你';
+
+  @override
+  String ptsBalanceOf(String name, int n) {
+    return '$name 有 $n 分';
+  }
+
+  @override
+  String ptsBalanceMine(int n) {
+    return '$n 分';
+  }
+
+  @override
+  String get ptsGive => '给分';
+
+  @override
+  String get ptsDeduct => '扣分';
+
+  @override
+  String get ptsAmountLabel => '多少';
+
+  @override
+  String get ptsWhyLabel => '一句为什么（可选）';
+
+  @override
+  String ptsGiveTitle(String name) {
+    return '给 $name 分';
+  }
+
+  @override
+  String ptsDeductTitle(String name) {
+    return '扣 $name 的分';
+  }
+
+  @override
+  String get ptsRedeemableTitle => '可兑换';
+
+  @override
+  String ptsRedeemableEmpty(String name) {
+    return '$name 还没定奖励。';
+  }
+
+  @override
+  String ptsShort(int n) {
+    return '还差 $n 分';
+  }
+
+  @override
+  String ptsRequestTitle(String title) {
+    return '申请兑换「$title」';
+  }
+
+  @override
+  String get ptsRequestNote => '想说一句（可选）';
+
+  @override
+  String get ptsRequestSend => '申请';
+
+  @override
+  String get ptsRequestsTitle => '兑换申请';
+
+  @override
+  String get ptsRequestsEmpty => '没有申请。';
+
+  @override
+  String ptsStatusRequested(String name) {
+    return '等 $name 看';
+  }
+
+  @override
+  String ptsStatusApproved(String name) {
+    return '$name 同意了';
+  }
+
+  @override
+  String ptsStatusDenied(String name) {
+    return '$name 说不行';
+  }
+
+  @override
+  String get ptsStatusFulfilled => '完成了';
+
+  @override
+  String get ptsApprove => '同意';
+
+  @override
+  String get ptsDeny => '不行';
+
+  @override
+  String get ptsFulfill => '完成了';
+
+  @override
+  String get ptsDecideNote => '一句话（可选）';
+
+  @override
+  String get ptsDecideCost => '定多少分';
+
+  @override
+  String get ptsLedgerTitle => '流水';
+
+  @override
+  String get ptsLedgerEmpty => '还没有流水。';
+
+  @override
+  String get ptsReasonTaskEarn => '任务';
+
+  @override
+  String ptsReasonAward(String name) {
+    return '$name 给';
+  }
+
+  @override
+  String ptsReasonDeduct(String name) {
+    return '$name 扣';
+  }
+
+  @override
+  String get ptsReasonRedemption => '兑换';
+
+  @override
+  String get ptsReasonRefund => '退回';
+
+  @override
+  String get ptsReasonOther => '变动';
+
+  @override
+  String get ptsRulesTitle => '哪些任务给分';
+
+  @override
+  String get ptsRulesEmpty => '还没有给分的任务。';
+
+  @override
+  String get ptsRulesBase => '其余基础项 0 分。';
+
+  @override
+  String get ptsConsequencesTitle => '罚';
+
+  @override
+  String get ptsConsequencesEmpty => '没有。';
+
+  @override
+  String get ptsConsequenceDone => '做完了';
+
+  @override
+  String get ptsConsequenceConfirm => '确认';
+
+  @override
+  String get ptsConsequenceWaive => '算了';
+
+  @override
+  String get ptsConsStatusIssued => '还没做';
+
+  @override
+  String ptsConsStatusDoneByS(String name) {
+    return '做完了，等 $name';
+  }
+
+  @override
+  String ptsConsStatusConfirmed(String name) {
+    return '$name 确认了';
+  }
+
+  @override
+  String ptsConsStatusWaived(String name) {
+    return '$name 算了';
+  }
+
+  @override
+  String get ptsCouldNotLoad => '分没能读到。';
+
+  @override
+  String get ptsActionFailed => '没记上。再试一次。';
 }

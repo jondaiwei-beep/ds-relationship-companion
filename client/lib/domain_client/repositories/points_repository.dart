@@ -1,5 +1,6 @@
 import '../api_client.dart';
 import '../models/points.dart';
+import '../models/redemption.dart';
 
 class PointsRepository {
   PointsRepository(this._api);
@@ -34,11 +35,12 @@ class PointsRepository {
         .toList(growable: false);
   }
 
+  /// Null [cost] is「D 决定」— priced when the D approves.
   Future<void> addReward(
     String dynamicId, {
     required String title,
     String? detail,
-    required int cost,
+    int? cost,
   }) =>
       _api.post(
         '/v1/dynamics/$dynamicId/rewards',
@@ -48,9 +50,55 @@ class PointsRepository {
   Future<void> retireReward(String dynamicId, String rewardId) =>
       _api.delete('/v1/dynamics/$dynamicId/rewards/$rewardId');
 
-  /// Spend points on it.
-  Future<void> redeem(String dynamicId, String rewardId) =>
-      _api.post('/v1/dynamics/$dynamicId/rewards/$rewardId/redeem');
+  /// Spend points on it at once. Only a free reward goes this way; anything
+  /// with a price is asked for and the D decides.
+  Future<void> redeem(String dynamicId, String rewardId, {String? idempotencyKey}) =>
+      _api.post('/v1/dynamics/$dynamicId/rewards/$rewardId/redeem', idempotencyKey: idempotencyKey);
+
+  /// s asks. Nothing moves until the D decides.
+  Future<void> request(String dynamicId, String rewardId, {String? note, String? idempotencyKey}) =>
+      _api.post(
+        '/v1/dynamics/$dynamicId/rewards/$rewardId/request',
+        body: {'note': note},
+        idempotencyKey: idempotencyKey,
+      );
+
+  Future<List<RedemptionView>> redemptions(String dynamicId, {String? status}) async {
+    final q = status == null ? '' : '?status=$status';
+    final r = await _api.get('/v1/dynamics/$dynamicId/redemptions$q');
+    return ((r['redemptions'] as List?) ?? const [])
+        .cast<Map<String, dynamic>>()
+        .map(RedemptionView.fromJson)
+        .toList(growable: false);
+  }
+
+  /// D decides. [costOverride] is required by the server for a「D 决定」
+  /// reward and ignored otherwise.
+  Future<void> decide(
+    String dynamicId,
+    String redemptionId, {
+    required bool approve,
+    String? note,
+    int? costOverride,
+    String? idempotencyKey,
+  }) =>
+      _api.post(
+        '/v1/dynamics/$dynamicId/redemptions/$redemptionId/decide',
+        body: {'approve': approve, 'note': note, 'costOverride': costOverride},
+        idempotencyKey: idempotencyKey,
+      );
+
+  /// Either side says it was handed over.
+  Future<void> fulfill(String dynamicId, String redemptionId, {String? idempotencyKey}) =>
+      _api.post('/v1/dynamics/$dynamicId/redemptions/$redemptionId/fulfill', idempotencyKey: idempotencyKey);
+
+  Future<List<PointsRule>> pointsRules(String dynamicId) async {
+    final r = await _api.get('/v1/dynamics/$dynamicId/points/rules');
+    return ((r['rules'] as List?) ?? const [])
+        .cast<Map<String, dynamic>>()
+        .map(PointsRule.fromJson)
+        .toList(growable: false);
+  }
 
   /// Give it outright — no cost to them, no balance check. The warm half.
   Future<void> gift(
@@ -88,28 +136,4 @@ class PointsRepository {
 
   Future<void> endAgreement(String dynamicId, String agreementId) =>
       _api.delete('/v1/dynamics/$dynamicId/agreements/$agreementId');
-
-  /// Issue or waive. The issuer is always the caller — there is no field for
-  /// claiming it came from someone else.
-  Future<void> issueConsequence(
-    String dynamicId, {
-    required String subjectUserId,
-    String? agreementId,
-    String? occurrenceId,
-    required bool waived,
-    String? note,
-    /// Let chance pick WHICH agreed consequence. Never whether.
-    bool byChance = false,
-  }) =>
-      _api.post(
-        '/v1/dynamics/$dynamicId/consequences',
-        body: {
-          'subjectUserId': subjectUserId,
-          'agreementId': agreementId,
-          'occurrenceId': occurrenceId,
-          'waived': waived,
-          'note': note,
-          'byChance': byChance,
-        },
-      );
 }

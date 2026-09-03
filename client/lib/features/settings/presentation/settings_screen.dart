@@ -12,7 +12,7 @@ import '../../../domain_client/models/dynamic_view.dart';
 import '../../../domain_client/models/notification_settings.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../device_lock/application/device_lock_controller.dart';
-import '../../dynamic/presentation/dynamic_screen.dart';
+import '../../dynamic/application/dynamic_providers.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 

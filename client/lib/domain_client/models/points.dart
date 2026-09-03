@@ -101,17 +101,39 @@ class Reward {
         id: json['id'] as String,
         title: json['title'] as String,
         detail: json['detail'] as String?,
-        cost: (json['cost'] as num).toInt(),
+        cost: (json['cost'] as num?)?.toInt(),
         affordable: json['affordable'] as bool? ?? false,
       );
 
   final String id;
   final String title;
   final String? detail;
-  final int cost;
 
-  /// Answered by the server from the viewer's own balance.
+  /// Null means「D 决定」: no fixed price, the D names one at approval.
+  final int? cost;
+
+  /// Answered by the server from the subject's balance. A「D 决定」reward is
+  /// always affordable, since there is nothing yet to afford.
   final bool affordable;
+
+  bool get isFree => cost == 0;
+  bool get dDecides => cost == null;
+}
+
+/// 分 tab「规则可见」: an active task that pays, and how much. Anything not in
+/// this list is a base item at 0 (decision D-05).
+class PointsRule {
+  const PointsRule({required this.taskId, required this.title, required this.pointsEarn});
+
+  factory PointsRule.fromJson(Map<String, dynamic> json) => PointsRule(
+        taskId: json['taskId'] as String,
+        title: json['title'] as String,
+        pointsEarn: (json['pointsEarn'] as num?)?.toInt() ?? 0,
+      );
+
+  final String taskId;
+  final String title;
+  final int pointsEarn;
 }
 
 class ConsequenceAgreement {
@@ -139,34 +161,4 @@ class ConsequenceAgreement {
   final String consequence;
 
   final int pointCost;
-}
-
-class ConsequenceEvent {
-  const ConsequenceEvent({
-    required this.id,
-    required this.waived,
-    required this.issuedByUserId,
-    this.consequence,
-    this.note,
-  });
-
-  factory ConsequenceEvent.fromJson(Map<String, dynamic> json) =>
-      ConsequenceEvent(
-        id: json['id'] as String,
-        waived: (json['outcome'] as String?) == 'WAIVED',
-        issuedByUserId: json['issuedByUserId'] as String,
-        consequence: json['consequence'] as String?,
-        note: json['note'] as String?,
-      );
-
-  final String id;
-
-  /// Being let off is recorded and shown as prominently as being held to it.
-  final bool waived;
-
-  /// Always a real person. The software never issues one.
-  final String issuedByUserId;
-
-  final String? consequence;
-  final String? note;
 }

@@ -14,7 +14,7 @@ import 'package:dsapp/domain_client/models/today_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/repositories/today_repository.dart';
-import 'package:dsapp/features/dynamic/presentation/dynamic_screen.dart';
+import 'package:dsapp/features/rules/presentation/rules_screen.dart';
 import 'package:dsapp/features/explore/presentation/explore_screen.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 
@@ -80,15 +80,12 @@ void main() {
     expect(find.text('PRIVATE BY DEFAULT'), findsOneWidget);
   });
 
-  testWidgets('Dynamic outlines the figure and rows, and no names', (
+  testWidgets('Rules outlines the page while today is unconfirmed', (
     tester,
   ) async {
-    await _pump(tester, const DynamicScreen(dynamicId: 'dyn-1'));
+    await _pump(tester, const RulesScreen(dynamicId: 'dyn-1'));
     expect(find.byType(DsSkeletonCard), findsWidgets);
-    expect(
-      find.text('Confirming the current structure with the server.'),
-      findsNothing,
-    );
+    expect(find.text('Confirming today with the server.'), findsNothing);
   });
 
   testWidgets('Explore outlines the library', (tester) async {

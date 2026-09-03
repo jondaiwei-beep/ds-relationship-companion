@@ -5202,6 +5202,816 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Not sent. Try again.'**
   String get recordCommentFailed;
+
+  /// No description provided for @rulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get rulesTitle;
+
+  /// No description provided for @rulesAwayToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m away'**
+  String get rulesAwayToggle;
+
+  /// No description provided for @rulesAwayUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Away until {date}'**
+  String rulesAwayUntil(String date);
+
+  /// No description provided for @rulesAwayPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is away until {date}'**
+  String rulesAwayPartner(String name, String date);
+
+  /// No description provided for @rulesBack.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m back'**
+  String get rulesBack;
+
+  /// No description provided for @rulesStandingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'STANDING RULES'**
+  String get rulesStandingTitle;
+
+  /// No description provided for @rulesStandingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet.'**
+  String get rulesStandingEmpty;
+
+  /// No description provided for @ruleGroupProtocol.
+  ///
+  /// In en, this message translates to:
+  /// **'Protocol'**
+  String get ruleGroupProtocol;
+
+  /// No description provided for @ruleGroupRitual.
+  ///
+  /// In en, this message translates to:
+  /// **'Ritual'**
+  String get ruleGroupRitual;
+
+  /// No description provided for @ruleGroupRestriction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrictions'**
+  String get ruleGroupRestriction;
+
+  /// No description provided for @ruleGroupAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get ruleGroupAppearance;
+
+  /// No description provided for @ruleGroupReporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Reporting'**
+  String get ruleGroupReporting;
+
+  /// No description provided for @ruleGroupOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get ruleGroupOther;
+
+  /// No description provided for @rulesAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a rule'**
+  String get rulesAddRule;
+
+  /// No description provided for @rulesProposeRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose a rule'**
+  String get rulesProposeRule;
+
+  /// No description provided for @rulesProposeChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose a change'**
+  String get rulesProposeChange;
+
+  /// No description provided for @rulesRuleTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The rule'**
+  String get rulesRuleTitleLabel;
+
+  /// No description provided for @rulesRuleBodyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail (optional)'**
+  String get rulesRuleBodyLabel;
+
+  /// No description provided for @rulesGroupLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Group'**
+  String get rulesGroupLabel;
+
+  /// No description provided for @rulesSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get rulesSave;
+
+  /// No description provided for @rulesArchive.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get rulesArchive;
+
+  /// No description provided for @rulesNeverMind.
+  ///
+  /// In en, this message translates to:
+  /// **'Never mind'**
+  String get rulesNeverMind;
+
+  /// No description provided for @rulesTasksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'RECURRING TASKS'**
+  String get rulesTasksTitle;
+
+  /// No description provided for @rulesTasksEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks yet.'**
+  String get rulesTasksEmpty;
+
+  /// No description provided for @rulesAddTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a task'**
+  String get rulesAddTask;
+
+  /// No description provided for @rulesProposeTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose a task'**
+  String get rulesProposeTask;
+
+  /// No description provided for @rulesTaskTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What to do'**
+  String get rulesTaskTitleLabel;
+
+  /// No description provided for @rulesScheduleDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get rulesScheduleDaily;
+
+  /// No description provided for @rulesScheduleWeekdays.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly {days}'**
+  String rulesScheduleWeekdays(String days);
+
+  /// No description provided for @rulesScheduleEveryN.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {n} days'**
+  String rulesScheduleEveryN(int n);
+
+  /// No description provided for @rulesScheduleOneOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Once'**
+  String get rulesScheduleOneOff;
+
+  /// No description provided for @rulesScheduleOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Any time'**
+  String get rulesScheduleOpen;
+
+  /// No description provided for @rulesScheduleCheckin.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get rulesScheduleCheckin;
+
+  /// No description provided for @rulesScheduleMeasure.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure'**
+  String get rulesScheduleMeasure;
+
+  /// No description provided for @rulesWeekdayNames.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon,Tue,Wed,Thu,Fri,Sat,Sun'**
+  String get rulesWeekdayNames;
+
+  /// No description provided for @rulesTimesPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} a day'**
+  String rulesTimesPerDay(int n);
+
+  /// No description provided for @rulesProofCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick'**
+  String get rulesProofCheck;
+
+  /// No description provided for @rulesProofPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get rulesProofPhoto;
+
+  /// No description provided for @rulesProofText.
+  ///
+  /// In en, this message translates to:
+  /// **'Words'**
+  String get rulesProofText;
+
+  /// No description provided for @rulesProofAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get rulesProofAny;
+
+  /// No description provided for @rulesPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} pts'**
+  String rulesPoints(int n);
+
+  /// No description provided for @rulesNeedsD.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs {name} there'**
+  String rulesNeedsD(String name);
+
+  /// No description provided for @rulesPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get rulesPaused;
+
+  /// No description provided for @rulesPausedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused until {date}'**
+  String rulesPausedUntil(String date);
+
+  /// No description provided for @rulesPauseUntilDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause until a date'**
+  String get rulesPauseUntilDate;
+
+  /// No description provided for @rulesPauseIndefinite.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause for now'**
+  String get rulesPauseIndefinite;
+
+  /// No description provided for @rulesUnpause.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get rulesUnpause;
+
+  /// No description provided for @rulesPointsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Points (0 = base item)'**
+  String get rulesPointsLabel;
+
+  /// No description provided for @rulesRequiresDLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs {name} present'**
+  String rulesRequiresDLabel(String name);
+
+  /// No description provided for @rulesEveryNLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Every N days'**
+  String get rulesEveryNLabel;
+
+  /// No description provided for @rulesProposedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PROPOSED'**
+  String get rulesProposedTitle;
+
+  /// No description provided for @rulesProposedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing proposed.'**
+  String get rulesProposedEmpty;
+
+  /// No description provided for @rulesAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get rulesAccept;
+
+  /// No description provided for @rulesDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get rulesDecline;
+
+  /// No description provided for @rulesWaitingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {name}'**
+  String rulesWaitingFor(String name);
+
+  /// No description provided for @rulesKindTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get rulesKindTask;
+
+  /// No description provided for @rulesKindRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Rule'**
+  String get rulesKindRule;
+
+  /// No description provided for @rulesWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get rulesWithdraw;
+
+  /// No description provided for @rulesRewardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'REWARDS'**
+  String get rulesRewardsTitle;
+
+  /// No description provided for @rulesRewardsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No rewards yet.'**
+  String get rulesRewardsEmpty;
+
+  /// No description provided for @rulesAddReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a reward'**
+  String get rulesAddReward;
+
+  /// No description provided for @rulesRewardTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward'**
+  String get rulesRewardTitleLabel;
+
+  /// No description provided for @rulesRewardCostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost in points'**
+  String get rulesRewardCostLabel;
+
+  /// No description provided for @rulesRewardDDecides.
+  ///
+  /// In en, this message translates to:
+  /// **'Decide at the time'**
+  String get rulesRewardDDecides;
+
+  /// No description provided for @rulesRewardDDecidesName.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} decides'**
+  String rulesRewardDDecidesName(String name);
+
+  /// No description provided for @rulesRewardRetire.
+  ///
+  /// In en, this message translates to:
+  /// **'Retire'**
+  String get rulesRewardRetire;
+
+  /// No description provided for @rulesGoRedeem.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem'**
+  String get rulesGoRedeem;
+
+  /// No description provided for @rulesConsequencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CONSEQUENCES'**
+  String get rulesConsequencesTitle;
+
+  /// No description provided for @rulesConsequencesIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {name} uses these, by hand, when disposing. Nothing runs from here.'**
+  String rulesConsequencesIntro(String name);
+
+  /// No description provided for @rulesConsequencesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'None yet.'**
+  String get rulesConsequencesEmpty;
+
+  /// No description provided for @rulesAddConsequence.
+  ///
+  /// In en, this message translates to:
+  /// **'Add one'**
+  String get rulesAddConsequence;
+
+  /// No description provided for @rulesConsequenceWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'When'**
+  String get rulesConsequenceWhen;
+
+  /// No description provided for @rulesConsequenceThen.
+  ///
+  /// In en, this message translates to:
+  /// **'Then'**
+  String get rulesConsequenceThen;
+
+  /// No description provided for @rulesEndConsequence.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get rulesEndConsequence;
+
+  /// No description provided for @rulesLimitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LIMITS & SAFEWORD'**
+  String get rulesLimitsTitle;
+
+  /// No description provided for @rulesLimitsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'What either of you marked \"no\" in the compare lands here.'**
+  String get rulesLimitsLine;
+
+  /// No description provided for @rulesLimitsGo.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get rulesLimitsGo;
+
+  /// No description provided for @rulesExploreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EXPLORE'**
+  String get rulesExploreTitle;
+
+  /// No description provided for @rulesExploreCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get rulesExploreCompare;
+
+  /// No description provided for @rulesExploreInspiration.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspiration'**
+  String get rulesExploreInspiration;
+
+  /// No description provided for @rulesExploreStarter.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter pack'**
+  String get rulesExploreStarter;
+
+  /// No description provided for @rulesPauseDynamic.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause for a while'**
+  String get rulesPauseDynamic;
+
+  /// No description provided for @rulesCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules could not be loaded.'**
+  String get rulesCouldNotLoad;
+
+  /// No description provided for @rulesActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved. Try again.'**
+  String get rulesActionFailed;
+
+  /// No description provided for @rulesProposedSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to {name}.'**
+  String rulesProposedSent(String name);
+
+  /// No description provided for @rulesTheD.
+  ///
+  /// In en, this message translates to:
+  /// **'the D'**
+  String get rulesTheD;
+
+  /// No description provided for @rulesTheS.
+  ///
+  /// In en, this message translates to:
+  /// **'the s'**
+  String get rulesTheS;
+
+  /// No description provided for @rulesYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get rulesYou;
+
+  /// No description provided for @ptsBalanceOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has {n}'**
+  String ptsBalanceOf(String name, int n);
+
+  /// No description provided for @ptsBalanceMine.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}'**
+  String ptsBalanceMine(int n);
+
+  /// No description provided for @ptsGive.
+  ///
+  /// In en, this message translates to:
+  /// **'Give'**
+  String get ptsGive;
+
+  /// No description provided for @ptsDeduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Deduct'**
+  String get ptsDeduct;
+
+  /// No description provided for @ptsAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'How many'**
+  String get ptsAmountLabel;
+
+  /// No description provided for @ptsWhyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Why (optional)'**
+  String get ptsWhyLabel;
+
+  /// No description provided for @ptsGiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give {name} points'**
+  String ptsGiveTitle(String name);
+
+  /// No description provided for @ptsDeductTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deduct from {name}'**
+  String ptsDeductTitle(String name);
+
+  /// No description provided for @ptsRedeemableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'REDEEMABLE'**
+  String get ptsRedeemableTitle;
+
+  /// No description provided for @ptsRedeemableEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has not set any rewards.'**
+  String ptsRedeemableEmpty(String name);
+
+  /// No description provided for @ptsShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} more'**
+  String ptsShort(int n);
+
+  /// No description provided for @ptsRequestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask for \"{title}\"'**
+  String ptsRequestTitle(String title);
+
+  /// No description provided for @ptsRequestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A word with it (optional)'**
+  String get ptsRequestNote;
+
+  /// No description provided for @ptsRequestSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask'**
+  String get ptsRequestSend;
+
+  /// No description provided for @ptsRequestsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'REQUESTS'**
+  String get ptsRequestsTitle;
+
+  /// No description provided for @ptsRequestsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests.'**
+  String get ptsRequestsEmpty;
+
+  /// No description provided for @ptsStatusRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for {name}'**
+  String ptsStatusRequested(String name);
+
+  /// No description provided for @ptsStatusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} approved'**
+  String ptsStatusApproved(String name);
+
+  /// No description provided for @ptsStatusDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} said no'**
+  String ptsStatusDenied(String name);
+
+  /// No description provided for @ptsStatusFulfilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get ptsStatusFulfilled;
+
+  /// No description provided for @ptsApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get ptsApprove;
+
+  /// No description provided for @ptsDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get ptsDeny;
+
+  /// No description provided for @ptsFulfill.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get ptsFulfill;
+
+  /// No description provided for @ptsDecideNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A word (optional)'**
+  String get ptsDecideNote;
+
+  /// No description provided for @ptsDecideCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the cost'**
+  String get ptsDecideCost;
+
+  /// No description provided for @ptsLedgerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LEDGER'**
+  String get ptsLedgerTitle;
+
+  /// No description provided for @ptsLedgerEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet.'**
+  String get ptsLedgerEmpty;
+
+  /// No description provided for @ptsReasonTaskEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Task'**
+  String get ptsReasonTaskEarn;
+
+  /// No description provided for @ptsReasonAward.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} gave'**
+  String ptsReasonAward(String name);
+
+  /// No description provided for @ptsReasonDeduct.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} took'**
+  String ptsReasonDeduct(String name);
+
+  /// No description provided for @ptsReasonRedemption.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeemed'**
+  String get ptsReasonRedemption;
+
+  /// No description provided for @ptsReasonRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned'**
+  String get ptsReasonRefund;
+
+  /// No description provided for @ptsReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Movement'**
+  String get ptsReasonOther;
+
+  /// No description provided for @ptsRulesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WHAT PAYS'**
+  String get ptsRulesTitle;
+
+  /// No description provided for @ptsRulesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No task pays yet.'**
+  String get ptsRulesEmpty;
+
+  /// No description provided for @ptsRulesBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything else is a base item at 0.'**
+  String get ptsRulesBase;
+
+  /// No description provided for @ptsConsequencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CONSEQUENCES'**
+  String get ptsConsequencesTitle;
+
+  /// No description provided for @ptsConsequencesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'None.'**
+  String get ptsConsequencesEmpty;
+
+  /// No description provided for @ptsConsequenceDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get ptsConsequenceDone;
+
+  /// No description provided for @ptsConsequenceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get ptsConsequenceConfirm;
+
+  /// No description provided for @ptsConsequenceWaive.
+  ///
+  /// In en, this message translates to:
+  /// **'Let it go'**
+  String get ptsConsequenceWaive;
+
+  /// No description provided for @ptsConsStatusIssued.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet done'**
+  String get ptsConsStatusIssued;
+
+  /// No description provided for @ptsConsStatusDoneByS.
+  ///
+  /// In en, this message translates to:
+  /// **'Done, waiting for {name}'**
+  String ptsConsStatusDoneByS(String name);
+
+  /// No description provided for @ptsConsStatusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} confirmed'**
+  String ptsConsStatusConfirmed(String name);
+
+  /// No description provided for @ptsConsStatusWaived.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} let it go'**
+  String ptsConsStatusWaived(String name);
+
+  /// No description provided for @ptsCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Points could not be loaded.'**
+  String get ptsCouldNotLoad;
+
+  /// No description provided for @ptsActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved. Try again.'**
+  String get ptsActionFailed;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

@@ -1,308 +1,197 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
+import 'package:dsapp/app/providers.dart';
+import 'package:dsapp/app/shell/ds_primary_button.dart';
+import 'package:dsapp/domain_client/models/consequence.dart';
+import 'package:dsapp/domain_client/models/points.dart';
+import 'package:dsapp/domain_client/models/redemption.dart';
+import 'package:dsapp/domain_client/models/today_view.dart' show TodayView;
+import 'package:dsapp/features/points/presentation/points_screen.dart';
+import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dsapp/app/providers.dart';
-import 'package:dsapp/domain_client/models/points.dart';
-import 'package:dsapp/domain_client/repositories/points_repository.dart';
-import 'package:dsapp/features/points/presentation/points_screen.dart';
-import 'package:dsapp/features/points/presentation/widgets/consequence_panel.dart';
-import 'package:dsapp/l10n/app_localizations.dart';
+import '../../support/phase3_fakes.dart';
+import '../../support/record_fakes.dart';
+import '../../support/today_fakes.dart';
 
-class _FakePoints implements PointsRepository {
-  _FakePoints({
-    this.balance = 0,
-    this.entries = const [],
-    this.rewardList = const [],
-    this.days = 0,
-  });
+const _rewards = [
+  Reward(id: 'w-cheap', title: '一起看电影', cost: 10, affordable: true),
+  Reward(id: 'w-dear', title: '周末出门', cost: 30, affordable: false),
+  Reward(id: 'w-open', title: '一个愿望', cost: null, affordable: true),
+  Reward(id: 'w-free', title: '抱一下', cost: 0, affordable: true),
+];
 
-  int balance;
-  int days;
-  List<PointEntry> entries;
-  List<Reward> rewardList;
-  final gifts = <String>[];
-  final redeems = <String>[];
-  final added = <String>[];
-  final agreementsAdded = <String>[];
-  List<ConsequenceAgreement> agreementList = const [];
+const _entries = [
+  PointEntry(id: 'e-1', amount: 2, reason: PointReason.taskEarn),
+  PointEntry(id: 'e-2', amount: 5, reason: PointReason.dAward, note: '今天很乖'),
+  PointEntry(id: 'e-3', amount: -3, reason: PointReason.dDeduct),
+  PointEntry(id: 'e-4', amount: -10, reason: PointReason.redemption),
+  PointEntry(id: 'e-5', amount: 10, reason: PointReason.redemptionRefund),
+];
 
-  @override
-  Future<PointsSummary> summary(String dynamicId, {String? subjectUserId}) async =>
-      PointsSummary(balance: balance, entries: entries, daysTogether: days);
+const _redemptions = [
+  RedemptionView(id: 'rd-1', rewardId: 'w-open', rewardTitle: '一个愿望', subjectUserId: 'u-s', status: 'requested'),
+  RedemptionView(id: 'rd-2', rewardId: 'w-cheap', rewardTitle: '一起看电影', subjectUserId: 'u-s', status: 'approved'),
+];
 
-  @override
-  Future<List<Reward>> rewards(String dynamicId, {String? subjectUserId}) async =>
-      rewardList;
+const _consequences = [
+  ConsequenceView(id: 'c-1', issuedBy: 'u-d', title: '跪十分钟', status: 'issued'),
+  ConsequenceView(id: 'c-2', issuedBy: 'u-d', title: '写反省', status: 'done_by_s'),
+];
 
-  @override
-  Future<void> gift(String dynamicId, String rewardId, {required String subjectUserId}) async {
-    gifts.add(rewardId);
-  }
+Future<({FakePointsRepository points, FakeConsequenceRepository cons})> _pump(
+  WidgetTester tester, {
+  required TodayView view,
+  List<RedemptionView> redemptions = _redemptions,
+}) async {
+  tester.view.physicalSize = const Size(390, 1800);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.reset);
 
-  @override
-  Future<void> redeem(String dynamicId, String rewardId) async {
-    redeems.add(rewardId);
-  }
-
-  @override
-  Future<List<ConsequenceAgreement>> agreements(String dynamicId) async =>
-      agreementList;
-
-  @override
-  Future<void> addReward(String dynamicId,
-      {required String title, String? detail, required int cost}) async {
-    added.add('$title/$cost');
-  }
-
-  @override
-  Future<void> addAgreement(String dynamicId,
-      {required String label,
-      required String consequence,
-      int pointCost = 0}) async {
-    agreementsAdded.add('$label -> $consequence');
-  }
-
-  @override
-  dynamic noSuchMethod(Invocation i) => throw UnimplementedError('${i.memberName}');
-}
-
-Future<ProviderContainer> _pump(WidgetTester tester, _FakePoints repo) async {
-  await tester.binding.setSurfaceSize(const Size(390, 844));
-  addTearDown(() => tester.binding.setSurfaceSize(null));
-
-  final container = ProviderContainer(
-    overrides: [pointsRepositoryProvider.overrideWithValue(repo)],
+  final points = FakePointsRepository(
+    balance: 12,
+    entries: _entries,
+    rewardList: _rewards,
+    redemptionList: redemptions,
+    rules: const [PointsRule(taskId: 't-1', title: '早安汇报', pointsEarn: 2)],
   );
-  addTearDown(container.dispose);
+  final cons = FakeConsequenceRepository(items: _consequences);
 
   await tester.pumpWidget(
-    UncontrolledProviderScope(
-      container: container,
+    ProviderScope(
+      overrides: [
+        todayRepositoryProvider.overrideWithValue(FakeTodayRepository(view: view)),
+        dynamicRepositoryProvider.overrideWithValue(FakeDynamicRepository()),
+        pointsRepositoryProvider.overrideWithValue(points),
+        consequenceRepositoryProvider.overrideWithValue(cons),
+        recordRepositoryProvider.overrideWithValue(FakeRecordRepository()),
+      ],
       child: MaterialApp(
         theme: DsTheme.ritual(),
+        locale: const Locale('zh'),
         localizationsDelegates: L.localizationsDelegates,
         supportedLocales: L.supportedLocales,
-        home: PointsScreen(
-          dynamicId: 'dyn-1',
-          onBack: () {},
-          partnerName: 'Alex',
-          partnerUserId: 'u-partner',
-        ),
+        home: const PointsScreen(dynamicId: 'dyn-1'),
       ),
     ),
   );
   await tester.pumpAndSettle();
-  return container;
-}
-
-/// The screen grew past one viewport once rewards, agreements and history
-/// all landed on it. `scrollUntilVisible` needs a single scrollable and this
-/// screen nests them, so drag the outer list instead.
-Future<void> _scrollToBottom(WidgetTester tester) async {
-  await tester.binding.setSurfaceSize(const Size(390, 3000));
-  await tester.pumpAndSettle();
+  return (points: points, cons: cons);
 }
 
 void main() {
-  // These defend product/design/points-with-authority-and-warmth.md. They are
-  // not testing arithmetic — the backend does that — but the three rules that
-  // make this different from the competitors.
+  testWidgets('s sees its balance, the streak line, and affordability words', (tester) async {
+    final f = await _pump(tester, view: sView());
 
-  testWidgets('the balance reads as an inventory, never as a score', (tester) async {
-    await _pump(tester, _FakePoints(balance: 3));
-
-    // The number lives inside the phrase that says what it is for. A large
-    // standalone numeral is the "score" reading this design avoids, whatever
-    // the label under it says.
-    expect(find.text('3 points to spend'), findsOneWidget);
-    expect(find.text('3'), findsNothing, reason: 'never a bare digit');
-    // Obedience shows a heart with a number beside it. A number next to an
-    // affection symbol is a verdict on the person holding it.
-    expect(find.textContaining('score'), findsNothing);
-    expect(find.textContaining('earned'), findsNothing);
+    expect(find.text('12 分'), findsOneWidget);
+    expect(find.text('在一起 40 天 · 连续 6 天'), findsOneWidget);
+    expect(find.text('还差 18 分'), findsOneWidget); // 30 - 12
+    expect(find.text('Mara 定'), findsOneWidget); // null-cost reward
+    // Balance was asked for the s, resolved from the pair.
+    expect(f.points.subjects, contains('u-s'));
+    // Only the D gives or deducts.
+    expect(find.text('给分'), findsNothing);
+    expect(find.text('扣分'), findsNothing);
   });
 
-  testWidgets('a zero balance says nothing to spend, never a negative', (tester) async {
-    // Obedience showed -152: an affection account, overdrawn, with no reward
-    // reachable and no move available but climbing out of a hole.
-    await _pump(tester, _FakePoints(balance: 0));
+  testWidgets('D sees the s balance by name and can give points', (tester) async {
+    final f = await _pump(tester, view: dView());
 
-    expect(find.text('Nothing to spend yet'), findsOneWidget);
-    expect(find.textContaining('-'), findsNothing);
+    expect(find.text('Nia 有 12 分'), findsOneWidget);
+    await tester.tap(find.text('给分'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).first, '5');
+    await tester.enterText(find.byType(TextField).last, '今天很乖');
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(DsPrimaryButton, '给分'));
+    await tester.pumpAndSettle();
+
+    expect(f.points.adjustments, [('u-s', 5, '今天很乖')]);
   });
 
-  testWidgets('a negative from the server is still not rendered as debt', (tester) async {
-    // Defence in depth: the server floors at zero, and the model clamps too,
-    // so a bad payload cannot put someone in debt to their partner.
-    final s = PointsSummary.fromJson(const {'balance': -152, 'entries': []});
-    expect(s.balance, 0);
+  testWidgets('s requests a priced reward with a note, redeems a free one directly', (tester) async {
+    final f = await _pump(tester, view: sView(), redemptions: const []);
+
+    // 去兑换 appears only on affordable rewards: cheap, open, free.
+    expect(find.text('去兑换'), findsNWidgets(3));
+
+    await tester.tap(find.text('去兑换').first);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('申请兑换'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), '这周末想看');
+    await tester.tap(find.text('申请'));
+    await tester.pumpAndSettle();
+    expect(f.points.requested, [('w-cheap', '这周末想看')]);
+
+    await tester.tap(find.text('去兑换').last);
+    await tester.pumpAndSettle();
+    expect(f.points.redeemed, ['w-free']);
+    expect(f.points.requested, hasLength(1));
   });
 
-  testWidgets('every entry names a person rather than a system event', (tester) async {
-    await _pump(
-      tester,
-      _FakePoints(
-        balance: 1,
-        entries: const [
-          PointEntry(id: 'e1', amount: 1, reason: PointReason.taskEarn),
-        ],
-      ),
-    );
+  testWidgets('D approving a「D 决定」reward must name a cost', (tester) async {
+    final f = await _pump(tester, view: dView());
 
-    await _scrollToBottom(tester);
-    expect(find.text('Alex noticed'), findsOneWidget);
+    expect(find.text('等 你 看'), findsOneWidget);
+    await tester.tap(find.text('同意'));
+    await tester.pumpAndSettle();
+    expect(find.text('定多少分'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).first, '15');
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(DsPrimaryButton, '同意'));
+    await tester.pumpAndSettle();
+
+    expect(f.points.decisions, [('rd-1', true, null, 15)]);
+  });
+
+  testWidgets('D denies with an optional note; either side fulfills an approved one', (tester) async {
+    final f = await _pump(tester, view: dView());
+
+    await tester.tap(find.text('不行'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('不行').last);
+    await tester.pumpAndSettle();
+    expect(f.points.decisions, [('rd-1', false, null, null)]);
+
+    await tester.tap(find.text('完成了'));
+    await tester.pumpAndSettle();
+    expect(f.points.fulfilled, ['rd-2']);
+  });
+
+  testWidgets('ledger reasons are words, never codes', (tester) async {
+    await _pump(tester, view: sView());
+
+    expect(find.text('任务'), findsOneWidget);
+    expect(find.text('Mara 给'), findsOneWidget);
+    expect(find.text('Mara 扣'), findsOneWidget);
+    expect(find.text('兑换'), findsOneWidget);
+    expect(find.text('退回'), findsOneWidget);
+    expect(find.text('+5'), findsOneWidget);
+    expect(find.text('-3'), findsOneWidget);
     expect(find.textContaining('task_earn'), findsNothing);
+
+    // 规则可见: which tasks pay, then the base line.
+    expect(find.text('早安汇报'), findsOneWidget);
+    expect(find.text('其余基础项 0 分。'), findsOneWidget);
   });
 
-  testWidgets('a reward can be given outright, without the partner affording it', (
-    tester,
-  ) async {
-    // The feature none of the three competitors have. Giving must not be
-    // gated on the receiver's balance — that would make it a purchase.
-    final repo = _FakePoints(
-      balance: 0,
-      rewardList: const [
-        Reward(id: 'r1', title: 'Massage', cost: 10, affordable: false),
-      ],
-    );
-    await _pump(tester, repo);
-
-    expect(find.text('Give it'), findsOneWidget);
-    expect(find.text('Take it'), findsNothing, reason: 'they cannot afford it');
-    expect(find.text('10 more to go'), findsOneWidget);
-
-    await tester.tap(find.text('Give it'));
+  testWidgets('s marks a consequence done; D confirms or lets one go', (tester) async {
+    var f = await _pump(tester, view: sView());
+    expect(find.text('做完了'), findsOneWidget);
+    expect(find.text('确认'), findsNothing);
+    await tester.tap(find.text('做完了'));
     await tester.pumpAndSettle();
-    expect(repo.gifts, ['r1']);
-  });
+    expect(f.cons.doneIds, ['c-1']);
 
-  testWidgets('days together are shown, and said to be safe from a gap', (
-    tester,
-  ) async {
-    // Every other app in this category has taught people that a number like
-    // this is something you can lose in one bad day.
-    await _pump(tester, _FakePoints(balance: 0, days: 12));
-
-    expect(find.text('12 days together'), findsOneWidget);
-    expect(
-      find.text('This only ever goes up. A quiet day takes nothing away.'),
-      findsOneWidget,
-    );
-    // Never the word that means the opposite of what this does.
-    expect(find.textContaining('streak'), findsNothing);
-  });
-
-  testWidgets('a reward can be put on offer from the app', (tester) async {
-    final repo = _FakePoints();
-    await _pump(tester, repo);
-
-    // The form is collapsed until asked for: an editing form sitting open
-    // under "Nothing on offer yet" was two things competing in one block.
-    await tester.tap(find.text('Put something on offer'));
+    f = await _pump(tester, view: dView());
+    expect(find.text('做完了'), findsNothing);
+    expect(find.text('确认'), findsNWidgets(2));
+    await tester.tap(find.text('确认').last);
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).first, 'Massage');
-    await tester.tap(find.text('Put it on offer'));
+    expect(f.cons.confirmedIds, ['c-2']);
+    await tester.tap(find.text('算了').first);
     await tester.pumpAndSettle();
-
-    expect(repo.added, ['Massage/1']);
-  });
-
-  testWidgets('adding a reward with no name says what is missing', (tester) async {
-    // Invariant: the control says what is missing rather than going dead.
-    final repo = _FakePoints();
-    await _pump(tester, repo);
-
-    await tester.tap(find.text('Put something on offer'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Put it on offer'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Say what it is first.'), findsOneWidget);
-    expect(repo.added, isEmpty);
-  });
-
-  testWidgets('an agreement needs both halves, not just the consequence', (
-    tester,
-  ) async {
-    // Their own writing: vague punishment "breeds resentment". An agreement
-    // that names only what follows, without saying when, is the vague kind.
-    final repo = _FakePoints();
-    await _pump(tester, repo);
-
-    await _scrollToBottom(tester);
-    await tester.tap(find.text('Write an agreement'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Agree to this'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Say what happens, and what follows.'), findsOneWidget);
-    expect(repo.agreementsAdded, isEmpty);
-  });
-
-  testWidgets('either partner can end an agreement, alone', (tester) async {
-    final repo = _FakePoints()
-      ..agreementList = const [
-        ConsequenceAgreement(
-          id: 'a1',
-          label: 'The evening things do not get done',
-          consequence: 'Early bedtime, one hour',
-          pointCost: 2,
-        ),
-      ];
-    await _pump(tester, repo);
-
-    await _scrollToBottom(tester);
-    // One match now: with the form collapsed, its example hint is not on
-    // screen competing with the real agreement.
-    expect(find.text('Early bedtime, one hour'), findsOneWidget);
-    expect(find.text('The evening things do not get done'), findsOneWidget);
-    expect(
-      find.text('Either of you can end any of these, alone.'),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('letting go is not styled as the lesser option', (tester) async {
-    // The design rule: mercy is one of two equal exercises of authority, so
-    // both doors must render with the same treatment.
-    await tester.binding.setSurfaceSize(const Size(390, 844));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
-
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: DsTheme.ritual(),
-        localizationsDelegates: L.localizationsDelegates,
-        supportedLocales: L.supportedLocales,
-        home: Scaffold(
-          body: ConsequencePanel(
-            agreement: const ConsequenceAgreement(
-              id: 'a1',
-              label: 'The evening things do not get done',
-              consequence: 'Early bedtime, one hour',
-              pointCost: 2,
-            ),
-            onHold: () {},
-            onLetGo: () {},
-            onTalk: () {},
-          ),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    Size sizeOf(String label) => tester.getSize(
-      find.ancestor(of: find.text(label), matching: find.byType(Container)).first,
-    );
-
-    expect(sizeOf('Hold to it').width, sizeOf('Let it go').width,
-        reason: 'mercy is not the smaller door');
-    expect(sizeOf('Hold to it').height, sizeOf('Let it go').height);
-
-    // And the app says plainly that it will not act on its own.
-    expect(find.text('Nothing happens until you choose.'), findsOneWidget);
-    // The couple's own words, quoted, not restated as a verdict.
-    expect(find.text('Early bedtime, one hour'), findsOneWidget);
+    expect(f.cons.waivedIds, ['c-1']);
   });
 }

@@ -10,7 +10,9 @@ import 'package:dsapp/domain_client/models/explore_view.dart';
 import 'package:dsapp/domain_client/models/points.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
+import 'package:dsapp/features/points/application/points_providers.dart';
 import 'package:dsapp/features/record/presentation/day_screen.dart';
+import 'package:dsapp/features/rules/application/rules_providers.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/platform/session/refresh_store.dart';
 import 'package:dsapp/platform/session/session_controller.dart';
@@ -47,6 +49,12 @@ void main() {
         ),
         rewardsProvider.overrideWith((ref, id) async => const []),
         agreementsProvider.overrideWith((ref, id) async => const []),
+        redemptionsProvider.overrideWith((ref, id) async => const []),
+        pointsRulesProvider.overrideWith((ref, id) async => const []),
+        consequencesProvider.overrideWith((ref, id) async => const []),
+        // Rules reads its lists the same way.
+        rulesProvider.overrideWith((ref, id) async => const []),
+        taskDefinitionsProvider.overrideWith((ref, id) async => const []),
       ],
     );
     addTearDown(container.dispose);

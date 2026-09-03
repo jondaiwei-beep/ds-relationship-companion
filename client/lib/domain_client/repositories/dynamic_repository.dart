@@ -92,4 +92,20 @@ class DynamicRepository {
         body: {'targetUserId': targetUserId, 'reason': reason},
         idempotencyKey: idempotencyKey,
       );
+
+  /// D「我不在」until [until] (D-26). Every task that needs the D present is
+  /// paused for the span; nothing owed accrues meanwhile.
+  Future<DateTime?> away(String dynamicId, {required DateTime until, required String idempotencyKey}) async {
+    final r = await _api.post(
+      '/v1/dynamics/$dynamicId/away',
+      body: {'until': until.toUtc().toIso8601String()},
+      idempotencyKey: idempotencyKey,
+    );
+    final raw = r['dAwayUntil'] as String?;
+    return raw == null ? null : DateTime.parse(raw);
+  }
+
+  /// D「回来了」.
+  Future<void> back(String dynamicId, {required String idempotencyKey}) =>
+      _api.post('/v1/dynamics/$dynamicId/back', idempotencyKey: idempotencyKey);
 }

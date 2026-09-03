@@ -154,6 +154,9 @@ _TodayView _$TodayViewFromJson(Map<String, dynamic> json) => _TodayView(
   daysTogether: (json['daysTogether'] as num?)?.toInt() ?? 0,
   needsMe: (json['needsMe'] as num?)?.toInt() ?? 0,
   partnerDisplayName: json['partnerDisplayName'] as String?,
+  dAwayUntil: json['dAwayUntil'] == null
+      ? null
+      : DateTime.parse(json['dAwayUntil'] as String),
 );
 
 Map<String, dynamic> _$TodayViewToJson(_TodayView instance) =>
@@ -169,4 +172,5 @@ Map<String, dynamic> _$TodayViewToJson(_TodayView instance) =>
       'daysTogether': instance.daysTogether,
       'needsMe': instance.needsMe,
       'partnerDisplayName': instance.partnerDisplayName,
+      'dAwayUntil': instance.dAwayUntil?.toIso8601String(),
     };

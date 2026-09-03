@@ -44,6 +44,10 @@ abstract final class TodayFormat {
     return DateFormat.MMMEd(locale).format(DateTime(parts[0], parts[1], parts[2]));
   }
 
+  /// The calendar day an instant falls on in [zone], as a short date.
+  static String dayOfInstant(DateTime instant, String zone, String locale) =>
+      DateFormat.MMMd(locale).format(_inZone(instant, zone));
+
   /// Day and clock together, for something said on another day.
   static String dayClock(DateTime instant, String zone, String locale) {
     final local = _inZone(instant, zone);

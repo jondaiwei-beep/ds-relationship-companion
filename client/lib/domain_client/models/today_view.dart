@@ -156,6 +156,8 @@ abstract class TodayView with _$TodayView {
     /// D face: things the s has said that have no answer yet, all days.
     @Default(0) int needsMe,
     String? partnerDisplayName,
+    /// Set while the D has said「我不在」(D-26). Null when present.
+    DateTime? dAwayUntil,
   }) = _TodayView;
 
   factory TodayView.fromJson(Map<String, dynamic> json) =>

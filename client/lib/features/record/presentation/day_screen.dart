@@ -11,7 +11,7 @@ import '../../../domain_client/models/record.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../../../domain_client/repositories/today_repository.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../dynamic/presentation/dynamic_screen.dart' show dynamicViewerIdProvider;
+import '../../dynamic/application/dynamic_providers.dart' show dynamicViewerIdProvider;
 import '../../today/application/today_providers.dart';
 import '../../today/presentation/today_format.dart';
 import '../../today/presentation/today_screen.dart';

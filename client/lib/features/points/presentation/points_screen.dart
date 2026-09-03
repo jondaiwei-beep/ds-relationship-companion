@@ -4,869 +4,428 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
-import '../../../app/shell/ds_glyph.dart';
 import '../../../app/shell/ds_refreshable.dart';
-import '../../../app/shell/ds_text_field.dart';
+import '../../../domain_client/api_client.dart';
+import '../../../domain_client/models/consequence.dart';
 import '../../../domain_client/models/points.dart';
+import '../../../domain_client/models/redemption.dart';
+import '../../../domain_client/models/today_view.dart' show TodayView;
 import '../../../l10n/app_localizations.dart';
-import '../../today/presentation/widgets/secondary_button.dart';
+import '../../dynamic/application/dynamic_providers.dart';
+import '../../record/application/record_providers.dart';
+import '../../rules/presentation/widgets/rules_sheets.dart';
+import '../../today/application/today_providers.dart';
+import '../../today/presentation/today_screen.dart';
+import '../../today/presentation/widgets/line_sheet.dart';
+import '../../today/presentation/widgets/quiet_line.dart';
+import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/section_label.dart';
+import '../../today/presentation/widgets/secondary_button.dart';
+import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
+import '../../today/presentation/widgets/word_button.dart';
+import '../application/points_providers.dart';
 
-/// Points, rewards and what the couple agreed.
-///
-/// See `product/design/points-with-authority-and-warmth.md`. Three rules from
-/// that document are load-bearing here and should not be relaxed without
-/// reopening it:
-///
-/// 1. **The balance is an inventory, never a verdict.** It reads "3 points to
-///    spend", it floors at zero, and it never appears beside a person's name
-///    or face — a number next to a face is a rating of that face. Obedience
-///    shows `♥ -152`, which tells someone their affection account is
-///    overdrawn.
-/// 2. **Every entry names a person.** "Alex noticed", not "+1 task_earn".
-///    Even the automatic award is attributable, because Alex configured it.
-/// 3. **Giving is first-class.** A reward can be handed over outright, with
-///    no cost and no balance check. None of the three competitors can do this,
-///    and it is the whole answer to "warmer": in their model the receiving
-///    partner must earn everything and the giving partner is an accountant.
-class PointsScreen extends ConsumerWidget {
+/// Tab 4 · 分 (product/02-surfaces.md): the s's balance, what it can buy,
+/// the asks in flight, the ledger, which tasks pay, and the consequences the
+/// D issued. The number is the s's on both faces; the D gives and takes by
+/// hand. Nothing here is automatic, nothing is on a clock.
+class PointsScreen extends ConsumerStatefulWidget {
   const PointsScreen({
     super.key,
     required this.dynamicId,
-    required this.onBack,
-    this.partnerName,
-    this.partnerUserId,
+    this.onSignIn,
     this.onSelectTab,
   });
 
   final String dynamicId;
-  final VoidCallback onBack;
-  final String? partnerName;
-
-  /// Needed to give or award. Null before anyone has joined.
-  final String? partnerUserId;
-
-  /// Set when this is a tab root, so the bar is shown and works.
+  final VoidCallback? onSignIn;
   final void Function(NavSurface surface)? onSelectTab;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PointsScreen> createState() => _PointsScreenState();
+}
+
+class _PointsScreenState extends ConsumerState<PointsScreen> {
+  String? _notice;
+  bool _busy = false;
+
+  String get _id => widget.dynamicId;
+
+  void _reloadAll() {
+    ref.invalidate(todayProvider(_id));
+    ref.invalidate(pointsProvider(_id));
+    ref.invalidate(rewardsProvider(_id));
+    ref.invalidate(redemptionsProvider(_id));
+    ref.invalidate(consequencesProvider(_id));
+    ref.invalidate(recordSummaryProvider(_id));
+  }
+
+  Future<void> _refresh() async {
+    _reloadAll();
+    ref.invalidate(pointsRulesProvider(_id));
+    await ref.read(todayProvider(_id).future);
+  }
+
+  Future<void> _run(Future<void> Function() send) async {
+    if (_busy) return;
+    setState(() {
+      _busy = true;
+      _notice = null;
+    });
+    try {
+      await send();
+      _reloadAll();
+    } on Object {
+      if (mounted) setState(() => _notice = L.of(context).ptsActionFailed);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  String _dName(L l, TodayView v) => v.isD ? l.rulesYou : (v.partnerDisplayName ?? l.rulesTheD);
+  String _sName(L l, TodayView v) => v.isD ? (v.partnerDisplayName ?? l.rulesTheS) : l.rulesYou;
+
+  // ── writes ───────────────────────────────────────────────────────────────
+
+  Future<void> _adjust(TodayView v, {required bool give}) async {
     final l = L.of(context);
-    final summary = ref.watch(pointsProvider(dynamicId));
-    final rewards = ref.watch(rewardsProvider(dynamicId));
-    final agreements = ref.watch(agreementsProvider(dynamicId));
+    final sName = _sName(l, v);
+    final r = await showNumberNoteSheet(
+      context,
+      title: give ? l.ptsGiveTitle(sName) : l.ptsDeductTitle(sName),
+      amountLabel: l.ptsAmountLabel,
+      noteLabel: l.ptsWhyLabel,
+      primaryLabel: give ? l.ptsGive : l.ptsDeduct,
+    );
+    if (r == null || r.amount == null) return;
+    final subject = await ref.read(sUserIdProvider(_id).future);
+    if (subject == null) return;
+    await _run(() => ref.read(pointsRepositoryProvider).adjust(
+          _id,
+          subjectUserId: subject,
+          amount: give ? r.amount! : -r.amount!,
+          note: r.note,
+        ));
+  }
+
+  Future<void> _redeem(Reward reward) async {
+    final l = L.of(context);
+    final repo = ref.read(pointsRepositoryProvider);
+    if (reward.isFree) {
+      await _run(() => repo.redeem(_id, reward.id, idempotencyKey: ApiClient.newIdempotencyKey()));
+      return;
+    }
+    final note = await showLineSheet(
+      context,
+      title: l.ptsRequestTitle(reward.title),
+      label: l.ptsRequestNote,
+      sendLabel: l.ptsRequestSend,
+    );
+    if (note == null) return;
+    await _run(() => repo.request(
+          _id,
+          reward.id,
+          note: note.isEmpty ? null : note,
+          idempotencyKey: ApiClient.newIdempotencyKey(),
+        ));
+  }
+
+  Future<void> _decide(RedemptionView r, List<Reward> rewards, {required bool approve}) async {
+    final l = L.of(context);
+    final reward = rewards.where((x) => x.id == r.rewardId).firstOrNull;
+    final needsCost = approve && (reward == null || reward.dDecides);
+    String? note;
+    int? cost;
+    if (needsCost) {
+      final n = await showNumberNoteSheet(
+        context,
+        title: r.rewardTitle ?? l.ptsApprove,
+        amountLabel: l.ptsDecideCost,
+        noteLabel: l.ptsDecideNote,
+        primaryLabel: l.ptsApprove,
+      );
+      if (n == null) return;
+      note = n.note;
+      cost = n.amount;
+    } else {
+      final n = await showLineSheet(
+        context,
+        title: r.rewardTitle ?? (approve ? l.ptsApprove : l.ptsDeny),
+        label: l.ptsDecideNote,
+        sendLabel: approve ? l.ptsApprove : l.ptsDeny,
+      );
+      if (n == null) return;
+      note = n.isEmpty ? null : n;
+    }
+    await _run(() => ref.read(pointsRepositoryProvider).decide(
+          _id,
+          r.id,
+          approve: approve,
+          note: note,
+          costOverride: cost,
+          idempotencyKey: ApiClient.newIdempotencyKey(),
+        ));
+  }
+
+  Future<void> _fulfill(RedemptionView r) => _run(() => ref
+      .read(pointsRepositoryProvider)
+      .fulfill(_id, r.id, idempotencyKey: ApiClient.newIdempotencyKey()));
+
+  Future<void> _consequence(
+    ConsequenceView c,
+    Future<ConsequenceView> Function(String id, {required String idempotencyKey}) send,
+  ) =>
+      _run(() => send(c.id, idempotencyKey: ApiClient.newIdempotencyKey()));
+
+  // ── build ────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final today = ref.watch(todayProvider(_id));
+    void reload() => ref.invalidate(todayProvider(_id));
 
     return Scaffold(
       backgroundColor: DsColors.canvasRitual,
-      bottomNavigationBar: onSelectTab == null
-          ? null
-          : DsBottomNavigation(
-              current: NavSurface.points,
-              onSelect: onSelectTab,
-            ),
-      body: SafeArea(
-        child: DsRefreshable(
-          onRefresh: () async {
-            ref.invalidate(pointsProvider(dynamicId));
-            ref.invalidate(rewardsProvider(dynamicId));
-            ref.invalidate(agreementsProvider(dynamicId));
-            await ref.read(pointsProvider(dynamicId).future);
-          },
-          child: ListView(
+      body: DsRitualSurface(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
             children: [
-              _Header(title: l.pointsTitle, onBack: onBack),
-
-              // The number, alone, as an inventory of what is available.
-              switch (summary) {
-                AsyncData(:final value) => _Balance(
-                  balance: value.balance,
-                  daysTogether: value.daysTogether,
+              Expanded(
+                child: DsRefreshable(
+                  onRefresh: _refresh,
+                  child: today.when(
+                    skipLoadingOnReload: true,
+                    skipLoadingOnRefresh: true,
+                    loading: () => const TodayLoading(),
+                    error: (error, _) => switch (classifyFailure(error)) {
+                      TodayFailure.authorizationLost => RecoveryScaffold(
+                          context_: l.recoveryConfirmingContext,
+                          children: [
+                            const SizedBox(height: DsSpacing.space8),
+                            RecoveryMessage(l.recoverySessionRestore, prominent: true),
+                            const SizedBox(height: DsSpacing.space6),
+                            Padding(
+                              padding: todayInset,
+                              child: SecondaryButton(
+                                label: l.recoverySignInAgain,
+                                onTap: widget.onSignIn ?? () {},
+                                filled: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                      _ => RecoveryScaffold(
+                          context_: l.recoveryNotConfirmed,
+                          children: [
+                            const SizedBox(height: DsSpacing.space8),
+                            RecoveryMessage(l.ptsCouldNotLoad, prominent: true),
+                            const SizedBox(height: DsSpacing.space6),
+                            Padding(
+                              padding: todayInset,
+                              child: SecondaryButton(label: l.recoveryTryAgain, onTap: reload),
+                            ),
+                          ],
+                        ),
+                    },
+                    data: (view) => _body(view, l),
+                  ),
                 ),
-                _ => const SizedBox(height: 88),
-              },
+              ),
+              DsBottomNavigation(current: NavSurface.points, onSelect: widget.onSelectTab),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-              const SizedBox(height: DsSpacing.space10),
-              SectionLabel(l.rewardsTitle.toUpperCase()),
-              switch (rewards) {
-                AsyncData(:final value) when value.isEmpty =>
-                  _Muted(l.rewardsEmpty),
-                AsyncData(:final value) => Column(
+  Widget _body(TodayView v, L l) {
+    final points = ref.watch(pointsProvider(_id));
+    final rewards = ref.watch(rewardsProvider(_id));
+    final redemptions = ref.watch(redemptionsProvider(_id));
+    final rules = ref.watch(pointsRulesProvider(_id));
+    final consequences = ref.watch(consequencesProvider(_id));
+    final summary = ref.watch(recordSummaryProvider(_id));
+    final dName = _dName(l, v);
+    final sName = _sName(l, v);
+    final balance = points.asData?.value.balance ?? v.balance;
+    final rewardList = rewards.asData?.value ?? const <Reward>[];
+
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        TodayHeader(title: l.pointsTitle, partnerName: v.partnerDisplayName),
+        const SizedBox(height: DsSpacing.space6),
+
+        // ── balance
+        Padding(
+          padding: todayInset,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                v.isD ? l.ptsBalanceOf(sName, balance) : l.ptsBalanceMine(balance),
+                style: DsTextStyles.displayRitual.copyWith(color: DsColors.textOnRitualPrimary),
+              ),
+              const SizedBox(height: DsSpacing.space2),
+              switch (summary) {
+                AsyncData(:final value) => Text(
+                    l.recordTogether(value.daysTogether, value.currentStreak),
+                    style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+                  ),
+                _ => const SizedBox(height: 18),
+              },
+            ],
+          ),
+        ),
+        if (v.isD) ...[
+          const SizedBox(height: DsSpacing.space4),
+          Padding(
+            padding: todayInset,
+            child: Row(
+              children: [
+                WordButton(label: l.ptsGive, onTap: () => _adjust(v, give: true), filled: true),
+                const SizedBox(width: DsSpacing.space3),
+                WordButton(label: l.ptsDeduct, onTap: () => _adjust(v, give: false)),
+              ],
+            ),
+          ),
+        ],
+        if (_notice != null) ...[
+          const SizedBox(height: DsSpacing.space3),
+          Padding(padding: todayInset, child: RecoveryMessage(_notice!)),
+        ],
+
+        // ── 可兑换
+        const SizedBox(height: DsSpacing.space8),
+        SectionLabel(l.ptsRedeemableTitle),
+        switch (rewards) {
+          AsyncData(:final value) => value.isEmpty
+              ? QuietLine(l.ptsRedeemableEmpty(dName))
+              : Column(
                   children: [
                     for (final r in value)
                       _RewardRow(
                         reward: r,
-                        dynamicId: dynamicId,
-                        partnerUserId: partnerUserId,
+                        balance: balance,
+                        dName: dName,
+                        canRedeem: !v.isD && !_busy && r.affordable,
+                        onRedeem: () => _redeem(r),
                       ),
                   ],
                 ),
-                AsyncError() => _Muted(l.rewardsEmpty),
-                _ => const SizedBox(height: 60),
-              },
+          AsyncError() => QuietLine(l.ptsCouldNotLoad),
+          _ => const SizedBox(height: 40),
+        },
 
-              const SizedBox(height: DsSpacing.space5),
-              _AddReward(dynamicId: dynamicId),
-
-              const SizedBox(height: DsSpacing.space10),
-              SectionLabel(l.agreementsTitle.toUpperCase()),
-              _Muted(l.agreementsIntro),
-              const SizedBox(height: DsSpacing.space5),
-              switch (agreements) {
-                AsyncData(:final value) when value.isEmpty =>
-                  _Muted(l.agreementsEmpty),
-                AsyncData(:final value) => Column(
+        // ── 兑换申请
+        const SizedBox(height: DsSpacing.space8),
+        SectionLabel(l.ptsRequestsTitle),
+        switch (redemptions) {
+          AsyncData(:final value) => value.isEmpty
+              ? QuietLine(l.ptsRequestsEmpty)
+              : Column(
                   children: [
-                    for (final a in value)
-                      _AgreementRow(agreement: a, dynamicId: dynamicId),
-                    const SizedBox(height: DsSpacing.space2),
-                    _Muted(l.agreementsEitherCanEnd),
+                    for (final r in value)
+                      _RedemptionRow(
+                        redemption: r,
+                        isD: v.isD,
+                        dName: dName,
+                        busy: _busy,
+                        onApprove: () => _decide(r, rewardList, approve: true),
+                        onDeny: () => _decide(r, rewardList, approve: false),
+                        onFulfill: () => _fulfill(r),
+                      ),
                   ],
                 ),
-                AsyncError() => _Muted(l.agreementsEmpty),
-                _ => const SizedBox(height: 40),
-              },
-              const SizedBox(height: DsSpacing.space5),
-              _AddAgreement(dynamicId: dynamicId),
+          AsyncError() => QuietLine(l.ptsCouldNotLoad),
+          _ => const SizedBox(height: 40),
+        },
 
-              const SizedBox(height: DsSpacing.space10),
-              SectionLabel(l.pointsHistory),
-              switch (summary) {
-                AsyncData(:final value) when value.entries.isEmpty =>
-                  _Muted(l.pointsNoneYet),
-                AsyncData(:final value) => Column(
+        // ── 罚
+        const SizedBox(height: DsSpacing.space8),
+        SectionLabel(l.ptsConsequencesTitle),
+        switch (consequences) {
+          AsyncData(:final value) => value.isEmpty
+              ? QuietLine(l.ptsConsequencesEmpty)
+              : Column(
                   children: [
-                    for (final e in value.entries)
-                      _EntryRow(entry: e, partnerName: partnerName),
+                    for (final c in value)
+                      _ConsequenceRow(
+                        consequence: c,
+                        isD: v.isD,
+                        dName: dName,
+                        busy: _busy,
+                        onDone: () => _consequence(c, ref.read(consequenceRepositoryProvider).done),
+                        onConfirm: () => _consequence(c, ref.read(consequenceRepositoryProvider).confirm),
+                        onWaive: () => _consequence(c, ref.read(consequenceRepositoryProvider).waive),
+                      ),
                   ],
                 ),
-                _ => const SizedBox.shrink(),
-              },
-              const SizedBox(height: DsSpacing.space10),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
+          AsyncError() => QuietLine(l.ptsCouldNotLoad),
+          _ => const SizedBox(height: 40),
+        },
 
-/// What is available to spend.
-///
-/// Deliberately not a "score" and deliberately alone on its line: the whole
-/// sentence is about what the number lets you do, not about the person.
-/// What is available, and how long this has been going.
-///
-/// Given the vertical authority rule the rest of the product uses for a block
-/// that matters, rather than three grey lines stacked at equal weight. The
-/// first draft of this screen had no hierarchy at all: everything was the
-/// same size at the same interval, so nothing read as more important than
-/// anything else.
-class _Balance extends StatelessWidget {
-  const _Balance({required this.balance, required this.daysTogether});
-
-  final int balance;
-
-  /// One line, not a second counter. Kneel puts BALANCE and STREAK side by
-  /// side and the screen opens with two numbers competing for one glance.
-  final int daysTogether;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = L.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(left: DsSpacing.space5),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              width: DsBorderWidths.selected,
-              color: DsPrimitiveColors.terracotta,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  DsSpacing.space5,
-                  DsSpacing.space2,
-                  DsSpacing.space5,
-                  DsSpacing.space2,
+        // ── 流水
+        const SizedBox(height: DsSpacing.space8),
+        SectionLabel(l.ptsLedgerTitle),
+        switch (points) {
+          AsyncData(:final value) => value.entries.isEmpty
+              ? QuietLine(l.ptsLedgerEmpty)
+              : Column(
+                  children: [for (final e in value.entries) _LedgerRow(entry: e, dName: dName)],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l.pointsSpendable,
-                      style: DsTextStyles.labelRitual.copyWith(
-                        color: DsColors.textOnRitualMuted,
-                        fontSize: 10,
-                        letterSpacing: 1.9,
-                      ),
-                    ),
-                    const SizedBox(height: DsSpacing.space2),
-                    Text(
-                      l.pointsToSpend(balance),
-                      style: DsTextStyles.displayRitual.copyWith(
-                        color: DsColors.textOnRitualPrimary,
-                        fontSize: 26,
-                      ),
-                    ),
-                    const SizedBox(height: DsSpacing.space4),
-                    Text(
-                      l.pointsDaysTogether(daysTogether),
-                      style: DsTextStyles.bodyPrimary.copyWith(
-                        color: DsColors.textOnRitualSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: DsSpacing.space1),
-                    // Said out loud, because every other app in this category
-                    // has taught people a number like this can be lost.
-                    Text(
-                      l.pointsDaysNeverResets,
-                      style: DsTextStyles.bodySecondary.copyWith(
-                        color: DsColors.textOnRitualMuted,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+          AsyncError() => QuietLine(l.ptsCouldNotLoad),
+          _ => const SizedBox(height: 40),
+        },
 
-class _RewardRow extends ConsumerStatefulWidget {
-  const _RewardRow({
-    required this.reward,
-    required this.dynamicId,
-    required this.partnerUserId,
-  });
-
-  final Reward reward;
-  final String dynamicId;
-  final String? partnerUserId;
-
-  @override
-  ConsumerState<_RewardRow> createState() => _RewardRowState();
-}
-
-class _RewardRowState extends ConsumerState<_RewardRow> {
-  bool _busy = false;
-
-  Future<void> _run(Future<void> Function() action) async {
-    setState(() => _busy = true);
-    try {
-      await action();
-      ref.invalidate(pointsProvider(widget.dynamicId));
-      ref.invalidate(rewardsProvider(widget.dynamicId));
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = L.of(context);
-    final r = widget.reward;
-    final repo = ref.read(pointsRepositoryProvider);
-
-    return Padding(
-      padding: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space4),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // flex 3/2 rather than Expanded + min-size actions: giving the
-          // action row its natural width starved the title, which stacked
-          // one word per line. The title is the content; the actions are
-          // controls and can be the narrower half.
-          Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        // ── 规则可见
+        const SizedBox(height: DsSpacing.space8),
+        SectionLabel(l.ptsRulesTitle),
+        switch (rules) {
+          AsyncData(:final value) => Column(
               children: [
-                Text(
-                  r.title,
-                  style: DsTextStyles.bodyPrimary.copyWith(
-                    color: DsColors.textOnRitualPrimary,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  r.cost == 0 ? l.rewardsCost(0) : l.rewardsCost(r.cost),
-                  style: DsTextStyles.bodySecondary.copyWith(
-                    color: DsColors.textOnRitualMuted,
-                    fontSize: 11,
-                  ),
-                ),
-                if (r.detail != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    r.detail!,
-                    style: DsTextStyles.bodySecondary.copyWith(
-                      color: DsColors.textOnRitualMuted,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+                if (value.isEmpty) QuietLine(l.ptsRulesEmpty),
+                for (final r in value) _Line(left: r.title, right: l.rulesPoints(r.pointsEarn)),
+                QuietLine(l.ptsRulesBase),
               ],
             ),
-          ),
-          const SizedBox(width: DsSpacing.space3),
-
-          // Two doors on one line. Stacked, they read as a menu belonging to
-          // nothing in particular; side by side they clearly belong to the
-          // reward on their left. Giving is first and is the emphasised one:
-          // it is the warmest action in the product and costs the receiver
-          // nothing.
-          // Wrap, not Row: two labels plus "10 more to go" do not fit beside
-          // a title on a 390pt screen, and a Row overflows rather than
-          // reflowing. Wrap drops the second action onto its own line at the
-          // widths where that is genuinely necessary, and keeps them side by
-          // side everywhere else.
-          Expanded(
-            flex: 2,
-            child: Wrap(
-            alignment: WrapAlignment.end,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: DsSpacing.space1,
-            children: [
-              if (widget.partnerUserId != null)
-                _Action(
-                  label: l.rewardsGive,
-                  emphasis: true,
-                  onTap: _busy
-                      ? null
-                      : () => _run(
-                          () => repo.gift(
-                            widget.dynamicId,
-                            r.id,
-                            subjectUserId: widget.partnerUserId!,
-                          ),
-                        ),
-                ),
-              if (r.affordable)
-                _Action(
-                  label: l.rewardsTake,
-                  onTap: _busy
-                      ? null
-                      : () => _run(() => repo.redeem(widget.dynamicId, r.id)),
-                )
-              else
-                Padding(
-                  padding: const EdgeInsets.only(left: DsSpacing.space2),
-                  child: Text(
-                    l.rewardsNotYet(r.cost),
-                    textAlign: TextAlign.end,
-                    style: DsTextStyles.bodySecondary.copyWith(
-                      color: DsColors.textOnRitualMuted,
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-              // Taking it off the list. Withdrawn, not deleted: history that
-              // names it still reads.
-              IconButton(
-                onPressed: _busy
-                    ? null
-                    : () => _run(
-                        () => repo.retireReward(widget.dynamicId, r.id),
-                      ),
-                icon: const DsGlyphIcon(DsGlyph.close, size: 16),
-                tooltip: l.rewardsRemove(r.title),
-                constraints: const BoxConstraints(),
-                padding: const EdgeInsets.all(DsSpacing.space2),
-              ),
-            ],
-            ),
-          ),
-        ],
-      ),
+          AsyncError() => QuietLine(l.ptsCouldNotLoad),
+          _ => const SizedBox(height: 40),
+        },
+        const SizedBox(height: DsSpacing.space10),
+      ],
     );
   }
 }
 
-/// One movement, written as something that happened between two people.
-class _EntryRow extends StatelessWidget {
-  const _EntryRow({required this.entry, required this.partnerName});
-
-  final PointEntry entry;
-  final String? partnerName;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = L.of(context);
-    final who = partnerName ?? l.askYourPartnerFallback;
-
-    final sentence = switch (entry.reason) {
-      PointReason.taskEarn => l.pointsEntryNoticed(who),
-      PointReason.dAward => l.pointsEntryGave(who, entry.amount.abs()),
-      PointReason.dDeduct => l.pointsEntryHeld(who),
-      PointReason.redemption => l.pointsEntryTook,
-      PointReason.redemptionRefund => l.pointsEntryRefunded,
-      PointReason.unknown => l.pointsEntryMoved(entry.amount),
+/// Reason words for the ledger. The wire says `d_award`; the screen says
+/// 「{D} 给」. Exposed for tests.
+String ledgerReason(L l, PointReason reason, String dName) => switch (reason) {
+      PointReason.taskEarn => l.ptsReasonTaskEarn,
+      PointReason.dAward => l.ptsReasonAward(dName),
+      PointReason.dDeduct => l.ptsReasonDeduct(dName),
+      PointReason.redemption => l.ptsReasonRedemption,
+      PointReason.redemptionRefund => l.ptsReasonRefund,
+      PointReason.unknown => l.ptsReasonOther,
     };
 
-    return Padding(
-      padding: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space3),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sentence,
-                  style: DsTextStyles.bodyPrimary.copyWith(
-                    color: DsColors.textOnRitualPrimary,
-                    fontSize: 14,
-                  ),
-                ),
-                if (entry.note != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    entry.note!,
-                    style: DsTextStyles.bodySecondary.copyWith(
-                      color: DsColors.textOnRitualMuted,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-          Text(
-            entry.amount > 0 ? '+${entry.amount}' : '${entry.amount}',
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: entry.amount > 0
-                  ? DsPrimitiveColors.terracotta
-                  : DsColors.textOnRitualMuted,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Action extends StatelessWidget {
-  const _Action({
-    required this.label,
-    required this.onTap,
-    this.emphasis = false,
-  });
-
-  final String label;
-  final VoidCallback? onTap;
-
-  /// Giving is the warmest action in the product and is not styled as the
-  /// lesser of the two.
-  final bool emphasis;
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: DsSpacing.space3,
-        vertical: DsSpacing.space2,
-      ),
-      child: Text(
-        label,
-        style: DsTextStyles.labelRitual.copyWith(
-          color: onTap == null
-              ? DsColors.textOnRitualMuted
-              : (emphasis
-                    ? DsPrimitiveColors.terracotta
-                    : DsColors.textOnRitualSecondary),
-          fontSize: 12,
-        ),
-      ),
-    ),
-  );
-}
-
-/// Putting something on offer.
-///
-/// Collapsed until asked for. The first version rendered the form open,
-/// always, directly beneath the words "Nothing on offer yet" — an empty state
-/// and an editing form competing in the same block, so neither read as
-/// anything. Bare hint text with no labels and no grouping made it look like
-/// a debug screen rather than a product.
-class _AddReward extends ConsumerStatefulWidget {
-  const _AddReward({required this.dynamicId});
-
-  final String dynamicId;
-
-  @override
-  ConsumerState<_AddReward> createState() => _AddRewardState();
-}
-
-class _AddRewardState extends ConsumerState<_AddReward> {
-  final _title = TextEditingController();
-  final _detail = TextEditingController();
-  final _cost = TextEditingController(text: '1');
-  bool _open = false;
-  bool _needsTitle = false;
-  bool _busy = false;
-
-  @override
-  void dispose() {
-    _title.dispose();
-    _detail.dispose();
-    _cost.dispose();
-    super.dispose();
-  }
-
-  Future<void> _add() async {
-    final t = _title.text.trim();
-    if (t.isEmpty) {
-      setState(() => _needsTitle = true);
-      return;
-    }
-    setState(() => _busy = true);
-    try {
-      await ref.read(pointsRepositoryProvider).addReward(
-        widget.dynamicId,
-        title: t,
-        detail: _detail.text.trim().isEmpty ? null : _detail.text.trim(),
-        // A malformed cost is zero — on offer for nothing — rather than a
-        // validation error. Nothing here is worth blocking someone over.
-        cost: int.tryParse(_cost.text.trim()) ?? 0,
-      );
-      _title.clear();
-      _detail.clear();
-      ref.invalidate(rewardsProvider(widget.dynamicId));
-      if (mounted) setState(() => _open = false);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
+class _Line extends StatelessWidget {
+  const _Line({required this.left, this.right, this.sub, this.dim = false, this.trailing});
+  final String left;
+  final String? right;
+  final String? sub;
+  final bool dim;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
-    final l = L.of(context);
-
-    if (!_open) {
-      return Padding(
-        padding: todayInset,
-        child: SecondaryButton(
-          label: l.rewardsAddOpen,
-          onTap: () => setState(() => _open = true),
-        ),
-      );
-    }
-
-    return _Sheet(
-      children: [
-        _Field(
-          label: l.rewardsAddTitle,
-          controller: _title,
-          hint: l.rewardsAddHint,
-          enabled: !_busy,
-          error: _needsTitle ? l.rewardsNeedsTitle : null,
-        ),
-        const SizedBox(height: DsSpacing.space5),
-        _Field(
-          label: l.rewardsAddDetail,
-          controller: _detail,
-          hint: '',
-          enabled: !_busy,
-        ),
-        const SizedBox(height: DsSpacing.space5),
-        _CostField(
-          label: l.rewardsAddCost,
-          controller: _cost,
-          enabled: !_busy,
-        ),
-        const SizedBox(height: DsSpacing.space6),
-        _SheetActions(
-          busy: _busy,
-          saveLabel: l.rewardsAddSave,
-          cancelLabel: l.rewardsAddCancel,
-          onSave: _add,
-          onCancel: () => setState(() {
-            _open = false;
-            _needsTitle = false;
-          }),
-        ),
-      ],
-    );
-  }
-}
-
-/// Writing down what the couple agreed happens.
-///
-/// Collapsed until asked for, like the reward form. Two fields, "when this
-/// happens" and "then", because an agreement naming only the consequence is
-/// the vague kind their own writing says breeds resentment.
-class _AddAgreement extends ConsumerStatefulWidget {
-  const _AddAgreement({required this.dynamicId});
-
-  final String dynamicId;
-
-  @override
-  ConsumerState<_AddAgreement> createState() => _AddAgreementState();
-}
-
-class _AddAgreementState extends ConsumerState<_AddAgreement> {
-  final _when = TextEditingController();
-  final _then = TextEditingController();
-  final _cost = TextEditingController(text: '0');
-  bool _open = false;
-  bool _incomplete = false;
-  bool _busy = false;
-
-  @override
-  void dispose() {
-    _when.dispose();
-    _then.dispose();
-    _cost.dispose();
-    super.dispose();
-  }
-
-  Future<void> _add() async {
-    final w = _when.text.trim();
-    final t = _then.text.trim();
-    if (w.isEmpty || t.isEmpty) {
-      setState(() => _incomplete = true);
-      return;
-    }
-    setState(() => _busy = true);
-    try {
-      await ref.read(pointsRepositoryProvider).addAgreement(
-        widget.dynamicId,
-        label: w,
-        consequence: t,
-        pointCost: int.tryParse(_cost.text.trim()) ?? 0,
-      );
-      _when.clear();
-      _then.clear();
-      ref.invalidate(agreementsProvider(widget.dynamicId));
-      if (mounted) setState(() => _open = false);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = L.of(context);
-
-    if (!_open) {
-      return Padding(
-        padding: todayInset,
-        child: SecondaryButton(
-          label: l.agreementsAddOpen,
-          onTap: () => setState(() => _open = true),
-        ),
-      );
-    }
-
-    return _Sheet(
-      children: [
-        _Field(
-          label: l.agreementsWhen,
-          controller: _when,
-          hint: l.agreementsWhenHint,
-          enabled: !_busy,
-          error: _incomplete ? l.agreementsNeedsBoth : null,
-        ),
-        const SizedBox(height: DsSpacing.space5),
-        _Field(
-          label: l.agreementsThen,
-          controller: _then,
-          hint: l.agreementsThenHint,
-          enabled: !_busy,
-        ),
-        const SizedBox(height: DsSpacing.space5),
-        _CostField(
-          label: l.agreementsCost,
-          controller: _cost,
-          enabled: !_busy,
-        ),
-        const SizedBox(height: DsSpacing.space6),
-        _SheetActions(
-          busy: _busy,
-          saveLabel: l.agreementsAddSave,
-          cancelLabel: l.agreementsAddCancel,
-          onSave: _add,
-          onCancel: () => setState(() {
-            _open = false;
-            _incomplete = false;
-          }),
-        ),
-      ],
-    );
-  }
-}
-
-/// The shared shell for an open form: inset, raised, and set apart from the
-/// list it belongs to so it reads as a thing you are doing rather than more
-/// rows.
-class _Sheet extends StatelessWidget {
-  const _Sheet({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: todayInset,
-    child: Container(
-      padding: const EdgeInsets.all(DsSpacing.space5),
-      decoration: BoxDecoration(
-        color: DsColors.surfaceRitualRaised,
-        border: Border.all(
-          color: DsColors.textOnRitualMuted.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
-      ),
-    ),
-  );
-}
-
-/// A labelled field. The first version had none — just hint text floating in
-/// the dark, so an empty form said nothing about what it wanted.
-class _Field extends StatelessWidget {
-  const _Field({
-    required this.label,
-    required this.controller,
-    required this.hint,
-    required this.enabled,
-    this.error,
-  });
-
-  final String label;
-  final TextEditingController controller;
-  final String hint;
-  final bool enabled;
-  final String? error;
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label.toUpperCase(),
-        style: DsTextStyles.labelRitual.copyWith(
-          color: DsColors.textOnRitualMuted,
-          fontSize: 10,
-          letterSpacing: 1.6,
-        ),
-      ),
-      const SizedBox(height: DsSpacing.space2),
-      DsTextField(
-        label: '',
-        controller: controller,
-        hint: hint,
-        enabled: enabled,
-        error: error,
-      ),
-    ],
-  );
-}
-
-/// The number, kept beside its own label rather than stranded on a lonely
-/// underline half a screen away from what it means.
-class _CostField extends StatelessWidget {
-  const _CostField({
-    required this.label,
-    required this.controller,
-    required this.enabled,
-  });
-
-  final String label;
-  final TextEditingController controller;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    crossAxisAlignment: CrossAxisAlignment.end,
-    children: [
-      Expanded(
-        child: Text(
-          label,
-          style: DsTextStyles.bodySecondary.copyWith(
-            color: DsColors.textOnRitualSecondary,
-          ),
-        ),
-      ),
-      const SizedBox(width: DsSpacing.space4),
-      SizedBox(
-        width: 56,
-        child: DsTextField(
-          label: '',
-          controller: controller,
-          hint: '0',
-          enabled: enabled,
-        ),
-      ),
-    ],
-  );
-}
-
-/// Save and cancel, as buttons rather than as letter-spaced text that reads
-/// like a heading.
-class _SheetActions extends StatelessWidget {
-  const _SheetActions({
-    required this.busy,
-    required this.saveLabel,
-    required this.cancelLabel,
-    required this.onSave,
-    required this.onCancel,
-  });
-
-  final bool busy;
-  final String saveLabel;
-  final String cancelLabel;
-  final VoidCallback onSave;
-  final VoidCallback onCancel;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Expanded(
-        child: SecondaryButton(
-          label: cancelLabel,
-          onTap: busy ? () {} : onCancel,
-        ),
-      ),
-      const SizedBox(width: DsSpacing.space3),
-      Expanded(
-        child: SecondaryButton(
-          label: saveLabel,
-          filled: true,
-          onTap: busy ? () {} : onSave,
-        ),
-      ),
-    ],
-  );
-}
-
-/// One agreement, with the way out beside it./// One agreement, with the way out beside it.
-class _AgreementRow extends ConsumerWidget {
-  const _AgreementRow({required this.agreement, required this.dynamicId});
-
-  final ConsequenceAgreement agreement;
-  final String dynamicId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = L.of(context);
+    final color = dim ? DsColors.textOnRitualSecondary : DsColors.textOnRitualPrimary;
     return Padding(
-      padding: todayInset.add(
-        const EdgeInsets.only(bottom: DsSpacing.space4),
-      ),
+      padding: todayInset.add(const EdgeInsets.symmetric(vertical: DsSpacing.space3)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -874,83 +433,171 @@ class _AgreementRow extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  agreement.label,
-                  style: DsTextStyles.bodySecondary.copyWith(
-                    color: DsColors.textOnRitualMuted,
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  agreement.consequence,
-                  style: DsTextStyles.bodyPrimary.copyWith(
-                    color: DsColors.textOnRitualPrimary,
-                  ),
-                ),
+                Text(left, style: DsTextStyles.bodyPrimary.copyWith(color: color)),
+                if (sub != null) ...[
+                  const SizedBox(height: DsSpacing.space1),
+                  Text(sub!, style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary)),
+                ],
               ],
             ),
           ),
-          // Either of them, alone. An agreement you cannot leave is not one.
-          IconButton(
-            onPressed: () async {
-              await ref
-                  .read(pointsRepositoryProvider)
-                  .endAgreement(dynamicId, agreement.id);
-              ref.invalidate(agreementsProvider(dynamicId));
-            },
-            icon: const DsGlyphIcon(DsGlyph.close, size: 18),
-            tooltip: l.agreementsEnd(agreement.label),
-          ),
+          if (right != null) ...[
+            const SizedBox(width: DsSpacing.space3),
+            Text(right!, style: DsTextStyles.bodySecondary.copyWith(color: color)),
+          ],
+          if (trailing != null) ...[const SizedBox(width: DsSpacing.space3), trailing!],
         ],
       ),
     );
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header({required this.title, required this.onBack});
-
-  final String title;
-  final VoidCallback onBack;
+class _RewardRow extends StatelessWidget {
+  const _RewardRow({
+    required this.reward,
+    required this.balance,
+    required this.dName,
+    required this.canRedeem,
+    required this.onRedeem,
+  });
+  final Reward reward;
+  final int balance;
+  final String dName;
+  final bool canRedeem;
+  final VoidCallback onRedeem;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: todayInset,
-    child: Row(
-      children: [
-        IconButton(
-          onPressed: onBack,
-          icon: DsGlyphIcon(
-            DsGlyph.back,
-            semanticLabel: L.of(context).shellBack,
-          ),
-        ),
-        const SizedBox(width: DsSpacing.space2),
-        Text(
-          title.toUpperCase(),
-          style: DsTextStyles.labelRitual.copyWith(
-            color: DsColors.textOnRitualPrimary,
-          ),
-        ),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final cost = reward.cost;
+    final right = cost == null
+        ? l.rulesRewardDDecidesName(dName)
+        : reward.affordable
+            ? l.rulesPoints(cost)
+            : l.ptsShort(cost - balance);
+    return _Line(
+      left: reward.title,
+      sub: reward.detail,
+      right: right,
+      dim: !reward.affordable,
+      trailing: canRedeem ? WordButton(label: l.rulesGoRedeem, onTap: onRedeem) : null,
+    );
+  }
 }
 
-class _Muted extends StatelessWidget {
-  const _Muted(this.text);
-
-  final String text;
+class _RedemptionRow extends StatelessWidget {
+  const _RedemptionRow({
+    required this.redemption,
+    required this.isD,
+    required this.dName,
+    required this.busy,
+    required this.onApprove,
+    required this.onDeny,
+    required this.onFulfill,
+  });
+  final RedemptionView redemption;
+  final bool isD;
+  final String dName;
+  final bool busy;
+  final VoidCallback onApprove;
+  final VoidCallback onDeny;
+  final VoidCallback onFulfill;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: todayInset,
-    child: Text(
-      text,
-      style: DsTextStyles.bodySecondary.copyWith(
-        color: DsColors.textOnRitualMuted,
-      ),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final r = redemption;
+    final status = switch (r.status) {
+      'requested' => l.ptsStatusRequested(dName),
+      'approved' => l.ptsStatusApproved(dName),
+      'denied' => l.ptsStatusDenied(dName),
+      'fulfilled' => l.ptsStatusFulfilled,
+      _ => r.status,
+    };
+    Widget? trailing;
+    if (!busy) {
+      if (r.isRequested && isD) {
+        trailing = Row(mainAxisSize: MainAxisSize.min, children: [
+          WordButton(label: l.ptsApprove, onTap: onApprove, filled: true),
+          const SizedBox(width: DsSpacing.space2),
+          WordButton(label: l.ptsDeny, onTap: onDeny),
+        ]);
+      } else if (r.isApproved) {
+        trailing = WordButton(label: l.ptsFulfill, onTap: onFulfill);
+      }
+    }
+    return _Line(
+      left: r.rewardTitle ?? '',
+      sub: [status, if (r.note != null && r.note!.isNotEmpty) r.note!].join(' · '),
+      dim: r.status == 'denied' || r.status == 'fulfilled',
+      trailing: trailing,
+    );
+  }
+}
+
+class _ConsequenceRow extends StatelessWidget {
+  const _ConsequenceRow({
+    required this.consequence,
+    required this.isD,
+    required this.dName,
+    required this.busy,
+    required this.onDone,
+    required this.onConfirm,
+    required this.onWaive,
+  });
+  final ConsequenceView consequence;
+  final bool isD;
+  final String dName;
+  final bool busy;
+  final VoidCallback onDone;
+  final VoidCallback onConfirm;
+  final VoidCallback onWaive;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final c = consequence;
+    final status = switch (c.status) {
+      'issued' => l.ptsConsStatusIssued,
+      'done_by_s' => l.ptsConsStatusDoneByS(dName),
+      'confirmed' => l.ptsConsStatusConfirmed(dName),
+      'waived' => l.ptsConsStatusWaived(dName),
+      _ => c.status,
+    };
+    Widget? trailing;
+    if (!busy) {
+      if (c.isIssued && !isD) {
+        trailing = WordButton(label: l.ptsConsequenceDone, onTap: onDone, filled: true);
+      } else if (isD && c.isOpen) {
+        trailing = Row(mainAxisSize: MainAxisSize.min, children: [
+          WordButton(label: l.ptsConsequenceConfirm, onTap: onConfirm, filled: c.isDoneByS),
+          const SizedBox(width: DsSpacing.space2),
+          WordButton(label: l.ptsConsequenceWaive, onTap: onWaive),
+        ]);
+      }
+    }
+    return _Line(
+      left: c.title,
+      sub: [status, if (c.detail != null && c.detail!.isNotEmpty) c.detail!].join(' · '),
+      dim: !c.isOpen,
+      trailing: trailing,
+    );
+  }
+}
+
+class _LedgerRow extends StatelessWidget {
+  const _LedgerRow({required this.entry, required this.dName});
+  final PointEntry entry;
+  final String dName;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = L.of(context);
+    final sign = entry.amount > 0 ? '+' : '';
+    return _Line(
+      left: ledgerReason(l, entry.reason, dName),
+      sub: entry.note,
+      right: '$sign${entry.amount}',
+    );
+  }
 }

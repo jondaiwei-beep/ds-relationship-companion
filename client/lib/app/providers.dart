@@ -12,6 +12,9 @@ import '../domain_client/repositories/task_repository.dart';
 import '../domain_client/repositories/d_note_repository.dart';
 import '../domain_client/repositories/today_repository.dart';
 import '../domain_client/repositories/record_repository.dart';
+import '../domain_client/repositories/rule_repository.dart';
+import '../domain_client/repositories/consequence_repository.dart';
+import '../features/dynamic/application/dynamic_providers.dart';
 import '../platform/storage/auth_flow_store.dart';
 
 /// Backend base URL. Overridden at build time with --dart-define.
@@ -62,15 +65,28 @@ final pointsRepositoryProvider = Provider<PointsRepository>(
   (ref) => PointsRepository(ref.watch(apiClientProvider)),
 );
 
-/// Read once, then only when asked or after a mutation — see `DsRefreshable`.
-final pointsProvider = FutureProvider.family<PointsSummary, String>(
-  (ref, dynamicId) => ref.watch(pointsRepositoryProvider).summary(dynamicId),
+final ruleRepositoryProvider = Provider<RuleRepository>(
+  (ref) => RuleRepository(ref.watch(apiClientProvider)),
 );
 
-final rewardsProvider = FutureProvider.family<List<Reward>, String>(
-  (ref, dynamicId) => ref.watch(pointsRepositoryProvider).rewards(dynamicId),
+final consequenceRepositoryProvider = Provider<ConsequenceRepository>(
+  (ref) => ConsequenceRepository(ref.watch(apiClientProvider)),
 );
 
+/// The s's balance and ledger, whichever face asks. Read once, then only when
+/// asked or after a mutation — see `DsRefreshable`.
+final pointsProvider = FutureProvider.family<PointsSummary, String>((ref, dynamicId) async {
+  final subject = await ref.watch(sUserIdProvider(dynamicId).future);
+  return ref.watch(pointsRepositoryProvider).summary(dynamicId, subjectUserId: subject);
+});
+
+/// Rewards with affordability answered against the s's balance.
+final rewardsProvider = FutureProvider.family<List<Reward>, String>((ref, dynamicId) async {
+  final subject = await ref.watch(sUserIdProvider(dynamicId).future);
+  return ref.watch(pointsRepositoryProvider).rewards(dynamicId, subjectUserId: subject);
+});
+
+/// 惩罚库 — templates only. Nothing here is ever executed from here.
 final agreementsProvider =
     FutureProvider.family<List<ConsequenceAgreement>, String>(
   (ref, dynamicId) => ref.watch(pointsRepositoryProvider).agreements(dynamicId),
