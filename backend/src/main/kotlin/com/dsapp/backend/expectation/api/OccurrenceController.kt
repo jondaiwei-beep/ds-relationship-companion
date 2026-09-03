@@ -1,8 +1,6 @@
 package com.dsapp.backend.expectation.api
 
 import com.dsapp.backend.expectation.application.CompleteOccurrenceService
-import com.dsapp.backend.expectation.application.CheckInService
-import com.dsapp.backend.expectation.application.CheckInVisibility
 import com.dsapp.backend.expectation.application.CreateExpectationService
 import com.dsapp.backend.expectation.application.OccurrenceQueryService
 import com.dsapp.backend.expectation.application.ReceiveOccurrenceService
@@ -63,9 +61,9 @@ data class ReceiveResponse(val occurrenceId: UUID, val receivedAt: Instant)
  * `@NotBlank` here contradicted both, so the two-tap path was impossible —
  * a person could only acknowledge by typing something.
  *
- * The comment it replaces argued that requiring text protects red lines #1
- * and #2. It does not. Text proves only that *something* was in the field,
- * not that a human wrote it or meant to send it. Those red lines are held by
+ * The comment it replaces argued that requiring text protects the response
+ * invariants. It does not. Text proves only that *something* was in the field,
+ * not that a human wrote it or meant to send it. Those invariants are held by
  * different things, and they are all present:
  *
  * - the send is an explicit human action, never background or automatic;
@@ -110,15 +108,6 @@ data class ResolveAdjustmentBody(
 
 data class ResolveResponse(val state: String, val replacementOccurrenceId: UUID?)
 
-/** Visibility is explicit — there is no shared-by-default (Notion 04 §3). */
-data class CreateCheckInBody(
-    val mood: String? = null,
-    val energy: String? = null,
-    val need: String? = null,
-    val note: String? = null,
-    val visibility: CheckInVisibility = CheckInVisibility.PRIVATE,
-)
-
 @RestController
 @RequestMapping("/v1")
 class OccurrenceController(
@@ -130,7 +119,6 @@ class OccurrenceController(
     private val query: OccurrenceQueryService,
     private val attention: AttentionQueryService,
     private val today: TodayQueryService,
-    private val checkIns: CheckInService,
     private val idempotency: IdempotencyService,
     private val mapper: ObjectMapper,
 ) {
@@ -164,32 +152,6 @@ class OccurrenceController(
     ): ResponseEntity<Any> = ResponseEntity.ok()
         .cacheControl(CacheControl.noStore())
         .body(query.get(jwt.actorId(), occurrenceId))
-
-    /** Recent check-ins the viewer may see. Private ones are filtered in SQL. */
-    @GetMapping("/dynamics/{dynamicId}/check-ins")
-    fun checkInsFor(
-        @AuthenticationPrincipal jwt: Jwt,
-        @PathVariable dynamicId: UUID,
-    ): ResponseEntity<Any> = ResponseEntity.ok()
-        .cacheControl(CacheControl.noStore())
-        .body(mapOf("items" to checkIns.recentFor(jwt.actorId(), dynamicId)))
-
-    /** Share context: "I can continue, but gently." */
-    @PostMapping("/dynamics/{dynamicId}/check-ins")
-    fun createCheckIn(
-        @AuthenticationPrincipal jwt: Jwt,
-        @PathVariable dynamicId: UUID,
-        @RequestHeader("Idempotency-Key", required = false) key: String?,
-        @Valid @RequestBody body: CreateCheckInBody,
-    ): ResponseEntity<Any> = runOnce(
-        jwt, key, "create_check_in", "/v1/dynamics/{id}/check-ins",
-        listOf(dynamicId.toString()), body,
-    ) {
-        val id = checkIns.create(
-            jwt.actorId(), dynamicId, body.mood, body.energy, body.need, body.note, body.visibility,
-        )
-        201 to mapOf("checkInId" to id)
-    }
 
     /** Today — what is expected of this person today (Journey B). */
     @GetMapping("/dynamics/{dynamicId}/today")

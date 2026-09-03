@@ -40,7 +40,7 @@ void main() {
     });
 
     test('is complete without a role, because naming one is optional', () {
-      // Red line: the product must never require this to be answered.
+      // Invariant: the product must never require this to be answered.
       expect(complete.rolePreset, isNull);
       expect(complete.isComplete, isTrue);
     });

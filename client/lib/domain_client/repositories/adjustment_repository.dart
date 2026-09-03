@@ -2,7 +2,7 @@ import '../api_client.dart';
 
 /// Ask to discuss, move, or skip.
 ///
-/// None of these is a Miss (red line #3). No role can disable them, so the
+/// None of these is a Miss. No role can disable them, so the
 /// client never gates these calls on a role either.
 enum AdjustmentType { discuss, reschedule, cantDo }
 

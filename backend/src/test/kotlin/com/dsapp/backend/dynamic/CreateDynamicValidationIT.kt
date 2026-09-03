@@ -120,7 +120,7 @@ class CreateDynamicValidationIT {
 
     @Test
     fun `naming no role at all stays allowed`() {
-        // Red line: the product must never require this to be answered.
+        // Invariant: the product must never require this to be answered.
         create(payload(role = null)).andExpect(status().isCreated)
     }
 }

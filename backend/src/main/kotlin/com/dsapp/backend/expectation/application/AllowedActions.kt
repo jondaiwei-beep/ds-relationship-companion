@@ -28,7 +28,7 @@ object AllowedActions {
             state in setOf("ACTIVE", "NEEDS_REVIEW")) listOf("receive") else emptyList()
         return receive + when (state) {
             // Adjustment is always offered alongside completion — it is a normal
-            // path, not a failure (red line #3, Notion 02 §5).
+            // path, not a failure.
             "ACTIVE" -> if (role == RoleContext.PARTNER) {
                 listOf("complete", "discuss", "reschedule", "cant_do")
             } else emptyList()

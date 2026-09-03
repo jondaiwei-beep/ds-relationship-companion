@@ -51,7 +51,7 @@ class DynamicQueryService(
         val pausedAt: Instant?,
         val members: List<MemberView>,
         val structure: List<StructureItem>,
-        /** Agency that no role can ever remove (Notion 03 §2, red line #4). */
+        /** Agency that no role can ever remove (Notion 03 §2). */
         val alwaysAvailable: List<String>,
     )
 

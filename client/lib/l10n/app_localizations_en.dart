@@ -12,13 +12,23 @@ class LEn extends L {
   String get navToday => 'Today';
 
   @override
-  String get navDynamic => 'Dynamic';
+  String get navRules => 'Rules';
 
   @override
-  String get navExplore => 'Explore';
+  String get rulesExplore => 'Explore';
 
   @override
-  String get navUs => 'Us';
+  String get recordComingSoon => 'Not built yet';
+
+  @override
+  String get recordComingSoonBody =>
+      'Each day as a page — what was delivered, what was said, how it was handled. Coming in a later build.';
+
+  @override
+  String get navRecord => 'Record';
+
+  @override
+  String get actionReceived => 'Seen';
 
   @override
   String get actionComplete => 'Complete';

@@ -5,42 +5,29 @@ import 'ds_glyph.dart';
 
 import '../../l10n/app_localizations.dart';
 
-/// The four surfaces the product navigates between.
+/// The four tabs (product/02-surfaces.md): 今天 / 规矩 / 记录 / 分.
 ///
-/// Named, not indexed. The version this replaces took an `int`, which was
-/// fine while one screen used it and would have been eight chances to pass
-/// the wrong number once the rest exist.
-///
-/// Attention is deliberately absent: it is reached from Today, not from here.
-/// The set is fixed by the product, so this enum is the whole contract.
+/// Named, not indexed. Attention and Explore are reached from inside a tab,
+/// not from here.
 enum NavSurface {
-  today(DsAssets.navToday),
-  dynamic_(DsAssets.navDynamic),
-  // Points, rewards and what the couple agreed. A tab rather than a row
-  // buried in Settings: all three competitors give this a bottom tab, and
-  // the first build that hid it in Settings was reported as not containing
-  // the feature at all.
-  //
-  // The only surface with no asset. SVG Freeze v1 rule 4 puts a generic mark
-  // like this in `DsGlyphIcon` as a drawn primitive rather than making it a
-  // 34th frozen master.
-  points(null),
-  explore(DsAssets.navExplore),
-  us(DsAssets.navUs);
+  today(DsAssets.navToday, null),
+  rules(DsAssets.navDynamic, null),
+  record(null, DsGlyph.record),
+  points(null, DsGlyph.points);
 
-  const NavSurface(this.asset);
+  const NavSurface(this.asset, this.glyph);
 
-  /// Null for [points], which draws its mark instead.
+  /// The frozen SVG for the tab, or null when [glyph] draws it instead.
   final DsAssetId? asset;
+  final DsGlyph? glyph;
 
   /// The tab's word, in the reader's language. A method rather than a const
   /// field because the enum is built before any locale is known.
   String label(L l) => switch (this) {
     NavSurface.today => l.navToday,
-    NavSurface.dynamic_ => l.navDynamic,
+    NavSurface.rules => l.navRules,
+    NavSurface.record => l.navRecord,
     NavSurface.points => l.navPoints,
-    NavSurface.explore => l.navExplore,
-    NavSurface.us => l.navUs,
   };
 }
 
@@ -132,7 +119,7 @@ class _NavTab extends StatelessWidget {
                 )
               else
                 DsGlyphIcon(
-                  DsGlyph.points,
+                  surface.glyph!,
                   size: 24,
                   color: colour,
                 ),

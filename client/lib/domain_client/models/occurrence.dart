@@ -12,10 +12,10 @@ enum OccurrenceState {
   scheduled,
   active,
   /// A Completion exists; awaiting a human Acknowledgement.
-  /// Completion != Acknowledgement (product red line #2).
+  /// Completion != Acknowledgement.
   waitingAck,
   acknowledged,
-  /// Past due. Never punishment (product red line #3).
+  /// Past due. What it means is the D's call (product/03-domain.md).
   needsReview,
   reviewed,
   needToDiscuss,

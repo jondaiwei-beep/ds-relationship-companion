@@ -4,7 +4,7 @@ import 'occurrence.dart';
 part 'occurrence_view.freezed.dart';
 part 'occurrence_view.g.dart';
 
-/// A human-authored response. Never system-generated (product red line #1).
+/// A human-authored response. Never system-generated.
 @freezed
 abstract class AcknowledgementView with _$AcknowledgementView {
   const factory AcknowledgementView({

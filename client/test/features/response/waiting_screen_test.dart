@@ -117,7 +117,7 @@ void main() {
 
       // A wordless acknowledgement is a real human response. The screen
       // reports and attributes it; it does not invent a sentence Morgan did
-      // not say (red line #1).
+      // not say.
       expect(find.text('Morgan acknowledged this.'), findsOneWidget);
       expect(find.textContaining('I noticed'), findsNothing);
       expect(find.textContaining('felt'), findsNothing);

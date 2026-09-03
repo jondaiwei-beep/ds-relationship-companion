@@ -12,13 +12,22 @@ class LZh extends L {
   String get navToday => '今天';
 
   @override
-  String get navDynamic => '关系';
+  String get navRules => '规矩';
 
   @override
-  String get navExplore => '发现';
+  String get rulesExplore => '探索';
 
   @override
-  String get navUs => '我们';
+  String get recordComingSoon => '还没做';
+
+  @override
+  String get recordComingSoonBody => '每一天一页：交了什么、说了什么、怎么处置的。下一阶段。';
+
+  @override
+  String get navRecord => '记录';
+
+  @override
+  String get actionReceived => '看到了';
 
   @override
   String get actionComplete => '做好了';
@@ -2226,7 +2235,7 @@ class LZh extends L {
   String get settingsPointsPerCompletion => '做好一件事得几分';
 
   @override
-  String get navPoints => '积分';
+  String get navPoints => '分';
 
   @override
   String pointsDaysTogether(int count) {

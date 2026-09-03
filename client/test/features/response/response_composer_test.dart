@@ -79,7 +79,7 @@ void main() {
     ) async {
       await pump(tester);
 
-      // Red line #1. A person who taps Send on words they did not write has
+      // Invariant: A person who taps Send on words they did not write has
       // not said anything, and the recipient cannot tell the difference.
       final field = tester.widget<TextField>(find.byType(TextField));
       expect(field.controller!.text, isEmpty);

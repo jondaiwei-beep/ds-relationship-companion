@@ -25,15 +25,17 @@
 | `l10n/app_en.arb` 692 键 | 全部重写为 D/s 语气；新增 zh-CN；不保留"You are seen."类句子 |
 | 代码里的 "Product red line" 注释 | 全删 |
 
-## Phase 0 · 清场（半天）
+## Phase 0 · 清场（半天）✅ 2026-09-03
 - 提交现有未提交的 Received 改动（回执雏形）。
-- 删 client `features/{weekly,checkin,boundary,us}`、backend `boundary/`、`check_ins`、`long_distance` 相关；删所有 red-line 注释。
+- 删 client `features/{weekly,checkin,boundary,us}`、backend `boundary/`、`check_ins`、weekly/us 端点；V17 drop `check_ins`/`boundaries`。删所有 red-line 注释（已应用的迁移文件不改——Flyway 校验 checksum）。
+- `long_distance` 暂留：Phase 3 用 `requires_d_present` 替换时一并删。
+- 4 tab 壳：今天 / 规矩 / 记录（占位）/ 分；探索挂在规矩下（`/dynamics/:id/explore`）。
 - 更新 `CLAUDE.md` / `AGENTS.md` / `README.md` / `.claude/skills/ds-*` 指向 `product/`、`research/`。
 - 验收：`./gradlew test`、`flutter analyze` 过。
 
 ## Phase 1 · 今天（核心闭环，2–3 周）
 后端
-- V17：`tasks`（改 `expectation_definitions`）、`occurrences` 拆双轴、`day_comments`、`d_notes`、`private_notes`、`dynamics.day_start/timezone`、`point_entries.reason/by/ref`。
+- V18：`tasks`（改 `expectation_definitions`）、`occurrences` 拆双轴、`day_comments`、`d_notes`、`private_notes`、`dynamics.day_start/timezone`、`point_entries.reason/by/ref`。
 - 关系日计算器（唯一实现，服务端 + 客户端各一份，同一测试向量）。
 - 每关系日生成 occurrence 的 job；日终标 `missed`（**只写 outcome，无其它副作用**）。
 - s 动作：deliver(proof) / cant_do / new_time / discuss / 撤回；自动 `delivered_late`；`task_earn` 入账。

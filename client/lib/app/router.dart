@@ -10,12 +10,8 @@ import '../features/activation/presentation/timezone_unavailable.dart';
 import '../features/dynamic/presentation/dynamic_screen.dart';
 import '../features/dynamic/presentation/pause_screen.dart';
 import '../features/settings/presentation/leave_screen.dart';
-import '../features/boundary/presentation/boundaries_screen.dart';
 import '../features/points/presentation/points_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
-import '../features/us/presentation/us_screen.dart';
-import '../features/weekly/presentation/weekly_screen.dart';
-import '../features/checkin/presentation/check_in_screen.dart';
 import '../features/expectation/presentation/create_expectation_screen.dart';
 import '../features/explore/presentation/explore_screen.dart';
 import '../features/expectation/presentation/occurrence_detail_screen.dart';
@@ -26,16 +22,13 @@ import '../features/invite/presentation/invite_partner_screen.dart';
 import '../features/invite/presentation/join_screen.dart';
 import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
+import '../features/record/presentation/record_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
 import 'session_resolving.dart';
 
-/// Paths, named once.
-///
-/// The URLs are not new: they are the contract in
-/// `docs/rebuild/route-contract.md`, carried over from the client that was
-/// deleted. They encode deep-link shape, Web refresh and back behaviour, and
-/// the invitation entry point — none of which is safe to re-invent.
+/// Paths, named once. They encode deep-link shape, Web refresh and back
+/// behaviour, and the invitation entry point.
 abstract final class Routes {
   static const today = '/today';
   /// Where a signed-out person lands. SCR-04's contract is explicit — "first
@@ -57,30 +50,20 @@ abstract final class Routes {
   /// One occurrence in full (SCR-14). Entered from Today or Attention.
   static const occurrence = '/dynamics/:id/occurrences/:occurrenceId';
 
-  /// Mood, energy, need (SCR-22). Entered from Today.
-  static const checkIn = '/dynamics/:id/check-in';
-
-  /// The week behind you (SCR-23), and pausing or returning (SCR-24).
-  static const weekly = '/dynamics/:id/weekly';
+  /// Pausing or returning.
   static const pause = '/dynamics/:id/pause';
 
   /// Settings (SCR-28/29/34), and ending the pairing (SCR-30).
   static const settings = '/dynamics/:id/settings';
   static const leave = '/dynamics/:id/leave';
 
-  /// Boundaries lite (REQ-ACT-002), reachable after activation.
-  static const boundaries = '/dynamics/:id/boundaries';
-
-  /// Points, rewards and agreements (owner decision 2026-09-02).
+  /// The four tabs (product/02-surfaces.md). Explore lives inside Rules.
   static const points = '/dynamics/:id/points';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
-
-  /// All four nav surfaces are built: Today (SCR-01), Dynamic (SCR-13),
-  /// Explore (SCR-18, the restrained Core Beta version) and Us (SCR-17).
-  static const dynamicHome = '/dynamics/:id/dynamic';
+  static const dynamicRules = '/dynamics/:id/rules';
+  static const dynamicRecord = '/dynamics/:id/record';
   static const dynamicExplore = '/dynamics/:id/explore';
-  static const dynamicUs = '/dynamics/:id/us';
 
   /// Where a request waits while the session is still resolving.
   ///
@@ -187,7 +170,7 @@ GoRouter createRouter(Ref ref) {
             onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
             onOpenOccurrence: (id) =>
                 context.go('/dynamics/$dynamicId/occurrences/$id'),
-            onCheckIn: () => context.go('/dynamics/$dynamicId/check-in'),
+            onSettings: () => context.go('/dynamics/$dynamicId/settings'),
           );
         },
       ),
@@ -197,12 +180,10 @@ GoRouter createRouter(Ref ref) {
           final dynamicId = s.pathParameters['id']!;
           return SettingsScreen(
             dynamicId: dynamicId,
-            onClose: () => context.go(_navPath(dynamicId, NavSurface.us)),
+            onClose: () => context.go(_navPath(dynamicId, NavSurface.today)),
             onSignOut: () =>
                 ref.read(sessionProvider.notifier).signOut(),
             onLeave: () => context.go('/dynamics/$dynamicId/leave'),
-            onBoundaries: () =>
-                context.go('/dynamics/$dynamicId/boundaries'),
             onPoints: () => context.go('/dynamics/$dynamicId/points'),
           );
         },
@@ -220,33 +201,12 @@ GoRouter createRouter(Ref ref) {
         },
       ),
       GoRoute(
-        path: Routes.weekly,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return WeeklyScreen(
-            dynamicId: dynamicId,
-            onClose: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
-            onPause: () => context.go('/dynamics/$dynamicId/pause'),
-          );
-        },
-      ),
-      GoRoute(
         path: Routes.pause,
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
           return PauseScreen(
             dynamicId: dynamicId,
-            onDone: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.checkIn,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return CheckInScreen(
-            dynamicId: dynamicId,
-            onClose: () => context.go('/dynamics/$dynamicId/today'),
+            onDone: () => context.go(_navPath(dynamicId, NavSurface.rules)),
           );
         },
       ),
@@ -269,7 +229,7 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             initialTitle: s.uri.queryParameters['title'],
             initialPurpose: s.uri.queryParameters['purpose'],
-            onCancel: () => context.go(_navPath(dynamicId, NavSurface.dynamic_)),
+            onCancel: () => context.go(_navPath(dynamicId, NavSurface.rules)),
             // Back to Today, where the thing that was just asked now lives for
             // the other person — and where the asker sees it waiting.
             onDone: (_) => context.go('/dynamics/$dynamicId/today'),
@@ -277,7 +237,7 @@ GoRouter createRouter(Ref ref) {
         },
       ),
       GoRoute(
-        path: _navPath(':id', NavSurface.dynamic_),
+        path: _navPath(':id', NavSurface.rules),
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
           return DynamicScreen(
@@ -286,25 +246,22 @@ GoRouter createRouter(Ref ref) {
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
             onAsk: () => context.go('/dynamics/$dynamicId/ask'),
             onPause: () => context.go('/dynamics/$dynamicId/pause'),
-            onWeekly: () => context.go('/dynamics/$dynamicId/weekly'),
+            onExplore: () => context.go('/dynamics/$dynamicId/explore'),
           );
         },
       ),
       GoRoute(
-        path: _navPath(':id', NavSurface.us),
+        path: _navPath(':id', NavSurface.record),
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
-          return UsScreen(
+          return RecordScreen(
             dynamicId: dynamicId,
-            onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
-            onWeekly: () => context.go('/dynamics/$dynamicId/weekly'),
-            onSettings: () => context.go('/dynamics/$dynamicId/settings'),
           );
         },
       ),
       GoRoute(
-        path: _navPath(':id', NavSurface.explore),
+        path: Routes.dynamicExplore,
         builder: (context, s) {
           final dynamicId = s.pathParameters['id']!;
           return ExploreScreen(
@@ -324,22 +281,6 @@ GoRouter createRouter(Ref ref) {
         },
       ),
 
-      // Named, not stubbed.
-      //
-      // Each of these is a real route with a design and a closed gate. A
-      // placeholder that renders something plausible is worse than one that
-      // says what it is: it gets screenshotted, demoed, and mistaken for
-      // progress. See `progress/MASTER-PLAN.md` for which sprint opens each.
-      GoRoute(
-        path: Routes.boundaries,
-        builder: (context, state) {
-          final dynamicId = state.pathParameters['id']!;
-          return BoundariesScreen(
-            dynamicId: dynamicId,
-            onBack: () => context.go('/dynamics/$dynamicId/settings'),
-          );
-        },
-      ),
       GoRoute(
         path: Routes.points,
         builder: (context, state) {
@@ -454,10 +395,9 @@ GoRouter createRouter(Ref ref) {
 /// navigates and every route that registers reads the same mapping.
 String _navPath(String dynamicId, NavSurface surface) => switch (surface) {
   NavSurface.today => '/dynamics/$dynamicId/today',
-  NavSurface.dynamic_ => '/dynamics/$dynamicId/dynamic',
+  NavSurface.rules => '/dynamics/$dynamicId/rules',
+  NavSurface.record => '/dynamics/$dynamicId/record',
   NavSurface.points => '/dynamics/$dynamicId/points',
-  NavSurface.explore => '/dynamics/$dynamicId/explore',
-  NavSurface.us => '/dynamics/$dynamicId/us',
 };
 
 /// What the entrance should say about the session, if anything.

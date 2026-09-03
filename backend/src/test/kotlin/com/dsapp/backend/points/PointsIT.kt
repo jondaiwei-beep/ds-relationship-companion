@@ -358,7 +358,8 @@ class PointsIT {
         points.adjust(dom, dynamicId, sub, -2, null)
 
         val rows = dsl.fetch(
-            "SELECT amount FROM point_entries WHERE dynamic_id={0} AND subject_user_id={1}",
+            // Heap order is not insertion order; the assertion is about history.
+            "SELECT amount FROM point_entries WHERE dynamic_id={0} AND subject_user_id={1} ORDER BY created_at, amount DESC",
             dynamicId, sub,
         ).map { it.get("amount", Int::class.java) }
 

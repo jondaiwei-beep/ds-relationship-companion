@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-/** Starter Rhythm (Notion 02 §A3, 05 §4) and the overdue sweep (red line #3). */
+/** Starter Rhythm (Notion 02 §A3, 05 §4) and the overdue sweep. */
 @SpringBootTest
 @ActiveProfiles("test")
 class StarterRhythmAndOverdueIT {
@@ -204,7 +204,7 @@ class StarterRhythmAndOverdueIT {
         val occ = overdueOccurrence()
         sweeper.sweep()
 
-        // Red line #3: this is the ONLY destination for an overdue occurrence.
+        // Invariant: this is the ONLY destination for an overdue occurrence.
         assertEquals("NEEDS_REVIEW", stateOf(occ))
     }
 

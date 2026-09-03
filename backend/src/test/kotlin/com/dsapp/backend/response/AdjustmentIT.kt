@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 /**
  * The adjustment path — Journey D (Notion 02 §5).
  *
- * These tests defend product red line #3: adjustment is the NORMAL path when
+ * These tests defend product the invariant: adjustment is the NORMAL path when
  * life gets in the way. Nothing here may behave like a miss or a punishment.
  */
 @SpringBootTest
@@ -121,7 +121,7 @@ class AdjustmentIT {
                 s in setOf("NEED_TO_DISCUSS", "RESCHEDULE_REQUESTED", "EXCUSE_REQUESTED"),
                 "$type produced $s",
             )
-            // Red line #3: nothing resembling failure or punishment.
+            // Invariant: nothing resembling failure or punishment.
             assertTrue(!s.contains("MISS") && !s.contains("FAIL"), "$type looks punitive: $s")
         }
     }

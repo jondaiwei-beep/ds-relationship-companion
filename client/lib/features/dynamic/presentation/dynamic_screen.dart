@@ -72,7 +72,7 @@ class DynamicScreen extends ConsumerWidget {
     this.onSelectTab,
     this.onAsk,
     this.onPause,
-    this.onWeekly,
+    this.onExplore,
   });
 
   final String dynamicId;
@@ -87,7 +87,7 @@ class DynamicScreen extends ConsumerWidget {
   final VoidCallback? onPause;
 
   /// Opens SCR-23.
-  final VoidCallback? onWeekly;
+  final VoidCallback? onExplore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -128,13 +128,13 @@ class DynamicScreen extends ConsumerWidget {
                       dynamicId: dynamicId,
                       onAsk: onAsk,
                       onPause: onPause,
-                      onWeekly: onWeekly,
+                      onExplore: onExplore,
                     ),
                   ),
                 ),
               ),
               DsBottomNavigation(
-                current: NavSurface.dynamic_,
+                current: NavSurface.rules,
                 onSelect: onSelectTab ?? (_) {},
               ),
             ],
@@ -166,14 +166,14 @@ class _Loaded extends ConsumerStatefulWidget {
     required this.dynamicId,
     this.onAsk,
     this.onPause,
-    this.onWeekly,
+    this.onExplore,
   });
 
   final DynamicDetail view;
   final String dynamicId;
   final VoidCallback? onAsk;
   final VoidCallback? onPause;
-  final VoidCallback? onWeekly;
+  final VoidCallback? onExplore;
 
   @override
   ConsumerState<_Loaded> createState() => _LoadedState();
@@ -280,14 +280,13 @@ class _LoadedState extends ConsumerState<_Loaded> {
           const SizedBox(height: DsSpacing.space6),
         ],
 
-        // Looking back at the week. Offered, never required — and only when
-        // the Dynamic is running, since a paused week is not one to reflect on.
-        if (widget.onWeekly != null && !_paused) ...[
+        // Explore lives inside Rules (product/04-explore.md).
+        if (widget.onExplore != null && !_paused) ...[
           Padding(
             padding: todayInset,
             child: SecondaryButton(
-              label: l.dynamicThisWeek,
-              onTap: widget.onWeekly!,
+              label: l.rulesExplore,
+              onTap: widget.onExplore!,
             ),
           ),
           const SizedBox(height: DsSpacing.space6),

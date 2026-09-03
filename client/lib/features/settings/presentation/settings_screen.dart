@@ -45,7 +45,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
     this.onClose,
     this.onSignOut,
     this.onLeave,
-    this.onBoundaries,
     this.onPoints,
   });
 
@@ -56,11 +55,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
   /// Opens SCR-30. Leaving and blocking are consequential enough to deserve
   /// their own screen rather than a row that acts on one tap.
   final VoidCallback? onLeave;
-
-  /// Opens the limits both people have named (REQ-ACT-002). Reachable for the
-  /// life of the Dynamic: a limit named once during setup and never seen
-  /// again would be worse than not having asked.
-  final VoidCallback? onBoundaries;
 
   /// Points, rewards and what the couple agreed happens when something is
   /// not done (owner decision 2026-09-02).
@@ -185,18 +179,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       const SizedBox(height: DsSpacing.space3),
                       _Quiet(l.settingsPointsSupport),
 
-                      const SizedBox(height: DsSpacing.space10),
-                      _Section(l.settingsBoundariesSection),
-                      if (widget.onBoundaries != null)
-                        Padding(
-                          padding: todayInset,
-                          child: SecondaryButton(
-                            label: l.settingsBoundariesOpen,
-                            onTap: widget.onBoundaries!,
-                          ),
-                        ),
-                      const SizedBox(height: DsSpacing.space3),
-                      _Quiet(l.settingsBoundariesSupport),
 
                       const SizedBox(height: DsSpacing.space10),
                       _Section(l.settingsPairingSection),

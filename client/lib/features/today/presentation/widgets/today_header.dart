@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../app/shell/ds_glyph.dart';
 import 'today_layout.dart';
 
 /// A surface header: the surface name, and partner presence when there is a
@@ -18,6 +19,7 @@ class TodayHeader extends StatelessWidget {
     this.partnerName,
     this.context_,
     this.editorialTitle = false,
+    this.onSettings,
   });
 
   /// The surface name shown at the left.
@@ -43,6 +45,9 @@ class TodayHeader extends StatelessWidget {
   final String? context_;
 
   final bool editorialTitle;
+
+  /// When set, a settings mark sits at the trailing edge.
+  final VoidCallback? onSettings;
 
   /// A named context wins over presence: while access is unconfirmed the
   /// header must say so rather than imply a partner is there.
@@ -108,6 +113,28 @@ class TodayHeader extends StatelessWidget {
               ],
             ),
           ),
+          if (onSettings != null) ...[
+            const SizedBox(width: DsSpacing.space2),
+            Semantics(
+              button: true,
+              label: L.of(context).settingsTitle,
+              child: InkWell(
+                onTap: onSettings,
+                borderRadius: BorderRadius.circular(24),
+                child: const SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: Center(
+                    child: DsGlyphIcon(
+                      DsGlyph.settings,
+                      size: 22,
+                      color: DsColors.textOnRitualSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

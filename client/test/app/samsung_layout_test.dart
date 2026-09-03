@@ -63,7 +63,7 @@ void main() {
     // own back and home controls. The bar's fixed height swallowed the inset
     // instead of growing by it.
     final safe = size.height - inset;
-    for (final label in ['Today', 'Dynamic', 'Explore', 'Us']) {
+    for (final label in ['Today', 'Rules', 'Record', 'Points']) {
       expect(
         t.getBottomLeft(find.text(label)).dy,
         lessThanOrEqualTo(safe),

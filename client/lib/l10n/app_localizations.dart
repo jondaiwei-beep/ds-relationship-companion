@@ -103,23 +103,41 @@ abstract class L {
   /// **'Today'**
   String get navToday;
 
-  /// No description provided for @navDynamic.
+  /// No description provided for @navRules.
   ///
   /// In en, this message translates to:
-  /// **'Dynamic'**
-  String get navDynamic;
+  /// **'Rules'**
+  String get navRules;
 
-  /// No description provided for @navExplore.
+  /// No description provided for @rulesExplore.
   ///
   /// In en, this message translates to:
   /// **'Explore'**
-  String get navExplore;
+  String get rulesExplore;
 
-  /// No description provided for @navUs.
+  /// No description provided for @recordComingSoon.
   ///
   /// In en, this message translates to:
-  /// **'Us'**
-  String get navUs;
+  /// **'Not built yet'**
+  String get recordComingSoon;
+
+  /// No description provided for @recordComingSoonBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Each day as a page — what was delivered, what was said, how it was handled. Coming in a later build.'**
+  String get recordComingSoonBody;
+
+  /// No description provided for @navRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get navRecord;
+
+  /// No description provided for @actionReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Seen'**
+  String get actionReceived;
 
   /// No description provided for @actionComplete.
   ///

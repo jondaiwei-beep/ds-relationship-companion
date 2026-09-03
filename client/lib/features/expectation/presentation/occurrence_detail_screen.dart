@@ -486,6 +486,7 @@ String _adjustmentLabel(L l, TodayAction a) => switch (a) {
   TodayAction.requestNewTime => l.actionNewTime,
   TodayAction.cantDo => l.actionCantDo,
   TodayAction.complete => l.actionComplete,
+  TodayAction.receive => l.actionReceived,
   // Never rendered in the adjustment row: withdrawing is offered on its own,
   // because it is the only thing available when it is available at all.
   TodayAction.withdraw => l.actionTakeItBack,
@@ -584,7 +585,7 @@ class _Quiet extends StatelessWidget {
 }
 
 /// What the other person actually wrote, kept visually distinct from anything
-/// the app says. Red line #1: the system never speaks in a partner's voice,
+/// the app says. Invariant: the system never speaks in a partner's voice,
 /// so their words must never be mistakable for the app's.
 class _Acknowledgement extends StatelessWidget {
   const _Acknowledgement({required this.value});

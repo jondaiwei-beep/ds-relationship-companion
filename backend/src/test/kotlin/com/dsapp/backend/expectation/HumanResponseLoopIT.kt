@@ -23,7 +23,7 @@ import kotlin.test.assertFailsWith
 /**
  * The M1 vertical slice: Complete -> WaitingAck -> human Acknowledge.
  *
- * These tests exist to defend the product red lines, not just the code paths.
+ * These tests exist to defend the product invariants, not just the code paths.
  */
 @SpringBootTest
 @ActiveProfiles("test")
@@ -90,7 +90,7 @@ class HumanResponseLoopIT {
     }
 
     @Test
-    fun `RED LINE - completing does NOT create an acknowledgement`() {
+    fun `completing does NOT create an acknowledgement`() {
         complete.complete(partner, occurrenceId, "done", idem(partner))
 
         assertEquals("WAITING_ACK", state(), "completion must land in WAITING_ACK, not ACKNOWLEDGED")
@@ -207,7 +207,7 @@ class HumanResponseLoopIT {
 
     @Test
     fun `an empty acknowledgement stores no invented wording`() {
-        // Red line #2: the system never speaks in the partner's voice. An
+        // Invariant: the system never speaks in the partner's voice. An
         // acknowledgement with no words must stay wordless in the database,
         // so nothing downstream can render it as something the sender said.
         complete.complete(partner, occurrenceId, null, idem(partner))

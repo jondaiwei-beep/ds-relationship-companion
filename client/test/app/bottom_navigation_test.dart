@@ -33,7 +33,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('is exactly five surfaces, in the product order', (tester) async {
+  testWidgets('is exactly four tabs, in the product order', (tester) async {
     await pump(tester, current: NavSurface.today);
 
     final l = L.of(
@@ -41,10 +41,8 @@ void main() {
     );
     expect(
       NavSurface.values.map((s) => s.label(l)),
-      // Points sits second, beside the Dynamic it belongs to, rather than
-      // last: all three competitors give it a bottom tab and it is a
-      // daily-use surface, not an afterthought.
-      ['Today', 'Dynamic', 'Points', 'Explore', 'Us'],
+      // product/02-surfaces.md: 今天 / 规矩 / 记录 / 分.
+      ['Today', 'Rules', 'Record', 'Points'],
     );
     for (final surface in NavSurface.values) {
       expect(find.text(surface.label(l)), findsOneWidget);
@@ -62,10 +60,10 @@ void main() {
       (tester) async {
     await pump(tester, current: NavSurface.today);
 
-    await tester.tap(find.text('Explore'));
+    await tester.tap(find.text('Rules'));
     await tester.pumpAndSettle();
     // Nothing to assert beyond not throwing: an inert bar is the point.
-    expect(find.text('Explore'), findsOneWidget);
+    expect(find.text('Rules'), findsOneWidget);
   });
 
   testWidgets('reports which surface was chosen', (tester) async {
@@ -76,10 +74,10 @@ void main() {
       onSelect: chosen.add,
     );
 
-    await tester.tap(find.text('Us'));
+    await tester.tap(find.text('Record'));
     await tester.pumpAndSettle();
 
-    expect(chosen, [NavSurface.us]);
+    expect(chosen, [NavSurface.record]);
   });
 
   testWidgets('the current surface is not re-selectable', (tester) async {
@@ -102,14 +100,14 @@ void main() {
   });
 
   testWidgets('the current surface is announced as selected', (tester) async {
-    await pump(tester, current: NavSurface.us);
+    await pump(tester, current: NavSurface.record);
 
     // Which tab is active is carried by colour and icon tone alone, so
     // without this a screen reader gives no way to tell where you are.
     expect(
-      tester.getSemantics(find.text('Us')),
+      tester.getSemantics(find.text('Record')),
       matchesSemantics(
-        label: 'Us',
+        label: 'Record',
         hasSelectedState: true,
         isSelected: true,
         isButton: true,

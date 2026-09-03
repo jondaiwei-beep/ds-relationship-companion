@@ -27,7 +27,6 @@ class FeatureFlagController(private val flags: FeatureFlags) {
         .body(
             mapOf(
                 "webPush" to flags.webPush,
-                "weeklyReflection" to flags.weeklyReflection,
                 "explorePlaceholder" to flags.explorePlaceholder,
                 "analyticsExperiments" to flags.analyticsExperiments,
             ),

@@ -5,7 +5,7 @@ import '../../../domain_client/api_client.dart';
 import '../presentation/dynamic_screen.dart';
 
 /// The agency actions Dynamic offers. Either member may take either one,
-/// whatever their role — red line #4: agency no role can remove.
+/// whatever their role — agency no role can remove.
 enum DynamicAction { pause, resume }
 
 sealed class DynamicOutcome {

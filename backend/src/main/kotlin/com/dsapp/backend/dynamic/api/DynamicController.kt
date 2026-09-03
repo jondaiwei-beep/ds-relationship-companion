@@ -4,8 +4,6 @@ import com.dsapp.backend.dynamic.application.CreateDynamicService
 import com.dsapp.backend.dynamic.application.DynamicQueryService
 import com.dsapp.backend.dynamic.application.InviteService
 import com.dsapp.backend.dynamic.application.LeaveBlockService
-import com.dsapp.backend.timeline.application.UsQueryService
-import com.dsapp.backend.timeline.application.WeeklyReflectionService
 import com.dsapp.backend.dynamic.domain.RoleContext
 import com.dsapp.backend.shared.api.actorId
 import com.dsapp.backend.shared.idempotency.IdempotencyResponse
@@ -103,9 +101,7 @@ class DynamicController(
     private val createDynamic: CreateDynamicService,
     private val invites: InviteService,
     private val dynamics: DynamicQueryService,
-    private val us: UsQueryService,
     private val leaveBlock: LeaveBlockService,
-    private val weekly: WeeklyReflectionService,
     private val idempotency: IdempotencyService,
     private val mapper: ObjectMapper,
 ) {
@@ -160,24 +156,6 @@ class DynamicController(
         .cacheControl(CacheControl.noStore())
         .body(dynamics.detail(jwt.actorId(), dynamicId))
 
-    /** Us — what recently happened between us (Notion 02 §8). */
-    @GetMapping("/dynamics/{dynamicId}/us")
-    fun usFor(
-        @AuthenticationPrincipal jwt: Jwt,
-        @PathVariable dynamicId: UUID,
-    ): ResponseEntity<Any> = ResponseEntity.ok()
-        .cacheControl(CacheControl.noStore())
-        .body(us.forDynamic(jwt.actorId(), dynamicId))
-
-    /** D7 Weekly Reflection — deliberately light (Notion 02 §8). */
-    @GetMapping("/dynamics/{dynamicId}/weekly")
-    fun weeklyFor(
-        @AuthenticationPrincipal jwt: Jwt,
-        @PathVariable dynamicId: UUID,
-    ): ResponseEntity<Any> = ResponseEntity.ok()
-        .cacheControl(CacheControl.noStore())
-        .body(weekly.forDynamic(jwt.actorId(), dynamicId))
-
     /** Pause — inviolable agency: either member may pause (Notion 04 §4). */
     @PostMapping("/dynamics/{dynamicId}/pause")
     fun pause(
@@ -208,7 +186,7 @@ class DynamicController(
     }
 
     /**
-     * Leave — Journey F. No partner approval, ever (red line #4).
+     * Leave — Journey F. No partner approval, ever.
      */
     @PostMapping("/dynamics/{dynamicId}/leave")
     fun leave(

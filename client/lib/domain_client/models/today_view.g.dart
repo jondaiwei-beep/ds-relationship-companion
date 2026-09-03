@@ -19,6 +19,11 @@ _TodayItem _$TodayItemFromJson(Map<String, dynamic> json) => _TodayItem(
       const <String>[],
   dueAt: json['dueAt'] == null ? null : DateTime.parse(json['dueAt'] as String),
   fromDisplayName: json['fromDisplayName'] as String?,
+  assigneeDisplayName: json['assigneeDisplayName'] as String?,
+  receivedAt: json['receivedAt'] == null
+      ? null
+      : DateTime.parse(json['receivedAt'] as String),
+  actorNote: json['actorNote'] as String?,
 );
 
 Map<String, dynamic> _$TodayItemToJson(_TodayItem instance) =>
@@ -31,6 +36,9 @@ Map<String, dynamic> _$TodayItemToJson(_TodayItem instance) =>
       'allowedActions': instance.allowedActions,
       'dueAt': instance.dueAt?.toIso8601String(),
       'fromDisplayName': instance.fromDisplayName,
+      'assigneeDisplayName': instance.assigneeDisplayName,
+      'receivedAt': instance.receivedAt?.toIso8601String(),
+      'actorNote': instance.actorNote,
     };
 
 _RecentResponse _$RecentResponseFromJson(Map<String, dynamic> json) =>
@@ -83,6 +91,16 @@ _TodayView _$TodayViewFromJson(Map<String, dynamic> json) => _TodayView(
   recentResponse: json['recentResponse'] == null
       ? null
       : RecentResponse.fromJson(json['recentResponse'] as Map<String, dynamic>),
+  needsMyResponse:
+      (json['needsMyResponse'] as List<dynamic>?)
+          ?.map((e) => TodayItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <TodayItem>[],
+  given:
+      (json['given'] as List<dynamic>?)
+          ?.map((e) => TodayItem.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const <TodayItem>[],
 );
 
 Map<String, dynamic> _$TodayViewToJson(_TodayView instance) =>
@@ -98,4 +116,6 @@ Map<String, dynamic> _$TodayViewToJson(_TodayView instance) =>
       'laterItems': instance.laterItems,
       'awaitingResponse': instance.awaitingResponse,
       'recentResponse': instance.recentResponse,
+      'needsMyResponse': instance.needsMyResponse,
+      'given': instance.given,
     };

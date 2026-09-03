@@ -38,7 +38,7 @@ class NotificationSettingsIT {
     @Test
     fun `a new member is neutral by default and has no quiet hours`() {
         val s = settings.forUser(me)
-        // Red line #5: privacy never widens implicitly, so the safe value is
+        // Invariant: privacy never widens implicitly, so the safe value is
         // the default rather than something the user must go and switch on.
         assertEquals("NEUTRAL", s.notificationPreview)
         assertNull(s.quietHoursStartMin)

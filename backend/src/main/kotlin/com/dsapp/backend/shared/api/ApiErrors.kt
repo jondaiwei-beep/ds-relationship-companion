@@ -8,10 +8,8 @@ import com.dsapp.backend.dynamic.domain.AuthorizationException
 import com.dsapp.backend.expectation.application.OccurrenceNotCompletable
 import com.dsapp.backend.response.application.AdjustmentNotPossible
 import com.dsapp.backend.response.application.NoOpenAdjustment
-import com.dsapp.backend.boundary.application.NoSuchBoundary
 import com.dsapp.backend.points.application.InsufficientPoints
 import com.dsapp.backend.points.application.NoSuchReward
-import com.dsapp.backend.boundary.application.NotTheAuthor
 import com.dsapp.backend.response.application.NotTheRequester
 import com.dsapp.backend.response.application.OccurrenceNotAcknowledgeable
 import com.dsapp.backend.shared.idempotency.IdempotencyKeyReusedException
@@ -79,17 +77,6 @@ class ApiErrorHandler {
         // 403, not 404: the caller is a member and may see the adjustment.
         // What they may not do is take back a request that is not theirs.
         ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError("NOT_THE_REQUESTER"))
-
-    @ExceptionHandler(NotTheAuthor::class)
-    fun onNotTheAuthor(e: NotTheAuthor): ResponseEntity<ApiError> =
-        // 403, not 404: the caller may read this boundary — both members see
-        // both lists. What no role may do is edit what the other person said
-        // is off the table.
-        ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError("NOT_THE_AUTHOR"))
-
-    @ExceptionHandler(NoSuchBoundary::class)
-    fun onNoSuchBoundary(e: NoSuchBoundary): ResponseEntity<ApiError> =
-        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiError("NOT_FOUND"))
 
     @ExceptionHandler(InsufficientPoints::class)
     fun onInsufficientPoints(e: InsufficientPoints): ResponseEntity<ApiError> =

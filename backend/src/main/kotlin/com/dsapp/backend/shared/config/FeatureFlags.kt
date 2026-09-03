@@ -24,9 +24,6 @@ class FeatureFlags {
      */
     var webPush: Boolean = false
 
-    /** The D7 reflection surface. */
-    var weeklyReflection: Boolean = true
-
     /** Explore's placeholder suggestions. */
     var explorePlaceholder: Boolean = true
 

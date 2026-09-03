@@ -18,7 +18,7 @@ class OccurrenceTransitionTest {
     fun `NEED_TO_DISCUSS can NEVER jump straight to WAITING_ACK`() {
         // WAITING_ACK means a Completion exists. Allowing this edge would
         // manufacture a completion that never happened — the same class of lie
-        // as auto-generating partner praise (red line #1/#2).
+        // as auto-generating partner praise.
         assertFalse(OccurrenceTransition.isLegal(
             OccurrenceState.NEED_TO_DISCUSS, OccurrenceState.WAITING_ACK))
         // Resolving a discussion returns to ACTIVE; the person completes for real.
@@ -46,7 +46,7 @@ class OccurrenceTransitionTest {
 
     @Test
     fun `overdue leads only to NEEDS_REVIEW - never to anything punitive`() {
-        // Red line #3. ACTIVE and SCHEDULED are the only states an overdue
+        // Invariant: ACTIVE and SCHEDULED are the only states an overdue
         // sweep touches, and NEEDS_REVIEW is the only destination.
         assertTrue(OccurrenceTransition.isLegal(
             OccurrenceState.ACTIVE, OccurrenceState.NEEDS_REVIEW))

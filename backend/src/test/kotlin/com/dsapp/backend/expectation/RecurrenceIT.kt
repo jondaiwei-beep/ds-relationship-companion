@@ -1,8 +1,6 @@
 package com.dsapp.backend.expectation
 
 import com.dsapp.backend.dynamic.application.DynamicQueryService
-import com.dsapp.backend.expectation.application.CheckInService
-import com.dsapp.backend.expectation.application.CheckInVisibility
 import com.dsapp.backend.expectation.application.OccurrenceGenerator
 import org.jooq.DSLContext
 import org.junit.jupiter.api.BeforeEach
@@ -15,17 +13,15 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.UUID
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /** Ritual recurrence + Check-in — Notion 02 §A3, 03 §2, Journey E. */
 @SpringBootTest
 @ActiveProfiles("test")
-class RecurrenceAndCheckInIT {
+class RecurrenceIT {
 
     @Autowired lateinit var dsl: DSLContext
     @Autowired lateinit var generator: OccurrenceGenerator
-    @Autowired lateinit var checkIns: CheckInService
     @Autowired lateinit var dynamics: DynamicQueryService
 
     private lateinit var creator: UUID
@@ -166,64 +162,4 @@ class RecurrenceAndCheckInIT {
     }
 
     // ---- check-in ----
-
-    @Test
-    fun `a PRIVATE check-in is invisible to the partner`() {
-        checkIns.create(partner, dynamicId, "tender", "LOW", "gentleness",
-            "I'm struggling today.", CheckInVisibility.PRIVATE)
-
-        assertTrue(checkIns.recentFor(creator, dynamicId).isEmpty(),
-            "a private check-in must be unreachable, not merely unrendered")
-        // The author still sees their own.
-        assertEquals(1, checkIns.recentFor(partner, dynamicId).size)
-    }
-
-    @Test
-    fun `a SHARED check-in is visible to both`() {
-        checkIns.create(partner, dynamicId, "steady", "STEADY", null,
-            "I can continue, but gently.", CheckInVisibility.SHARED)
-
-        assertEquals(1, checkIns.recentFor(creator, dynamicId).size)
-        assertEquals(1, checkIns.recentFor(partner, dynamicId).size)
-    }
-
-    @Test
-    fun `a private check-in produces NO shared event and no delivery`() {
-        checkIns.create(partner, dynamicId, null, "LOW", null, "private", CheckInVisibility.PRIVATE)
-
-        val shared = dsl.fetchOne(
-            "SELECT count(*) AS n FROM relationship_events WHERE dynamic_id={0} AND event_type='checkin_shared'",
-            dynamicId,
-        )!!.get("n", Int::class.java)
-        assertEquals(0, shared, "writing privately must not tell the partner anything happened")
-
-        val queued = dsl.fetchOne(
-            "SELECT count(*) AS n FROM outbox_records WHERE dynamic_id={0}", dynamicId,
-        )!!.get("n", Int::class.java)
-        assertEquals(0, queued)
-    }
-
-    @Test
-    fun `check-in note content never lands in an event payload`() {
-        checkIns.create(partner, dynamicId, null, "LOW", null,
-            "a deeply personal disclosure", CheckInVisibility.SHARED)
-
-        val payloads = dsl.fetch(
-            "SELECT object_ref::text AS r FROM relationship_events WHERE dynamic_id={0}",
-            dynamicId,
-        ).map { it.get("r", String::class.java) }
-        assertTrue(payloads.none { it.contains("deeply personal") },
-            "events carry ids, never intimate content")
-    }
-
-    @Test
-    fun `a non-member can neither write nor read check-ins`() {
-        val stranger = UUID.randomUUID()
-        dsl.query("INSERT INTO users (id,email) VALUES ({0},{1})", stranger, "$stranger@t").execute()
-
-        assertFailsWith<Exception> {
-            checkIns.create(stranger, dynamicId, null, null, null, "x", CheckInVisibility.SHARED)
-        }
-        assertFailsWith<Exception> { checkIns.recentFor(stranger, dynamicId) }
-    }
 }

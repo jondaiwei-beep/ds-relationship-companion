@@ -28,7 +28,13 @@ mixin _$TodayItem {
 /// all four actions unconditionally, including on items whose only
 /// permitted action was to withdraw an open adjustment.
  List<String> get allowedActions; DateTime? get dueAt;/// Who set this. Direction comes from a person, not from the app.
- String? get fromDisplayName;
+ String? get fromDisplayName;/// Who this was given to, when the viewer is the one who gave it.
+ String? get assigneeDisplayName;/// When the receiving person said "received". Null until they do — and
+/// the difference between the two is the first thing the giving side
+/// looks for.
+ DateTime? get receivedAt;/// The words the other person attached when they asked to adjust. Shown
+/// to the person who now has to answer; never paraphrased by the app.
+ String? get actorNote;
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -41,16 +47,16 @@ $TodayItemCopyWith<TodayItem> get copyWith => _$TodayItemCopyWithImpl<TodayItem>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other.allowedActions, allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other.allowedActions, allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName)&&(identical(other.assigneeDisplayName, assigneeDisplayName) || other.assigneeDisplayName == assigneeDisplayName)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.actorNote, actorNote) || other.actorNote == actorNote));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(allowedActions),dueAt,fromDisplayName);
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(allowedActions),dueAt,fromDisplayName,assigneeDisplayName,receivedAt,actorNote);
 
 @override
 String toString() {
-  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
+  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName, assigneeDisplayName: $assigneeDisplayName, receivedAt: $receivedAt, actorNote: $actorNote)';
 }
 
 
@@ -61,7 +67,7 @@ abstract mixin class $TodayItemCopyWith<$Res>  {
   factory $TodayItemCopyWith(TodayItem value, $Res Function(TodayItem) _then) = _$TodayItemCopyWithImpl;
 @useResult
 $Res call({
- String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName
+ String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName, String? assigneeDisplayName, DateTime? receivedAt, String? actorNote
 });
 
 
@@ -78,7 +84,7 @@ class _$TodayItemCopyWithImpl<$Res>
 
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,Object? assigneeDisplayName = freezed,Object? receivedAt = freezed,Object? actorNote = freezed,}) {
   return _then(_self.copyWith(
 occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -88,6 +94,9 @@ as String,state: null == state ? _self.state : state // ignore: cast_nullable_to
 as String,allowedActions: null == allowedActions ? _self.allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
 as List<String>,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,assigneeDisplayName: freezed == assigneeDisplayName ? _self.assigneeDisplayName : assigneeDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,receivedAt: freezed == receivedAt ? _self.receivedAt : receivedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,actorNote: freezed == actorNote ? _self.actorNote : actorNote // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -173,10 +182,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName,  String? assigneeDisplayName,  DateTime? receivedAt,  String? actorNote)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayItem() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName);case _:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName,_that.assigneeDisplayName,_that.receivedAt,_that.actorNote);case _:
   return orElse();
 
 }
@@ -194,10 +203,10 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName,  String? assigneeDisplayName,  DateTime? receivedAt,  String? actorNote)  $default,) {final _that = this;
 switch (_that) {
 case _TodayItem():
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName);case _:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName,_that.assigneeDisplayName,_that.receivedAt,_that.actorNote);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -214,10 +223,10 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String title,  String? purpose,  String kind,  String state,  List<String> allowedActions,  DateTime? dueAt,  String? fromDisplayName,  String? assigneeDisplayName,  DateTime? receivedAt,  String? actorNote)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayItem() when $default != null:
-return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName);case _:
+return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.state,_that.allowedActions,_that.dueAt,_that.fromDisplayName,_that.assigneeDisplayName,_that.receivedAt,_that.actorNote);case _:
   return null;
 
 }
@@ -229,7 +238,7 @@ return $default(_that.occurrenceId,_that.title,_that.purpose,_that.kind,_that.st
 @JsonSerializable()
 
 class _TodayItem implements TodayItem {
-  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = '', required this.state, final  List<String> allowedActions = const <String>[], this.dueAt, this.fromDisplayName}): _allowedActions = allowedActions;
+  const _TodayItem({required this.occurrenceId, required this.title, this.purpose, this.kind = '', required this.state, final  List<String> allowedActions = const <String>[], this.dueAt, this.fromDisplayName, this.assigneeDisplayName, this.receivedAt, this.actorNote}): _allowedActions = allowedActions;
   factory _TodayItem.fromJson(Map<String, dynamic> json) => _$TodayItemFromJson(json);
 
 @override final  String occurrenceId;
@@ -263,6 +272,15 @@ class _TodayItem implements TodayItem {
 @override final  DateTime? dueAt;
 /// Who set this. Direction comes from a person, not from the app.
 @override final  String? fromDisplayName;
+/// Who this was given to, when the viewer is the one who gave it.
+@override final  String? assigneeDisplayName;
+/// When the receiving person said "received". Null until they do — and
+/// the difference between the two is the first thing the giving side
+/// looks for.
+@override final  DateTime? receivedAt;
+/// The words the other person attached when they asked to adjust. Shown
+/// to the person who now has to answer; never paraphrased by the app.
+@override final  String? actorNote;
 
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
@@ -277,16 +295,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other._allowedActions, _allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayItem&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.purpose, purpose) || other.purpose == purpose)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.state, state) || other.state == state)&&const DeepCollectionEquality().equals(other._allowedActions, _allowedActions)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.fromDisplayName, fromDisplayName) || other.fromDisplayName == fromDisplayName)&&(identical(other.assigneeDisplayName, assigneeDisplayName) || other.assigneeDisplayName == assigneeDisplayName)&&(identical(other.receivedAt, receivedAt) || other.receivedAt == receivedAt)&&(identical(other.actorNote, actorNote) || other.actorNote == actorNote));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(_allowedActions),dueAt,fromDisplayName);
+int get hashCode => Object.hash(runtimeType,occurrenceId,title,purpose,kind,state,const DeepCollectionEquality().hash(_allowedActions),dueAt,fromDisplayName,assigneeDisplayName,receivedAt,actorNote);
 
 @override
 String toString() {
-  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName)';
+  return 'TodayItem(occurrenceId: $occurrenceId, title: $title, purpose: $purpose, kind: $kind, state: $state, allowedActions: $allowedActions, dueAt: $dueAt, fromDisplayName: $fromDisplayName, assigneeDisplayName: $assigneeDisplayName, receivedAt: $receivedAt, actorNote: $actorNote)';
 }
 
 
@@ -297,7 +315,7 @@ abstract mixin class _$TodayItemCopyWith<$Res> implements $TodayItemCopyWith<$Re
   factory _$TodayItemCopyWith(_TodayItem value, $Res Function(_TodayItem) _then) = __$TodayItemCopyWithImpl;
 @override @useResult
 $Res call({
- String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName
+ String occurrenceId, String title, String? purpose, String kind, String state, List<String> allowedActions, DateTime? dueAt, String? fromDisplayName, String? assigneeDisplayName, DateTime? receivedAt, String? actorNote
 });
 
 
@@ -314,7 +332,7 @@ class __$TodayItemCopyWithImpl<$Res>
 
 /// Create a copy of TodayItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? title = null,Object? purpose = freezed,Object? kind = null,Object? state = null,Object? allowedActions = null,Object? dueAt = freezed,Object? fromDisplayName = freezed,Object? assigneeDisplayName = freezed,Object? receivedAt = freezed,Object? actorNote = freezed,}) {
   return _then(_TodayItem(
 occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -324,6 +342,9 @@ as String,state: null == state ? _self.state : state // ignore: cast_nullable_to
 as String,allowedActions: null == allowedActions ? _self._allowedActions : allowedActions // ignore: cast_nullable_to_non_nullable
 as List<String>,dueAt: freezed == dueAt ? _self.dueAt : dueAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,fromDisplayName: freezed == fromDisplayName ? _self.fromDisplayName : fromDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,assigneeDisplayName: freezed == assigneeDisplayName ? _self.assigneeDisplayName : assigneeDisplayName // ignore: cast_nullable_to_non_nullable
+as String?,receivedAt: freezed == receivedAt ? _self.receivedAt : receivedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,actorNote: freezed == actorNote ? _self.actorNote : actorNote // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -636,7 +657,12 @@ mixin _$TodayView {
  int get totalCount;/// At most three, in server order: the first carries editorial emphasis,
 /// the next two are timeline rows. Never re-sorted on the client.
  List<TodayItem> get priorityItems;/// Everything else for the day, behind one count-bearing disclosure.
- List<TodayItem> get laterItems; List<TodayItem> get awaitingResponse; RecentResponse? get recentResponse;
+ List<TodayItem> get laterItems; List<TodayItem> get awaitingResponse; RecentResponse? get recentResponse;/// What the other person did that now waits on me: completions to
+/// acknowledge, adjustments to answer, past-due items to look at. Most
+/// urgent first, ordered by the server.
+ List<TodayItem> get needsMyResponse;/// What I gave that is still open on their side, with whether it has
+/// been received.
+ List<TodayItem> get given;
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -649,16 +675,16 @@ $TodayViewCopyWith<TodayView> get copyWith => _$TodayViewCopyWithImpl<TodayView>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.priorityItems, priorityItems)&&const DeepCollectionEquality().equals(other.laterItems, laterItems)&&const DeepCollectionEquality().equals(other.awaitingResponse, awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other.priorityItems, priorityItems)&&const DeepCollectionEquality().equals(other.laterItems, laterItems)&&const DeepCollectionEquality().equals(other.awaitingResponse, awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse)&&const DeepCollectionEquality().equals(other.needsMyResponse, needsMyResponse)&&const DeepCollectionEquality().equals(other.given, given));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(priorityItems),const DeepCollectionEquality().hash(laterItems),const DeepCollectionEquality().hash(awaitingResponse),recentResponse);
+int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(priorityItems),const DeepCollectionEquality().hash(laterItems),const DeepCollectionEquality().hash(awaitingResponse),recentResponse,const DeepCollectionEquality().hash(needsMyResponse),const DeepCollectionEquality().hash(given));
 
 @override
 String toString() {
-  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
+  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse, needsMyResponse: $needsMyResponse, given: $given)';
 }
 
 
@@ -669,7 +695,7 @@ abstract mixin class $TodayViewCopyWith<$Res>  {
   factory $TodayViewCopyWith(TodayView value, $Res Function(TodayView) _then) = _$TodayViewCopyWithImpl;
 @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+ String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse, List<TodayItem> needsMyResponse, List<TodayItem> given
 });
 
 
@@ -686,7 +712,7 @@ class _$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,Object? needsMyResponse = null,Object? given = null,}) {
   return _then(_self.copyWith(
 roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
@@ -699,7 +725,9 @@ as int,priorityItems: null == priorityItems ? _self.priorityItems : priorityItem
 as List<TodayItem>,laterItems: null == laterItems ? _self.laterItems : laterItems // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,awaitingResponse: null == awaitingResponse ? _self.awaitingResponse : awaitingResponse // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,recentResponse: freezed == recentResponse ? _self.recentResponse : recentResponse // ignore: cast_nullable_to_non_nullable
-as RecentResponse?,
+as RecentResponse?,needsMyResponse: null == needsMyResponse ? _self.needsMyResponse : needsMyResponse // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,given: null == given ? _self.given : given // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,
   ));
 }
 /// Create a copy of TodayView
@@ -796,10 +824,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse,  List<TodayItem> needsMyResponse,  List<TodayItem> given)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse,_that.needsMyResponse,_that.given);case _:
   return orElse();
 
 }
@@ -817,10 +845,10 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse,  List<TodayItem> needsMyResponse,  List<TodayItem> given)  $default,) {final _that = this;
 switch (_that) {
 case _TodayView():
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse,_that.needsMyResponse,_that.given);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -837,10 +865,10 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roleContext,  int needsMyResponseCount,  DateTime? relationshipDay,  int? dayBoundaryMinutes,  String? referenceTimezone,  DateTime? lastConfirmedAt,  int totalCount,  List<TodayItem> priorityItems,  List<TodayItem> laterItems,  List<TodayItem> awaitingResponse,  RecentResponse? recentResponse,  List<TodayItem> needsMyResponse,  List<TodayItem> given)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayView() when $default != null:
-return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse);case _:
+return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipDay,_that.dayBoundaryMinutes,_that.referenceTimezone,_that.lastConfirmedAt,_that.totalCount,_that.priorityItems,_that.laterItems,_that.awaitingResponse,_that.recentResponse,_that.needsMyResponse,_that.given);case _:
   return null;
 
 }
@@ -852,7 +880,7 @@ return $default(_that.roleContext,_that.needsMyResponseCount,_that.relationshipD
 @JsonSerializable()
 
 class _TodayView implements TodayView {
-  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes, this.referenceTimezone, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse;
+  const _TodayView({this.roleContext = 'PARTNER', this.needsMyResponseCount = 0, this.relationshipDay, this.dayBoundaryMinutes, this.referenceTimezone, this.lastConfirmedAt, this.totalCount = 0, final  List<TodayItem> priorityItems = const <TodayItem>[], final  List<TodayItem> laterItems = const <TodayItem>[], final  List<TodayItem> awaitingResponse = const <TodayItem>[], this.recentResponse, final  List<TodayItem> needsMyResponse = const <TodayItem>[], final  List<TodayItem> given = const <TodayItem>[]}): _priorityItems = priorityItems,_laterItems = laterItems,_awaitingResponse = awaitingResponse,_needsMyResponse = needsMyResponse,_given = given;
   factory _TodayView.fromJson(Map<String, dynamic> json) => _$TodayViewFromJson(json);
 
 /// My role in THIS dynamic (Notion 03 §1 — role belongs to Membership).
@@ -910,6 +938,30 @@ class _TodayView implements TodayView {
 }
 
 @override final  RecentResponse? recentResponse;
+/// What the other person did that now waits on me: completions to
+/// acknowledge, adjustments to answer, past-due items to look at. Most
+/// urgent first, ordered by the server.
+ final  List<TodayItem> _needsMyResponse;
+/// What the other person did that now waits on me: completions to
+/// acknowledge, adjustments to answer, past-due items to look at. Most
+/// urgent first, ordered by the server.
+@override@JsonKey() List<TodayItem> get needsMyResponse {
+  if (_needsMyResponse is EqualUnmodifiableListView) return _needsMyResponse;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_needsMyResponse);
+}
+
+/// What I gave that is still open on their side, with whether it has
+/// been received.
+ final  List<TodayItem> _given;
+/// What I gave that is still open on their side, with whether it has
+/// been received.
+@override@JsonKey() List<TodayItem> get given {
+  if (_given is EqualUnmodifiableListView) return _given;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_given);
+}
+
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
@@ -924,16 +976,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._priorityItems, _priorityItems)&&const DeepCollectionEquality().equals(other._laterItems, _laterItems)&&const DeepCollectionEquality().equals(other._awaitingResponse, _awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayView&&(identical(other.roleContext, roleContext) || other.roleContext == roleContext)&&(identical(other.needsMyResponseCount, needsMyResponseCount) || other.needsMyResponseCount == needsMyResponseCount)&&(identical(other.relationshipDay, relationshipDay) || other.relationshipDay == relationshipDay)&&(identical(other.dayBoundaryMinutes, dayBoundaryMinutes) || other.dayBoundaryMinutes == dayBoundaryMinutes)&&(identical(other.referenceTimezone, referenceTimezone) || other.referenceTimezone == referenceTimezone)&&(identical(other.lastConfirmedAt, lastConfirmedAt) || other.lastConfirmedAt == lastConfirmedAt)&&(identical(other.totalCount, totalCount) || other.totalCount == totalCount)&&const DeepCollectionEquality().equals(other._priorityItems, _priorityItems)&&const DeepCollectionEquality().equals(other._laterItems, _laterItems)&&const DeepCollectionEquality().equals(other._awaitingResponse, _awaitingResponse)&&(identical(other.recentResponse, recentResponse) || other.recentResponse == recentResponse)&&const DeepCollectionEquality().equals(other._needsMyResponse, _needsMyResponse)&&const DeepCollectionEquality().equals(other._given, _given));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(_priorityItems),const DeepCollectionEquality().hash(_laterItems),const DeepCollectionEquality().hash(_awaitingResponse),recentResponse);
+int get hashCode => Object.hash(runtimeType,roleContext,needsMyResponseCount,relationshipDay,dayBoundaryMinutes,referenceTimezone,lastConfirmedAt,totalCount,const DeepCollectionEquality().hash(_priorityItems),const DeepCollectionEquality().hash(_laterItems),const DeepCollectionEquality().hash(_awaitingResponse),recentResponse,const DeepCollectionEquality().hash(_needsMyResponse),const DeepCollectionEquality().hash(_given));
 
 @override
 String toString() {
-  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse)';
+  return 'TodayView(roleContext: $roleContext, needsMyResponseCount: $needsMyResponseCount, relationshipDay: $relationshipDay, dayBoundaryMinutes: $dayBoundaryMinutes, referenceTimezone: $referenceTimezone, lastConfirmedAt: $lastConfirmedAt, totalCount: $totalCount, priorityItems: $priorityItems, laterItems: $laterItems, awaitingResponse: $awaitingResponse, recentResponse: $recentResponse, needsMyResponse: $needsMyResponse, given: $given)';
 }
 
 
@@ -944,7 +996,7 @@ abstract mixin class _$TodayViewCopyWith<$Res> implements $TodayViewCopyWith<$Re
   factory _$TodayViewCopyWith(_TodayView value, $Res Function(_TodayView) _then) = __$TodayViewCopyWithImpl;
 @override @useResult
 $Res call({
- String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse
+ String roleContext, int needsMyResponseCount, DateTime? relationshipDay, int? dayBoundaryMinutes, String? referenceTimezone, DateTime? lastConfirmedAt, int totalCount, List<TodayItem> priorityItems, List<TodayItem> laterItems, List<TodayItem> awaitingResponse, RecentResponse? recentResponse, List<TodayItem> needsMyResponse, List<TodayItem> given
 });
 
 
@@ -961,7 +1013,7 @@ class __$TodayViewCopyWithImpl<$Res>
 
 /// Create a copy of TodayView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? roleContext = null,Object? needsMyResponseCount = null,Object? relationshipDay = freezed,Object? dayBoundaryMinutes = freezed,Object? referenceTimezone = freezed,Object? lastConfirmedAt = freezed,Object? totalCount = null,Object? priorityItems = null,Object? laterItems = null,Object? awaitingResponse = null,Object? recentResponse = freezed,Object? needsMyResponse = null,Object? given = null,}) {
   return _then(_TodayView(
 roleContext: null == roleContext ? _self.roleContext : roleContext // ignore: cast_nullable_to_non_nullable
 as String,needsMyResponseCount: null == needsMyResponseCount ? _self.needsMyResponseCount : needsMyResponseCount // ignore: cast_nullable_to_non_nullable
@@ -974,7 +1026,9 @@ as int,priorityItems: null == priorityItems ? _self._priorityItems : priorityIte
 as List<TodayItem>,laterItems: null == laterItems ? _self._laterItems : laterItems // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,awaitingResponse: null == awaitingResponse ? _self._awaitingResponse : awaitingResponse // ignore: cast_nullable_to_non_nullable
 as List<TodayItem>,recentResponse: freezed == recentResponse ? _self.recentResponse : recentResponse // ignore: cast_nullable_to_non_nullable
-as RecentResponse?,
+as RecentResponse?,needsMyResponse: null == needsMyResponse ? _self._needsMyResponse : needsMyResponse // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,given: null == given ? _self._given : given // ignore: cast_nullable_to_non_nullable
+as List<TodayItem>,
   ));
 }
 

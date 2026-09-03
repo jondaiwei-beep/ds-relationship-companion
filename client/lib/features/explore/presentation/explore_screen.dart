@@ -165,7 +165,7 @@ class ExploreScreen extends ConsumerWidget {
                 ),
               ),
               DsBottomNavigation(
-                current: NavSurface.explore,
+                current: NavSurface.rules,
                 onSelect: onSelectTab ?? (_) {},
               ),
             ],

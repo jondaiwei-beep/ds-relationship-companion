@@ -2,9 +2,6 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/shell/ds_glyph.dart';
-import '../../../app/shell/ds_text_field.dart';
-import '../../../domain_client/models/boundary.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../platform/session/session.dart';
 import '../../../platform/session/session_controller.dart';
@@ -48,9 +45,8 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
   var _draft = const ActivationDraft();
   int _step = 1;
 
-  /// Set when Add was pressed with an empty field. Red line: the control
+  /// Set when Add was pressed with an empty field. Invariant: the control
   /// says what is missing rather than going dead.
-  bool _unmetLabel = false;
 
   /// True once a role has been named. Distinct from `rolePreset == null`,
   /// which is also what "I'd rather not name one" produces — the difference
@@ -193,23 +189,7 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
         onBack: _back,
         onContinue: () => _advance(),
       ),
-      3 => _BoundaryStep(
-        limits: _draft.boundaries,
-        unmet: _unmetLabel ? l.activationBoundaryNeedsLabel : null,
-        notice: notice,
-        onAdd: (b) => setState(() {
-          _draft = _draft.copyWith(boundaries: [..._draft.boundaries, b]);
-          _unmetLabel = false;
-        }),
-        onRemove: (i) => setState(() {
-          final next = [..._draft.boundaries]..removeAt(i);
-          _draft = _draft.copyWith(boundaries: next);
-        }),
-        onNeedsLabel: () => setState(() => _unmetLabel = true),
-        onBack: _back,
-        onContinue: () => _advance(),
-      ),
-      4 => _StructureStep(
+      3 => _StructureStep(
         level: _draft.structure,
         longDistance: _draft.longDistance,
         timezone: widget.timezone,
@@ -583,7 +563,7 @@ class _RoleStep extends StatelessWidget {
           const SizedBox(height: DsSpacing.space6),
           // Not a lesser option. A couple that does not want to name a role
           // must not be blocked — the column is nullable at every layer for
-          // exactly this reason (red line #4).
+          // exactly this reason.
           InkWell(
             onTap: onDecline,
             child: Container(
@@ -813,207 +793,6 @@ class _StructureStep extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-// ---------------------------------------------------------------------------
-// 4 · What is not on the table
-
-/// Boundaries lite — REQ-ACT-002.
-///
-/// The requirement always listed this beside role and structure; only this
-/// step was never built, which left the product asking two people to give and
-/// receive direction without once asking what is off the table.
-///
-/// Skippable on purpose. Setup is minimal by requirement, and a limits form
-/// that must be filled before anyone may begin reads as a liability waiver
-/// rather than a conversation. The footnote says it can be added later, and
-/// Settings offers the same list.
-class _BoundaryStep extends StatefulWidget {
-  const _BoundaryStep({
-    required this.limits,
-    required this.unmet,
-    required this.notice,
-    required this.onAdd,
-    required this.onRemove,
-    required this.onNeedsLabel,
-    required this.onBack,
-    required this.onContinue,
-  });
-
-  final List<DraftBoundary> limits;
-  final String? unmet;
-  final Widget? notice;
-  final ValueChanged<DraftBoundary> onAdd;
-  final ValueChanged<int> onRemove;
-  final VoidCallback onNeedsLabel;
-  final VoidCallback onBack;
-  final VoidCallback onContinue;
-
-  @override
-  State<_BoundaryStep> createState() => _BoundaryStepState();
-}
-
-class _BoundaryStepState extends State<_BoundaryStep> {
-  final _label = TextEditingController();
-  final _note = TextEditingController();
-  BoundaryStance _stance = BoundaryStance.off;
-
-  @override
-  void dispose() {
-    _label.dispose();
-    _note.dispose();
-    super.dispose();
-  }
-
-  void _add() {
-    final text = _label.text.trim();
-    if (text.isEmpty) {
-      // Never a dead button: it says what is missing.
-      widget.onNeedsLabel();
-      return;
-    }
-    final note = _note.text.trim();
-    widget.onAdd(DraftBoundary(text, _stance, note: note.isEmpty ? null : note));
-    _label.clear();
-    _note.clear();
-    setState(() => _stance = BoundaryStance.off);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l = L.of(context);
-    return WizardFrame(
-      step: 3,
-      onBack: widget.onBack,
-      eyebrow: l.activationBoundaryEyebrow,
-      question: l.activationBoundaryQuestion,
-      support: l.activationBoundarySupport,
-      footnote: l.activationBoundaryFootnote,
-      unmet: widget.unmet,
-      notice: widget.notice,
-      // Says "skip" while the list is empty, so leaving it empty reads as a
-      // choice the product expects rather than a step left unfinished.
-      actionLabel: widget.limits.isEmpty
-          ? l.activationBoundarySkip
-          : l.activationContinue,
-      onAction: widget.onContinue,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final (i, b) in widget.limits.indexed) ...[
-            _DraftLimitRow(
-              limit: b,
-              onRemove: () => widget.onRemove(i),
-            ),
-            const SizedBox(height: DsSpacing.space2),
-          ],
-          if (widget.limits.isNotEmpty) const SizedBox(height: DsSpacing.space4),
-          DsTextField(
-            label: '',
-            controller: _label,
-            hint: l.activationBoundaryHint,
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          DsTextField(
-            label: '',
-            controller: _note,
-            hint: l.activationBoundaryNoteHint,
-          ),
-          const SizedBox(height: DsSpacing.space4),
-          Row(
-            children: [
-              // _ContextChoice supplies its own Expanded; wrapping it in
-              // another writes FlexParentData twice to one RenderObject.
-              for (final option in BoundaryStance.values) ...[
-                _ContextChoice(
-                  label: _stanceLabel(l, option),
-                  selected: _stance == option,
-                  onTap: () => setState(() => _stance = option),
-                ),
-                if (option != BoundaryStance.values.last)
-                  const SizedBox(width: DsSpacing.space2),
-              ],
-            ],
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          Text(
-            _stanceDetail(l, _stance),
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: 12,
-            ),
-          ),
-          const SizedBox(height: DsSpacing.space4),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton(
-              onPressed: _add,
-              child: Text(
-                l.activationBoundaryAdd,
-                style: DsTextStyles.labelRitual.copyWith(
-                  color: DsPrimitiveColors.terracotta,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-String _stanceLabel(L l, BoundaryStance s) => switch (s) {
-      BoundaryStance.off => l.boundaryStanceOff,
-      BoundaryStance.ask => l.boundaryStanceAsk,
-      BoundaryStance.curious => l.boundaryStanceCurious,
-    };
-
-String _stanceDetail(L l, BoundaryStance s) => switch (s) {
-      BoundaryStance.off => l.boundaryStanceOffDetail,
-      BoundaryStance.ask => l.boundaryStanceAskDetail,
-      BoundaryStance.curious => l.boundaryStanceCuriousDetail,
-    };
-
-class _DraftLimitRow extends StatelessWidget {
-  const _DraftLimitRow({required this.limit, required this.onRemove});
-
-  final DraftBoundary limit;
-  final VoidCallback onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final l = L.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                limit.label,
-                style: DsTextStyles.bodyPrimary.copyWith(
-                  color: DsColors.textOnRitualPrimary,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                _stanceLabel(l, limit.stance),
-                style: DsTextStyles.bodySecondary.copyWith(
-                  color: DsColors.textOnRitualMuted,
-                  fontSize: 11,
-                ),
-              ),
-            ],
-          ),
-        ),
-        IconButton(
-          onPressed: onRemove,
-          icon: const DsGlyphIcon(DsGlyph.close, size: 18),
-          tooltip: l.activationBoundaryRemove(limit.label),
-        ),
-      ],
     );
   }
 }

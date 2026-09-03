@@ -66,7 +66,7 @@ class ExploreLibraryTest {
 
     @Test
     fun `nothing is written in the system's own voice toward a person`() {
-        // Red line #1 is the one restriction that stays: the app never
+        // The one restriction that stays: the app never
         // praises, corrects or addresses anyone. Every idea is something one
         // of the two people does. A sentence addressed from "we" or "the app"
         // to "you" as a verdict would be the system speaking.

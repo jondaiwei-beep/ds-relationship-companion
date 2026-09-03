@@ -18,7 +18,7 @@ class OccurrenceNotAcknowledgeable(val occurrenceId: UUID) :
 /**
  * `WAITING_ACK -> ACKNOWLEDGED`, recording a human Acknowledgement.
  *
- * PRODUCT RED LINE #1 & #2 — this is the ONLY code path in the system that may
+ * Invariant — this is the ONLY code path in the system that may
  * insert into `acknowledgements`. It requires an authenticated human actor and
  * an explicit send. No scheduler, event consumer, or completion handler may
  * reach it. "Automation prepares; the partner responds."

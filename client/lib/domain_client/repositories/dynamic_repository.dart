@@ -1,8 +1,6 @@
 import '../api_client.dart';
 import '../models/dynamic_summary.dart';
 import '../models/dynamic_view.dart';
-import '../models/us_view.dart';
-import '../models/weekly_reflection_view.dart';
 
 class DynamicRepository {
   DynamicRepository(this._api);
@@ -55,14 +53,6 @@ class DynamicRepository {
 
   Future<DynamicDetail> detail(String dynamicId) async =>
       DynamicDetail.fromJson(await _api.get('/v1/dynamics/$dynamicId'));
-
-  Future<UsView> us(String dynamicId) async =>
-      UsView.fromJson(await _api.get('/v1/dynamics/$dynamicId/us'));
-
-  /// D7 Weekly Reflection — read-only, computed at read time.
-  Future<WeeklyReflectionView> weekly(String dynamicId) async =>
-      WeeklyReflectionView.fromJson(
-          await _api.get('/v1/dynamics/$dynamicId/weekly'));
 
   /// Pause is inviolable agency — either member may call it (Notion 04 §4).
   Future<void> pause(String dynamicId, {required String idempotencyKey}) =>

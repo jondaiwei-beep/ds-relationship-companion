@@ -11,14 +11,12 @@ import 'package:dsapp/app/shell/ds_skeleton.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/models/explore_view.dart';
 import 'package:dsapp/domain_client/models/today_view.dart';
-import 'package:dsapp/domain_client/models/us_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/repositories/today_repository.dart';
 import 'package:dsapp/features/dynamic/presentation/dynamic_screen.dart';
 import 'package:dsapp/features/explore/presentation/explore_screen.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
-import 'package:dsapp/features/us/presentation/us_screen.dart';
 
 /// A repository that never answers, so the loading state stays on screen.
 class _Hanging implements TodayRepository, DynamicRepository, ExploreRepository {
@@ -28,8 +26,6 @@ class _Hanging implements TodayRepository, DynamicRepository, ExploreRepository 
   @override
   Future<DynamicDetail> detail(String id) => Completer<DynamicDetail>().future;
 
-  @override
-  Future<UsView> us(String id) => Completer<UsView>().future;
 
   @override
   Future<ExploreLibraryView> library() =>
@@ -93,12 +89,6 @@ void main() {
       find.text('Confirming the current structure with the server.'),
       findsNothing,
     );
-  });
-
-  testWidgets('Us outlines the count and the moments', (tester) async {
-    await _pump(tester, const UsScreen(dynamicId: 'dyn-1'));
-    expect(find.byType(DsSkeletonCard), findsWidgets);
-    expect(find.text('Reading what has happened so far.'), findsNothing);
   });
 
   testWidgets('Explore outlines the library', (tester) async {

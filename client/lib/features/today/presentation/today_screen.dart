@@ -50,7 +50,7 @@ class TodayScreen extends ConsumerWidget {
     this.onSignIn,
     this.onSelectTab,
     this.onOpenOccurrence,
-    this.onCheckIn,
+    this.onSettings,
   });
 
   final String dynamicId;
@@ -65,9 +65,8 @@ class TodayScreen extends ConsumerWidget {
   /// Opens SCR-14 for one item.
   final void Function(String occurrenceId)? onOpenOccurrence;
 
-  /// Opens SCR-22. Journey B puts the check-in last, after what is expected:
-  /// saying how you are is offered, never required first.
-  final VoidCallback? onCheckIn;
+  /// Opens Settings from the header.
+  final VoidCallback? onSettings;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -108,7 +107,7 @@ class TodayScreen extends ConsumerWidget {
                       view: view,
                       dynamicId: dynamicId,
                       onOpenOccurrence: onOpenOccurrence,
-                      onCheckIn: onCheckIn,
+                      onSettings: onSettings,
                     ),
                   ),
                 ),
@@ -148,13 +147,13 @@ class _Loaded extends ConsumerStatefulWidget {
     required this.view,
     required this.dynamicId,
     this.onOpenOccurrence,
-    this.onCheckIn,
+    this.onSettings,
   });
 
   final TodayView view;
   final String dynamicId;
   final void Function(String occurrenceId)? onOpenOccurrence;
-  final VoidCallback? onCheckIn;
+  final VoidCallback? onSettings;
 
   @override
   ConsumerState<_Loaded> createState() => _LoadedState();
@@ -201,7 +200,11 @@ class _LoadedState extends ConsumerState<_Loaded> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: l.todayTitle, partnerName: _partnerName(view)),
+        TodayHeader(
+          title: l.todayTitle,
+          partnerName: _partnerName(view),
+          onSettings: widget.onSettings,
+        ),
         if (priority.isEmpty && later.isEmpty)
           const _NothingExpected()
         else ...[
@@ -245,19 +248,6 @@ class _LoadedState extends ConsumerState<_Loaded> {
               item: item,
               lastInGroup: index == later.length - 1,
             ),
-        // Journey B puts the check-in last: it is offered after what is
-        // expected, never asked for before it. Present even when the day is
-        // empty — "nothing is expected" is a day worth saying something about.
-        if (widget.onCheckIn != null) ...[
-          const SizedBox(height: DsSpacing.space8),
-          Padding(
-            padding: todayInset,
-            child: SecondaryButton(
-              label: l.todayCheckIn,
-              onTap: widget.onCheckIn!,
-            ),
-          ),
-        ],
         // Omitted rather than guessed when the server did not state it.
         if (view.dayBoundaryMinutes case final minutes?)
           DayBoundary(boundaryMinutes: minutes),
@@ -291,15 +281,6 @@ class _NothingExpected extends StatelessWidget {
             l.todayNothingExpected,
             style: DsTextStyles.bodyPrimary.copyWith(
               color: DsColors.textOnRitualPrimary,
-            ),
-          ),
-          const SizedBox(height: DsSpacing.space3),
-          Text(
-            l.todayCheckInOffer,
-            style: DsTextStyles.bodySecondary.copyWith(
-              color: DsColors.textOnRitualMuted,
-              fontSize: todaySupportSize,
-              height: todaySupportHeight,
             ),
           ),
         ],

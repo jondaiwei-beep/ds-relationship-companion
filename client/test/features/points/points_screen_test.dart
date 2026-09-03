@@ -210,7 +210,7 @@ void main() {
   });
 
   testWidgets('adding a reward with no name says what is missing', (tester) async {
-    // Red line: the control says what is missing rather than going dead.
+    // Invariant: the control says what is missing rather than going dead.
     final repo = _FakePoints();
     await _pump(tester, repo);
 

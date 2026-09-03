@@ -62,7 +62,7 @@ void main() {
       expect(serverStates.length, OccurrenceState.values.length);
     });
 
-    test('waitingAck is distinct from acknowledged (red line #2)', () {
+    test('waitingAck is distinct from acknowledged', () {
       expect(OccurrenceState.waitingAck, isNot(OccurrenceState.acknowledged));
     });
   });

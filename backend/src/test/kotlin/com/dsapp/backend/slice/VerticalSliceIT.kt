@@ -167,7 +167,7 @@ class VerticalSliceIT {
     @Test
     fun `a wordless acknowledgement is a human response, a wordless comment is not`() {
         // This test used to assert that ANY empty acknowledgement was
-        // rejected, citing red lines #1 and #2. That reasoning does not hold:
+        // rejected, citing the response invariants. That reasoning does not hold:
         // requiring text proves only that something was in the field, not
         // that a human wrote it or meant to send it. What protects those
         // lines is that a person pressed Send and that `sender_user_id` is
@@ -209,7 +209,7 @@ class VerticalSliceIT {
         // The occurrence must actually reach WAITING_ACK first. Without this the
         // request is refused for the WRONG reason (state, not content) — which is
         // exactly how a missing @Valid survived: the assertion passed green while
-        // the red line was completely unguarded.
+        // the invariant was completely unguarded.
         mvc.perform(
             post("/v1/occurrences/$occurrenceId/complete").with(asUser(partner))
                 .header("Idempotency-Key", UUID.randomUUID().toString())

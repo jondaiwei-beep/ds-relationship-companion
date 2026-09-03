@@ -35,7 +35,6 @@ class FeatureFlagsIT {
         mvc.perform(get("/v1/features"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.webPush").exists())
-            .andExpect(jsonPath("$.weeklyReflection").exists())
             .andExpect(jsonPath("$.explorePlaceholder").exists())
     }
 

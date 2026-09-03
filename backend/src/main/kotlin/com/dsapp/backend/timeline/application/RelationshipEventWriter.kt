@@ -8,7 +8,7 @@ import java.util.UUID
  * Appends immutable history (Notion 03 §2) and the paired outbox envelope
  * (Notion 06 §4) inside the caller's transaction.
  *
- * Deliberately has NO acknowledgement writer. Product red line #2: nothing that
+ * Deliberately has NO acknowledgement writer. Invariant: nothing that
  * consumes an event may create an Acknowledgement — only an explicit human send
  * through the acknowledgement command can.
  */

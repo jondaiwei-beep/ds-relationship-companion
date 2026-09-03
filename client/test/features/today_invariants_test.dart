@@ -15,7 +15,7 @@ import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
 /// The invariants SCR-01 must hold, restored from `product/ui-invariants.md`
 /// after the pre-redesign UI was deleted.
 ///
-/// These are product red lines in executable form, not styling preferences.
+/// These are product invariants in executable form, not styling preferences.
 /// A screen that renders correctly and drops one of them has regressed the
 /// product, not just its coverage.
 void main() {

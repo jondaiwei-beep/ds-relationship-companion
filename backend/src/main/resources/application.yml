@@ -31,6 +31,5 @@ logging.level.com.dsapp: ${LOG_LEVEL:INFO}
 dsapp:
   features:
     web-push: ${FEATURE_WEB_PUSH:false}
-    weekly-reflection: ${FEATURE_WEEKLY_REFLECTION:true}
     explore-placeholder: ${FEATURE_EXPLORE_PLACEHOLDER:true}
     analytics-experiments: ${FEATURE_ANALYTICS_EXPERIMENTS:false}

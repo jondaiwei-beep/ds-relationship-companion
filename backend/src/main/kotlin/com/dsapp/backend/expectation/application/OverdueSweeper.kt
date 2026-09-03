@@ -11,7 +11,7 @@ import java.util.UUID
 /**
  * Moves overdue occurrences to NEEDS_REVIEW — and nowhere worse.
  *
- * PRODUCT RED LINE #3. This is the single place in the system where "the time
+ * Invariant: This is the single place in the system where "the time
  * passed and nothing happened" is handled, so it is the single place where a
  * punishment could creep in. It cannot:
  *

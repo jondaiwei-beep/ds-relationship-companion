@@ -44,7 +44,7 @@ abstract class DynamicDetail with _$DynamicDetail {
     DateTime? pausedAt,
     @Default(<MemberView>[]) List<MemberView> members,
     @Default(<StructureItem>[]) List<StructureItem> structure,
-    /// Agency no role can ever remove (red line #4). The UI must always be
+    /// Agency no role can ever remove. The UI must always be
     /// able to surface these, whatever the viewer's role.
     @Default(<String>[]) List<String> alwaysAvailable,
   }) = _DynamicDetail;

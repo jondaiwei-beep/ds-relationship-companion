@@ -20,7 +20,7 @@ String responseTypeLabel(L l, HumanResponse type) => switch (type) {
 
 /// SCR-33 — the acknowledgement composer.
 ///
-/// The single most constrained screen in the product. Red line #1 lives here:
+/// The single most constrained screen in the product. The rule lives here:
 /// **only an explicit human Send creates an Acknowledgement**, and the system
 /// never speaks in the partner's voice.
 ///

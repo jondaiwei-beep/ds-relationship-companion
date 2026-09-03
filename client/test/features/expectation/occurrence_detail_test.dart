@@ -357,7 +357,7 @@ void main() {
   testWidgets("a partner's words are attributed to them, never to the app", (
     tester,
   ) async {
-    // Red line #1: the system never speaks in a partner's voice, so what they
+    // Invariant: the system never speaks in a partner's voice, so what they
     // wrote must be unmistakably theirs.
     await _pump(
       tester,

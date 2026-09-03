@@ -11,7 +11,7 @@ enum class DynamicState { DRAFT, PENDING_PARTNER, ACTIVE, PAUSED, ENDED }
 /**
  * Role within a Dynamic.
  *
- * Product red line #4: role belongs to MEMBERSHIP, never to User as a permanent
+ * Invariant: role belongs to MEMBERSHIP, never to User as a permanent
  * identity. The same person may hold different roles in different Dynamics.
  */
 enum class RoleContext { CREATOR, PARTNER }

@@ -15,7 +15,7 @@ class OccurrenceNotCompletable(val occurrenceId: UUID) :
 /**
  * `ACTIVE -> WAITING_ACK`, recording a Completion.
  *
- * PRODUCT RED LINE #2 — this service writes completion state and the
+ * Invariant — this service writes completion state and the
  * OCCURRENCE_COMPLETED event ONLY. It has no access to the acknowledgements
  * table and must never gain one: a Completion is not an Acknowledgement, and
  * finishing a task must never auto-produce partner praise.
@@ -24,7 +24,7 @@ class OccurrenceNotCompletable(val occurrenceId: UUID) :
  * to that. A ledger row is not a response: the occurrence still moves to
  * WAITING_ACK, Attention still asks a human to answer, and the North Star
  * still counts only bilateral events. Points ride alongside the wait; they do
- * not end it. If awarding points ever marks something answered, red line #2
+ * not end it. If awarding points ever marks something answered, the invariant
  * has been broken through a side door.
  */
 @Service

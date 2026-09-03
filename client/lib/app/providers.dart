@@ -1,13 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain_client/api_client.dart';
-import '../domain_client/models/boundary.dart';
-import '../domain_client/repositories/boundary_repository.dart';
 import '../domain_client/models/points.dart';
 import '../domain_client/repositories/points_repository.dart';
 import '../domain_client/repositories/attention_repository.dart';
 import '../domain_client/repositories/adjustment_repository.dart';
 import '../domain_client/repositories/auth_repository.dart';
-import '../domain_client/repositories/check_in_repository.dart';
 import '../domain_client/repositories/dynamic_repository.dart';
 import '../domain_client/repositories/invite_repository.dart';
 import '../domain_client/repositories/occurrence_repository.dart';
@@ -58,16 +55,6 @@ final dynamicRepositoryProvider = Provider<DynamicRepository>(
   (ref) => DynamicRepository(ref.watch(apiClientProvider)),
 );
 
-final boundaryRepositoryProvider = Provider<BoundaryRepository>(
-  (ref) => BoundaryRepository(ref.watch(apiClientProvider)),
-);
-
-/// Both members' limits. Kept alive like every other surface — see
-/// `DsRefreshable`: this reads once and then only when asked.
-final boundariesProvider =
-    FutureProvider.family<List<Boundary>, String>((ref, dynamicId) =>
-        ref.watch(boundaryRepositoryProvider).forDynamic(dynamicId));
-
 final pointsRepositoryProvider = Provider<PointsRepository>(
   (ref) => PointsRepository(ref.watch(apiClientProvider)),
 );
@@ -88,10 +75,6 @@ final agreementsProvider =
 
 final adjustmentRepositoryProvider = Provider<AdjustmentRepository>(
   (ref) => AdjustmentRepository(ref.watch(apiClientProvider)),
-);
-
-final checkInRepositoryProvider = Provider<CheckInRepository>(
-  (ref) => CheckInRepository(ref.watch(apiClientProvider)),
 );
 
 final starterRhythmRepositoryProvider = Provider<StarterRhythmRepository>(

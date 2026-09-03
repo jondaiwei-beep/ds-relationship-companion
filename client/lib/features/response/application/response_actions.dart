@@ -73,7 +73,7 @@ class ResponseFailed extends ResponseOutcome {
 ///
 /// The whole product turns on this being a deliberate act. The system never
 /// sends on anyone's behalf, never pre-fills words as though a person wrote
-/// them, and never treats a completion as an answer (red line #1).
+/// them, and never treats a completion as an answer.
 class ResponseActions {
   ResponseActions(this._ref);
 

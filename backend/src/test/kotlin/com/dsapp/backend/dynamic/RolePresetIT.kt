@@ -56,7 +56,7 @@ class RolePresetIT {
 
     @Test
     fun `naming a role is optional and never blocks starting`() {
-        // Red line #4: the product must not require this to be answered.
+        // Invariant: the product must not require this to be answered.
         val c = make(null)
         assertNull(query.detail(me, c.dynamicId).members.single().rolePreset)
     }

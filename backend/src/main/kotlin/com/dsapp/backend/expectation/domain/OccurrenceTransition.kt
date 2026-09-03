@@ -19,7 +19,7 @@ package com.dsapp.backend.expectation.domain
  *   overdue that was looked at. Collapsing them would let "reviewed" masquerade
  *   as "someone responded to you".
  *
- * Product red line #3 runs through the whole graph: no path here is a Miss, a
+ * One invariant runs through the whole graph: no path here is a Miss, a
  * failure, or a punishment. Past due leads to NEEDS_REVIEW and nowhere worse.
  */
 object OccurrenceTransition {

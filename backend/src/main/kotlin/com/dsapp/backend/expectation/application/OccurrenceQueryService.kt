@@ -23,7 +23,7 @@ class OccurrenceQueryService(
         val type: String,
         val text: String,
         val sentAt: Instant,
-        /** Always a real person. The system never authors this (red line #1). */
+        /** Always a real person. The system never authors this. */
         val senderDisplayName: String?,
     )
 

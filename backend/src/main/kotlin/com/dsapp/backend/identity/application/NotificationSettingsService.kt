@@ -17,7 +17,7 @@ class NotificationSettingsService(private val dsl: DSLContext) {
 
     data class Settings(
         val timezone: String,
-        /** NEUTRAL or RICH. Neutral is the default (red line #5). */
+        /** NEUTRAL or RICH. Neutral is the default. */
         val notificationPreview: String,
         /** Minutes past local midnight, or null when quiet hours are off. */
         val quietHoursStartMin: Int?,

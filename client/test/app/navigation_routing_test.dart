@@ -6,8 +6,8 @@ import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/models/explore_view.dart';
+import 'package:dsapp/domain_client/models/points.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
-import 'package:dsapp/domain_client/models/us_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/today_repository.dart';
 import 'package:dsapp/features/today/fixtures/today_fixtures.dart';
@@ -39,6 +39,12 @@ void main() {
         ),
         dynamicRepositoryProvider.overrideWithValue(_StubDynamic()),
         exploreRepositoryProvider.overrideWithValue(_StubExplore()),
+        // Points reads three things on entry; none of them may hit the wire.
+        pointsProvider.overrideWith(
+          (ref, id) async => const PointsSummary(balance: 0, entries: []),
+        ),
+        rewardsProvider.overrideWith((ref, id) async => const []),
+        agreementsProvider.overrideWith((ref, id) async => const []),
       ],
     );
     addTearDown(container.dispose);
@@ -77,13 +83,11 @@ void main() {
     final router = await pump(tester, '/dynamics/d-1/today');
     expect(find.byType(TodayScreen), findsOneWidget);
 
-    // Every surface is built now, so the invariant is simply that a tap
-    // lands where it says it will. `ComingSurface` is gone: it existed to
-    // make an unbuilt tab respond honestly, and there are no unbuilt tabs.
+    // The invariant is simply that a tap lands where it says it will.
     for (final (label, path) in const [
-      ('Dynamic', '/dynamics/d-1/dynamic'),
-      ('Explore', '/dynamics/d-1/explore'),
-      ('Us', '/dynamics/d-1/us'),
+      ('Rules', '/dynamics/d-1/rules'),
+      ('Record', '/dynamics/d-1/record'),
+      ('Points', '/dynamics/d-1/points'),
     ]) {
       await tester.tap(find.text(label));
       await tester.pumpAndSettle();
@@ -92,9 +96,9 @@ void main() {
   });
 
   testWidgets('the way back to Today is always one tap', (tester) async {
-    final router = await pump(tester, '/dynamics/d-1/explore');
+    final router = await pump(tester, '/dynamics/d-1/rules');
 
-    // The bar is on every surface. Without it, tapping Explore would be a
+    // The bar is on every surface. Without it, tapping Rules would be a
     // one-way trip on a device with gesture navigation.
     await tester.tap(find.text('Today'));
     await tester.pumpAndSettle();
@@ -104,7 +108,7 @@ void main() {
   });
 
   testWidgets('the tab you are on is not re-selectable', (tester) async {
-    final router = await pump(tester, '/dynamics/d-1/explore');
+    final router = await pump(tester, '/dynamics/d-1/rules');
 
     // Re-entering the route you are reading rebuilds it and loses the scroll
     // position, for a tap that meant "I am already here".
@@ -115,7 +119,7 @@ void main() {
         of: find.descendant(
           of: find.byType(DsBottomNavigation),
           matching: find.ancestor(
-            of: find.text('Explore'),
+            of: find.text('Rules'),
             matching: find.byType(Expanded),
           ),
         ),
@@ -123,7 +127,7 @@ void main() {
       ),
     );
     expect(tab.onTap, isNull);
-    expect(where(router), '/dynamics/d-1/explore');
+    expect(where(router), '/dynamics/d-1/rules');
   });
 
   testWidgets('the bar clears a gesture inset instead of sitting under it', (
@@ -162,7 +166,7 @@ void main() {
   });
 }
 
-/// Dynamic and Us both read the server as soon as they build. Without a stub
+/// Rules reads the server as soon as it builds. Without a stub
 /// the real client reaches a dead URL, fails, and Riverpod schedules a retry
 /// timer that outlives the test — which surfaces as "pending timers", not as
 /// a routing failure. These tests are about navigation, so the reads simply
@@ -184,9 +188,6 @@ class _StubDynamic implements DynamicRepository {
     structureLevel: 'STEADY',
     referenceTimezone: 'Asia/Shanghai',
   );
-
-  @override
-  Future<UsView> us(String id) async => const UsView();
 
   @override
   dynamic noSuchMethod(Invocation i) => throw UnimplementedError();

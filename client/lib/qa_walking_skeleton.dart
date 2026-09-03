@@ -220,7 +220,7 @@ class _RunnerState extends ConsumerState<_Runner> {
           detail: '${attention.items.length} item(s) waiting',
           ok: attention.items.isNotEmpty);
 
-      // The central red line: only this explicit human send creates an
+      // The central invariant: only this explicit human send creates an
       // acknowledgement. Completion did not, and could not.
       //
       // Sent with no words, which is the path REQ-ACK-001 requires — "basic
@@ -246,7 +246,7 @@ class _RunnerState extends ConsumerState<_Runner> {
       // ---- adjustment: the other normal path ----
       //
       // Not an error branch. "Adjustment is a normal path, not a failure" is
-      // a product red line, and a skeleton that only walks the happy path
+      // a product invariant, and a skeleton that only walks the happy path
       // would let the two drift apart until a screen makes it obvious.
       final second = await creator.read(expectationRepositoryProvider).create(
             dynamicId,

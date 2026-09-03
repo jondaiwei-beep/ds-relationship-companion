@@ -96,7 +96,7 @@ void main() {
     expect(v.dayBoundaryMinutes, 0);
     // Due times render here, never in the device's zone (REQ-TIME-001).
     expect(v.referenceTimezone, 'Europe/Berlin');
-    // Adjustment travels beside completion, never behind it (red line #3).
+    // Adjustment travels beside completion, never behind it.
     expect(
       v.priorityItems.first.allowedActions,
       ['complete', 'discuss', 'reschedule', 'cant_do'],
@@ -134,7 +134,7 @@ void main() {
         '"allowedActions":["complete","discuss","reschedule","cant_do"]}';
 
     final v = OccurrenceView.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-    // Adjustment is a normal path, never hidden behind completion (red line #3).
+    // Adjustment is a normal path, never hidden behind completion.
     expect(
       v.allowedActions,
       containsAll(['complete', 'discuss', 'reschedule', 'cant_do']),

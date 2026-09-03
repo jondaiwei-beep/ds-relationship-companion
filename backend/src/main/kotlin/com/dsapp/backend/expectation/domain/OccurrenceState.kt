@@ -13,20 +13,20 @@ enum class OccurrenceState {
     /**
      * A Completion exists; awaiting a human Acknowledgement.
      *
-     * Product red line #2: Completion != Acknowledgement. These never collapse
+     * Invariant: Completion != Acknowledgement. These never collapse
      * into one state, and only an explicit human Send advances past this.
      */
     WAITING_ACK,
     ACKNOWLEDGED,
 
     /**
-     * Past due. Product red line #3: this is the ONLY destination for an
+     * Past due. Invariant: this is the ONLY destination for an
      * overdue occurrence. Never punishment, never a consequence.
      */
     NEEDS_REVIEW,
     REVIEWED,
 
-    // Adjustment side paths. Product red line #3: none of these is a "miss".
+    // Adjustment side paths. Invariant: none of these is a "miss".
     NEED_TO_DISCUSS,
     RESCHEDULE_REQUESTED,
     EXCUSE_REQUESTED,

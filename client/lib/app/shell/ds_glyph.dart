@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 /// recognisable as Google's — which is the kind of detail that quietly tells
 /// someone this screen was assembled rather than drawn. These match the frozen
 /// navigation geometry instead: a 1.25–1.5 stroke on a 32×32 box, round caps.
-enum DsGlyph { close, back, forward, settings, check, points }
+enum DsGlyph { close, back, forward, settings, check, points, record }
 
 class DsGlyphIcon extends StatelessWidget {
   const DsGlyphIcon(
@@ -111,6 +111,20 @@ class _GlyphPainter extends CustomPainter {
             ),
             paint,
           );
+        }
+
+      // The record tab's mark: a month grid, one cell per day.
+      case DsGlyph.record:
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromPoints(p(6, 8), p(26, 26)),
+            Radius.circular(2 * s),
+          ),
+          paint,
+        );
+        canvas.drawLine(p(6, 13), p(26, 13), paint);
+        for (final x in [11.0, 16.0, 21.0]) {
+          canvas.drawCircle(p(x, 19.5), 1.3 * s, Paint()..color = color);
         }
 
       case DsGlyph.settings:

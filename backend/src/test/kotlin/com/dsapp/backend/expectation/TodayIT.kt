@@ -239,7 +239,7 @@ class TodayIT {
         val r = today.forDynamic(partner, dynamicId).recentResponse
         assertNotNull(r)
         assertEquals("I noticed the care you put into this.", r.text)
-        // Attributed to the real sender, never to the system (red line #1).
+        // Attributed to the real sender, never to the system.
         assertEquals("Alex", r.senderDisplayName)
     }
 

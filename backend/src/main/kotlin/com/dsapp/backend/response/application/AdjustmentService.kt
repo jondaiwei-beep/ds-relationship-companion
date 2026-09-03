@@ -12,7 +12,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.UUID
 
-/** What the person is asking for. None of these is a Miss (red line #3). */
+/** What the person is asking for. None of these is a Miss. */
 enum class AdjustmentType { DISCUSS, RESCHEDULE, CANT_DO }
 
 /** How the partner answers. */
