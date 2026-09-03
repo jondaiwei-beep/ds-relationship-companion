@@ -6,6 +6,7 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -44,6 +45,8 @@ class TodayQueryService(
         val proofKind: String?,
         val proofRef: String?,
         val proposedTime: Instant?,
+        val value: BigDecimal?,
+        val unit: String?,
         val disposition: String,
         val dispositionAt: Instant?,
         val dispositionNote: String?,
@@ -133,7 +136,7 @@ class TodayQueryService(
 
     private fun fetchItems(where: String, vararg args: Any): List<OccurrenceView> = dsl.fetch(
         """
-        SELECT o.*, t.title, t.detail, t.kind, t.proof, t.points_earn, t.requires_d_present,
+        SELECT o.*, t.title, t.detail, t.kind, t.proof, t.points_earn, t.requires_d_present, t.unit,
                c.title AS c_title, c.detail AS c_detail, c.status AS c_status, c.issued_at AS c_issued_at
           FROM occurrences o
           JOIN tasks t ON t.id = o.task_id
@@ -167,6 +170,8 @@ class TodayQueryService(
             proofKind = r.get("proof_kind", String::class.java),
             proofRef = r.get("proof_ref", String::class.java),
             proposedTime = r.get("proposed_time", Instant::class.java),
+            value = r.get("value", BigDecimal::class.java),
+            unit = r.get("unit", String::class.java),
             disposition = r.get("disposition", String::class.java),
             dispositionAt = r.get("disposition_at", Instant::class.java),
             dispositionNote = r.get("disposition_note", String::class.java),

@@ -8,6 +8,7 @@ import com.dsapp.backend.today.domain.Outcome
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID
 
@@ -35,6 +36,7 @@ class OutcomeService(
         val proofKind: String? = null,
         val proofRef: String? = null,
         val proposedTime: Instant? = null,
+        val value: BigDecimal? = null,
     )
 
     data class Result(val occurrenceId: UUID, val outcome: String, val outcomeAt: Instant?, val version: Int)
@@ -45,7 +47,7 @@ class OutcomeService(
         val o = dsl.fetchOne(
             """
             SELECT o.outcome, o.outcome_at, o.disposition, o.due_at, o.day, o.points_credited, o.version,
-                   t.points_earn, t.proof
+                   t.points_earn, t.proof, t.kind
               FROM occurrences o JOIN tasks t ON t.id = o.task_id
              WHERE o.id = {0} FOR UPDATE
             """.trimIndent(),
@@ -54,6 +56,7 @@ class OutcomeService(
         val current = Outcome.valueOf(o.get("outcome", String::class.java))
         val disposition = o.get("disposition", String::class.java)
         val version = o.get("version", Int::class.java)
+        val kind = o.get("kind", String::class.java)
 
         if (current == Outcome.paused) throw OccurrenceNotActionable("OCCURRENCE_PAUSED")
         // Once the D has said something about it, the s edits history through
@@ -61,6 +64,12 @@ class OutcomeService(
         if (disposition != "none") throw OccurrenceNotActionable("OCCURRENCE_DISPOSED")
         require(change.outcome.chosenByS || change.outcome == Outcome.open) { "outcome" }
         if (change.outcome == Outcome.new_time_requested) requireNotNull(change.proposedTime) { "proposedTime" }
+        // The number only means anything on a measure task; a delivered
+        // measure needs one so the series has a point to plot.
+        require(kind == "measure" || change.value == null) { "value" }
+        if (kind == "measure" && (change.outcome == Outcome.delivered)) {
+            requireNotNull(change.value) { "value" }
+        }
 
         val target = when (change.outcome) {
             Outcome.delivered -> {
@@ -77,12 +86,13 @@ class OutcomeService(
             """
             UPDATE occurrences
                SET outcome = {1}, outcome_at = {2}, outcome_note = {3}, proof_kind = {4}, proof_ref = {5},
-                   proposed_time = {6}, version = version + 1, updated_at = now()
-             WHERE id = {0} AND version = {7}
+                   proposed_time = {6}, value = {7}, version = version + 1, updated_at = now()
+             WHERE id = {0} AND version = {8}
             """.trimIndent(),
             occurrenceId, target.name, if (withdrawing) null else now,
             if (withdrawing) null else change.note, if (withdrawing) null else change.proofKind,
             if (withdrawing) null else change.proofRef, if (withdrawing) null else change.proposedTime,
+            if (withdrawing) null else change.value,
             version,
         ).execute().also { if (it == 0) throw OccurrenceNotActionable("OCCURRENCE_CHANGED") }
         history(occurrenceId, actorUserId, current.name, target.name, change.note)

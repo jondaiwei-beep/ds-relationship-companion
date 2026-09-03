@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.util.UUID
@@ -33,6 +34,7 @@ data class OutcomeBody(
     val proofKind: String? = null,
     val proofRef: String? = null,
     val proposedTime: Instant? = null,
+    val value: BigDecimal? = null,
 )
 
 data class ConsequenceBody(val templateId: UUID? = null, val title: String? = null, val detail: String? = null)
@@ -87,7 +89,7 @@ class TodayController(
     ): ResponseEntity<Any> = post.run(jwt, key, "set_outcome", "/v1/occurrences/{id}/outcome", listOf("$occurrenceId"), body) {
         200 to outcomes.set(
             jwt.actorId(), occurrenceId,
-            OutcomeService.Change(body.outcome, body.note, body.proofKind, body.proofRef, body.proposedTime),
+            OutcomeService.Change(body.outcome, body.note, body.proofKind, body.proofRef, body.proposedTime, body.value),
         )
     }
 

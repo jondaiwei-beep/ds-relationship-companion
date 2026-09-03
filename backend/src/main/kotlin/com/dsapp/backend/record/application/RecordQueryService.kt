@@ -2,10 +2,12 @@ package com.dsapp.backend.record.application
 
 import com.dsapp.backend.dynamic.application.MembershipAuthorizer
 import com.dsapp.backend.today.application.DynamicDays
+import com.dsapp.backend.today.application.NoSuchItem
 import com.dsapp.backend.today.application.RelationshipStreaks
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
@@ -42,6 +44,7 @@ class RecordQueryService(
     data class OutcomeEntry(
         val occurrenceId: UUID, val taskId: UUID, val taskTitle: String,
         val toValue: String, val note: String?, val proofKind: String?, val proofRef: String?,
+        val value: BigDecimal? = null, val unit: String? = null,
     )
 
     data class DispositionEntry(
@@ -92,6 +95,102 @@ class RecordQueryService(
     )
 
     data class SummaryView(val daysTogether: Int, val currentStreak: Int)
+
+    data class SeriesPoint(val day: LocalDate, val value: BigDecimal)
+
+    data class SeriesView(val taskId: UUID, val unit: String?, val points: List<SeriesPoint>)
+
+    // ---- export --------------------------------------------------------
+
+    data class ExportOccurrence(
+        val taskTitle: String, val kind: String, val outcome: String, val outcomeAt: Instant?,
+        val disposition: String, val value: BigDecimal?, val unit: String?, val note: String?,
+    )
+
+    data class ExportComment(val authorSide: String, val body: String, val at: Instant)
+
+    data class ExportDay(val day: LocalDate, val occurrences: List<ExportOccurrence>, val comments: List<ExportComment>)
+
+    data class ExportDynamic(val id: UUID, val daysTogether: Int?)
+
+    data class ExportRange(val from: LocalDate, val to: LocalDate)
+
+    data class ExportView(val dynamic: ExportDynamic, val range: ExportRange, val days: List<ExportDay>)
+
+    /** kind=measure only, the s side's numbers over time (product/06-build-order.md Phase 5). */
+    @Transactional(readOnly = true)
+    fun series(actorUserId: UUID, dynamicId: UUID, taskId: UUID, from: LocalDate, to: LocalDate): SeriesView {
+        authorizer.requireRead(authorizer.contextForDynamic(actorUserId, dynamicId))
+        require(!to.isBefore(from)) { "to" }
+        val t = dsl.fetchOne(
+            "SELECT unit FROM tasks WHERE id = {0} AND dynamic_id = {1} AND kind = 'measure'", taskId, dynamicId,
+        ) ?: throw NoSuchItem()
+        val points = dsl.fetch(
+            """
+            SELECT day, value FROM occurrences
+             WHERE task_id = {0} AND dynamic_id = {1} AND day BETWEEN {2} AND {3}
+               AND outcome IN ('delivered', 'delivered_late') AND value IS NOT NULL
+             ORDER BY day
+            """.trimIndent(),
+            taskId, dynamicId, from, to,
+        ).map { SeriesPoint(it.get("day", LocalDate::class.java), it.get("value", BigDecimal::class.java)) }
+        return SeriesView(taskId = taskId, unit = t.get("unit", String::class.java), points = points)
+    }
+
+    /** product/06-build-order.md Phase 5: the day/facts data, packaged for a date range. Private notes are
+     * omitted entirely — the caller's own private notes are not worth the asymmetry risk of getting this wrong. */
+    @Transactional(readOnly = true)
+    fun export(actorUserId: UUID, dynamicId: UUID, from: LocalDate, to: LocalDate): ExportView {
+        authorizer.requireRead(authorizer.contextForDynamic(actorUserId, dynamicId))
+        require(!to.isBefore(from)) { "to" }
+        require(!to.isAfter(from.plusDays(366))) { "range too long" }
+
+        val occByDay = dsl.fetch(
+            """
+            SELECT o.day, t.title AS task_title, t.kind, o.outcome, o.outcome_at, o.disposition,
+                   o.value, t.unit, o.outcome_note
+              FROM occurrences o JOIN tasks t ON t.id = o.task_id
+             WHERE o.dynamic_id = {0} AND o.day BETWEEN {1} AND {2} AND o.outcome <> 'open'
+             ORDER BY o.day, o.due_at NULLS LAST, o.slot
+            """.trimIndent(),
+            dynamicId, from, to,
+        ).groupBy { it.get("day", LocalDate::class.java) }.mapValues { (_, rows) ->
+            rows.map {
+                ExportOccurrence(
+                    taskTitle = it.get("task_title", String::class.java),
+                    kind = it.get("kind", String::class.java),
+                    outcome = it.get("outcome", String::class.java),
+                    outcomeAt = it.get("outcome_at", Instant::class.java),
+                    disposition = it.get("disposition", String::class.java),
+                    value = it.get("value", BigDecimal::class.java),
+                    unit = it.get("unit", String::class.java),
+                    note = it.get("outcome_note", String::class.java),
+                )
+            }
+        }
+
+        val commentsByDay = dsl.fetch(
+            """
+            SELECT c.day, m.side, c.body, c.created_at
+              FROM day_comments c JOIN memberships m ON m.dynamic_id = c.dynamic_id AND m.user_id = c.author_id
+             WHERE c.dynamic_id = {0} AND c.day BETWEEN {1} AND {2} AND c.deleted_at IS NULL
+             ORDER BY c.day, c.created_at
+            """.trimIndent(),
+            dynamicId, from, to,
+        ).groupBy { it.get("day", LocalDate::class.java) }.mapValues { (_, rows) ->
+            rows.map { ExportComment(it.get("side", String::class.java), it.get("body", String::class.java), it.get("created_at", Instant::class.java)) }
+        }
+
+        val days = (occByDay.keys + commentsByDay.keys).sorted().map { day ->
+            ExportDay(day = day, occurrences = occByDay[day] ?: emptyList(), comments = commentsByDay[day] ?: emptyList())
+        }
+
+        return ExportView(
+            dynamic = ExportDynamic(id = dynamicId, daysTogether = runCatching { streaks.daysTogether(dynamicId) }.getOrNull()),
+            range = ExportRange(from, to),
+            days = days,
+        )
+    }
 
     @Transactional(readOnly = true)
     fun month(actorUserId: UUID, dynamicId: UUID, month: YearMonth): List<MonthCell> {
@@ -157,8 +256,8 @@ class RecordQueryService(
         dsl.fetch(
             """
             SELECT h.at, h.axis, h.to_value, h.note, h.by_user_id,
-                   o.id AS occurrence_id, o.task_id, o.proof_kind, o.proof_ref,
-                   o.make_up_day, t.title AS task_title,
+                   o.id AS occurrence_id, o.task_id, o.proof_kind, o.proof_ref, o.value,
+                   o.make_up_day, t.title AS task_title, t.unit AS task_unit,
                    c.title AS consequence_title
               FROM occurrence_history h
               JOIN occurrences o ON o.id = h.occurrence_id
@@ -182,6 +281,8 @@ class RecordQueryService(
                         note = r.get("note", String::class.java),
                         proofKind = r.get("proof_kind", String::class.java),
                         proofRef = r.get("proof_ref", String::class.java),
+                        value = r.get("value", BigDecimal::class.java),
+                        unit = r.get("task_unit", String::class.java),
                     ),
                 )
             } else {

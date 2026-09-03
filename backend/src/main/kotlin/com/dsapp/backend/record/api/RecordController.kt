@@ -9,6 +9,8 @@ import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import org.springframework.http.CacheControl
+import org.springframework.http.ContentDisposition
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -92,4 +94,61 @@ class RecordController(
         @Valid @RequestBody body: PrivateNoteBody,
     ): ResponseEntity<Any> = ResponseEntity.ok().cacheControl(CacheControl.noStore())
         .body(mapOf("body" to privateNotes.upsert(jwt.actorId(), dynamicId, body.day, body.body)))
+
+    /** kind=measure curve for one task (product/06-build-order.md Phase 5). */
+    @GetMapping("/v1/dynamics/{dynamicId}/record/series")
+    fun series(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @RequestParam taskId: UUID,
+        @RequestParam from: LocalDate,
+        @RequestParam to: LocalDate,
+    ): ResponseEntity<Any> = ResponseEntity.ok().cacheControl(CacheControl.noStore())
+        .body(query.series(jwt.actorId(), dynamicId, taskId, from, to))
+
+    /** The record, packaged for taking elsewhere. Either side may export. */
+    @GetMapping("/v1/dynamics/{dynamicId}/record/export")
+    fun export(
+        @AuthenticationPrincipal jwt: Jwt,
+        @PathVariable dynamicId: UUID,
+        @RequestParam from: LocalDate,
+        @RequestParam to: LocalDate,
+        @RequestParam(defaultValue = "json") format: String,
+    ): ResponseEntity<Any> {
+        val view = query.export(jwt.actorId(), dynamicId, from, to)
+        return if (format == "csv") {
+            val csv = toCsv(view)
+            ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .header(HttpHeaders.CONTENT_TYPE, "text/csv;charset=UTF-8")
+                .header(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    ContentDisposition.attachment().filename("record-$from-$to.csv").build().toString(),
+                )
+                .body(csv)
+        } else {
+            ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(view)
+        }
+    }
+
+    private fun toCsv(view: RecordQueryService.ExportView): String {
+        val sb = StringBuilder("day,task_title,kind,outcome,outcome_at,disposition,value,unit,note\n")
+        for (d in view.days) {
+            for (o in d.occurrences) {
+                sb.append(csvCell(d.day.toString())).append(',')
+                    .append(csvCell(o.taskTitle)).append(',')
+                    .append(csvCell(o.kind)).append(',')
+                    .append(csvCell(o.outcome)).append(',')
+                    .append(csvCell(o.outcomeAt?.toString() ?: "")).append(',')
+                    .append(csvCell(o.disposition)).append(',')
+                    .append(csvCell(o.value?.toPlainString() ?: "")).append(',')
+                    .append(csvCell(o.unit ?: "")).append(',')
+                    .append(csvCell(o.note ?: "")).append('\n')
+            }
+        }
+        return sb.toString()
+    }
+
+    private fun csvCell(raw: String): String =
+        if (raw.any { it == ',' || it == '"' || it == '\n' || it == '\r' }) "\"${raw.replace("\"", "\"\"")}\"" else raw
 }
