@@ -80,8 +80,10 @@ void main() {
         id: 'n1',
         dynamicId: 'dyn-1',
         eventType: 'occurrence_delivered',
-        title: 'Mara 交了「洗碗」',
-        body: '今晚 21:10。',
+        // The server's copy is generic English; the tile re-renders known
+        // types in the reader's language.
+        title: 'Delivered',
+        body: 'Something was marked delivered.',
         neutralBody: '有新动态。',
         deepLink: '/record/2026-09-01',
         createdAt: DateTime.utc(2026, 9, 1, 13),
@@ -90,10 +92,12 @@ void main() {
     String? route;
     await tester.pumpWidget(_app(NotificationsScreen(onOpen: (r) => route = r), repo));
     await tester.pumpAndSettle();
-    expect(find.text('Mara 交了「洗碗」'), findsOneWidget);
+    final l = L.of(tester.element(find.byType(NotificationsScreen)));
+    expect(find.text(l.inboxOccurrenceDeliveredTitle), findsOneWidget);
+    expect(find.text(l.inboxOccurrenceDeliveredBody), findsOneWidget);
     expect(repo.readCalls, hasLength(1));
     expect(repo.readCalls.single, isNotNull);
-    await tester.tap(find.text('Mara 交了「洗碗」'));
+    await tester.tap(find.text(l.inboxOccurrenceDeliveredTitle));
     expect(route, '/dynamics/dyn-1/record/2026-09-01');
   });
 }
