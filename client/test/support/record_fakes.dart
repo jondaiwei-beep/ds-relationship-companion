@@ -21,6 +21,14 @@ class FakeRecordRepository implements RecordRepository {
   final comments = <(String, String)>[];
   final deletedComments = <String>[];
   final notes = <(String, String)>[];
+  final seriesReads = <(String, String, String)>[];
+  final exports = <(String, String)>[];
+
+  /// What [series] answers, keyed by taskId; an empty curve otherwise.
+  Map<String, SeriesView> series_ = {};
+
+  /// What [exportCsv] answers.
+  String csv = 'day,task_title\n';
 
   /// When set, the next write throws this.
   Object? nextError;
@@ -53,6 +61,24 @@ class FakeRecordRepository implements RecordRepository {
 
   @override
   Future<SummaryView> summary(String dynamicId) async => summaryView;
+
+  @override
+  Future<SeriesView> series(
+    String dynamicId, {
+    required String taskId,
+    required String from,
+    required String to,
+  }) async {
+    seriesReads.add((taskId, from, to));
+    return series_[taskId] ?? SeriesView(taskId: taskId);
+  }
+
+  @override
+  Future<String> exportCsv(String dynamicId, {required String from, required String to}) async {
+    await _maybeThrow();
+    exports.add((from, to));
+    return csv;
+  }
 
   @override
   Future<DayComment> addComment(
@@ -118,11 +144,15 @@ TimelineEntry outcomeAt(
   String? note,
   String? proofKind,
   String? proofRef,
+  double? value,
+  String? unit,
 }) =>
     TimelineEntry(
       at: at,
       kind: 'outcome',
       outcome: OutcomeEntry(
+        value: value,
+        unit: unit,
         occurrenceId: occ,
         taskId: 't-$occ',
         taskTitle: title,

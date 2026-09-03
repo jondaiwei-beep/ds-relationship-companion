@@ -47,6 +47,7 @@ class OutcomeChange {
     this.proofKind,
     this.proofRef,
     this.proposedTime,
+    this.value,
   });
 
   final Outcome outcome;
@@ -55,12 +56,17 @@ class OutcomeChange {
   final String? proofRef;
   final DateTime? proposedTime;
 
+  /// `kind=measure` only; the server requires it on `delivered` and refuses
+  /// it on any other kind.
+  final double? value;
+
   Map<String, dynamic> toJson() => {
         'outcome': outcome.wire,
         'note': note,
         'proofKind': proofKind,
         'proofRef': proofRef,
         'proposedTime': proposedTime?.toUtc().toIso8601String(),
+        if (value != null) 'value': value,
       };
 }
 

@@ -11,6 +11,7 @@ import '../application/today_providers.dart';
 import 'today_format.dart';
 import 'widgets/choice_sheet.dart';
 import 'widgets/line_sheet.dart';
+import 'widgets/measure_sheet.dart';
 import 'widgets/quiet_line.dart';
 import 'widgets/s_occurrence_row.dart';
 import 'widgets/section_label.dart';
@@ -127,6 +128,11 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
   }
 
   Future<void> _deliver(OccurrenceView occ) async {
+    double? value;
+    if (occ.isMeasure) {
+      value = await showMeasureSheet(context, title: occ.title, unit: occ.unit);
+      if (value == null || !mounted) return;
+    }
     final proof = await _proofFor(occ.proof, occ.title);
     if (proof == null || !mounted) return;
     await _say(
@@ -135,6 +141,7 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
         outcome: Outcome.delivered,
         proofKind: proof.$1,
         proofRef: proof.$2,
+        value: value,
       ),
     );
   }
@@ -292,12 +299,17 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
     final paused = outcome == Outcome.paused;
     final actionable = !paused && occ.disposition == Disposition.none && !_pending.containsKey(occ.id);
     final canDeliver = actionable && (outcome == Outcome.open || outcome == Outcome.missed);
+    final status = _statusOf(occ, l);
+    final value = occ.value;
+    final measured = value == null || !outcome.isDelivered
+        ? null
+        : '${formatMeasure(value)} ${occ.unit ?? ''}'.trim();
     return SOccurrenceRow(
       key: ValueKey(occ.id),
       title: occ.title,
       detail: occ.detail,
       meta: _metaOf(occ, l),
-      status: _statusOf(occ, l),
+      status: measured == null ? status : [?status, measured].join(' · '),
       note: occ.outcomeNote == null || occ.outcomeNote!.isEmpty
           ? null
           : l.sTodayYourNote(occ.outcomeNote!),

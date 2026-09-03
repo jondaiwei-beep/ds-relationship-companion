@@ -40,6 +40,9 @@ abstract class OutcomeEntry with _$OutcomeEntry {
     String? note,
     String? proofKind,
     String? proofRef,
+    /// `kind=measure` only: the number delivered, in [unit].
+    @JsonKey(fromJson: decimalFromJson) double? value,
+    String? unit,
   }) = _OutcomeEntry;
 
   factory OutcomeEntry.fromJson(Map<String, dynamic> json) => _$OutcomeEntryFromJson(json);
@@ -260,3 +263,27 @@ Outcome outcomeFromWire(String w) =>
 
 Disposition dispositionFromWire(String w) =>
     Disposition.values.firstWhere((d) => d.wire == w, orElse: () => Disposition.none);
+
+/// One measured day on a `kind=measure` task's curve.
+@freezed
+abstract class SeriesPoint with _$SeriesPoint {
+  const factory SeriesPoint({
+    /// `yyyy-MM-dd`.
+    required String day,
+    @JsonKey(fromJson: decimalFromJson) double? value,
+  }) = _SeriesPoint;
+
+  factory SeriesPoint.fromJson(Map<String, dynamic> json) => _$SeriesPointFromJson(json);
+}
+
+/// The s's numbers over time for one measure task (Phase 5).
+@freezed
+abstract class SeriesView with _$SeriesView {
+  const factory SeriesView({
+    required String taskId,
+    String? unit,
+    @Default([]) List<SeriesPoint> points,
+  }) = _SeriesView;
+
+  factory SeriesView.fromJson(Map<String, dynamic> json) => _$SeriesViewFromJson(json);
+}

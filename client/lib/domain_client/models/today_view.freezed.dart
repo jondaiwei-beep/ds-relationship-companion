@@ -293,7 +293,8 @@ mixin _$OccurrenceView {
  String get id; String get taskId; String get title; String? get detail;/// `recurring | one_off | open | checkin | measure`.
  String get kind;/// `check | photo | text | any`.
  String get proof; int get pointsEarn; bool get requiresDPresent;/// The relationship day, `yyyy-MM-dd`, in the Dynamic's zone.
- String get day; int get slot; DateTime? get dueAt; Outcome get outcome; DateTime? get outcomeAt; String? get outcomeNote; String? get proofKind; String? get proofRef; DateTime? get proposedTime; Disposition get disposition; DateTime? get dispositionAt; String? get dispositionNote; ConsequenceView? get consequence; String? get makeUpDay; String? get makeUpOf; DateTime? get seenAt; int get version;
+ String get day; int get slot; DateTime? get dueAt; Outcome get outcome; DateTime? get outcomeAt; String? get outcomeNote; String? get proofKind; String? get proofRef; DateTime? get proposedTime;/// `kind=measure` only: the number the s reported, in [unit].
+@JsonKey(fromJson: decimalFromJson) double? get value; String? get unit; Disposition get disposition; DateTime? get dispositionAt; String? get dispositionNote; ConsequenceView? get consequence; String? get makeUpDay; String? get makeUpOf; DateTime? get seenAt; int get version;
 /// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -306,16 +307,16 @@ $OccurrenceViewCopyWith<OccurrenceView> get copyWith => _$OccurrenceViewCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn)&&(identical(other.requiresDPresent, requiresDPresent) || other.requiresDPresent == requiresDPresent)&&(identical(other.day, day) || other.day == day)&&(identical(other.slot, slot) || other.slot == slot)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.outcome, outcome) || other.outcome == outcome)&&(identical(other.outcomeAt, outcomeAt) || other.outcomeAt == outcomeAt)&&(identical(other.outcomeNote, outcomeNote) || other.outcomeNote == outcomeNote)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.proposedTime, proposedTime) || other.proposedTime == proposedTime)&&(identical(other.disposition, disposition) || other.disposition == disposition)&&(identical(other.dispositionAt, dispositionAt) || other.dispositionAt == dispositionAt)&&(identical(other.dispositionNote, dispositionNote) || other.dispositionNote == dispositionNote)&&(identical(other.consequence, consequence) || other.consequence == consequence)&&(identical(other.makeUpDay, makeUpDay) || other.makeUpDay == makeUpDay)&&(identical(other.makeUpOf, makeUpOf) || other.makeUpOf == makeUpOf)&&(identical(other.seenAt, seenAt) || other.seenAt == seenAt)&&(identical(other.version, version) || other.version == version));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn)&&(identical(other.requiresDPresent, requiresDPresent) || other.requiresDPresent == requiresDPresent)&&(identical(other.day, day) || other.day == day)&&(identical(other.slot, slot) || other.slot == slot)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.outcome, outcome) || other.outcome == outcome)&&(identical(other.outcomeAt, outcomeAt) || other.outcomeAt == outcomeAt)&&(identical(other.outcomeNote, outcomeNote) || other.outcomeNote == outcomeNote)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.proposedTime, proposedTime) || other.proposedTime == proposedTime)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.disposition, disposition) || other.disposition == disposition)&&(identical(other.dispositionAt, dispositionAt) || other.dispositionAt == dispositionAt)&&(identical(other.dispositionNote, dispositionNote) || other.dispositionNote == dispositionNote)&&(identical(other.consequence, consequence) || other.consequence == consequence)&&(identical(other.makeUpDay, makeUpDay) || other.makeUpDay == makeUpDay)&&(identical(other.makeUpOf, makeUpOf) || other.makeUpOf == makeUpOf)&&(identical(other.seenAt, seenAt) || other.seenAt == seenAt)&&(identical(other.version, version) || other.version == version));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,taskId,title,detail,kind,proof,pointsEarn,requiresDPresent,day,slot,dueAt,outcome,outcomeAt,outcomeNote,proofKind,proofRef,proposedTime,disposition,dispositionAt,dispositionNote,consequence,makeUpDay,makeUpOf,seenAt,version]);
+int get hashCode => Object.hashAll([runtimeType,id,taskId,title,detail,kind,proof,pointsEarn,requiresDPresent,day,slot,dueAt,outcome,outcomeAt,outcomeNote,proofKind,proofRef,proposedTime,value,unit,disposition,dispositionAt,dispositionNote,consequence,makeUpDay,makeUpOf,seenAt,version]);
 
 @override
 String toString() {
-  return 'OccurrenceView(id: $id, taskId: $taskId, title: $title, detail: $detail, kind: $kind, proof: $proof, pointsEarn: $pointsEarn, requiresDPresent: $requiresDPresent, day: $day, slot: $slot, dueAt: $dueAt, outcome: $outcome, outcomeAt: $outcomeAt, outcomeNote: $outcomeNote, proofKind: $proofKind, proofRef: $proofRef, proposedTime: $proposedTime, disposition: $disposition, dispositionAt: $dispositionAt, dispositionNote: $dispositionNote, consequence: $consequence, makeUpDay: $makeUpDay, makeUpOf: $makeUpOf, seenAt: $seenAt, version: $version)';
+  return 'OccurrenceView(id: $id, taskId: $taskId, title: $title, detail: $detail, kind: $kind, proof: $proof, pointsEarn: $pointsEarn, requiresDPresent: $requiresDPresent, day: $day, slot: $slot, dueAt: $dueAt, outcome: $outcome, outcomeAt: $outcomeAt, outcomeNote: $outcomeNote, proofKind: $proofKind, proofRef: $proofRef, proposedTime: $proposedTime, value: $value, unit: $unit, disposition: $disposition, dispositionAt: $dispositionAt, dispositionNote: $dispositionNote, consequence: $consequence, makeUpDay: $makeUpDay, makeUpOf: $makeUpOf, seenAt: $seenAt, version: $version)';
 }
 
 
@@ -326,7 +327,7 @@ abstract mixin class $OccurrenceViewCopyWith<$Res>  {
   factory $OccurrenceViewCopyWith(OccurrenceView value, $Res Function(OccurrenceView) _then) = _$OccurrenceViewCopyWithImpl;
 @useResult
 $Res call({
- String id, String taskId, String title, String? detail, String kind, String proof, int pointsEarn, bool requiresDPresent, String day, int slot, DateTime? dueAt, Outcome outcome, DateTime? outcomeAt, String? outcomeNote, String? proofKind, String? proofRef, DateTime? proposedTime, Disposition disposition, DateTime? dispositionAt, String? dispositionNote, ConsequenceView? consequence, String? makeUpDay, String? makeUpOf, DateTime? seenAt, int version
+ String id, String taskId, String title, String? detail, String kind, String proof, int pointsEarn, bool requiresDPresent, String day, int slot, DateTime? dueAt, Outcome outcome, DateTime? outcomeAt, String? outcomeNote, String? proofKind, String? proofRef, DateTime? proposedTime,@JsonKey(fromJson: decimalFromJson) double? value, String? unit, Disposition disposition, DateTime? dispositionAt, String? dispositionNote, ConsequenceView? consequence, String? makeUpDay, String? makeUpOf, DateTime? seenAt, int version
 });
 
 
@@ -343,7 +344,7 @@ class _$OccurrenceViewCopyWithImpl<$Res>
 
 /// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? taskId = null,Object? title = null,Object? detail = freezed,Object? kind = null,Object? proof = null,Object? pointsEarn = null,Object? requiresDPresent = null,Object? day = null,Object? slot = null,Object? dueAt = freezed,Object? outcome = null,Object? outcomeAt = freezed,Object? outcomeNote = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? proposedTime = freezed,Object? disposition = null,Object? dispositionAt = freezed,Object? dispositionNote = freezed,Object? consequence = freezed,Object? makeUpDay = freezed,Object? makeUpOf = freezed,Object? seenAt = freezed,Object? version = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? taskId = null,Object? title = null,Object? detail = freezed,Object? kind = null,Object? proof = null,Object? pointsEarn = null,Object? requiresDPresent = null,Object? day = null,Object? slot = null,Object? dueAt = freezed,Object? outcome = null,Object? outcomeAt = freezed,Object? outcomeNote = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? proposedTime = freezed,Object? value = freezed,Object? unit = freezed,Object? disposition = null,Object? dispositionAt = freezed,Object? dispositionNote = freezed,Object? consequence = freezed,Object? makeUpDay = freezed,Object? makeUpOf = freezed,Object? seenAt = freezed,Object? version = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
@@ -362,7 +363,9 @@ as DateTime?,outcomeNote: freezed == outcomeNote ? _self.outcomeNote : outcomeNo
 as String?,proofKind: freezed == proofKind ? _self.proofKind : proofKind // ignore: cast_nullable_to_non_nullable
 as String?,proofRef: freezed == proofRef ? _self.proofRef : proofRef // ignore: cast_nullable_to_non_nullable
 as String?,proposedTime: freezed == proposedTime ? _self.proposedTime : proposedTime // ignore: cast_nullable_to_non_nullable
-as DateTime?,disposition: null == disposition ? _self.disposition : disposition // ignore: cast_nullable_to_non_nullable
+as DateTime?,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double?,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
+as String?,disposition: null == disposition ? _self.disposition : disposition // ignore: cast_nullable_to_non_nullable
 as Disposition,dispositionAt: freezed == dispositionAt ? _self.dispositionAt : dispositionAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,dispositionNote: freezed == dispositionNote ? _self.dispositionNote : dispositionNote // ignore: cast_nullable_to_non_nullable
 as String?,consequence: freezed == consequence ? _self.consequence : consequence // ignore: cast_nullable_to_non_nullable
@@ -467,10 +470,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime, @JsonKey(fromJson: decimalFromJson)  double? value,  String? unit,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OccurrenceView() when $default != null:
-return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
+return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.value,_that.unit,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
   return orElse();
 
 }
@@ -488,10 +491,10 @@ return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime, @JsonKey(fromJson: decimalFromJson)  double? value,  String? unit,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)  $default,) {final _that = this;
 switch (_that) {
 case _OccurrenceView():
-return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
+return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.value,_that.unit,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -508,10 +511,10 @@ return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String taskId,  String title,  String? detail,  String kind,  String proof,  int pointsEarn,  bool requiresDPresent,  String day,  int slot,  DateTime? dueAt,  Outcome outcome,  DateTime? outcomeAt,  String? outcomeNote,  String? proofKind,  String? proofRef,  DateTime? proposedTime, @JsonKey(fromJson: decimalFromJson)  double? value,  String? unit,  Disposition disposition,  DateTime? dispositionAt,  String? dispositionNote,  ConsequenceView? consequence,  String? makeUpDay,  String? makeUpOf,  DateTime? seenAt,  int version)?  $default,) {final _that = this;
 switch (_that) {
 case _OccurrenceView() when $default != null:
-return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
+return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.proof,_that.pointsEarn,_that.requiresDPresent,_that.day,_that.slot,_that.dueAt,_that.outcome,_that.outcomeAt,_that.outcomeNote,_that.proofKind,_that.proofRef,_that.proposedTime,_that.value,_that.unit,_that.disposition,_that.dispositionAt,_that.dispositionNote,_that.consequence,_that.makeUpDay,_that.makeUpOf,_that.seenAt,_that.version);case _:
   return null;
 
 }
@@ -523,7 +526,7 @@ return $default(_that.id,_that.taskId,_that.title,_that.detail,_that.kind,_that.
 @JsonSerializable()
 
 class _OccurrenceView extends OccurrenceView {
-  const _OccurrenceView({required this.id, required this.taskId, required this.title, this.detail, required this.kind, required this.proof, this.pointsEarn = 0, this.requiresDPresent = false, required this.day, this.slot = 0, this.dueAt, this.outcome = Outcome.open, this.outcomeAt, this.outcomeNote, this.proofKind, this.proofRef, this.proposedTime, this.disposition = Disposition.none, this.dispositionAt, this.dispositionNote, this.consequence, this.makeUpDay, this.makeUpOf, this.seenAt, this.version = 0}): super._();
+  const _OccurrenceView({required this.id, required this.taskId, required this.title, this.detail, required this.kind, required this.proof, this.pointsEarn = 0, this.requiresDPresent = false, required this.day, this.slot = 0, this.dueAt, this.outcome = Outcome.open, this.outcomeAt, this.outcomeNote, this.proofKind, this.proofRef, this.proposedTime, @JsonKey(fromJson: decimalFromJson) this.value, this.unit, this.disposition = Disposition.none, this.dispositionAt, this.dispositionNote, this.consequence, this.makeUpDay, this.makeUpOf, this.seenAt, this.version = 0}): super._();
   factory _OccurrenceView.fromJson(Map<String, dynamic> json) => _$OccurrenceViewFromJson(json);
 
 @override final  String id;
@@ -546,6 +549,9 @@ class _OccurrenceView extends OccurrenceView {
 @override final  String? proofKind;
 @override final  String? proofRef;
 @override final  DateTime? proposedTime;
+/// `kind=measure` only: the number the s reported, in [unit].
+@override@JsonKey(fromJson: decimalFromJson) final  double? value;
+@override final  String? unit;
 @override@JsonKey() final  Disposition disposition;
 @override final  DateTime? dispositionAt;
 @override final  String? dispositionNote;
@@ -568,16 +574,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn)&&(identical(other.requiresDPresent, requiresDPresent) || other.requiresDPresent == requiresDPresent)&&(identical(other.day, day) || other.day == day)&&(identical(other.slot, slot) || other.slot == slot)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.outcome, outcome) || other.outcome == outcome)&&(identical(other.outcomeAt, outcomeAt) || other.outcomeAt == outcomeAt)&&(identical(other.outcomeNote, outcomeNote) || other.outcomeNote == outcomeNote)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.proposedTime, proposedTime) || other.proposedTime == proposedTime)&&(identical(other.disposition, disposition) || other.disposition == disposition)&&(identical(other.dispositionAt, dispositionAt) || other.dispositionAt == dispositionAt)&&(identical(other.dispositionNote, dispositionNote) || other.dispositionNote == dispositionNote)&&(identical(other.consequence, consequence) || other.consequence == consequence)&&(identical(other.makeUpDay, makeUpDay) || other.makeUpDay == makeUpDay)&&(identical(other.makeUpOf, makeUpOf) || other.makeUpOf == makeUpOf)&&(identical(other.seenAt, seenAt) || other.seenAt == seenAt)&&(identical(other.version, version) || other.version == version));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OccurrenceView&&(identical(other.id, id) || other.id == id)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.title, title) || other.title == title)&&(identical(other.detail, detail) || other.detail == detail)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.proof, proof) || other.proof == proof)&&(identical(other.pointsEarn, pointsEarn) || other.pointsEarn == pointsEarn)&&(identical(other.requiresDPresent, requiresDPresent) || other.requiresDPresent == requiresDPresent)&&(identical(other.day, day) || other.day == day)&&(identical(other.slot, slot) || other.slot == slot)&&(identical(other.dueAt, dueAt) || other.dueAt == dueAt)&&(identical(other.outcome, outcome) || other.outcome == outcome)&&(identical(other.outcomeAt, outcomeAt) || other.outcomeAt == outcomeAt)&&(identical(other.outcomeNote, outcomeNote) || other.outcomeNote == outcomeNote)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.proposedTime, proposedTime) || other.proposedTime == proposedTime)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.disposition, disposition) || other.disposition == disposition)&&(identical(other.dispositionAt, dispositionAt) || other.dispositionAt == dispositionAt)&&(identical(other.dispositionNote, dispositionNote) || other.dispositionNote == dispositionNote)&&(identical(other.consequence, consequence) || other.consequence == consequence)&&(identical(other.makeUpDay, makeUpDay) || other.makeUpDay == makeUpDay)&&(identical(other.makeUpOf, makeUpOf) || other.makeUpOf == makeUpOf)&&(identical(other.seenAt, seenAt) || other.seenAt == seenAt)&&(identical(other.version, version) || other.version == version));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,taskId,title,detail,kind,proof,pointsEarn,requiresDPresent,day,slot,dueAt,outcome,outcomeAt,outcomeNote,proofKind,proofRef,proposedTime,disposition,dispositionAt,dispositionNote,consequence,makeUpDay,makeUpOf,seenAt,version]);
+int get hashCode => Object.hashAll([runtimeType,id,taskId,title,detail,kind,proof,pointsEarn,requiresDPresent,day,slot,dueAt,outcome,outcomeAt,outcomeNote,proofKind,proofRef,proposedTime,value,unit,disposition,dispositionAt,dispositionNote,consequence,makeUpDay,makeUpOf,seenAt,version]);
 
 @override
 String toString() {
-  return 'OccurrenceView(id: $id, taskId: $taskId, title: $title, detail: $detail, kind: $kind, proof: $proof, pointsEarn: $pointsEarn, requiresDPresent: $requiresDPresent, day: $day, slot: $slot, dueAt: $dueAt, outcome: $outcome, outcomeAt: $outcomeAt, outcomeNote: $outcomeNote, proofKind: $proofKind, proofRef: $proofRef, proposedTime: $proposedTime, disposition: $disposition, dispositionAt: $dispositionAt, dispositionNote: $dispositionNote, consequence: $consequence, makeUpDay: $makeUpDay, makeUpOf: $makeUpOf, seenAt: $seenAt, version: $version)';
+  return 'OccurrenceView(id: $id, taskId: $taskId, title: $title, detail: $detail, kind: $kind, proof: $proof, pointsEarn: $pointsEarn, requiresDPresent: $requiresDPresent, day: $day, slot: $slot, dueAt: $dueAt, outcome: $outcome, outcomeAt: $outcomeAt, outcomeNote: $outcomeNote, proofKind: $proofKind, proofRef: $proofRef, proposedTime: $proposedTime, value: $value, unit: $unit, disposition: $disposition, dispositionAt: $dispositionAt, dispositionNote: $dispositionNote, consequence: $consequence, makeUpDay: $makeUpDay, makeUpOf: $makeUpOf, seenAt: $seenAt, version: $version)';
 }
 
 
@@ -588,7 +594,7 @@ abstract mixin class _$OccurrenceViewCopyWith<$Res> implements $OccurrenceViewCo
   factory _$OccurrenceViewCopyWith(_OccurrenceView value, $Res Function(_OccurrenceView) _then) = __$OccurrenceViewCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String taskId, String title, String? detail, String kind, String proof, int pointsEarn, bool requiresDPresent, String day, int slot, DateTime? dueAt, Outcome outcome, DateTime? outcomeAt, String? outcomeNote, String? proofKind, String? proofRef, DateTime? proposedTime, Disposition disposition, DateTime? dispositionAt, String? dispositionNote, ConsequenceView? consequence, String? makeUpDay, String? makeUpOf, DateTime? seenAt, int version
+ String id, String taskId, String title, String? detail, String kind, String proof, int pointsEarn, bool requiresDPresent, String day, int slot, DateTime? dueAt, Outcome outcome, DateTime? outcomeAt, String? outcomeNote, String? proofKind, String? proofRef, DateTime? proposedTime,@JsonKey(fromJson: decimalFromJson) double? value, String? unit, Disposition disposition, DateTime? dispositionAt, String? dispositionNote, ConsequenceView? consequence, String? makeUpDay, String? makeUpOf, DateTime? seenAt, int version
 });
 
 
@@ -605,7 +611,7 @@ class __$OccurrenceViewCopyWithImpl<$Res>
 
 /// Create a copy of OccurrenceView
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? taskId = null,Object? title = null,Object? detail = freezed,Object? kind = null,Object? proof = null,Object? pointsEarn = null,Object? requiresDPresent = null,Object? day = null,Object? slot = null,Object? dueAt = freezed,Object? outcome = null,Object? outcomeAt = freezed,Object? outcomeNote = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? proposedTime = freezed,Object? disposition = null,Object? dispositionAt = freezed,Object? dispositionNote = freezed,Object? consequence = freezed,Object? makeUpDay = freezed,Object? makeUpOf = freezed,Object? seenAt = freezed,Object? version = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? taskId = null,Object? title = null,Object? detail = freezed,Object? kind = null,Object? proof = null,Object? pointsEarn = null,Object? requiresDPresent = null,Object? day = null,Object? slot = null,Object? dueAt = freezed,Object? outcome = null,Object? outcomeAt = freezed,Object? outcomeNote = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? proposedTime = freezed,Object? value = freezed,Object? unit = freezed,Object? disposition = null,Object? dispositionAt = freezed,Object? dispositionNote = freezed,Object? consequence = freezed,Object? makeUpDay = freezed,Object? makeUpOf = freezed,Object? seenAt = freezed,Object? version = null,}) {
   return _then(_OccurrenceView(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
@@ -624,7 +630,9 @@ as DateTime?,outcomeNote: freezed == outcomeNote ? _self.outcomeNote : outcomeNo
 as String?,proofKind: freezed == proofKind ? _self.proofKind : proofKind // ignore: cast_nullable_to_non_nullable
 as String?,proofRef: freezed == proofRef ? _self.proofRef : proofRef // ignore: cast_nullable_to_non_nullable
 as String?,proposedTime: freezed == proposedTime ? _self.proposedTime : proposedTime // ignore: cast_nullable_to_non_nullable
-as DateTime?,disposition: null == disposition ? _self.disposition : disposition // ignore: cast_nullable_to_non_nullable
+as DateTime?,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double?,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
+as String?,disposition: null == disposition ? _self.disposition : disposition // ignore: cast_nullable_to_non_nullable
 as Disposition,dispositionAt: freezed == dispositionAt ? _self.dispositionAt : dispositionAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,dispositionNote: freezed == dispositionNote ? _self.dispositionNote : dispositionNote // ignore: cast_nullable_to_non_nullable
 as String?,consequence: freezed == consequence ? _self.consequence : consequence // ignore: cast_nullable_to_non_nullable

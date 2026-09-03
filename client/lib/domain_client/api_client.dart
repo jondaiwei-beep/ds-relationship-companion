@@ -109,6 +109,16 @@ class ApiClient {
     return r.data ?? const {};
   }
 
+  /// GET an endpoint that returns plain text (CSV export).
+  Future<String> getText(String path) async {
+    _requireSession(path);
+    final r = await _dio.get<String>(
+      path,
+      options: _authed.copyWith(responseType: ResponseType.plain),
+    );
+    return r.data ?? '';
+  }
+
   /// GET an endpoint that returns a JSON array rather than an object.
   Future<List<dynamic>> getList(String path) async {
     _requireSession(path);

@@ -30,6 +30,21 @@ class RecordRepository {
   Future<SummaryView> summary(String dynamicId) async =>
       SummaryView.fromJson(await _api.get('/v1/dynamics/$dynamicId/record/summary'));
 
+  /// The s's numbers over time on one `kind=measure` task (Phase 5).
+  Future<SeriesView> series(
+    String dynamicId, {
+    required String taskId,
+    required String from,
+    required String to,
+  }) async =>
+      SeriesView.fromJson(
+        await _api.get('/v1/dynamics/$dynamicId/record/series?taskId=$taskId&from=$from&to=$to'),
+      );
+
+  /// The record between [from] and [to] (≤366 days) as CSV, for taking elsewhere.
+  Future<String> exportCsv(String dynamicId, {required String from, required String to}) =>
+      _api.getText('/v1/dynamics/$dynamicId/record/export?from=$from&to=$to&format=csv');
+
   Future<DayComment> addComment(
     String dynamicId, {
     required String day,

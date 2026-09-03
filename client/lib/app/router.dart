@@ -23,6 +23,7 @@ import '../platform/time/device_timezone.dart';
 import '../features/today/presentation/today_screen.dart';
 import '../features/record/presentation/record_screen.dart';
 import '../features/record/presentation/day_screen.dart';
+import '../features/record/presentation/series_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
 import 'session_resolving.dart';
@@ -61,6 +62,9 @@ abstract final class Routes {
   /// One day of the record. Also where a `/record/:day` notification lands
   /// once the Dynamic is known.
   static const dynamicRecordDay = '/dynamics/:id/record/:day';
+
+  /// One measure task's curve (Phase 5). `?title=` names it in the header.
+  static const dynamicRecordSeries = '/dynamics/:id/record/series/:taskId';
 
   /// The deep link a notification carries has no Dynamic in it; this resolves
   /// one the way `/today` does and goes on to the day.
@@ -234,6 +238,22 @@ GoRouter createRouter(Ref ref) {
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
             onOpenDay: (day) => context.go('/dynamics/$dynamicId/record/$day'),
+            onOpenSeries: (taskId, title) => context.push(_seriesPath(dynamicId, taskId, title)),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.dynamicRecordSeries,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          final taskId = s.pathParameters['taskId']!;
+          return SeriesScreen(
+            dynamicId: dynamicId,
+            taskId: taskId,
+            title: s.uri.queryParameters['title'],
+            onBack: () => context.canPop()
+                ? context.pop()
+                : context.go(_navPath(dynamicId, NavSurface.record)),
           );
         },
       ),
@@ -247,6 +267,7 @@ GoRouter createRouter(Ref ref) {
             day: day,
             onSignIn: () => context.go(Routes.signIn),
             onBack: () => context.go(_navPath(dynamicId, NavSurface.record)),
+            onOpenSeries: (taskId, title) => context.push(_seriesPath(dynamicId, taskId, title)),
           );
         },
       ),
@@ -487,3 +508,9 @@ class _SessionListenable extends ChangeNotifier {
 enum _GuardDecision { wait, deny, allow }
 
 final routerProvider = Provider<GoRouter>(createRouter);
+
+String _seriesPath(String dynamicId, String taskId, String title) =>
+    Uri(
+      path: '/dynamics/$dynamicId/record/series/$taskId',
+      queryParameters: {'title': title},
+    ).toString();

@@ -41,6 +41,7 @@ class DayScreen extends ConsumerStatefulWidget {
     required this.day,
     this.onBack,
     this.onSignIn,
+    this.onOpenSeries,
   });
 
   final String dynamicId;
@@ -49,6 +50,9 @@ class DayScreen extends ConsumerStatefulWidget {
   final String day;
   final VoidCallback? onBack;
   final VoidCallback? onSignIn;
+
+  /// Opens the curve of a `kind=measure` task: `(taskId, taskTitle)`.
+  final void Function(String taskId, String taskTitle)? onOpenSeries;
 
   @override
   ConsumerState<DayScreen> createState() => _DayScreenState();
@@ -374,6 +378,9 @@ class _DayScreenState extends ConsumerState<DayScreen> {
         Outcome.paused => l.recordPausedEntry(t),
       };
       final parts = <String>[];
+      if (o.outcome.isDelivered && o.value != null) {
+        parts.add('${formatMeasure(o.value!)} ${o.unit ?? ''}'.trim());
+      }
       if (o.outcome.isDelivered && o.proofRef != null && o.proofRef!.isNotEmpty) {
         parts.add(o.proofKind == 'photo' ? l.recordPhotoRef(o.proofRef!) : o.proofRef!);
       }
@@ -544,13 +551,19 @@ class _DayScreenState extends ConsumerState<DayScreen> {
             final occId = e.outcome?.occurrenceId ?? e.disposition?.occurrenceId;
             final state = occId != null && lastIndex[occId] == i ? states[occId] : null;
             final comment = e.comment;
+            final o = e.outcome;
+            final openSeries = widget.onOpenSeries;
             return TimelineRow(
               key: ValueKey('tl-$i'),
               clock: TodayFormat.clock(e.at, view.timezone, _locale),
               text: text,
               sub: sub,
               error: occId == null ? null : _errors[occId],
-              actions: state == null ? const [] : _actionsFor(state, view, l),
+              actions: [
+                if (state != null) ..._actionsFor(state, view, l),
+                if (o != null && o.value != null && o.outcome.isDelivered && openSeries != null)
+                  (l.recordSeriesAction, () => openSeries(o.taskId, o.taskTitle)),
+              ],
               onLongPress: comment != null && me != null && comment.authorId == me
                   ? () => _confirmDelete(comment)
                   : null,

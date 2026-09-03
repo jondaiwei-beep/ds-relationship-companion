@@ -3586,4 +3586,70 @@ class LEn extends L {
 
   @override
   String get rulesExplorePrefs => 'Preferences';
+
+  @override
+  String get sTodayMeasureLabel => 'Value';
+
+  @override
+  String sTodayMeasureLabelUnit(String unit) {
+    return 'Value ($unit)';
+  }
+
+  @override
+  String get recordSeriesTitle => 'Curve';
+
+  @override
+  String get recordSeriesAction => 'Curve';
+
+  @override
+  String get recordSeriesSection => 'Curves';
+
+  @override
+  String recordSeriesEmpty(int days) {
+    return 'No numbers in the last $days days.';
+  }
+
+  @override
+  String recordSeriesRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String recordSeriesLow(String value) {
+    return 'Low $value';
+  }
+
+  @override
+  String recordSeriesHigh(String value) {
+    return 'High $value';
+  }
+
+  @override
+  String recordSeriesLatest(String day, String value) {
+    return '$day · $value';
+  }
+
+  @override
+  String recordSeriesCount(int count) {
+    return '$count days recorded';
+  }
+
+  @override
+  String get recordExport => 'Export record';
+
+  @override
+  String recordExportLastDays(int days) {
+    return 'Last $days days';
+  }
+
+  @override
+  String get recordExportCustom => 'Pick dates…';
+
+  @override
+  String recordExported(String filename) {
+    return 'Exported $filename';
+  }
+
+  @override
+  String get recordExportFailed => 'The export did not go through. Try again.';
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
+import '../../../domain_client/models/task.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../today/application/today_providers.dart';
@@ -16,6 +17,8 @@ import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
 import '../application/calendar_math.dart';
 import '../application/record_providers.dart';
+import '../../today/presentation/widgets/word_button.dart';
+import 'export_sheet.dart';
 import 'widgets/facts_table.dart';
 import 'widgets/month_grid.dart';
 
@@ -31,12 +34,16 @@ class RecordScreen extends ConsumerStatefulWidget {
     this.onSelectTab,
     this.onOpenDay,
     this.onSignIn,
+    this.onOpenSeries,
   });
 
   final String dynamicId;
   final void Function(NavSurface surface)? onSelectTab;
   final void Function(String isoDay)? onOpenDay;
   final VoidCallback? onSignIn;
+
+  /// Opens the curve of a `kind=measure` task: `(taskId, taskTitle)`.
+  final void Function(String taskId, String taskTitle)? onOpenSeries;
 
   @override
   ConsumerState<RecordScreen> createState() => _RecordScreenState();
@@ -143,12 +150,26 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
     final cells = ref.watch(monthCellsProvider((id, month.wire)));
     final weekFacts = ref.watch(factsProvider((id, week.from, week.to)));
     final monthFacts = ref.watch(factsProvider((id, month.firstIsoDay, month.lastIsoDay)));
+    final measureTasks = ref.watch(measureTasksProvider(id));
     final canGoForward = compareIsoDays(month.next.firstIsoDay, view.day) <= 0;
 
     return ListView(
       padding: EdgeInsets.zero,
       children: [
         TodayHeader(title: l.navRecord, partnerName: view.partnerDisplayName),
+        Padding(
+          padding: todayInset,
+          child: Row(
+            children: [
+              WordButton(
+                key: const ValueKey('export-record'),
+                label: l.recordExport,
+                onTap: () => showExportSheet(context, ref, dynamicId: id, today: view.day),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space2),
         Padding(
           padding: todayInset,
           child: summary.when(
@@ -179,8 +200,40 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.recordFactsTitle),
         FactsTable(week: weekFacts.value, month: monthFacts.value),
+        ..._measureSection(measureTasks.value ?? const [], l),
         const SizedBox(height: DsSpacing.space10),
       ],
     );
+  }
+
+  /// The measure tasks, each a way into its curve. Nothing when there are none.
+  List<Widget> _measureSection(List<TaskView> tasks, L l) {
+    if (tasks.isEmpty) return const [];
+    return [
+      const SizedBox(height: DsSpacing.space8),
+      SectionLabel(l.recordSeriesSection),
+      for (final t in tasks)
+        InkWell(
+          key: ValueKey('measure-${t.id}'),
+          onTap: widget.onOpenSeries == null ? null : () => widget.onOpenSeries!(t.id, t.title),
+          child: Padding(
+            padding: todayInset.add(const EdgeInsets.symmetric(vertical: DsSpacing.space3)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    t.title,
+                    style: DsTextStyles.bodyPrimary.copyWith(color: DsColors.textOnRitualPrimary),
+                  ),
+                ),
+                Text(
+                  t.unit == null || t.unit!.isEmpty ? l.recordSeriesAction : '${t.unit} · ${l.recordSeriesAction}',
+                  style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
+                ),
+              ],
+            ),
+          ),
+        ),
+    ];
   }
 }

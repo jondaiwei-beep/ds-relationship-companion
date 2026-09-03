@@ -6216,6 +6216,102 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Preferences'**
   String get rulesExplorePrefs;
+
+  /// No description provided for @sTodayMeasureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get sTodayMeasureLabel;
+
+  /// No description provided for @sTodayMeasureLabelUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Value ({unit})'**
+  String sTodayMeasureLabelUnit(String unit);
+
+  /// No description provided for @recordSeriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Curve'**
+  String get recordSeriesTitle;
+
+  /// No description provided for @recordSeriesAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Curve'**
+  String get recordSeriesAction;
+
+  /// No description provided for @recordSeriesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Curves'**
+  String get recordSeriesSection;
+
+  /// No description provided for @recordSeriesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No numbers in the last {days} days.'**
+  String recordSeriesEmpty(int days);
+
+  /// No description provided for @recordSeriesRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} – {to}'**
+  String recordSeriesRange(String from, String to);
+
+  /// No description provided for @recordSeriesLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low {value}'**
+  String recordSeriesLow(String value);
+
+  /// No description provided for @recordSeriesHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High {value}'**
+  String recordSeriesHigh(String value);
+
+  /// No description provided for @recordSeriesLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} · {value}'**
+  String recordSeriesLatest(String day, String value);
+
+  /// No description provided for @recordSeriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days recorded'**
+  String recordSeriesCount(int count);
+
+  /// No description provided for @recordExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export record'**
+  String get recordExport;
+
+  /// No description provided for @recordExportLastDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Last {days} days'**
+  String recordExportLastDays(int days);
+
+  /// No description provided for @recordExportCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick dates…'**
+  String get recordExportCustom;
+
+  /// No description provided for @recordExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported {filename}'**
+  String recordExported(String filename);
+
+  /// No description provided for @recordExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The export did not go through. Try again.'**
+  String get recordExportFailed;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

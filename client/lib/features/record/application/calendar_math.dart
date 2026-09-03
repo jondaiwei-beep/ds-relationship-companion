@@ -57,3 +57,9 @@ class YearMonth {
 }
 
 int compareIsoDays(String a, String b) => a.compareTo(b);
+
+/// [isoDay] shifted by [days] (negative goes back), still `yyyy-MM-dd`.
+String shiftIsoDay(String isoDay, int days) {
+  final d = RelationshipDay.parseIsoDay(isoDay);
+  return RelationshipDay.isoDay(DateTime.utc(d.year, d.month, d.day + days));
+}

@@ -34,9 +34,13 @@ OccurrenceView occ({
   ConsequenceView? consequence,
   String? makeUpDay,
   DateTime? seenAt,
+  double? value,
+  String? unit,
 }) =>
     OccurrenceView(
       id: id,
+      value: value,
+      unit: unit,
       taskId: 't-$id',
       title: title,
       kind: kind,

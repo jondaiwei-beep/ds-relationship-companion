@@ -3,6 +3,24 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'today_view.freezed.dart';
 part 'today_view.g.dart';
 
+/// A server `BigDecimal`: Jackson writes a number, but a string is accepted too.
+double? decimalFromJson(Object? raw) => switch (raw) {
+      null => null,
+      num n => n.toDouble(),
+      String s => double.tryParse(s),
+      _ => null,
+    };
+
+/// A number as the s typed it: no trailing `.0`, at most two decimals.
+String formatMeasure(double value) {
+  if (value == value.roundToDouble()) return value.toInt().toString();
+  var text = value.toStringAsFixed(2);
+  while (text.endsWith('0')) {
+    text = text.substring(0, text.length - 1);
+  }
+  return text;
+}
+
 /// The s axis (product/03-domain.md). Written by the s, or by the day-end
 /// sweep (`missed`, `paused`). Nothing here is a judgement.
 enum Outcome {
@@ -103,6 +121,9 @@ abstract class OccurrenceView with _$OccurrenceView {
     String? proofKind,
     String? proofRef,
     DateTime? proposedTime,
+    /// `kind=measure` only: the number the s reported, in [unit].
+    @JsonKey(fromJson: decimalFromJson) double? value,
+    String? unit,
     @Default(Disposition.none) Disposition disposition,
     DateTime? dispositionAt,
     String? dispositionNote,
@@ -118,6 +139,7 @@ abstract class OccurrenceView with _$OccurrenceView {
 
   bool get isCheckin => kind == 'checkin';
   bool get isRecurring => kind == 'recurring';
+  bool get isMeasure => kind == 'measure';
   bool get isPaused => outcome == Outcome.paused;
 }
 

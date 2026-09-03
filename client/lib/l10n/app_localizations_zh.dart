@@ -3437,4 +3437,70 @@ class LZh extends L {
 
   @override
   String get rulesExplorePrefs => '偏好';
+
+  @override
+  String get sTodayMeasureLabel => '数值';
+
+  @override
+  String sTodayMeasureLabelUnit(String unit) {
+    return '数值（$unit）';
+  }
+
+  @override
+  String get recordSeriesTitle => '曲线';
+
+  @override
+  String get recordSeriesAction => '曲线';
+
+  @override
+  String get recordSeriesSection => '曲线';
+
+  @override
+  String recordSeriesEmpty(int days) {
+    return '最近 $days 天还没有数字。';
+  }
+
+  @override
+  String recordSeriesRange(String from, String to) {
+    return '$from – $to';
+  }
+
+  @override
+  String recordSeriesLow(String value) {
+    return '最低 $value';
+  }
+
+  @override
+  String recordSeriesHigh(String value) {
+    return '最高 $value';
+  }
+
+  @override
+  String recordSeriesLatest(String day, String value) {
+    return '$day · $value';
+  }
+
+  @override
+  String recordSeriesCount(int count) {
+    return '记了 $count 天';
+  }
+
+  @override
+  String get recordExport => '导出记录';
+
+  @override
+  String recordExportLastDays(int days) {
+    return '最近 $days 天';
+  }
+
+  @override
+  String get recordExportCustom => '自选日期…';
+
+  @override
+  String recordExported(String filename) {
+    return '已导出 $filename';
+  }
+
+  @override
+  String get recordExportFailed => '没导出成，再试一次。';
 }

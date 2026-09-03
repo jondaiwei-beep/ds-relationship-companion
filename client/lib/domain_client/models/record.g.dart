@@ -38,6 +38,8 @@ _OutcomeEntry _$OutcomeEntryFromJson(Map<String, dynamic> json) =>
       note: json['note'] as String?,
       proofKind: json['proofKind'] as String?,
       proofRef: json['proofRef'] as String?,
+      value: decimalFromJson(json['value']),
+      unit: json['unit'] as String?,
     );
 
 Map<String, dynamic> _$OutcomeEntryToJson(_OutcomeEntry instance) =>
@@ -49,6 +51,8 @@ Map<String, dynamic> _$OutcomeEntryToJson(_OutcomeEntry instance) =>
       'note': instance.note,
       'proofKind': instance.proofKind,
       'proofRef': instance.proofRef,
+      'value': instance.value,
+      'unit': instance.unit,
     };
 
 _DispositionEntry _$DispositionEntryFromJson(Map<String, dynamic> json) =>
@@ -240,4 +244,29 @@ Map<String, dynamic> _$DayCommentToJson(_DayComment instance) =>
       'authorId': instance.authorId,
       'body': instance.body,
       'createdAt': instance.createdAt.toIso8601String(),
+    };
+
+_SeriesPoint _$SeriesPointFromJson(Map<String, dynamic> json) => _SeriesPoint(
+  day: json['day'] as String,
+  value: decimalFromJson(json['value']),
+);
+
+Map<String, dynamic> _$SeriesPointToJson(_SeriesPoint instance) =>
+    <String, dynamic>{'day': instance.day, 'value': instance.value};
+
+_SeriesView _$SeriesViewFromJson(Map<String, dynamic> json) => _SeriesView(
+  taskId: json['taskId'] as String,
+  unit: json['unit'] as String?,
+  points:
+      (json['points'] as List<dynamic>?)
+          ?.map((e) => SeriesPoint.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$SeriesViewToJson(_SeriesView instance) =>
+    <String, dynamic>{
+      'taskId': instance.taskId,
+      'unit': instance.unit,
+      'points': instance.points,
     };

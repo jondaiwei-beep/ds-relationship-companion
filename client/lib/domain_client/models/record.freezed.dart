@@ -302,7 +302,8 @@ as bool,
 mixin _$OutcomeEntry {
 
  String get occurrenceId; String get taskId; String get taskTitle;/// The wire spelling (`delivered`, `missed`, …).
- String get toValue; String? get note; String? get proofKind; String? get proofRef;
+ String get toValue; String? get note; String? get proofKind; String? get proofRef;/// `kind=measure` only: the number delivered, in [unit].
+@JsonKey(fromJson: decimalFromJson) double? get value; String? get unit;
 /// Create a copy of OutcomeEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,16 +316,16 @@ $OutcomeEntryCopyWith<OutcomeEntry> get copyWith => _$OutcomeEntryCopyWithImpl<O
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutcomeEntry&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.taskTitle, taskTitle) || other.taskTitle == taskTitle)&&(identical(other.toValue, toValue) || other.toValue == toValue)&&(identical(other.note, note) || other.note == note)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is OutcomeEntry&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.taskTitle, taskTitle) || other.taskTitle == taskTitle)&&(identical(other.toValue, toValue) || other.toValue == toValue)&&(identical(other.note, note) || other.note == note)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,taskId,taskTitle,toValue,note,proofKind,proofRef);
+int get hashCode => Object.hash(runtimeType,occurrenceId,taskId,taskTitle,toValue,note,proofKind,proofRef,value,unit);
 
 @override
 String toString() {
-  return 'OutcomeEntry(occurrenceId: $occurrenceId, taskId: $taskId, taskTitle: $taskTitle, toValue: $toValue, note: $note, proofKind: $proofKind, proofRef: $proofRef)';
+  return 'OutcomeEntry(occurrenceId: $occurrenceId, taskId: $taskId, taskTitle: $taskTitle, toValue: $toValue, note: $note, proofKind: $proofKind, proofRef: $proofRef, value: $value, unit: $unit)';
 }
 
 
@@ -335,7 +336,7 @@ abstract mixin class $OutcomeEntryCopyWith<$Res>  {
   factory $OutcomeEntryCopyWith(OutcomeEntry value, $Res Function(OutcomeEntry) _then) = _$OutcomeEntryCopyWithImpl;
 @useResult
 $Res call({
- String occurrenceId, String taskId, String taskTitle, String toValue, String? note, String? proofKind, String? proofRef
+ String occurrenceId, String taskId, String taskTitle, String toValue, String? note, String? proofKind, String? proofRef,@JsonKey(fromJson: decimalFromJson) double? value, String? unit
 });
 
 
@@ -352,7 +353,7 @@ class _$OutcomeEntryCopyWithImpl<$Res>
 
 /// Create a copy of OutcomeEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? taskId = null,Object? taskTitle = null,Object? toValue = null,Object? note = freezed,Object? proofKind = freezed,Object? proofRef = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? occurrenceId = null,Object? taskId = null,Object? taskTitle = null,Object? toValue = null,Object? note = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? value = freezed,Object? unit = freezed,}) {
   return _then(_self.copyWith(
 occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
 as String,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
@@ -361,6 +362,8 @@ as String,toValue: null == toValue ? _self.toValue : toValue // ignore: cast_nul
 as String,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,proofKind: freezed == proofKind ? _self.proofKind : proofKind // ignore: cast_nullable_to_non_nullable
 as String?,proofRef: freezed == proofRef ? _self.proofRef : proofRef // ignore: cast_nullable_to_non_nullable
+as String?,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double?,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -446,10 +449,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String taskId,  String taskTitle,  String toValue,  String? note,  String? proofKind,  String? proofRef)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String occurrenceId,  String taskId,  String taskTitle,  String toValue,  String? note,  String? proofKind,  String? proofRef, @JsonKey(fromJson: decimalFromJson)  double? value,  String? unit)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _OutcomeEntry() when $default != null:
-return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_that.note,_that.proofKind,_that.proofRef);case _:
+return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_that.note,_that.proofKind,_that.proofRef,_that.value,_that.unit);case _:
   return orElse();
 
 }
@@ -467,10 +470,10 @@ return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String taskId,  String taskTitle,  String toValue,  String? note,  String? proofKind,  String? proofRef)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String occurrenceId,  String taskId,  String taskTitle,  String toValue,  String? note,  String? proofKind,  String? proofRef, @JsonKey(fromJson: decimalFromJson)  double? value,  String? unit)  $default,) {final _that = this;
 switch (_that) {
 case _OutcomeEntry():
-return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_that.note,_that.proofKind,_that.proofRef);case _:
+return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_that.note,_that.proofKind,_that.proofRef,_that.value,_that.unit);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -487,10 +490,10 @@ return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String taskId,  String taskTitle,  String toValue,  String? note,  String? proofKind,  String? proofRef)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String occurrenceId,  String taskId,  String taskTitle,  String toValue,  String? note,  String? proofKind,  String? proofRef, @JsonKey(fromJson: decimalFromJson)  double? value,  String? unit)?  $default,) {final _that = this;
 switch (_that) {
 case _OutcomeEntry() when $default != null:
-return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_that.note,_that.proofKind,_that.proofRef);case _:
+return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_that.note,_that.proofKind,_that.proofRef,_that.value,_that.unit);case _:
   return null;
 
 }
@@ -502,7 +505,7 @@ return $default(_that.occurrenceId,_that.taskId,_that.taskTitle,_that.toValue,_t
 @JsonSerializable()
 
 class _OutcomeEntry extends OutcomeEntry {
-  const _OutcomeEntry({required this.occurrenceId, required this.taskId, required this.taskTitle, required this.toValue, this.note, this.proofKind, this.proofRef}): super._();
+  const _OutcomeEntry({required this.occurrenceId, required this.taskId, required this.taskTitle, required this.toValue, this.note, this.proofKind, this.proofRef, @JsonKey(fromJson: decimalFromJson) this.value, this.unit}): super._();
   factory _OutcomeEntry.fromJson(Map<String, dynamic> json) => _$OutcomeEntryFromJson(json);
 
 @override final  String occurrenceId;
@@ -513,6 +516,9 @@ class _OutcomeEntry extends OutcomeEntry {
 @override final  String? note;
 @override final  String? proofKind;
 @override final  String? proofRef;
+/// `kind=measure` only: the number delivered, in [unit].
+@override@JsonKey(fromJson: decimalFromJson) final  double? value;
+@override final  String? unit;
 
 /// Create a copy of OutcomeEntry
 /// with the given fields replaced by the non-null parameter values.
@@ -527,16 +533,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OutcomeEntry&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.taskTitle, taskTitle) || other.taskTitle == taskTitle)&&(identical(other.toValue, toValue) || other.toValue == toValue)&&(identical(other.note, note) || other.note == note)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _OutcomeEntry&&(identical(other.occurrenceId, occurrenceId) || other.occurrenceId == occurrenceId)&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.taskTitle, taskTitle) || other.taskTitle == taskTitle)&&(identical(other.toValue, toValue) || other.toValue == toValue)&&(identical(other.note, note) || other.note == note)&&(identical(other.proofKind, proofKind) || other.proofKind == proofKind)&&(identical(other.proofRef, proofRef) || other.proofRef == proofRef)&&(identical(other.value, value) || other.value == value)&&(identical(other.unit, unit) || other.unit == unit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,occurrenceId,taskId,taskTitle,toValue,note,proofKind,proofRef);
+int get hashCode => Object.hash(runtimeType,occurrenceId,taskId,taskTitle,toValue,note,proofKind,proofRef,value,unit);
 
 @override
 String toString() {
-  return 'OutcomeEntry(occurrenceId: $occurrenceId, taskId: $taskId, taskTitle: $taskTitle, toValue: $toValue, note: $note, proofKind: $proofKind, proofRef: $proofRef)';
+  return 'OutcomeEntry(occurrenceId: $occurrenceId, taskId: $taskId, taskTitle: $taskTitle, toValue: $toValue, note: $note, proofKind: $proofKind, proofRef: $proofRef, value: $value, unit: $unit)';
 }
 
 
@@ -547,7 +553,7 @@ abstract mixin class _$OutcomeEntryCopyWith<$Res> implements $OutcomeEntryCopyWi
   factory _$OutcomeEntryCopyWith(_OutcomeEntry value, $Res Function(_OutcomeEntry) _then) = __$OutcomeEntryCopyWithImpl;
 @override @useResult
 $Res call({
- String occurrenceId, String taskId, String taskTitle, String toValue, String? note, String? proofKind, String? proofRef
+ String occurrenceId, String taskId, String taskTitle, String toValue, String? note, String? proofKind, String? proofRef,@JsonKey(fromJson: decimalFromJson) double? value, String? unit
 });
 
 
@@ -564,7 +570,7 @@ class __$OutcomeEntryCopyWithImpl<$Res>
 
 /// Create a copy of OutcomeEntry
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? taskId = null,Object? taskTitle = null,Object? toValue = null,Object? note = freezed,Object? proofKind = freezed,Object? proofRef = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? occurrenceId = null,Object? taskId = null,Object? taskTitle = null,Object? toValue = null,Object? note = freezed,Object? proofKind = freezed,Object? proofRef = freezed,Object? value = freezed,Object? unit = freezed,}) {
   return _then(_OutcomeEntry(
 occurrenceId: null == occurrenceId ? _self.occurrenceId : occurrenceId // ignore: cast_nullable_to_non_nullable
 as String,taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
@@ -573,6 +579,8 @@ as String,toValue: null == toValue ? _self.toValue : toValue // ignore: cast_nul
 as String,note: freezed == note ? _self.note : note // ignore: cast_nullable_to_non_nullable
 as String?,proofKind: freezed == proofKind ? _self.proofKind : proofKind // ignore: cast_nullable_to_non_nullable
 as String?,proofRef: freezed == proofRef ? _self.proofRef : proofRef // ignore: cast_nullable_to_non_nullable
+as String?,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double?,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -3215,6 +3223,549 @@ as String,authorId: null == authorId ? _self.authorId : authorId // ignore: cast
 as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SeriesPoint {
+
+/// `yyyy-MM-dd`.
+ String get day;@JsonKey(fromJson: decimalFromJson) double? get value;
+/// Create a copy of SeriesPoint
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SeriesPointCopyWith<SeriesPoint> get copyWith => _$SeriesPointCopyWithImpl<SeriesPoint>(this as SeriesPoint, _$identity);
+
+  /// Serializes this SeriesPoint to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeriesPoint&&(identical(other.day, day) || other.day == day)&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,day,value);
+
+@override
+String toString() {
+  return 'SeriesPoint(day: $day, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SeriesPointCopyWith<$Res>  {
+  factory $SeriesPointCopyWith(SeriesPoint value, $Res Function(SeriesPoint) _then) = _$SeriesPointCopyWithImpl;
+@useResult
+$Res call({
+ String day,@JsonKey(fromJson: decimalFromJson) double? value
+});
+
+
+
+
+}
+/// @nodoc
+class _$SeriesPointCopyWithImpl<$Res>
+    implements $SeriesPointCopyWith<$Res> {
+  _$SeriesPointCopyWithImpl(this._self, this._then);
+
+  final SeriesPoint _self;
+  final $Res Function(SeriesPoint) _then;
+
+/// Create a copy of SeriesPoint
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? day = null,Object? value = freezed,}) {
+  return _then(_self.copyWith(
+day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
+as String,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SeriesPoint].
+extension SeriesPointPatterns on SeriesPoint {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SeriesPoint value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SeriesPoint() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SeriesPoint value)  $default,){
+final _that = this;
+switch (_that) {
+case _SeriesPoint():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SeriesPoint value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SeriesPoint() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String day, @JsonKey(fromJson: decimalFromJson)  double? value)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SeriesPoint() when $default != null:
+return $default(_that.day,_that.value);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String day, @JsonKey(fromJson: decimalFromJson)  double? value)  $default,) {final _that = this;
+switch (_that) {
+case _SeriesPoint():
+return $default(_that.day,_that.value);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String day, @JsonKey(fromJson: decimalFromJson)  double? value)?  $default,) {final _that = this;
+switch (_that) {
+case _SeriesPoint() when $default != null:
+return $default(_that.day,_that.value);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SeriesPoint implements SeriesPoint {
+  const _SeriesPoint({required this.day, @JsonKey(fromJson: decimalFromJson) this.value});
+  factory _SeriesPoint.fromJson(Map<String, dynamic> json) => _$SeriesPointFromJson(json);
+
+/// `yyyy-MM-dd`.
+@override final  String day;
+@override@JsonKey(fromJson: decimalFromJson) final  double? value;
+
+/// Create a copy of SeriesPoint
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SeriesPointCopyWith<_SeriesPoint> get copyWith => __$SeriesPointCopyWithImpl<_SeriesPoint>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SeriesPointToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeriesPoint&&(identical(other.day, day) || other.day == day)&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,day,value);
+
+@override
+String toString() {
+  return 'SeriesPoint(day: $day, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SeriesPointCopyWith<$Res> implements $SeriesPointCopyWith<$Res> {
+  factory _$SeriesPointCopyWith(_SeriesPoint value, $Res Function(_SeriesPoint) _then) = __$SeriesPointCopyWithImpl;
+@override @useResult
+$Res call({
+ String day,@JsonKey(fromJson: decimalFromJson) double? value
+});
+
+
+
+
+}
+/// @nodoc
+class __$SeriesPointCopyWithImpl<$Res>
+    implements _$SeriesPointCopyWith<$Res> {
+  __$SeriesPointCopyWithImpl(this._self, this._then);
+
+  final _SeriesPoint _self;
+  final $Res Function(_SeriesPoint) _then;
+
+/// Create a copy of SeriesPoint
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? day = null,Object? value = freezed,}) {
+  return _then(_SeriesPoint(
+day: null == day ? _self.day : day // ignore: cast_nullable_to_non_nullable
+as String,value: freezed == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as double?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SeriesView {
+
+ String get taskId; String? get unit; List<SeriesPoint> get points;
+/// Create a copy of SeriesView
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SeriesViewCopyWith<SeriesView> get copyWith => _$SeriesViewCopyWithImpl<SeriesView>(this as SeriesView, _$identity);
+
+  /// Serializes this SeriesView to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SeriesView&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.unit, unit) || other.unit == unit)&&const DeepCollectionEquality().equals(other.points, points));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,taskId,unit,const DeepCollectionEquality().hash(points));
+
+@override
+String toString() {
+  return 'SeriesView(taskId: $taskId, unit: $unit, points: $points)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SeriesViewCopyWith<$Res>  {
+  factory $SeriesViewCopyWith(SeriesView value, $Res Function(SeriesView) _then) = _$SeriesViewCopyWithImpl;
+@useResult
+$Res call({
+ String taskId, String? unit, List<SeriesPoint> points
+});
+
+
+
+
+}
+/// @nodoc
+class _$SeriesViewCopyWithImpl<$Res>
+    implements $SeriesViewCopyWith<$Res> {
+  _$SeriesViewCopyWithImpl(this._self, this._then);
+
+  final SeriesView _self;
+  final $Res Function(SeriesView) _then;
+
+/// Create a copy of SeriesView
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? taskId = null,Object? unit = freezed,Object? points = null,}) {
+  return _then(_self.copyWith(
+taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
+as String,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
+as String?,points: null == points ? _self.points : points // ignore: cast_nullable_to_non_nullable
+as List<SeriesPoint>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SeriesView].
+extension SeriesViewPatterns on SeriesView {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SeriesView value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SeriesView() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SeriesView value)  $default,){
+final _that = this;
+switch (_that) {
+case _SeriesView():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SeriesView value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SeriesView() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String taskId,  String? unit,  List<SeriesPoint> points)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SeriesView() when $default != null:
+return $default(_that.taskId,_that.unit,_that.points);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String taskId,  String? unit,  List<SeriesPoint> points)  $default,) {final _that = this;
+switch (_that) {
+case _SeriesView():
+return $default(_that.taskId,_that.unit,_that.points);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String taskId,  String? unit,  List<SeriesPoint> points)?  $default,) {final _that = this;
+switch (_that) {
+case _SeriesView() when $default != null:
+return $default(_that.taskId,_that.unit,_that.points);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SeriesView implements SeriesView {
+  const _SeriesView({required this.taskId, this.unit, final  List<SeriesPoint> points = const []}): _points = points;
+  factory _SeriesView.fromJson(Map<String, dynamic> json) => _$SeriesViewFromJson(json);
+
+@override final  String taskId;
+@override final  String? unit;
+ final  List<SeriesPoint> _points;
+@override@JsonKey() List<SeriesPoint> get points {
+  if (_points is EqualUnmodifiableListView) return _points;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_points);
+}
+
+
+/// Create a copy of SeriesView
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SeriesViewCopyWith<_SeriesView> get copyWith => __$SeriesViewCopyWithImpl<_SeriesView>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SeriesViewToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SeriesView&&(identical(other.taskId, taskId) || other.taskId == taskId)&&(identical(other.unit, unit) || other.unit == unit)&&const DeepCollectionEquality().equals(other._points, _points));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,taskId,unit,const DeepCollectionEquality().hash(_points));
+
+@override
+String toString() {
+  return 'SeriesView(taskId: $taskId, unit: $unit, points: $points)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SeriesViewCopyWith<$Res> implements $SeriesViewCopyWith<$Res> {
+  factory _$SeriesViewCopyWith(_SeriesView value, $Res Function(_SeriesView) _then) = __$SeriesViewCopyWithImpl;
+@override @useResult
+$Res call({
+ String taskId, String? unit, List<SeriesPoint> points
+});
+
+
+
+
+}
+/// @nodoc
+class __$SeriesViewCopyWithImpl<$Res>
+    implements _$SeriesViewCopyWith<$Res> {
+  __$SeriesViewCopyWithImpl(this._self, this._then);
+
+  final _SeriesView _self;
+  final $Res Function(_SeriesView) _then;
+
+/// Create a copy of SeriesView
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? taskId = null,Object? unit = freezed,Object? points = null,}) {
+  return _then(_SeriesView(
+taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
+as String,unit: freezed == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
+as String?,points: null == points ? _self._points : points // ignore: cast_nullable_to_non_nullable
+as List<SeriesPoint>,
   ));
 }
 

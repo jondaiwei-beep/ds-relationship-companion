@@ -49,6 +49,8 @@ _OccurrenceView _$OccurrenceViewFromJson(
   proposedTime: json['proposedTime'] == null
       ? null
       : DateTime.parse(json['proposedTime'] as String),
+  value: decimalFromJson(json['value']),
+  unit: json['unit'] as String?,
   disposition:
       $enumDecodeNullable(_$DispositionEnumMap, json['disposition']) ??
       Disposition.none,
@@ -86,6 +88,8 @@ Map<String, dynamic> _$OccurrenceViewToJson(_OccurrenceView instance) =>
       'proofKind': instance.proofKind,
       'proofRef': instance.proofRef,
       'proposedTime': instance.proposedTime?.toIso8601String(),
+      'value': instance.value,
+      'unit': instance.unit,
       'disposition': _$DispositionEnumMap[instance.disposition]!,
       'dispositionAt': instance.dispositionAt?.toIso8601String(),
       'dispositionNote': instance.dispositionNote,
