@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
+import '../../support/explore_fakes.dart';
 import '../../support/today_fakes.dart';
 
 Future<void> _pump(
@@ -17,6 +18,7 @@ Future<void> _pump(
   required FakeTodayRepository today,
   FakeTaskRepository? tasks,
   FakeDNoteRepository? notes,
+  FakeExploreRepository? explore,
 }) async {
   tester.view.physicalSize = const Size(390, 1400);
   tester.view.devicePixelRatio = 1.0;
@@ -28,6 +30,7 @@ Future<void> _pump(
         taskRepositoryProvider.overrideWithValue(tasks ?? FakeTaskRepository()),
         dNoteRepositoryProvider.overrideWithValue(notes ?? FakeDNoteRepository()),
         agreementsProvider.overrideWith((ref, id) async => const []),
+        if (explore != null) exploreRepositoryProvider.overrideWithValue(explore),
       ],
       child: MaterialApp(
         theme: DsTheme.ritual(),
@@ -180,6 +183,24 @@ void main() {
       await tester.tap(find.text('删掉').first);
       await tester.pumpAndSettle();
       expect(notes.deleted, ['n-2']);
+    });
+
+    testWidgets('「今晚要什么？」 draws a card and its verbs act', (tester) async {
+      final explore = FakeExploreRepository();
+      await _pump(tester, today: FakeTodayRepository(view: dView()), explore: explore);
+
+      expect(find.text('今晚要什么？'), findsOneWidget);
+      await tester.tap(find.text('今晚要什么？'));
+      await tester.pumpAndSettle();
+
+      expect(explore.draws, 1);
+      expect(find.text('今晚的三句话'), findsOneWidget);
+      expect(find.text('再抽一张'), findsOneWidget);
+
+      await tester.tap(find.text('加到今天'));
+      await tester.pumpAndSettle();
+      expect(explore.acts, [('c-1', 'add_today')]);
+      expect(find.text('记上了。'), findsOneWidget);
     });
   });
 }

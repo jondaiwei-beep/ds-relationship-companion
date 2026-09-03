@@ -13,6 +13,7 @@ import '../features/settings/presentation/leave_screen.dart';
 import '../features/points/presentation/points_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/explore/presentation/explore_screen.dart';
+import '../features/explore/presentation/starter_pack_screen.dart';
 import 'home_resolver.dart';
 import 'shell/bottom_navigation.dart';
 import '../features/entrance/presentation/sign_in_screen.dart';
@@ -65,6 +66,7 @@ abstract final class Routes {
   /// one the way `/today` does and goes on to the day.
   static const recordDay = '/record/:day';
   static const dynamicExplore = '/dynamics/:id/explore';
+  static const dynamicExplorePacks = '/dynamics/:id/explore/packs';
 
   /// Where a request waits while the session is still resolving.
   ///
@@ -218,7 +220,8 @@ GoRouter createRouter(Ref ref) {
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
             onPause: () => context.go('/dynamics/$dynamicId/pause'),
-            onExplore: () => context.go('/dynamics/$dynamicId/explore'),
+            onExplore: (section) => context.go('/dynamics/$dynamicId/explore?section=${section.name}'),
+            onStarterPacks: () => context.go('/dynamics/$dynamicId/explore/packs'),
           );
         },
       ),
@@ -264,8 +267,21 @@ GoRouter createRouter(Ref ref) {
           final dynamicId = s.pathParameters['id']!;
           return ExploreScreen(
             dynamicId: dynamicId,
+            initialSection: ExploreSection.parse(s.uri.queryParameters['section']),
             onSignIn: () => context.go(Routes.signIn),
             onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
+            onBack: () => context.go(_navPath(dynamicId, NavSurface.rules)),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.dynamicExplorePacks,
+        builder: (context, s) {
+          final dynamicId = s.pathParameters['id']!;
+          return StarterPackScreen(
+            dynamicId: dynamicId,
+            onBack: () => context.go(_navPath(dynamicId, NavSurface.rules)),
+            onDone: () => context.go(_navPath(dynamicId, NavSurface.rules)),
           );
         },
       ),

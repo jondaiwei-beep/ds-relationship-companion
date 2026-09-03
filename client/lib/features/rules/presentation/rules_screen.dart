@@ -12,6 +12,8 @@ import '../../../domain_client/models/task.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../dynamic/application/dynamic_providers.dart';
+import '../../explore/application/explore_providers.dart';
+import '../../explore/presentation/explore_screen.dart';
 import '../../today/application/today_providers.dart';
 import '../../today/presentation/today_format.dart';
 import '../../today/presentation/today_screen.dart';
@@ -41,6 +43,7 @@ class RulesScreen extends ConsumerStatefulWidget {
     this.onSelectTab,
     this.onPause,
     this.onExplore,
+    this.onStarterPacks,
   });
 
   final String dynamicId;
@@ -49,7 +52,12 @@ class RulesScreen extends ConsumerStatefulWidget {
 
   /// Pausing the whole Dynamic goes through a screen that says what it does.
   final VoidCallback? onPause;
-  final VoidCallback? onExplore;
+
+  /// Opens 探索 on one of its sections.
+  final void Function(ExploreSection section)? onExplore;
+
+  /// Opens the starter packs — the first-day way to fill an empty 规矩.
+  final VoidCallback? onStarterPacks;
 
   @override
   ConsumerState<RulesScreen> createState() => _RulesScreenState();
@@ -68,6 +76,7 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
     ref.invalidate(taskDefinitionsProvider(_id));
     ref.invalidate(rewardsProvider(_id));
     ref.invalidate(agreementsProvider(_id));
+    ref.invalidate(compareProvider(_id));
   }
 
   Future<void> _refresh() async {
@@ -355,7 +364,10 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
     final tasks = ref.watch(taskDefinitionsProvider(_id));
     final rewards = ref.watch(rewardsProvider(_id));
     final agreements = ref.watch(agreementsProvider(_id));
+    final compare = ref.watch(compareProvider(_id));
     final dName = _dName(l, v);
+    final nothingYet = (rules.value?.where((r) => r.isActive).isEmpty ?? false) &&
+        (tasks.value?.where((t) => t.status == 'active').isEmpty ?? false);
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -372,6 +384,15 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
         if (_notice != null) ...[
           const SizedBox(height: DsSpacing.space3),
           Padding(padding: todayInset, child: RecoveryMessage(_notice!)),
+        ],
+
+        // ── 起步包: an empty 规矩 offers a set to change, not a blank page.
+        if (nothingYet && widget.onStarterPacks != null) ...[
+          const SizedBox(height: DsSpacing.space6),
+          Padding(
+            padding: todayInset,
+            child: SecondaryButton(label: l.rulesStartFromPack, onTap: widget.onStarterPacks!, filled: true),
+          ),
         ],
 
         // ── 常设规矩
@@ -471,17 +492,27 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
         },
         if (v.isD) _Door(label: l.rulesAddConsequence, onTap: _addTemplate),
 
-        // ── 底线与安全词 — Phase 4 fills this from the compare.
+        // ── 底线与安全词 — fed by the compare's 「不要」. A title each, no one
+        // attached: the server never says who said no, and neither do we.
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.rulesLimitsTitle),
-        Padding(
-          padding: todayInset,
-          child: Text(
-            l.rulesLimitsLine,
-            style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
-          ),
-        ),
-        if (widget.onExplore != null) _Door(label: l.rulesLimitsGo, onTap: widget.onExplore!),
+        switch (compare) {
+          AsyncData(:final value) when value.notDoing.isNotEmpty => Column(
+              children: [
+                for (final c in value.notDoing)
+                  _Row(key: ValueKey('limit-${c.itemId}'), title: c.title, meta: l.exploreCompareNotDoing),
+              ],
+            ),
+          _ => Padding(
+              padding: todayInset,
+              child: Text(
+                l.rulesLimitsLine,
+                style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
+              ),
+            ),
+        },
+        if (widget.onExplore != null)
+          _Door(label: l.rulesLimitsGo, onTap: () => widget.onExplore!(ExploreSection.compare)),
 
         // ── 探索入口
         const SizedBox(height: DsSpacing.space8),
@@ -492,9 +523,10 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
             spacing: DsSpacing.space2,
             runSpacing: DsSpacing.space2,
             children: [
-              WordButton(label: l.rulesExploreCompare, onTap: widget.onExplore ?? () {}),
-              WordButton(label: l.rulesExploreInspiration, onTap: widget.onExplore ?? () {}),
-              WordButton(label: l.rulesExploreStarter, onTap: widget.onExplore ?? () {}),
+              WordButton(label: l.rulesExplorePrefs, onTap: () => widget.onExplore?.call(ExploreSection.prefs)),
+              WordButton(label: l.rulesExploreCompare, onTap: () => widget.onExplore?.call(ExploreSection.compare)),
+              WordButton(label: l.rulesExploreInspiration, onTap: () => widget.onExplore?.call(ExploreSection.cards)),
+              WordButton(label: l.rulesExploreStarter, onTap: () => widget.onStarterPacks?.call()),
             ],
           ),
         ),

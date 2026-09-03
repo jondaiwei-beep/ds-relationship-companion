@@ -286,57 +286,6 @@ class LZh extends L {
   String get activationZoneEasternAustralia => '澳大利亚东部';
 
   @override
-  String get exploreTitle => '发现';
-
-  @override
-  String get exploreContextIdeas => '一些想法';
-
-  @override
-  String get exploreContextReading => '正在读取';
-
-  @override
-  String get exploreContextConfirming => '正在核对身份';
-
-  @override
-  String get exploreContextNotLoaded => '没加载出来';
-
-  @override
-  String get exploreContextNothingYet => '还没有';
-
-  @override
-  String get exploreSessionLost => '你的私人空间需要重新打开。';
-
-  @override
-  String get exploreSignInAgain => '重新登录';
-
-  @override
-  String get exploreLoadFailed => '这个库没加载出来。你今天要做的事都不靠它。';
-
-  @override
-  String get exploreTryAgain => '再试一次';
-
-  @override
-  String get exploreEmpty => '库里现在还没有东西。今天在等你的事，都在「今天」里。';
-
-  @override
-  String get exploreIntro => '别人觉得值得开口去说的一些事。这里没有一条是在说你们。';
-
-  @override
-  String get exploreAskForThis => '把这件事说给对方';
-
-  @override
-  String get exploreKindExpectation => '可以开口说的事';
-
-  @override
-  String get exploreKindRitual => '可以重复做的事';
-
-  @override
-  String get exploreKindCheckIn => '可以说出口的话';
-
-  @override
-  String get exploreKindOther => '一个想法';
-
-  @override
   String get responseTypeAcknowledge => '我看到了';
 
   @override
@@ -3323,4 +3272,169 @@ class LZh extends L {
 
   @override
   String get ptsActionFailed => '没记上。再试一次。';
+
+  @override
+  String get exploreTitle => '探索';
+
+  @override
+  String get exploreBack => '返回';
+
+  @override
+  String get exploreSectionPrefs => '偏好';
+
+  @override
+  String get exploreSectionCompare => '对照';
+
+  @override
+  String get exploreSectionCards => '灵感卡';
+
+  @override
+  String get exploreCouldNotLoad => '没加载出来。';
+
+  @override
+  String get exploreActionFailed => '没记上。再试一次。';
+
+  @override
+  String get explorePrefsIntro => '答三条就能看交集。只有两人都答过的，才互相看得见。';
+
+  @override
+  String get exploreAnswerWant => '想要';
+
+  @override
+  String get exploreAnswerOk => '可以';
+
+  @override
+  String get exploreAnswerNo => '不要';
+
+  @override
+  String get exploreAnswerTalk => '想聊';
+
+  @override
+  String exploreCompareNoPartner(String name) {
+    return '$name 还没答。你的答案已经存好。';
+  }
+
+  @override
+  String get exploreCompareEmpty => '还没有两人都答过的条目。';
+
+  @override
+  String get exploreCompareBothWant => '都想要';
+
+  @override
+  String get exploreCompareWantAndOk => '一个想要、一个可以';
+
+  @override
+  String get exploreCompareTalks => '有人想聊';
+
+  @override
+  String get exploreCompareNotDoing => '这条不做';
+
+  @override
+  String get exploreCompareNotDoingLine => '两人里有人标了「不要」。是谁，不显示。';
+
+  @override
+  String get exploreCompareAddRule => '加到规矩';
+
+  @override
+  String exploreCompareProposeRule(String name) {
+    return '提议给 $name';
+  }
+
+  @override
+  String get exploreCardsEmpty => '现在没有合适的卡。';
+
+  @override
+  String exploreCardIntensity(int n) {
+    return '强度 $n';
+  }
+
+  @override
+  String exploreCardNeeds(String needs) {
+    return '需要：$needs';
+  }
+
+  @override
+  String get exploreCardSaved => '存了';
+
+  @override
+  String get exploreCardTriedAgain => '试过了·再来';
+
+  @override
+  String get exploreCardTriedNever => '试过了·不再';
+
+  @override
+  String get exploreActAddToday => '加到今天';
+
+  @override
+  String get exploreActAddRule => '加到规矩';
+
+  @override
+  String get exploreActSave => '存起来';
+
+  @override
+  String exploreActPropose(String name) {
+    return '提议给 $name';
+  }
+
+  @override
+  String get exploreActTriedAgain => '试过了·再来';
+
+  @override
+  String get exploreActTriedNever => '不再';
+
+  @override
+  String get exploreActDone => '记上了。';
+
+  @override
+  String get exploreDrawTonight => '今晚要什么？';
+
+  @override
+  String get exploreDrawAgain => '再抽一张';
+
+  @override
+  String get exploreDrawFailed => '没抽到。再试一次。';
+
+  @override
+  String get explorePacksTitle => '起步包';
+
+  @override
+  String get explorePacksIntro => '选一套，再逐条改成你们的样子。你说启用之前，什么都不会建。';
+
+  @override
+  String get explorePackTasks => '任务';
+
+  @override
+  String get explorePackRules => '规矩';
+
+  @override
+  String get explorePackRewards => '奖励';
+
+  @override
+  String get explorePackApply => '启用这一套';
+
+  @override
+  String get explorePackApplied => '建好了，都在「规矩」里。';
+
+  @override
+  String get explorePackEdit => '改这一条';
+
+  @override
+  String get explorePackLineLabel => '内容';
+
+  @override
+  String get explorePackKeep => '好';
+
+  @override
+  String explorePackCount(int tasks, int rules, int rewards) {
+    return '$tasks 条任务 · $rules 条规矩 · $rewards 条奖励';
+  }
+
+  @override
+  String get explorePackEmptyDraft => '没有要建的了。';
+
+  @override
+  String get rulesStartFromPack => '从一套开始';
+
+  @override
+  String get rulesExplorePrefs => '偏好';
 }

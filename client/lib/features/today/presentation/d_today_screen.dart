@@ -11,6 +11,11 @@ import '../../../domain_client/models/task.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../../../domain_client/repositories/today_repository.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../domain_client/models/explore.dart';
+import '../../explore/application/explore_providers.dart';
+import '../../explore/presentation/widgets/idea_card_sheet.dart';
+import '../../rules/application/rules_providers.dart';
+import 'widgets/word_button.dart';
 import '../application/today_providers.dart';
 import 'today_format.dart';
 import 'widgets/choice_sheet.dart';
@@ -53,6 +58,11 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
   /// Receipts already sent this session, so opening twice posts once.
   final _seenSent = <String>{};
   String? _expanded;
+
+  /// 「今晚要什么？」 in flight. Drawing tells the s nothing; only turning the
+  /// card into a task does, through the ordinary task path.
+  bool _drawing = false;
+  String? _drawNotice;
 
   TodayRepository get _repo => ref.read(todayRepositoryProvider);
   String get _partner =>
@@ -287,6 +297,45 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
     }
   }
 
+  Future<void> _drawTonight() async {
+    if (_drawing) return;
+    final l = L.of(context);
+    setState(() {
+      _drawing = true;
+      _drawNotice = null;
+    });
+    final repo = ref.read(exploreRepositoryProvider);
+    try {
+      var again = true;
+      while (again && mounted) {
+        final card = await repo.draw(widget.dynamicId, idempotencyKey: ApiClient.newIdempotencyKey());
+        if (!mounted) return;
+        final action = await showIdeaCardSheet(
+          context,
+          card: card,
+          isD: true,
+          dName: l.rulesYou,
+          canDrawAgain: true,
+        );
+        again = action == drawAgainSentinel;
+        if (action == null || again) continue;
+        await repo.act(widget.dynamicId, card.id, action, idempotencyKey: ApiClient.newIdempotencyKey());
+        ref.invalidate(ideaCardsProvider(widget.dynamicId));
+        if (action == IdeaCardAction.addToday) {
+          ref.invalidate(todayProvider(widget.dynamicId));
+          ref.invalidate(taskDefinitionsProvider(widget.dynamicId));
+        }
+        if (action == IdeaCardAction.addRule) ref.invalidate(rulesProvider(widget.dynamicId));
+        if (action == IdeaCardAction.save) ref.invalidate(dNotesProvider(widget.dynamicId));
+        if (mounted) setState(() => _drawNotice = l.exploreActDone);
+      }
+    } on Object {
+      if (mounted) setState(() => _drawNotice = l.exploreDrawFailed);
+    } finally {
+      if (mounted) setState(() => _drawing = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
@@ -304,6 +353,24 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
         ),
         const SizedBox(height: DsSpacing.space4),
         TodayMeta(view: view),
+        const SizedBox(height: DsSpacing.space4),
+        Padding(
+          padding: todayInset,
+          child: Row(
+            children: [
+              WordButton(label: l.exploreDrawTonight, onTap: _drawTonight),
+              if (_drawNotice != null) ...[
+                const SizedBox(width: DsSpacing.space3),
+                Expanded(
+                  child: Text(
+                    _drawNotice!,
+                    style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.dTodaySectionNeedsMe),
         needsMe.when(

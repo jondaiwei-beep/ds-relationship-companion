@@ -307,60 +307,6 @@ class LEn extends L {
   String get activationZoneEasternAustralia => 'Eastern Australia';
 
   @override
-  String get exploreTitle => 'Explore';
-
-  @override
-  String get exploreContextIdeas => 'Ideas';
-
-  @override
-  String get exploreContextReading => 'Reading';
-
-  @override
-  String get exploreContextConfirming => 'Confirming context';
-
-  @override
-  String get exploreContextNotLoaded => 'Not loaded';
-
-  @override
-  String get exploreContextNothingYet => 'Nothing yet';
-
-  @override
-  String get exploreSessionLost => 'Your private session needs to be restored.';
-
-  @override
-  String get exploreSignInAgain => 'Sign in again';
-
-  @override
-  String get exploreLoadFailed =>
-      'The library could not be loaded. Nothing in your day depends on it.';
-
-  @override
-  String get exploreTryAgain => 'Try again';
-
-  @override
-  String get exploreEmpty =>
-      'There is nothing in the library yet. Today holds everything that is waiting for you.';
-
-  @override
-  String get exploreIntro =>
-      'Things other people have found worth asking for. Nothing here is a suggestion about you.';
-
-  @override
-  String get exploreAskForThis => 'Ask for this';
-
-  @override
-  String get exploreKindExpectation => 'SOMETHING TO ASK FOR';
-
-  @override
-  String get exploreKindRitual => 'SOMETHING TO REPEAT';
-
-  @override
-  String get exploreKindCheckIn => 'SOMETHING TO SAY';
-
-  @override
-  String get exploreKindOther => 'AN IDEA';
-
-  @override
   String get responseTypeAcknowledge => 'Acknowledge';
 
   @override
@@ -3472,4 +3418,172 @@ class LEn extends L {
 
   @override
   String get ptsActionFailed => 'Not saved. Try again.';
+
+  @override
+  String get exploreTitle => 'Explore';
+
+  @override
+  String get exploreBack => 'Back';
+
+  @override
+  String get exploreSectionPrefs => 'Preferences';
+
+  @override
+  String get exploreSectionCompare => 'Compare';
+
+  @override
+  String get exploreSectionCards => 'Idea cards';
+
+  @override
+  String get exploreCouldNotLoad => 'Could not load.';
+
+  @override
+  String get exploreActionFailed => 'That did not land. Try again.';
+
+  @override
+  String get explorePrefsIntro =>
+      'Answer any three and you can already see where you meet. Only what you both answered is shown to either of you.';
+
+  @override
+  String get exploreAnswerWant => 'Want';
+
+  @override
+  String get exploreAnswerOk => 'OK';
+
+  @override
+  String get exploreAnswerNo => 'No';
+
+  @override
+  String get exploreAnswerTalk => 'Talk';
+
+  @override
+  String exploreCompareNoPartner(String name) {
+    return '$name has not answered yet. Yours are saved.';
+  }
+
+  @override
+  String get exploreCompareEmpty => 'Nothing you both answered yet.';
+
+  @override
+  String get exploreCompareBothWant => 'BOTH WANT';
+
+  @override
+  String get exploreCompareWantAndOk => 'ONE WANTS, ONE IS OK';
+
+  @override
+  String get exploreCompareTalks => 'SOMEONE WANTS TO TALK';
+
+  @override
+  String get exploreCompareNotDoing => 'NOT DOING';
+
+  @override
+  String get exploreCompareNotDoingLine =>
+      'Marked \"no\" by one of you. Which one is nobody\'s business.';
+
+  @override
+  String get exploreCompareAddRule => 'Add to rules';
+
+  @override
+  String exploreCompareProposeRule(String name) {
+    return 'Propose to $name';
+  }
+
+  @override
+  String get exploreCardsEmpty => 'No cards fit right now.';
+
+  @override
+  String exploreCardIntensity(int n) {
+    return 'Intensity $n';
+  }
+
+  @override
+  String exploreCardNeeds(String needs) {
+    return 'Needs: $needs';
+  }
+
+  @override
+  String get exploreCardSaved => 'saved';
+
+  @override
+  String get exploreCardTriedAgain => 'tried · again';
+
+  @override
+  String get exploreCardTriedNever => 'tried · not again';
+
+  @override
+  String get exploreActAddToday => 'Add to today';
+
+  @override
+  String get exploreActAddRule => 'Add to rules';
+
+  @override
+  String get exploreActSave => 'Save';
+
+  @override
+  String exploreActPropose(String name) {
+    return 'Propose to $name';
+  }
+
+  @override
+  String get exploreActTriedAgain => 'Tried it · again';
+
+  @override
+  String get exploreActTriedNever => 'Not again';
+
+  @override
+  String get exploreActDone => 'Done.';
+
+  @override
+  String get exploreDrawTonight => 'What about tonight?';
+
+  @override
+  String get exploreDrawAgain => 'Draw another';
+
+  @override
+  String get exploreDrawFailed => 'No card came. Try again.';
+
+  @override
+  String get explorePacksTitle => 'Starter packs';
+
+  @override
+  String get explorePacksIntro =>
+      'Pick one, then change every line to fit the two of you. Nothing is created until you say so.';
+
+  @override
+  String get explorePackTasks => 'TASKS';
+
+  @override
+  String get explorePackRules => 'RULES';
+
+  @override
+  String get explorePackRewards => 'REWARDS';
+
+  @override
+  String get explorePackApply => 'Use this set';
+
+  @override
+  String get explorePackApplied => 'Done. It is all under Rules now.';
+
+  @override
+  String get explorePackEdit => 'Edit this line';
+
+  @override
+  String get explorePackLineLabel => 'Line';
+
+  @override
+  String get explorePackKeep => 'Keep';
+
+  @override
+  String explorePackCount(int tasks, int rules, int rewards) {
+    return '$tasks tasks · $rules rules · $rewards rewards';
+  }
+
+  @override
+  String get explorePackEmptyDraft => 'Nothing left to create.';
+
+  @override
+  String get rulesStartFromPack => 'Start from a set';
+
+  @override
+  String get rulesExplorePrefs => 'Preferences';
 }

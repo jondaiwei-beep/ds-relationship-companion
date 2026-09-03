@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 
+import '../../support/explore_fakes.dart';
 import '../../support/phase3_fakes.dart';
 import '../../support/today_fakes.dart';
 
@@ -65,6 +66,7 @@ Future<
         taskRepositoryProvider.overrideWithValue(tasks),
         dynamicRepositoryProvider.overrideWithValue(dyn),
         pointsRepositoryProvider.overrideWithValue(points),
+        exploreRepositoryProvider.overrideWithValue(FakeExploreRepository(compare: fakeCompare)),
       ],
       child: MaterialApp(
         theme: DsTheme.ritual(),

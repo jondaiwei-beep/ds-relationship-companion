@@ -109,6 +109,12 @@
 - 验收：见 `ExploreIT.kt`——双答才互见（未互答条目在双方 `items()` 视图均不含对方答案）；`no` 从不归属到人（反射断言 DTO 字段）；四桶组合正确；单人 dynamic 空桶 + 标志位；卡片过滤（mutual-no 排除、talk 置顶）；`draw` 不入 outbox；`act(add_today)` 的 s→proposed / D→active+今日 occurrence；起步包 apply 精确匹配裁剪后的 draft（未落地字段真的不创建）；幂等重放不重复创建。
 - 起步包 7 个的名字与内容为推断，已同步记入 `product/05-decisions.md` 待 owner 拍板列表。
 
+客户端 ✅ 2026-09-03（`client/lib/features/explore/`；全仓 315 widget/unit 测试通过，`flutter analyze` 0 issues）
+- 路由 `/dynamics/:id/explore?section=prefs|compare|cards` 一屏三段（偏好/对照/灵感卡），`/dynamics/:id/explore/packs` 起步包；规矩页四个入口词 + 底线段直接列 compare `notDoing`（只有标题，无归属）；规矩/任务皆空时顶部出「从一套开始」。
+- ⚠️ 偏差：答题走 `PUT …/items/{id}/answer`（控制器如此，任务描述写的 POST 不存在）；s 的「提议给 D」复用 `act(add_today)`（后端按 side 原生落 proposed），无独立 propose 动作。
+- ⚠️ 偏差：对照行的动词只做了「加到规矩 / 提议给 D」（走 RuleRepository.create），「加到今天 / 做成任务」未做——后端没有 item→task 端点，且卡片已覆盖该路径。
+- 旧 `GET /v1/explore` 客户端（`explore_view.dart` + 旧 ExploreScreen）删除；`今晚要什么？` 在 D 今天 TodayMeta 下方，抽卡 sheet 可「再抽一张」。
+
 ## Phase 5 · 打磨（并行/收尾）
 - widget（iOS/Android）与锁屏中性文案；导出；付费（单人解锁、免费不限条数）；`kind=measure` 曲线；主题。
 

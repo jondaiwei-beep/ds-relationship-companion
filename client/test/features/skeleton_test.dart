@@ -9,7 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/app/shell/ds_skeleton.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
-import 'package:dsapp/domain_client/models/explore_view.dart';
+import 'package:dsapp/domain_client/models/explore.dart';
 import 'package:dsapp/domain_client/models/today_view.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
@@ -28,8 +28,13 @@ class _Hanging implements TodayRepository, DynamicRepository, ExploreRepository 
 
 
   @override
-  Future<ExploreLibraryView> library() =>
-      Completer<ExploreLibraryView>().future;
+  Future<List<PreferenceItem>> items(String id) => Completer<List<PreferenceItem>>().future;
+
+  @override
+  Future<CompareView> compare(String id) => Completer<CompareView>().future;
+
+  @override
+  Future<List<IdeaCard>> cards(String id, {String? audience}) => Completer<List<IdeaCard>>().future;
 
   @override
   dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
@@ -88,7 +93,7 @@ void main() {
     expect(find.text('Confirming today with the server.'), findsNothing);
   });
 
-  testWidgets('Explore outlines the library', (tester) async {
+  testWidgets('Explore outlines while the day loads', (tester) async {
     await _pump(tester, const ExploreScreen(dynamicId: 'dyn-1'));
     expect(find.byType(DsSkeletonCard), findsWidgets);
     expect(find.text('Fetching the library.'), findsNothing);

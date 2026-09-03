@@ -108,23 +108,6 @@
   "activationZoneUsMountain": "US Mountain",
   "activationZoneUsPacific": "US Pacific",
   "activationZoneEasternAustralia": "Eastern Australia",
-  "exploreTitle": "Explore",
-  "exploreContextIdeas": "Ideas",
-  "exploreContextReading": "Reading",
-  "exploreContextConfirming": "Confirming context",
-  "exploreContextNotLoaded": "Not loaded",
-  "exploreContextNothingYet": "Nothing yet",
-  "exploreSessionLost": "Your private session needs to be restored.",
-  "exploreSignInAgain": "Sign in again",
-  "exploreLoadFailed": "The library could not be loaded. Nothing in your day depends on it.",
-  "exploreTryAgain": "Try again",
-  "exploreEmpty": "There is nothing in the library yet. Today holds everything that is waiting for you.",
-  "exploreIntro": "Things other people have found worth asking for. Nothing here is a suggestion about you.",
-  "exploreAskForThis": "Ask for this",
-  "exploreKindExpectation": "SOMETHING TO ASK FOR",
-  "exploreKindRitual": "SOMETHING TO REPEAT",
-  "exploreKindCheckIn": "SOMETHING TO SAY",
-  "exploreKindOther": "AN IDEA",
   "responseTypeAcknowledge": "Acknowledge",
   "responseTypePraise": "Praise",
   "responseTypeComment": "Comment",
@@ -2032,5 +2015,104 @@
     }
   },
   "ptsCouldNotLoad": "Points could not be loaded.",
-  "ptsActionFailed": "Not saved. Try again."
+  "ptsActionFailed": "Not saved. Try again.",
+  "exploreTitle": "Explore",
+  "exploreBack": "Back",
+  "exploreSectionPrefs": "Preferences",
+  "exploreSectionCompare": "Compare",
+  "exploreSectionCards": "Idea cards",
+  "exploreCouldNotLoad": "Could not load.",
+  "exploreActionFailed": "That did not land. Try again.",
+  "explorePrefsIntro": "Answer any three and you can already see where you meet. Only what you both answered is shown to either of you.",
+  "exploreAnswerWant": "Want",
+  "exploreAnswerOk": "OK",
+  "exploreAnswerNo": "No",
+  "exploreAnswerTalk": "Talk",
+  "exploreCompareNoPartner": "{name} has not answered yet. Yours are saved.",
+  "@exploreCompareNoPartner": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCompareEmpty": "Nothing you both answered yet.",
+  "exploreCompareBothWant": "BOTH WANT",
+  "exploreCompareWantAndOk": "ONE WANTS, ONE IS OK",
+  "exploreCompareTalks": "SOMEONE WANTS TO TALK",
+  "exploreCompareNotDoing": "NOT DOING",
+  "exploreCompareNotDoingLine": "Marked \"no\" by one of you. Which one is nobody's business.",
+  "exploreCompareAddRule": "Add to rules",
+  "exploreCompareProposeRule": "Propose to {name}",
+  "@exploreCompareProposeRule": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCardsEmpty": "No cards fit right now.",
+  "exploreCardIntensity": "Intensity {n}",
+  "@exploreCardIntensity": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "exploreCardNeeds": "Needs: {needs}",
+  "@exploreCardNeeds": {
+    "placeholders": {
+      "needs": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreCardSaved": "saved",
+  "exploreCardTriedAgain": "tried · again",
+  "exploreCardTriedNever": "tried · not again",
+  "exploreActAddToday": "Add to today",
+  "exploreActAddRule": "Add to rules",
+  "exploreActSave": "Save",
+  "exploreActPropose": "Propose to {name}",
+  "@exploreActPropose": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "exploreActTriedAgain": "Tried it · again",
+  "exploreActTriedNever": "Not again",
+  "exploreActDone": "Done.",
+  "exploreDrawTonight": "What about tonight?",
+  "exploreDrawAgain": "Draw another",
+  "exploreDrawFailed": "No card came. Try again.",
+  "explorePacksTitle": "Starter packs",
+  "explorePacksIntro": "Pick one, then change every line to fit the two of you. Nothing is created until you say so.",
+  "explorePackTasks": "TASKS",
+  "explorePackRules": "RULES",
+  "explorePackRewards": "REWARDS",
+  "explorePackApply": "Use this set",
+  "explorePackApplied": "Done. It is all under Rules now.",
+  "explorePackEdit": "Edit this line",
+  "explorePackLineLabel": "Line",
+  "explorePackKeep": "Keep",
+  "explorePackCount": "{tasks} tasks · {rules} rules · {rewards} rewards",
+  "@explorePackCount": {
+    "placeholders": {
+      "tasks": {
+        "type": "int"
+      },
+      "rules": {
+        "type": "int"
+      },
+      "rewards": {
+        "type": "int"
+      }
+    }
+  },
+  "explorePackEmptyDraft": "Nothing left to create.",
+  "rulesStartFromPack": "Start from a set",
+  "rulesExplorePrefs": "Preferences"
 }

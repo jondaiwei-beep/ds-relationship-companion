@@ -643,108 +643,6 @@ abstract class L {
   /// **'Eastern Australia'**
   String get activationZoneEasternAustralia;
 
-  /// No description provided for @exploreTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Explore'**
-  String get exploreTitle;
-
-  /// No description provided for @exploreContextIdeas.
-  ///
-  /// In en, this message translates to:
-  /// **'Ideas'**
-  String get exploreContextIdeas;
-
-  /// No description provided for @exploreContextReading.
-  ///
-  /// In en, this message translates to:
-  /// **'Reading'**
-  String get exploreContextReading;
-
-  /// No description provided for @exploreContextConfirming.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirming context'**
-  String get exploreContextConfirming;
-
-  /// No description provided for @exploreContextNotLoaded.
-  ///
-  /// In en, this message translates to:
-  /// **'Not loaded'**
-  String get exploreContextNotLoaded;
-
-  /// No description provided for @exploreContextNothingYet.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing yet'**
-  String get exploreContextNothingYet;
-
-  /// No description provided for @exploreSessionLost.
-  ///
-  /// In en, this message translates to:
-  /// **'Your private session needs to be restored.'**
-  String get exploreSessionLost;
-
-  /// No description provided for @exploreSignInAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in again'**
-  String get exploreSignInAgain;
-
-  /// No description provided for @exploreLoadFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'The library could not be loaded. Nothing in your day depends on it.'**
-  String get exploreLoadFailed;
-
-  /// No description provided for @exploreTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Try again'**
-  String get exploreTryAgain;
-
-  /// No description provided for @exploreEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'There is nothing in the library yet. Today holds everything that is waiting for you.'**
-  String get exploreEmpty;
-
-  /// No description provided for @exploreIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Things other people have found worth asking for. Nothing here is a suggestion about you.'**
-  String get exploreIntro;
-
-  /// No description provided for @exploreAskForThis.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask for this'**
-  String get exploreAskForThis;
-
-  /// No description provided for @exploreKindExpectation.
-  ///
-  /// In en, this message translates to:
-  /// **'SOMETHING TO ASK FOR'**
-  String get exploreKindExpectation;
-
-  /// No description provided for @exploreKindRitual.
-  ///
-  /// In en, this message translates to:
-  /// **'SOMETHING TO REPEAT'**
-  String get exploreKindRitual;
-
-  /// No description provided for @exploreKindCheckIn.
-  ///
-  /// In en, this message translates to:
-  /// **'SOMETHING TO SAY'**
-  String get exploreKindCheckIn;
-
-  /// No description provided for @exploreKindOther.
-  ///
-  /// In en, this message translates to:
-  /// **'AN IDEA'**
-  String get exploreKindOther;
-
   /// No description provided for @responseTypeAcknowledge.
   ///
   /// In en, this message translates to:
@@ -6012,6 +5910,312 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Not saved. Try again.'**
   String get ptsActionFailed;
+
+  /// No description provided for @exploreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get exploreTitle;
+
+  /// No description provided for @exploreBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get exploreBack;
+
+  /// No description provided for @exploreSectionPrefs.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get exploreSectionPrefs;
+
+  /// No description provided for @exploreSectionCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get exploreSectionCompare;
+
+  /// No description provided for @exploreSectionCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Idea cards'**
+  String get exploreSectionCards;
+
+  /// No description provided for @exploreCouldNotLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load.'**
+  String get exploreCouldNotLoad;
+
+  /// No description provided for @exploreActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'That did not land. Try again.'**
+  String get exploreActionFailed;
+
+  /// No description provided for @explorePrefsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer any three and you can already see where you meet. Only what you both answered is shown to either of you.'**
+  String get explorePrefsIntro;
+
+  /// No description provided for @exploreAnswerWant.
+  ///
+  /// In en, this message translates to:
+  /// **'Want'**
+  String get exploreAnswerWant;
+
+  /// No description provided for @exploreAnswerOk.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get exploreAnswerOk;
+
+  /// No description provided for @exploreAnswerNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get exploreAnswerNo;
+
+  /// No description provided for @exploreAnswerTalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Talk'**
+  String get exploreAnswerTalk;
+
+  /// No description provided for @exploreCompareNoPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has not answered yet. Yours are saved.'**
+  String exploreCompareNoPartner(String name);
+
+  /// No description provided for @exploreCompareEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing you both answered yet.'**
+  String get exploreCompareEmpty;
+
+  /// No description provided for @exploreCompareBothWant.
+  ///
+  /// In en, this message translates to:
+  /// **'BOTH WANT'**
+  String get exploreCompareBothWant;
+
+  /// No description provided for @exploreCompareWantAndOk.
+  ///
+  /// In en, this message translates to:
+  /// **'ONE WANTS, ONE IS OK'**
+  String get exploreCompareWantAndOk;
+
+  /// No description provided for @exploreCompareTalks.
+  ///
+  /// In en, this message translates to:
+  /// **'SOMEONE WANTS TO TALK'**
+  String get exploreCompareTalks;
+
+  /// No description provided for @exploreCompareNotDoing.
+  ///
+  /// In en, this message translates to:
+  /// **'NOT DOING'**
+  String get exploreCompareNotDoing;
+
+  /// No description provided for @exploreCompareNotDoingLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked \"no\" by one of you. Which one is nobody\'s business.'**
+  String get exploreCompareNotDoingLine;
+
+  /// No description provided for @exploreCompareAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to rules'**
+  String get exploreCompareAddRule;
+
+  /// No description provided for @exploreCompareProposeRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose to {name}'**
+  String exploreCompareProposeRule(String name);
+
+  /// No description provided for @exploreCardsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No cards fit right now.'**
+  String get exploreCardsEmpty;
+
+  /// No description provided for @exploreCardIntensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensity {n}'**
+  String exploreCardIntensity(int n);
+
+  /// No description provided for @exploreCardNeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs: {needs}'**
+  String exploreCardNeeds(String needs);
+
+  /// No description provided for @exploreCardSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'saved'**
+  String get exploreCardSaved;
+
+  /// No description provided for @exploreCardTriedAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'tried · again'**
+  String get exploreCardTriedAgain;
+
+  /// No description provided for @exploreCardTriedNever.
+  ///
+  /// In en, this message translates to:
+  /// **'tried · not again'**
+  String get exploreCardTriedNever;
+
+  /// No description provided for @exploreActAddToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to today'**
+  String get exploreActAddToday;
+
+  /// No description provided for @exploreActAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to rules'**
+  String get exploreActAddRule;
+
+  /// No description provided for @exploreActSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get exploreActSave;
+
+  /// No description provided for @exploreActPropose.
+  ///
+  /// In en, this message translates to:
+  /// **'Propose to {name}'**
+  String exploreActPropose(String name);
+
+  /// No description provided for @exploreActTriedAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Tried it · again'**
+  String get exploreActTriedAgain;
+
+  /// No description provided for @exploreActTriedNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Not again'**
+  String get exploreActTriedNever;
+
+  /// No description provided for @exploreActDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done.'**
+  String get exploreActDone;
+
+  /// No description provided for @exploreDrawTonight.
+  ///
+  /// In en, this message translates to:
+  /// **'What about tonight?'**
+  String get exploreDrawTonight;
+
+  /// No description provided for @exploreDrawAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw another'**
+  String get exploreDrawAgain;
+
+  /// No description provided for @exploreDrawFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'No card came. Try again.'**
+  String get exploreDrawFailed;
+
+  /// No description provided for @explorePacksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Starter packs'**
+  String get explorePacksTitle;
+
+  /// No description provided for @explorePacksIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one, then change every line to fit the two of you. Nothing is created until you say so.'**
+  String get explorePacksIntro;
+
+  /// No description provided for @explorePackTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'TASKS'**
+  String get explorePackTasks;
+
+  /// No description provided for @explorePackRules.
+  ///
+  /// In en, this message translates to:
+  /// **'RULES'**
+  String get explorePackRules;
+
+  /// No description provided for @explorePackRewards.
+  ///
+  /// In en, this message translates to:
+  /// **'REWARDS'**
+  String get explorePackRewards;
+
+  /// No description provided for @explorePackApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this set'**
+  String get explorePackApply;
+
+  /// No description provided for @explorePackApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Done. It is all under Rules now.'**
+  String get explorePackApplied;
+
+  /// No description provided for @explorePackEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit this line'**
+  String get explorePackEdit;
+
+  /// No description provided for @explorePackLineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Line'**
+  String get explorePackLineLabel;
+
+  /// No description provided for @explorePackKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get explorePackKeep;
+
+  /// No description provided for @explorePackCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{tasks} tasks · {rules} rules · {rewards} rewards'**
+  String explorePackCount(int tasks, int rules, int rewards);
+
+  /// No description provided for @explorePackEmptyDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing left to create.'**
+  String get explorePackEmptyDraft;
+
+  /// No description provided for @rulesStartFromPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from a set'**
+  String get rulesStartFromPack;
+
+  /// No description provided for @rulesExplorePrefs.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get rulesExplorePrefs;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

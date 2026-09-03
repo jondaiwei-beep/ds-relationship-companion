@@ -6,7 +6,7 @@ import 'package:dsapp/domain_client/api_client.dart';
 import 'package:dsapp/domain_client/repositories/auth_repository.dart';
 import 'package:dsapp/domain_client/models/dynamic_summary.dart';
 import 'package:dsapp/domain_client/models/dynamic_view.dart';
-import 'package:dsapp/domain_client/models/explore_view.dart';
+import 'package:dsapp/domain_client/models/explore.dart';
 import 'package:dsapp/domain_client/models/points.dart';
 import 'package:dsapp/domain_client/repositories/explore_repository.dart';
 import 'package:dsapp/domain_client/repositories/dynamic_repository.dart';
@@ -191,7 +191,13 @@ void main() {
 /// have to resolve.
 class _StubExplore implements ExploreRepository {
   @override
-  Future<ExploreLibraryView> library() async => const ExploreLibraryView();
+  Future<List<PreferenceItem>> items(String dynamicId) async => const [];
+
+  @override
+  Future<CompareView> compare(String dynamicId) async => const CompareView();
+
+  @override
+  Future<List<IdeaCard>> cards(String dynamicId, {String? audience}) async => const [];
 
   @override
   dynamic noSuchMethod(Invocation i) => throw UnimplementedError();
