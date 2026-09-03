@@ -54,10 +54,16 @@
   - 偏差/待办：`day_start` 只读（服务端无修改端点）；照片证明先用一行引用文字代替拍照；「我认，晚了」不单独出口（服务端按到点自动记 `delivered_late`）；无 Dynamic 级 paused 提示（TodayView 无该字段，按行灰显）；规矩页「问一件事」与探索「用这个」入口随旧模型下线，新建走 D 今天「快速加一条」；真机 Day A 走查未做。
 
 ## Phase 2 · 记录（1–2 周）
-- 日历（每天一格：交付数/未交付/有留言/有处置）、这一天时间线（occurrence + disposition + DayComment 按时间）。
-- DayComment 双方；PrivateNote；照片/文字归档；streak 与 days_together。
-- 周/月事实统计（数字，不评价）。
-- 验收：晚上两人对着"这一天"收尾的脚本可走完；历史 `missed` 可补交付。
+后端 ✅ 2026-09-03（`backend/…/record/`，`RecordIT` 覆盖；175 测试通过）
+- `RecordQueryService`：月视图 cell（due/delivered/flagged/missed/undisposed/comments/hasPrivateNote，无内容的天不出现）；这一天时间线（occurrence_history 两轴 + DayComment + point_entries + reward_redemptions，按时间排序）；facts（纯计数，`03-decisions` 不评价）；summary（`daysTogether` + `currentStreak`）。
+- `RelationshipStreaks`（新，`today/application/`，today 与 record 共用一份）：`daysTogether` 改为「两人都 ACTIVE 起的关系日数，只涨」，取 `memberships.joined_at` 较晚者，单人取 `dynamics.created_at`；`PointsService.daysTogether` 与 `TodayQueryService.TodayView.daysTogether` 均改为委托这里，不再是「有交付的不同天数」。`PointsIT` 对应断言重写（`days together never resets` 现断言「补记录不影响计数」，新增 `days together only grows as relationship days elapse`）。
+- `currentStreak` 向前回溯以 `daysTogether` 的起始日为下限（否则空历史的关系会一路查到 4713 BC 撞 Postgres date 范围——已用 `RecordIT` 复现并修好）。
+- `DayCommentService`：双方可写、软删（`deleted_at`）、只删自己的；outbox `day_comment`（dedupe `comment:$id`），扩展 `OutboxDispatcher.recipientFor`（评论作者以外的 ACTIVE 成员）/`isStale`（评论已删）/`neutralBodyFor`/deepLink（`/record/{day}`）。
+- `PrivateNoteService`：`upsert` 空内容删除，非空走 `ON CONFLICT` upsert；`get`/`day()` 只返回 actor 自己的，从不返回对方的（`RecordIT` 覆盖）；D-Note 不出现在时间线（无 `d_note` kind）。
+- `RecordController`：`GET .../record/{month,day,facts,summary}`、`POST .../record/comments`（IdempotentPost）、`DELETE /v1/day-comments/{id}`、`PUT .../record/private-note`；`month` 用 `@RequestParam month: String` 手动 `YearMonth.parse`（项目未注册 YearMonth 的 Spring converter，避免新增全局 bean）。
+- 历史可补：`OutcomeService.set` 本来就允许 s 把 `missed` 改成 `delivered`（→ 因逾期自动记 `delivered_late`）或 `cant_do`——未改代码，新增 `RecordIT` 用例验证真实时间戳而非伪装成按时。
+- 未新增 V19：V18 已含 `day_comments`/`private_notes` 全部所需字段与索引。
+- 验收：`RecordIT` 覆盖月 cell 算术、这一天时间线顺序与隐私（B 的私人备注/DNote 对 A 不可见）、双方留言与只删自己、facts 纯计数、streak（let_go/paused 不断、undisposed missed 断）、daysTogether 只涨、`missed→delivered_late` 补记录、`day_comment` outbox 目标。
 
 ## Phase 3 · 规矩 + 分（1–2 周）
 - Rule CRUD；Task 定义管理（含 per-item `paused_until`、D「我不在」一键）；s Proposal 与 D 接受。

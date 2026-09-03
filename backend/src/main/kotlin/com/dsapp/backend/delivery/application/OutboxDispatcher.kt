@@ -153,7 +153,7 @@ class OutboxDispatcher(
             } else {
                 neutralBodyFor(record.eventType)
             },
-            deepLink = if (record.eventType == "d_note_reminder") "/today" else "/occurrences/${record.aggregateId}",
+            deepLink = deepLinkFor(record),
             dedupeKey = record.dedupeKey,
         )
         require(request.body in NeutralCopy.all) { "non-neutral notification copy" }
@@ -192,6 +192,19 @@ class OutboxDispatcher(
             "d_note_reminder" -> dsl.fetchOne(
                 "SELECT dynamic_id, author_id AS recipient FROM d_notes WHERE id = {0}", record.aggregateId,
             )
+            // A day comment goes to the OTHER active member of the dynamic —
+            // whichever side wrote it, the other side hears about it.
+            "day_comment" -> dsl.fetchOne(
+                """
+                SELECT dc.dynamic_id, m.user_id AS recipient
+                  FROM day_comments dc
+                  JOIN memberships m ON m.dynamic_id = dc.dynamic_id
+                   AND m.user_id <> dc.author_id AND m.access_state = 'ACTIVE'
+                 WHERE dc.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId,
+            )
             else -> null
         } ?: return null
         val user = row.get("recipient", UUID::class.java) ?: return null
@@ -208,7 +221,11 @@ class OutboxDispatcher(
     private fun dynamicActive(dynamicId: UUID): Boolean =
         dsl.fetchOne("SELECT 1 FROM dynamics WHERE id = {0} AND state = 'ACTIVE'", dynamicId) != null
 
-    /** A delivery notice is stale once the D has already looked or answered; a reminder once the note is done. */
+    /**
+     * A delivery notice is stale once the D has already looked or answered; a
+     * reminder once the note is done; a comment notice once the comment was
+     * deleted before it went out — there is nothing left to point at.
+     */
     private fun isStale(record: Claimed): Boolean = when (record.eventType) {
         "occurrence_delivered", "occurrence_flagged" -> dsl.fetchOne(
             "SELECT 1 FROM occurrences WHERE id = {0} AND (seen_at IS NOT NULL OR disposition <> 'none')",
@@ -216,6 +233,9 @@ class OutboxDispatcher(
         ) != null
         "d_note_reminder" -> dsl.fetchOne(
             "SELECT 1 FROM d_notes WHERE id = {0} AND done_at IS NOT NULL", record.aggregateId,
+        ) != null
+        "day_comment" -> dsl.fetchOne(
+            "SELECT 1 FROM day_comments WHERE id = {0} AND deleted_at IS NOT NULL", record.aggregateId,
         ) != null
         else -> false
     }
@@ -247,8 +267,19 @@ class OutboxDispatcher(
     }
 
     private fun neutralBodyFor(eventType: String): String = when (eventType) {
-        "occurrence_delivered", "occurrence_flagged" -> NeutralCopy.NEEDS_ATTENTION
+        "occurrence_delivered", "occurrence_flagged", "day_comment" -> NeutralCopy.NEEDS_ATTENTION
         else -> NeutralCopy.GENERIC
+    }
+
+    /** Where the notification opens to. A day comment opens 记录 on that day, never the comment text itself. */
+    private fun deepLinkFor(record: Claimed): String = when (record.eventType) {
+        "d_note_reminder" -> "/today"
+        "day_comment" -> {
+            val day = dsl.fetchOne("SELECT day FROM day_comments WHERE id = {0}", record.aggregateId)
+                ?.get("day", java.time.LocalDate::class.java)
+            "/record/${day ?: ""}"
+        }
+        else -> "/occurrences/${record.aggregateId}"
     }
 
     // ---- state transitions ------------------------------------------------

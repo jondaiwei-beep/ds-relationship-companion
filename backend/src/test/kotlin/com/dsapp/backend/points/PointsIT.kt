@@ -209,31 +209,45 @@ class PointsIT {
     fun `days together never resets, so a gap costs nothing`() {
         // Kneel shows "STREAK — consecutive days"; breaking one is documented
         // to cause all-at-once abandonment rather than a gradual decline.
-        // Ours counts days that happened, so a bad Tuesday takes nothing away.
+        // Ours counts elapsed relationship days since both joined
+        // (product/03-domain.md §Streak) — not completions — so a missed
+        // Tuesday takes nothing away from it either.
         fun completedOn(day: String) {
             val occ = occurrence(task("x"), day)
             dsl.query(
                 "UPDATE occurrences SET outcome='delivered', outcome_at=now() WHERE id={0}", occ,
             ).execute()
         }
+        val before = points.daysTogether(dom, dynamicId)
 
-        // Monday and Tuesday, then a gap, then Friday.
+        // Monday and Tuesday, then a gap, then Friday — none of this moves
+        // the count; only elapsed days since joining do.
         completedOn("2026-09-01")
         completedOn("2026-09-02")
         completedOn("2026-09-05")
 
-        assertEquals(3, points.daysTogether(dom, dynamicId), "the gap took nothing")
+        assertEquals(before, points.daysTogether(dom, dynamicId), "completions do not move it, only elapsed days do")
     }
 
     @Test
-    fun `two things finished on one day count as one day`() {
-        // It counts days, not completions. Otherwise a busy Tuesday would
-        // read as a longer relationship.
-        deliver()
-
-        deliver(anotherToday())
-
+    fun `days together only grows as relationship days elapse`() {
+        // Both members joined "now" in setup, so day one has already elapsed.
         assertEquals(1, points.daysTogether(dom, dynamicId))
+
+        dsl.query(
+            "UPDATE memberships SET joined_at = joined_at - interval '3 days' WHERE dynamic_id = {0} AND user_id = {1}",
+            dynamicId, dom,
+        ).execute()
+        // The LATER of the two joined_at values still governs — the s had
+        // not arrived yet, so the count does not move just because the D
+        // backdates their own join.
+        assertEquals(1, points.daysTogether(dom, dynamicId))
+
+        dsl.query(
+            "UPDATE memberships SET joined_at = joined_at - interval '3 days' WHERE dynamic_id = {0} AND user_id = {1}",
+            dynamicId, sub,
+        ).execute()
+        assertEquals(4, points.daysTogether(dom, dynamicId))
     }
 
     @Test

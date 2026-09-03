@@ -1,6 +1,7 @@
 package com.dsapp.backend.points.application
 
 import com.dsapp.backend.dynamic.domain.AuthorizationException
+import com.dsapp.backend.today.application.RelationshipStreaks
 import org.jooq.DSLContext
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -37,7 +38,7 @@ class NoSuchReward(val rewardId: UUID) : RuntimeException("No reward $rewardId")
  * from its own history, and this one is about how someone is treated.
  */
 @Service
-class PointsService(private val dsl: DSLContext) {
+class PointsService(private val dsl: DSLContext, private val streaks: RelationshipStreaks) {
 
     data class Entry(
         val id: UUID,
@@ -72,7 +73,8 @@ class PointsService(private val dsl: DSLContext) {
     )
 
     /**
-     * Days this couple showed up, ever. **Never resets.**
+     * Relationship days since the couple were both here, ever. **Never
+     * resets.**
      *
      * Kneel shows "STREAK — consecutive days" and Obedience a row of × marks;
      * both are the standard mechanic, whose documented effect is that
@@ -80,24 +82,14 @@ class PointsService(private val dsl: DSLContext) {
      * decline — the zero triggers a "what the hell" response and the user
      * leaves with the streak.
      *
-     * This counts distinct days on which something was completed. A gap does
-     * not destroy it; it simply does not add to it. That is not a softer
-     * streak, it is a different quantity and the honest one: nobody's twelve
-     * days stopped having happened because Tuesday was bad.
-     *
-     * Computed from history rather than stored, so there is no number that
-     * can drift from the events behind it — and nothing anywhere that can
-     * set it back to zero.
+     * This counts elapsed relationship days since both members joined (or
+     * since the dynamic was created, solo) — product/03-domain.md §Streak.
+     * Delegated to [RelationshipStreaks] so 今天 and 记录 can never disagree.
+     * Nobody's days stopped having happened because Tuesday was bad.
      */
     fun daysTogether(actorUserId: UUID, dynamicId: UUID): Int {
         requireMember(actorUserId, dynamicId)
-        return dsl.fetchOne(
-            """
-            SELECT count(DISTINCT day) AS days FROM occurrences
-             WHERE dynamic_id = {0} AND outcome IN ('delivered', 'delivered_late')
-            """.trimIndent(),
-            dynamicId,
-        )!!.get("days", Int::class.java)
+        return streaks.daysTogether(dynamicId)
     }
 
     // ---- balance -----------------------------------------------------------
