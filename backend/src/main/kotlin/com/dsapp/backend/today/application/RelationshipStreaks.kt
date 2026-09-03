@@ -77,9 +77,9 @@ class RelationshipStreaks(private val dsl: DSLContext, private val days: Dynamic
         }
 
         fun dayHasAnything(day: LocalDate): Boolean = dsl.fetchOne(
-            "SELECT 1 FROM occurrences WHERE dynamic_id = {0} AND day = {1} AND outcome NOT IN ('open', 'paused')",
+            "SELECT EXISTS (SELECT 1 FROM occurrences WHERE dynamic_id = {0} AND day = {1} AND outcome NOT IN ('open', 'paused')) AS present",
             dynamicId, day,
-        ) != null
+        )!!.get("present", Boolean::class.java)
 
         if (today.isBefore(floor)) return 0
         // Today counts only once something has actually been decided on it;

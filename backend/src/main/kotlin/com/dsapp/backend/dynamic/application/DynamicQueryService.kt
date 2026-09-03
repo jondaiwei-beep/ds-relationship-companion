@@ -1,5 +1,6 @@
 package com.dsapp.backend.dynamic.application
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.dsapp.backend.dynamic.domain.RoleContext
 import com.dsapp.backend.timeline.application.RelationshipEventWriter
 import org.jooq.DSLContext
@@ -58,7 +59,7 @@ class DynamicQueryService(
         /** Agency that no role can ever remove (Notion 03 §2). */
         val alwaysAvailable: List<String>,
         /** D「我不在」until this instant, or null when the D is present. */
-        val dAwayUntil: Instant?,
+        @get:JsonProperty("dAwayUntil") val dAwayUntil: Instant?,
         /** How the s addresses the D, and vice versa. Null means "use the display name" (product/02-surfaces.md). */
         val honorificForD: String?,
         val honorificForS: String?,

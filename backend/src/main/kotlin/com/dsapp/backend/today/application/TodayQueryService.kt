@@ -1,5 +1,6 @@
 package com.dsapp.backend.today.application
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.dsapp.backend.dynamic.application.MembershipAuthorizer
 import com.dsapp.backend.points.application.PointsService
 import org.jooq.DSLContext
@@ -74,7 +75,7 @@ class TodayQueryService(
         val needsMe: Int,
         val partnerDisplayName: String?,
         /** D「我不在」until this instant, or null when the D is present. */
-        val dAwayUntil: Instant?,
+        @get:JsonProperty("dAwayUntil") val dAwayUntil: Instant?,
         /** How the s addresses the D, and vice versa. Null means "use the display name". */
         val honorificForD: String?,
         val honorificForS: String?,

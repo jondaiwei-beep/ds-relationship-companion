@@ -279,6 +279,18 @@ class RecordIT {
     }
 
     @Test
+    fun `summary survives two decided occurrences on the same day`() {
+        // Regression: the streak's "anything decided today" probe used fetchOne
+        // and blew up with TooManyRowsException on the second delivered task.
+        val a = daily("Greeting")
+        val b = daily("Water")
+        generator.generate(dyn, today)
+        dsl.query("UPDATE occurrences SET outcome='delivered', outcome_at=now() WHERE task_id IN ({0}, {1})", a.id, b.id).execute()
+        // Empty earlier days never break a streak, so only the floor matters here.
+        assertTrue(record.summary(d, dyn).currentStreak >= 1)
+    }
+
+    @Test
     fun `days together never decreases as time passes without any writes`() {
         val before = record.summary(d, dyn).daysTogether
         assertTrue(before >= 1)
