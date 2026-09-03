@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../app/shell/ds_skeleton.dart';
 import '../../../l10n/app_localizations.dart';
 import '../application/invite_actions.dart';
 import 'widgets/lifecycle_track.dart';
@@ -45,6 +46,7 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
   InviteLinkReady? _link;
   bool _busy = true;
   bool _alreadyLive = false;
+  String? _pendingInviteId;
 
   /// Which sentence the last failure named. A key, not a string, so it speaks
   /// the reader's language rather than the one this file was written in.
@@ -72,13 +74,14 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           _link = outcome;
           _busy = false;
         });
-      case InviteAlreadyExists():
+      case InviteAlreadyExists(:final inviteId):
         // One live invitation per Dynamic. The token is returned exactly once
         // and only its hash is kept, so an existing link cannot be shown
         // again — withdrawing it and making a new one is the only way back,
         // and that is what the screen offers.
         setState(() {
           _alreadyLive = true;
+          _pendingInviteId = inviteId;
           _busy = false;
         });
       case InviteCreateFailed(:final key):
@@ -87,6 +90,31 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
           _busy = false;
         });
       case InviteRevoked():
+        setState(() => _busy = false);
+    }
+  }
+
+  /// Withdraw the invitation that is already live, then make a fresh one.
+  /// Only offered when the server named it — see [InviteAlreadyExists].
+  Future<void> _replace() async {
+    final id = _pendingInviteId;
+    if (id == null || _busy) return;
+    setState(() {
+      _busy = true;
+      _failure = null;
+    });
+    final outcome = await ref.read(inviteActionsProvider).revoke(widget.dynamicId, id);
+    if (!mounted) return;
+    switch (outcome) {
+      case InviteRevoked():
+        _pendingInviteId = null;
+        await _create();
+      case InviteCreateFailed(:final key):
+        setState(() {
+          _failure = key;
+          _busy = false;
+        });
+      case InviteLinkReady() || InviteAlreadyExists():
         setState(() => _busy = false);
     }
   }
@@ -185,7 +213,13 @@ class _InvitePartnerScreenState extends ConsumerState<InvitePartnerScreen> {
 
   Widget _body() {
     if (_busy && _link == null) return const _Preparing();
-    if (_alreadyLive) return _AlreadyLive(onBack: widget.onBack);
+    if (_alreadyLive) {
+      return _AlreadyLive(
+        onBack: widget.onBack,
+        onReplace: _pendingInviteId == null ? null : _replace,
+        failure: _failure,
+      );
+    }
 
     final link = _link;
     if (link == null) {
@@ -316,8 +350,11 @@ class _Preparing extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = L.of(context);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: DsSpacing.space10),
+        const DsSkeletonBar(width: 220, height: 20, emphasis: true),
+        const SizedBox(height: DsSpacing.space6),
         Text(
           l.invitePreparing,
           style: DsTextStyles.bodyPrimary.copyWith(
@@ -521,9 +558,14 @@ class _Live extends StatelessWidget {
 
 /// A live invitation already exists and its token cannot be shown again.
 class _AlreadyLive extends StatelessWidget {
-  const _AlreadyLive({required this.onBack});
+  const _AlreadyLive({required this.onBack, this.onReplace, this.failure});
 
   final VoidCallback onBack;
+
+  /// Withdraw the live link and make a new one. Null when the server did not
+  /// say which invitation is live, in which case only the way back is shown.
+  final VoidCallback? onReplace;
+  final InviteMessage? failure;
 
   @override
   Widget build(BuildContext context) {
@@ -547,13 +589,33 @@ class _AlreadyLive extends StatelessWidget {
         ),
         const SizedBox(height: DsSpacing.space4),
         Text(
-          l.inviteAlreadyLiveGuidance,
+          onReplace == null ? l.inviteAlreadyLiveGuidance : l.inviteAlreadyLiveReplaceNote,
           style: DsTextStyles.bodySecondary.copyWith(
             color: DsColors.textOnRitualMuted,
           ),
         ),
+        if (failure case final f?) ...[
+          const SizedBox(height: DsSpacing.space4),
+          Text(
+            inviteMessage(l, f),
+            style: DsTextStyles.bodySecondary.copyWith(color: DsColors.stateError),
+          ),
+        ],
         const SizedBox(height: DsSpacing.space8),
-        DsPrimaryButton(label: l.inviteBackToDynamic, onPressed: onBack),
+        if (onReplace case final replace?) ...[
+          DsPrimaryButton(label: l.inviteAlreadyLiveReplace, onPressed: replace),
+          const SizedBox(height: DsSpacing.space3),
+          Center(
+            child: TextButton(
+              onPressed: onBack,
+              child: Text(
+                l.inviteBackToDynamic,
+                style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+              ),
+            ),
+          ),
+        ] else
+          DsPrimaryButton(label: l.inviteBackToDynamic, onPressed: onBack),
       ],
     );
   }

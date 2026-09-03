@@ -24,11 +24,16 @@ class ActivationWizard extends ConsumerStatefulWidget {
     super.key,
     required this.onStarted,
     required this.onLeave,
+    this.onStartedNeedsPartner,
     required this.timezone,
   });
 
   /// The dynamic exists and its first rhythm has begun.
   final void Function(String dynamicId) onStarted;
+
+  /// A couple Dynamic was started and the partner is not in it yet. When
+  /// given, fires instead of [onStarted] so the invitation comes next.
+  final void Function(String dynamicId)? onStartedNeedsPartner;
 
   /// Backing out of the first step.
   final VoidCallback onLeave;
@@ -129,7 +134,12 @@ class _ActivationWizardState extends ConsumerState<ActivationWizard> {
         switch (started) {
           case DynamicCreated():
             setState(() => _busy = false);
-            widget.onStarted(dynamicId);
+            final partner = widget.onStartedNeedsPartner;
+            if (!_draft.solo && partner != null) {
+              partner(dynamicId);
+            } else {
+              widget.onStarted(dynamicId);
+            }
           case ActivationFailed(:final reason):
             setState(() {
               _busy = false;

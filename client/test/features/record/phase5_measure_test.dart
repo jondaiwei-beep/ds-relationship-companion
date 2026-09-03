@@ -18,6 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 import '../../support/record_fakes.dart';
+import '../../support/phase3_fakes.dart';
 import '../../support/today_fakes.dart';
 
 Future<void> _pump(
@@ -35,6 +36,7 @@ Future<void> _pump(
     ProviderScope(
       overrides: [
         todayRepositoryProvider.overrideWithValue(today),
+        dynamicRepositoryProvider.overrideWithValue(FakeDynamicRepository()),
         recordRepositoryProvider.overrideWithValue(record ?? FakeRecordRepository()),
         taskRepositoryProvider.overrideWithValue(FakeTaskRepository()),
         dynamicViewerIdProvider.overrideWithValue('u-me'),

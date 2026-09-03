@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../domain_client/api_client.dart';
+import '../../today/application/today_providers.dart';
 import 'dynamic_providers.dart';
 
 /// The agency actions Dynamic offers. Either member may take either one,
@@ -71,6 +72,10 @@ class DynamicActions {
 
       _keys.remove((dynamicId, action));
       _ref.invalidate(dynamicDetailProvider(dynamicId));
+      // Today is built from the same fact: a paused day has nothing live in
+      // it, and a resumed one does. Left alone it kept showing the old list
+      // until someone pulled to refresh.
+      _ref.invalidate(todayProvider(dynamicId));
       return const DynamicSucceeded();
     } on Object {
       // The key is deliberately kept so a retry is the same attempt.

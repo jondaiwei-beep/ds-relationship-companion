@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 import '../../support/explore_fakes.dart';
+import '../../support/phase3_fakes.dart';
 import '../../support/today_fakes.dart';
 
 Future<void> _pump(
@@ -19,6 +20,7 @@ Future<void> _pump(
   FakeTaskRepository? tasks,
   FakeDNoteRepository? notes,
   FakeExploreRepository? explore,
+  FakeDynamicRepository? dynamics,
 }) async {
   tester.view.physicalSize = const Size(390, 1400);
   tester.view.devicePixelRatio = 1.0;
@@ -27,6 +29,7 @@ Future<void> _pump(
     ProviderScope(
       overrides: [
         todayRepositoryProvider.overrideWithValue(today),
+        dynamicRepositoryProvider.overrideWithValue(dynamics ?? FakeDynamicRepository()),
         taskRepositoryProvider.overrideWithValue(tasks ?? FakeTaskRepository()),
         dNoteRepositoryProvider.overrideWithValue(notes ?? FakeDNoteRepository()),
         agreementsProvider.overrideWith((ref, id) async => const []),

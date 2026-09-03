@@ -27,11 +27,17 @@ import '../features/record/presentation/series_screen.dart';
 import '../platform/session/session.dart';
 import '../platform/session/session_controller.dart';
 import 'session_resolving.dart';
+import '../features/dynamic/application/dynamic_providers.dart';
+import '../features/today/application/today_providers.dart';
 
 /// Paths, named once. They encode deep-link shape, Web refresh and back
 /// behaviour, and the invitation entry point.
 abstract final class Routes {
   static const today = '/today';
+  static const rules = '/rules';
+  static const record = '/record';
+  static const points = '/points';
+
   /// Where a signed-out person lands. SCR-04's contract is explicit — "first
   /// open or signed-out launch" — and SCR-05 is reached by choosing to sign in
   /// from here, not by being sent there.
@@ -53,7 +59,7 @@ abstract final class Routes {
   static const leave = '/dynamics/:id/leave';
 
   /// The four tabs (product/02-surfaces.md). Explore lives inside Rules.
-  static const points = '/dynamics/:id/points';
+  static const dynamicPoints = '/dynamics/:id/points';
   static const start = '/start';
   static const dynamicToday = '/dynamics/:id/today';
   static const dynamicRules = '/dynamics/:id/rules';
@@ -124,7 +130,9 @@ GoRouter createRouter(Ref ref) {
         // Already waiting, or on a route that needs no session: stay put.
         // Redirecting `/holding` to `/holding` is a loop, and go_router
         // answers a loop with its error screen — which is how this was found.
-        if (location == Routes.holding || Routes.isPublic(location)) return null;
+        if (location == Routes.holding || Routes.isPublic(location)) {
+          return null;
+        }
         final returnTo = Uri.encodeComponent(state.uri.toString());
         return '${Routes.holding}?returnTo=$returnTo';
       }
@@ -155,29 +163,205 @@ GoRouter createRouter(Ref ref) {
     },
 
     routes: [
-      GoRoute(
-        path: Routes.today,
-        // Nobody can know a dynamic id at sign-in, and a fresh account has no
-        // Dynamic at all. This used to pass the literal string 'preview',
-        // which the server rejected as an invalid UUID — so a person who had
-        // just registered was told "Today could not be loaded".
-        builder: (context, _) => HomeResolver(
-          onDynamic: (id) => context.go('/dynamics/$id/today'),
-          onNoDynamic: () => context.go(Routes.start),
-          onSignIn: () => context.go(Routes.signIn),
-        ),
-      ),
-      GoRoute(
-        path: Routes.dynamicToday,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return TodayScreen(
-            dynamicId: dynamicId,
-            onSignIn: () => context.go(Routes.signIn),
-            onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
-            onSettings: () => context.go('/dynamics/$dynamicId/settings'),
-          );
-        },
+      // The four tabs. One navigator per tab, kept alive while another tab is
+      // showing, so a scroll position or a half-read day survives a trip to
+      // 规矩 and back. Sub-screens live in the tab they belong to; leaving the
+      // shell (settings, invite, leave) is a different kind of move.
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, shell) => shell,
+        branches: [
+          // A branch's first route may not carry a parameter, so each tab
+          // opens with its bare resolver — which also gives notifications a
+          // Dynamic-free deep link per tab, the way `/today` already did.
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.today,
+                // Nobody can know a dynamic id at sign-in, and a fresh account has no
+                // Dynamic at all. This used to pass the literal string 'preview',
+                // which the server rejected as an invalid UUID — so a person who had
+                // just registered was told "Today could not be loaded".
+                builder: (context, _) => HomeResolver(
+                  onDynamic: (id) => context.go('/dynamics/$id/today'),
+                  onNoDynamic: () => context.go(Routes.start),
+                  onSignIn: () => context.go(Routes.signIn),
+                ),
+              ),
+              GoRoute(
+                path: Routes.dynamicToday,
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  return TodayScreen(
+                    dynamicId: dynamicId,
+                    onSignIn: () => context.go(Routes.signIn),
+                    onSelectTab: (surface) =>
+                        context.go(_navPath(dynamicId, surface)),
+                    onSettings: () =>
+                        context.go('/dynamics/$dynamicId/settings'),
+                    onInvite: () => context.go('/dynamics/$dynamicId/invite'),
+                    onPause: () => context.go('/dynamics/$dynamicId/pause'),
+                  );
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.rules,
+                builder: (context, _) => HomeResolver(
+                  onDynamic: (id) => context.go(_navPath(id, NavSurface.rules)),
+                  onNoDynamic: () => context.go(Routes.start),
+                  onSignIn: () => context.go(Routes.signIn),
+                ),
+              ),
+              GoRoute(
+                path: _navPath(':id', NavSurface.rules),
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  return RulesScreen(
+                    dynamicId: dynamicId,
+                    onSignIn: () => context.go(Routes.signIn),
+                    onSelectTab: (next) =>
+                        context.go(_navPath(dynamicId, next)),
+                    onPause: () => context.go('/dynamics/$dynamicId/pause'),
+                    onExplore: (section) => context.go(
+                      '/dynamics/$dynamicId/explore?section=${section.name}',
+                    ),
+                    onStarterPacks: () =>
+                        context.go('/dynamics/$dynamicId/explore/packs'),
+                  );
+                },
+              ),
+              GoRoute(
+                path: Routes.pause,
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  return PauseScreen(
+                    dynamicId: dynamicId,
+                    onDone: () =>
+                        context.go(_navPath(dynamicId, NavSurface.rules)),
+                  );
+                },
+              ),
+              GoRoute(
+                path: Routes.dynamicExplore,
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  return ExploreScreen(
+                    dynamicId: dynamicId,
+                    initialSection: ExploreSection.parse(
+                      s.uri.queryParameters['section'],
+                    ),
+                    onSignIn: () => context.go(Routes.signIn),
+                    onSelectTab: (next) =>
+                        context.go(_navPath(dynamicId, next)),
+                    onBack: () =>
+                        context.go(_navPath(dynamicId, NavSurface.rules)),
+                  );
+                },
+              ),
+              GoRoute(
+                path: Routes.dynamicExplorePacks,
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  return StarterPackScreen(
+                    dynamicId: dynamicId,
+                    onBack: () =>
+                        context.go(_navPath(dynamicId, NavSurface.rules)),
+                    onDone: () =>
+                        context.go(_navPath(dynamicId, NavSurface.rules)),
+                  );
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.record,
+                builder: (context, _) => HomeResolver(
+                  onDynamic: (id) =>
+                      context.go(_navPath(id, NavSurface.record)),
+                  onNoDynamic: () => context.go(Routes.start),
+                  onSignIn: () => context.go(Routes.signIn),
+                ),
+              ),
+              GoRoute(
+                path: _navPath(':id', NavSurface.record),
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  return RecordScreen(
+                    dynamicId: dynamicId,
+                    onSignIn: () => context.go(Routes.signIn),
+                    onSelectTab: (next) =>
+                        context.go(_navPath(dynamicId, next)),
+                    onOpenDay: (day) =>
+                        context.go('/dynamics/$dynamicId/record/$day'),
+                    onOpenSeries: (taskId, title) =>
+                        context.push(_seriesPath(dynamicId, taskId, title)),
+                  );
+                },
+              ),
+              GoRoute(
+                path: Routes.dynamicRecordDay,
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  final day = s.pathParameters['day']!;
+                  return DayScreen(
+                    dynamicId: dynamicId,
+                    day: day,
+                    onSignIn: () => context.go(Routes.signIn),
+                    onBack: () =>
+                        context.go(_navPath(dynamicId, NavSurface.record)),
+                    onOpenSeries: (taskId, title) =>
+                        context.push(_seriesPath(dynamicId, taskId, title)),
+                  );
+                },
+              ),
+              GoRoute(
+                path: Routes.dynamicRecordSeries,
+                builder: (context, s) {
+                  final dynamicId = s.pathParameters['id']!;
+                  final taskId = s.pathParameters['taskId']!;
+                  return SeriesScreen(
+                    dynamicId: dynamicId,
+                    taskId: taskId,
+                    title: s.uri.queryParameters['title'],
+                    onBack: () => context.canPop()
+                        ? context.pop()
+                        : context.go(_navPath(dynamicId, NavSurface.record)),
+                  );
+                },
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: Routes.points,
+                builder: (context, _) => HomeResolver(
+                  onDynamic: (id) =>
+                      context.go(_navPath(id, NavSurface.points)),
+                  onNoDynamic: () => context.go(Routes.start),
+                  onSignIn: () => context.go(Routes.signIn),
+                ),
+              ),
+              GoRoute(
+                path: Routes.dynamicPoints,
+                builder: (context, state) {
+                  final dynamicId = state.pathParameters['id']!;
+                  return PointsScreen(
+                    dynamicId: dynamicId,
+                    onSignIn: () => context.go(Routes.signIn),
+                    onSelectTab: (surface) =>
+                        context.go(_navPath(dynamicId, surface)),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: Routes.settings,
@@ -186,8 +370,7 @@ GoRouter createRouter(Ref ref) {
           return SettingsScreen(
             dynamicId: dynamicId,
             onClose: () => context.go(_navPath(dynamicId, NavSurface.today)),
-            onSignOut: () =>
-                ref.read(sessionProvider.notifier).signOut(),
+            onSignOut: () => ref.read(sessionProvider.notifier).signOut(),
             onLeave: () => context.go('/dynamics/$dynamicId/leave'),
             onPoints: () => context.go('/dynamics/$dynamicId/points'),
           );
@@ -201,73 +384,12 @@ GoRouter createRouter(Ref ref) {
             dynamicId: dynamicId,
             // Back to the root: the Dynamic may no longer exist to return to,
             // and the guard sends a signed-in person wherever they now belong.
-            onDone: () => context.go(Routes.today),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.pause,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return PauseScreen(
-            dynamicId: dynamicId,
-            onDone: () => context.go(_navPath(dynamicId, NavSurface.rules)),
-          );
-        },
-      ),
-      GoRoute(
-        path: _navPath(':id', NavSurface.rules),
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return RulesScreen(
-            dynamicId: dynamicId,
-            onSignIn: () => context.go(Routes.signIn),
-            onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
-            onPause: () => context.go('/dynamics/$dynamicId/pause'),
-            onExplore: (section) => context.go('/dynamics/$dynamicId/explore?section=${section.name}'),
-            onStarterPacks: () => context.go('/dynamics/$dynamicId/explore/packs'),
-          );
-        },
-      ),
-      GoRoute(
-        path: _navPath(':id', NavSurface.record),
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return RecordScreen(
-            dynamicId: dynamicId,
-            onSignIn: () => context.go(Routes.signIn),
-            onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
-            onOpenDay: (day) => context.go('/dynamics/$dynamicId/record/$day'),
-            onOpenSeries: (taskId, title) => context.push(_seriesPath(dynamicId, taskId, title)),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.dynamicRecordSeries,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          final taskId = s.pathParameters['taskId']!;
-          return SeriesScreen(
-            dynamicId: dynamicId,
-            taskId: taskId,
-            title: s.uri.queryParameters['title'],
-            onBack: () => context.canPop()
-                ? context.pop()
-                : context.go(_navPath(dynamicId, NavSurface.record)),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.dynamicRecordDay,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          final day = s.pathParameters['day']!;
-          return DayScreen(
-            dynamicId: dynamicId,
-            day: day,
-            onSignIn: () => context.go(Routes.signIn),
-            onBack: () => context.go(_navPath(dynamicId, NavSurface.record)),
-            onOpenSeries: (taskId, title) => context.push(_seriesPath(dynamicId, taskId, title)),
+            onDone: () {
+              // Whatever was read about this Dynamic is now someone else's.
+              ref.invalidate(todayProvider(dynamicId));
+              ref.invalidate(dynamicDetailProvider(dynamicId));
+              context.go(Routes.today);
+            },
           );
         },
       ),
@@ -279,42 +401,6 @@ GoRouter createRouter(Ref ref) {
             onDynamic: (id) => context.go('/dynamics/$id/record/$day'),
             onNoDynamic: () => context.go(Routes.start),
             onSignIn: () => context.go(Routes.signIn),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.dynamicExplore,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return ExploreScreen(
-            dynamicId: dynamicId,
-            initialSection: ExploreSection.parse(s.uri.queryParameters['section']),
-            onSignIn: () => context.go(Routes.signIn),
-            onSelectTab: (next) => context.go(_navPath(dynamicId, next)),
-            onBack: () => context.go(_navPath(dynamicId, NavSurface.rules)),
-          );
-        },
-      ),
-      GoRoute(
-        path: Routes.dynamicExplorePacks,
-        builder: (context, s) {
-          final dynamicId = s.pathParameters['id']!;
-          return StarterPackScreen(
-            dynamicId: dynamicId,
-            onBack: () => context.go(_navPath(dynamicId, NavSurface.rules)),
-            onDone: () => context.go(_navPath(dynamicId, NavSurface.rules)),
-          );
-        },
-      ),
-
-      GoRoute(
-        path: Routes.points,
-        builder: (context, state) {
-          final dynamicId = state.pathParameters['id']!;
-          return PointsScreen(
-            dynamicId: dynamicId,
-            onSignIn: () => context.go(Routes.signIn),
-            onSelectTab: (surface) => context.go(_navPath(dynamicId, surface)),
           );
         },
       ),
@@ -378,6 +464,9 @@ GoRouter createRouter(Ref ref) {
             token: token,
             onJoined: (dynamicId) => context.go('/dynamics/$dynamicId/today'),
             onDecline: () => context.go(Routes.entrance),
+            // Joined, or already in: the root works out which Dynamic. Signed
+            // out, the guard turns this into the entrance on its own.
+            onAlreadyIn: () => context.go(Routes.today),
             // The invitation travels with them so they land back here rather
             // than in an empty Today after signing in.
             onSignIn: () => context.go(
@@ -398,15 +487,17 @@ GoRouter createRouter(Ref ref) {
           final zone = deviceTimezone() ?? state.uri.queryParameters['tz'];
           if (zone == null) {
             return TimezoneUnavailable(
-              onResolved: (tz) => context.go(
-                '${Routes.start}?tz=${Uri.encodeComponent(tz)}',
-              ),
+              onResolved: (tz) =>
+                  context.go('${Routes.start}?tz=${Uri.encodeComponent(tz)}'),
             );
           }
           return ActivationWizard(
             timezone: zone,
-            onStarted: (dynamicId) =>
-                context.go('/dynamics/$dynamicId/today'),
+            // 首日路线 (product/02-surfaces.md): the invitation comes before
+            // Today. A day with nobody on the other side has nothing in it.
+            onStarted: (dynamicId) => context.go('/dynamics/$dynamicId/today'),
+            onStartedNeedsPartner: (dynamicId) =>
+                context.go('/dynamics/$dynamicId/invite'),
             onLeave: () => context.go(Routes.today),
           );
         },
@@ -499,18 +590,17 @@ class _SessionListenable extends ChangeNotifier {
   late _GuardDecision _last;
 
   static _GuardDecision _decision(Session s) => switch (s) {
-        SessionUnknown() => _GuardDecision.wait,
-        SignedOut() => _GuardDecision.deny,
-        Authenticated() => _GuardDecision.allow,
-      };
+    SessionUnknown() => _GuardDecision.wait,
+    SignedOut() => _GuardDecision.deny,
+    Authenticated() => _GuardDecision.allow,
+  };
 }
 
 enum _GuardDecision { wait, deny, allow }
 
 final routerProvider = Provider<GoRouter>(createRouter);
 
-String _seriesPath(String dynamicId, String taskId, String title) =>
-    Uri(
-      path: '/dynamics/$dynamicId/record/series/$taskId',
-      queryParameters: {'title': title},
-    ).toString();
+String _seriesPath(String dynamicId, String taskId, String title) => Uri(
+  path: '/dynamics/$dynamicId/record/series/$taskId',
+  queryParameters: {'title': title},
+).toString();

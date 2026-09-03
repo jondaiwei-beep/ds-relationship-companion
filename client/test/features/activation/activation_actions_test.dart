@@ -78,6 +78,14 @@ void main() {
             'enum case is named around it',
       );
       expect(dynamics.lastTimezone, 'Europe/Berlin');
+      expect(dynamics.lastDayBoundaryMinutes, 240, reason: 'the day turns at 04:00, not midnight');
+      expect(dynamics.lastSide, 'D', reason: 'a switch disposes; only the submissive delivers');
+    });
+
+    test('naming yourself submissive takes the s side', () async {
+      await actions().createDynamic(complete.copyWith(rolePreset: RolePreset.submissive));
+
+      expect(dynamics.lastSide, 'S');
     });
 
     test('sends no role when none was named', () async {
@@ -218,6 +226,8 @@ class _FakeDynamics implements DynamicRepository {
   String? lastOutcome;
   String? lastStructure;
   String? lastRolePreset;
+  String? lastSide;
+  int? lastDayBoundaryMinutes;
   String? lastTimezone;
   Object? failure;
 
@@ -227,7 +237,8 @@ class _FakeDynamics implements DynamicRepository {
     required String desiredOutcome,
     required String structureLevel,
     required String referenceTimezone,
-    int dayBoundaryMinutes = 0,
+    int dayBoundaryMinutes = 240,
+    String? side,
     String? rolePreset,
     bool longDistance = false,
     required String idempotencyKey,
@@ -235,6 +246,8 @@ class _FakeDynamics implements DynamicRepository {
     calls++;
     keys.add(idempotencyKey);
     lastMode = mode;
+    lastSide = side;
+    lastDayBoundaryMinutes = dayBoundaryMinutes;
     lastOutcome = desiredOutcome;
     lastStructure = structureLevel;
     lastRolePreset = rolePreset;

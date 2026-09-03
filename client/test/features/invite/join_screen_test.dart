@@ -50,7 +50,7 @@ InviteView _view(InviteState state, {String? inviter = 'Morgan'}) => InviteView(
     );
 
 void main() {
-  Future<({List<String> joined, List<int> signIn, _FakeInvites repo})> pump(
+  Future<({List<String> joined, List<int> signIn, List<int> alreadyIn, _FakeInvites repo})> pump(
     WidgetTester tester, {
     InviteView? view,
     Object? resolveThrows,
@@ -67,6 +67,7 @@ void main() {
     addTearDown(container.dispose);
     final joined = <String>[];
     final signIn = <int>[];
+    final alreadyIn = <int>[];
     await tester.binding.setSurfaceSize(const Size(390, 844));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
@@ -80,13 +81,38 @@ void main() {
             onJoined: joined.add,
             onDecline: () {},
             onSignIn: () => signIn.add(1),
+            onAlreadyIn: () => alreadyIn.add(1),
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
-    return (joined: joined, signIn: signIn, repo: repo);
+    return (joined: joined, signIn: signIn, alreadyIn: alreadyIn, repo: repo);
   }
+
+  group('already inside is a way in, not a wall', () {
+    testWidgets('a used invite offers Today to someone signed in', (tester) async {
+      final r = await pump(tester, view: _view(InviteState.accepted));
+
+      expect(find.textContaining('has been used'), findsOneWidget);
+      await tester.tap(find.text('Go to Today'));
+      expect(r.alreadyIn, [1]);
+    });
+
+    testWidgets('joining with no Dynamic id still leads into the app', (tester) async {
+      final r = await pump(
+        tester,
+        view: const InviteView(state: InviteState.pending, inviteId: 'inv-1', inviterDisplayName: 'Morgan'),
+      );
+      await tester.tap(find.text('Review and join'));
+      await tester.pumpAndSettle();
+
+      expect(r.joined, isEmpty);
+      expect(find.text('Review and join'), findsNothing, reason: 'a second tap would answer 409');
+      await tester.tap(find.text('Go to Today'));
+      expect(r.alreadyIn, [1]);
+    });
+  });
 
   group('opening a link is not joining', () {
     testWidgets('resolving alone never calls join', (tester) async {

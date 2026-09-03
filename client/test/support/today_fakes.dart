@@ -64,6 +64,7 @@ TodayView sView({
   List<OccurrenceView> items = const [],
   List<OpenTaskView> openTasks = const [],
   String? partner = 'Mara',
+  DateTime? dAwayUntil,
 }) =>
     TodayView(
       dynamicId: 'dyn-1',
@@ -76,6 +77,7 @@ TodayView sView({
       balance: 12,
       daysTogether: 40,
       partnerDisplayName: partner,
+      dAwayUntil: dAwayUntil,
     );
 
 TodayView dView({

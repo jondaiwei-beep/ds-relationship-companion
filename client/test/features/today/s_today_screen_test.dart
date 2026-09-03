@@ -8,9 +8,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
+import '../../support/phase3_fakes.dart';
 import '../../support/today_fakes.dart';
 
-Future<FakeTodayRepository> _pump(WidgetTester tester, FakeTodayRepository repo) async {
+Future<FakeTodayRepository> _pump(
+  WidgetTester tester,
+  FakeTodayRepository repo, {
+  FakeDynamicRepository? dynamics,
+  VoidCallback? onInvite,
+}) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
@@ -18,6 +24,7 @@ Future<FakeTodayRepository> _pump(WidgetTester tester, FakeTodayRepository repo)
     ProviderScope(
       overrides: [
         todayRepositoryProvider.overrideWithValue(repo),
+        dynamicRepositoryProvider.overrideWithValue(dynamics ?? FakeDynamicRepository()),
         taskRepositoryProvider.overrideWithValue(FakeTaskRepository()),
       ],
       child: MaterialApp(
@@ -25,7 +32,7 @@ Future<FakeTodayRepository> _pump(WidgetTester tester, FakeTodayRepository repo)
         locale: const Locale('zh'),
         localizationsDelegates: L.localizationsDelegates,
         supportedLocales: L.supportedLocales,
-        home: const TodayScreen(dynamicId: 'dyn-1'),
+        home: TodayScreen(dynamicId: 'dyn-1', onInvite: onInvite, onSelectTab: (_) {}),
       ),
     ),
   );
@@ -35,6 +42,42 @@ Future<FakeTodayRepository> _pump(WidgetTester tester, FakeTodayRepository repo)
 
 void main() {
   setUpAll(tz.initializeTimeZones);
+
+  group('the Dynamic itself, before the list', () {
+    testWidgets('alone: 等 TA 加入 with the invite link one tap away', (tester) async {
+      var invited = 0;
+      final alone = pairDetail().copyWith(members: [pairDetail().members.first]);
+      await _pump(
+        tester,
+        FakeTodayRepository(view: sView(partner: null)),
+        dynamics: FakeDynamicRepository(detail: alone),
+        onInvite: () => invited++,
+      );
+
+      expect(find.text('等 TA 加入。'), findsOneWidget);
+      await tester.tap(find.text('发邀请链接'));
+      expect(invited, 1);
+    });
+
+    testWidgets('a pair with nothing today is offered the rules, not a blank', (tester) async {
+      await _pump(tester, FakeTodayRepository(view: sView()));
+
+      expect(find.text('等 TA 加入。'), findsNothing);
+      expect(find.text('去看规矩'), findsOneWidget);
+    });
+
+    testWidgets('paused says so; D away names who and until when', (tester) async {
+      final paused = pairDetail().copyWith(state: 'PAUSED', pausedAt: DateTime.utc(2026, 9, 1));
+      await _pump(
+        tester,
+        FakeTodayRepository(view: sView(dAwayUntil: DateTime.utc(2099, 9, 5, 10))),
+        dynamics: FakeDynamicRepository(detail: paused),
+      );
+
+      expect(find.textContaining('暂停中'), findsOneWidget);
+      expect(find.textContaining('Mara 不在，到'), findsOneWidget);
+    });
+  });
 
   group('s 今天', () {
     testWidgets('renders the day: check-in first, timed items, then the rest, then 想做就做',

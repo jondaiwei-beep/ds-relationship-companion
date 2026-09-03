@@ -8,6 +8,7 @@ import '../../../app/shell/ds_skeleton.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_layout.dart';
+import '../../today/presentation/widgets/word_button.dart';
 import '../application/dynamic_actions.dart';
 import '../application/dynamic_providers.dart';
 
@@ -128,6 +129,18 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
   List<Widget> _unavailable(L l) => [
     const SizedBox(height: DsSpacing.space10),
     _Quiet(l.pauseCouldNotConfirm),
+    const SizedBox(height: DsSpacing.space4),
+    Padding(
+      padding: todayInset,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: WordButton(
+          label: l.recoveryTryAgain,
+          filled: true,
+          onTap: () => ref.invalidate(dynamicDetailProvider(widget.dynamicId)),
+        ),
+      ),
+    ),
   ];
 
   List<Widget> _pause(BuildContext context) {

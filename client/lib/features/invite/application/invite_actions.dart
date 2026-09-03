@@ -70,7 +70,12 @@ class InviteRevoked extends InviteCreated {
 /// and only its hash is stored, so the existing link cannot be produced
 /// again — the way forward is to revoke it and issue another.
 class InviteAlreadyExists extends InviteCreated {
-  const InviteAlreadyExists();
+  const InviteAlreadyExists({this.inviteId});
+
+  /// The pending invitation, when the server names it in the 409's `detail`.
+  /// With it the screen can withdraw that link and make a new one in one
+  /// move; without it the person is told to withdraw it first.
+  final String? inviteId;
 }
 
 /// The result of accepting an invitation.
@@ -160,7 +165,7 @@ class InviteActions {
       if (_code(e) == 'INVITE_ALREADY_PENDING') {
         // Terminal for this attempt, and not retryable: the key goes.
         _createKeys.remove(dynamicId);
-        return const InviteAlreadyExists();
+        return InviteAlreadyExists(inviteId: _pendingInviteId(e));
       }
       // The key is deliberately kept: the next attempt is the same attempt.
       return _isOffline(e)
@@ -267,6 +272,15 @@ class InviteActions {
         "We couldn't complete that just now. Try again.",
       );
     }
+  }
+
+  /// `detail` of an INVITE_ALREADY_PENDING answer, if it is an invite id.
+  static String? _pendingInviteId(DioException e) {
+    final data = e.response?.data;
+    final detail = data is Map ? data['detail'] : null;
+    if (detail is! String) return null;
+    final uuid = RegExp(r'^[0-9a-fA-F-]{36}\$');
+    return uuid.hasMatch(detail) ? detail : null;
   }
 
   static String? _code(DioException e) {

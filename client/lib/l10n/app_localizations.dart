@@ -109,65 +109,11 @@ abstract class L {
   /// **'Rules'**
   String get navRules;
 
-  /// No description provided for @rulesExplore.
-  ///
-  /// In en, this message translates to:
-  /// **'Explore'**
-  String get rulesExplore;
-
-  /// No description provided for @recordComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Not built yet'**
-  String get recordComingSoon;
-
-  /// No description provided for @recordComingSoonBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Each day as a page — what was delivered, what was said, how it was handled. Coming in a later build.'**
-  String get recordComingSoonBody;
-
   /// No description provided for @navRecord.
   ///
   /// In en, this message translates to:
   /// **'Record'**
   String get navRecord;
-
-  /// No description provided for @actionReceived.
-  ///
-  /// In en, this message translates to:
-  /// **'Seen'**
-  String get actionReceived;
-
-  /// No description provided for @actionComplete.
-  ///
-  /// In en, this message translates to:
-  /// **'Complete'**
-  String get actionComplete;
-
-  /// No description provided for @actionDiscuss.
-  ///
-  /// In en, this message translates to:
-  /// **'Discuss'**
-  String get actionDiscuss;
-
-  /// No description provided for @actionNewTime.
-  ///
-  /// In en, this message translates to:
-  /// **'New time'**
-  String get actionNewTime;
-
-  /// No description provided for @actionCantDo.
-  ///
-  /// In en, this message translates to:
-  /// **'Can\'t do'**
-  String get actionCantDo;
-
-  /// Withdrawing an adjustment you asked for yourself.
-  ///
-  /// In en, this message translates to:
-  /// **'Take it back'**
-  String get actionTakeItBack;
 
   /// No description provided for @activationContinue.
   ///
@@ -642,492 +588,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Eastern Australia'**
   String get activationZoneEasternAustralia;
-
-  /// No description provided for @responseTypeAcknowledge.
-  ///
-  /// In en, this message translates to:
-  /// **'Acknowledge'**
-  String get responseTypeAcknowledge;
-
-  /// No description provided for @responseTypePraise.
-  ///
-  /// In en, this message translates to:
-  /// **'Praise'**
-  String get responseTypePraise;
-
-  /// No description provided for @responseTypeComment.
-  ///
-  /// In en, this message translates to:
-  /// **'Comment'**
-  String get responseTypeComment;
-
-  /// No description provided for @responseTypeReview.
-  ///
-  /// In en, this message translates to:
-  /// **'Review'**
-  String get responseTypeReview;
-
-  /// No description provided for @responseComposerTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Respond to {name}'**
-  String responseComposerTitle(String name);
-
-  /// No description provided for @responseYourWords.
-  ///
-  /// In en, this message translates to:
-  /// **'YOUR WORDS'**
-  String get responseYourWords;
-
-  /// No description provided for @responseWordsHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Say what you noticed…'**
-  String get responseWordsHint;
-
-  /// Shown beside the field when a Comment or Review was sent empty. {type} is the lowercased response type name.
-  ///
-  /// In en, this message translates to:
-  /// **'A {type} needs your words.'**
-  String responseNeedsWords(String type);
-
-  /// No description provided for @responseSendTo.
-  ///
-  /// In en, this message translates to:
-  /// **'Send to {name}'**
-  String responseSendTo(String name);
-
-  /// No description provided for @responseSending.
-  ///
-  /// In en, this message translates to:
-  /// **'Sending'**
-  String get responseSending;
-
-  /// No description provided for @responseNotNow.
-  ///
-  /// In en, this message translates to:
-  /// **'Not now'**
-  String get responseNotNow;
-
-  /// No description provided for @responseAttention.
-  ///
-  /// In en, this message translates to:
-  /// **'Attention'**
-  String get responseAttention;
-
-  /// No description provided for @responsePartnerPresent.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} is present'**
-  String responsePartnerPresent(String name);
-
-  /// No description provided for @responseCompletedAtBy.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} completed\nthis at {time}.'**
-  String responseCompletedAtBy(String name, String time);
-
-  /// No description provided for @responseAlreadyAnsweredTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'This has already\nbeen answered.'**
-  String get responseAlreadyAnsweredTitle;
-
-  /// No description provided for @responseAlreadyAnsweredDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} has your response.'**
-  String responseAlreadyAnsweredDetail(String name);
-
-  /// No description provided for @responseClose.
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get responseClose;
-
-  /// No description provided for @responseErrorOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'You\'re offline. Connect to the internet, then try again.'**
-  String get responseErrorOffline;
-
-  /// No description provided for @responseErrorGeneric.
-  ///
-  /// In en, this message translates to:
-  /// **'We couldn\'t send that just now. Try again.'**
-  String get responseErrorGeneric;
-
-  /// No description provided for @responseAttentionSummaryLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'WHAT NEEDS YOUR ANSWER'**
-  String get responseAttentionSummaryLabel;
-
-  /// No description provided for @responseAttentionMoments.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 moment} other{{count} moments}}'**
-  String responseAttentionMoments(int count);
-
-  /// No description provided for @responseAttentionAwaiting.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} awaiting your answer'**
-  String responseAttentionAwaiting(int count);
-
-  /// No description provided for @responseAttentionToRevisit.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} to revisit'**
-  String responseAttentionToRevisit(int count);
-
-  /// Section heading, rendered in upper case. {name} is the partner's display name, already upper-cased by the caller in English.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} IS WAITING'**
-  String responseAttentionSectionWaiting(String name);
-
-  /// No description provided for @responseAttentionSectionCompletions.
-  ///
-  /// In en, this message translates to:
-  /// **'COMPLETIONS TO ANSWER'**
-  String get responseAttentionSectionCompletions;
-
-  /// No description provided for @responseAttentionSectionLookBack.
-  ///
-  /// In en, this message translates to:
-  /// **'LOOK BACK TOGETHER'**
-  String get responseAttentionSectionLookBack;
-
-  /// No description provided for @responseAttentionRespondTo.
-  ///
-  /// In en, this message translates to:
-  /// **'RESPOND TO {name}'**
-  String responseAttentionRespondTo(String name);
-
-  /// No description provided for @responseAttentionEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is waiting\non you.'**
-  String get responseAttentionEmptyTitle;
-
-  /// No description provided for @responseAttentionEmptyDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'You\'ll find anything that needs\nyour answer here.'**
-  String get responseAttentionEmptyDetail;
-
-  /// No description provided for @responseStateAskedToDiscuss.
-  ///
-  /// In en, this message translates to:
-  /// **'asked to discuss'**
-  String get responseStateAskedToDiscuss;
-
-  /// No description provided for @responseStateAskedForNewTime.
-  ///
-  /// In en, this message translates to:
-  /// **'asked for a new time'**
-  String get responseStateAskedForNewTime;
-
-  /// No description provided for @responseStateCantDoThis.
-  ///
-  /// In en, this message translates to:
-  /// **'said they can\'t do this'**
-  String get responseStateCantDoThis;
-
-  /// No description provided for @responseStateCompleted.
-  ///
-  /// In en, this message translates to:
-  /// **'completed'**
-  String get responseStateCompleted;
-
-  /// No description provided for @responseStateStillOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'is still open'**
-  String get responseStateStillOpen;
-
-  /// No description provided for @responseStateWaiting.
-  ///
-  /// In en, this message translates to:
-  /// **'is waiting'**
-  String get responseStateWaiting;
-
-  /// No description provided for @responseAgoMinutes.
-  ///
-  /// In en, this message translates to:
-  /// **'{count}m ago'**
-  String responseAgoMinutes(int count);
-
-  /// No description provided for @responseAgoHours.
-  ///
-  /// In en, this message translates to:
-  /// **'{count}h ago'**
-  String responseAgoHours(int count);
-
-  /// No description provided for @responseAgoYesterday.
-  ///
-  /// In en, this message translates to:
-  /// **'yesterday'**
-  String get responseAgoYesterday;
-
-  /// No description provided for @responseAgoDays.
-  ///
-  /// In en, this message translates to:
-  /// **'{count}d ago'**
-  String responseAgoDays(int count);
-
-  /// No description provided for @responseWaitingYourPartner.
-  ///
-  /// In en, this message translates to:
-  /// **'your partner'**
-  String get responseWaitingYourPartner;
-
-  /// No description provided for @responseWaitingHeaderAnswered.
-  ///
-  /// In en, this message translates to:
-  /// **'Acknowledgement'**
-  String get responseWaitingHeaderAnswered;
-
-  /// No description provided for @responseWaitingPresenceWaiting.
-  ///
-  /// In en, this message translates to:
-  /// **'Waiting for {name}'**
-  String responseWaitingPresenceWaiting(String name);
-
-  /// No description provided for @responseWaitingRecorded.
-  ///
-  /// In en, this message translates to:
-  /// **'Your service\nis recorded.'**
-  String get responseWaitingRecorded;
-
-  /// No description provided for @responseWaitingCompletedAt.
-  ///
-  /// In en, this message translates to:
-  /// **'COMPLETED AT {time}'**
-  String responseWaitingCompletedAt(String time);
-
-  /// No description provided for @responseWaitingNodeCompleted.
-  ///
-  /// In en, this message translates to:
-  /// **'COMPLETED'**
-  String get responseWaitingNodeCompleted;
-
-  /// Progress label under the second node. {name} is the partner's display name, upper-cased by the caller in English.
-  ///
-  /// In en, this message translates to:
-  /// **'WAITING FOR {name}'**
-  String responseWaitingNodeWaitingFor(String name);
-
-  /// No description provided for @responseWaitingNotYetAnswered.
-  ///
-  /// In en, this message translates to:
-  /// **'Your part is complete.\n{name} has not responded yet.'**
-  String responseWaitingNotYetAnswered(String name);
-
-  /// No description provided for @responseWaitingReturnToToday.
-  ///
-  /// In en, this message translates to:
-  /// **'Return to Today'**
-  String get responseWaitingReturnToToday;
-
-  /// No description provided for @responseWaitingCloseRitual.
-  ///
-  /// In en, this message translates to:
-  /// **'Close ritual'**
-  String get responseWaitingCloseRitual;
-
-  /// No description provided for @responseAnsweredTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'You are seen.'**
-  String get responseAnsweredTitle;
-
-  /// No description provided for @responseAnsweredWordlessNamed.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} acknowledged this.'**
-  String responseAnsweredWordlessNamed(String name);
-
-  /// No description provided for @responseAnsweredWordlessAnonymous.
-  ///
-  /// In en, this message translates to:
-  /// **'This was acknowledged.'**
-  String get responseAnsweredWordlessAnonymous;
-
-  /// No description provided for @responseReceivedAt.
-  ///
-  /// In en, this message translates to:
-  /// **'RECEIVED AT {time}'**
-  String responseReceivedAt(String time);
-
-  /// No description provided for @responsePrivateNoteLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'PRIVATE NOTE · ONLY YOU'**
-  String get responsePrivateNoteLabel;
-
-  /// No description provided for @dynamicTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Dynamic'**
-  String get dynamicTitle;
-
-  /// No description provided for @dynamicYou.
-  ///
-  /// In en, this message translates to:
-  /// **'YOU'**
-  String get dynamicYou;
-
-  /// No description provided for @dynamicNoOneYet.
-  ///
-  /// In en, this message translates to:
-  /// **'NO ONE YET'**
-  String get dynamicNoOneYet;
-
-  /// No description provided for @dynamicCurrentStructure.
-  ///
-  /// In en, this message translates to:
-  /// **'CURRENT STRUCTURE'**
-  String get dynamicCurrentStructure;
-
-  /// No description provided for @dynamicCurrentRhythm.
-  ///
-  /// In en, this message translates to:
-  /// **'CURRENT RHYTHM'**
-  String get dynamicCurrentRhythm;
-
-  /// No description provided for @dynamicCurrentRhythms.
-  ///
-  /// In en, this message translates to:
-  /// **'CURRENT RHYTHMS'**
-  String get dynamicCurrentRhythms;
-
-  /// No description provided for @dynamicAskOneThing.
-  ///
-  /// In en, this message translates to:
-  /// **'Set one expectation'**
-  String get dynamicAskOneThing;
-
-  /// No description provided for @dynamicThisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'This week'**
-  String get dynamicThisWeek;
-
-  /// No description provided for @dynamicPauseThis.
-  ///
-  /// In en, this message translates to:
-  /// **'Pause this Dynamic'**
-  String get dynamicPauseThis;
-
-  /// No description provided for @dynamicComeBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Come back'**
-  String get dynamicComeBack;
-
-  /// No description provided for @dynamicPaused.
-  ///
-  /// In en, this message translates to:
-  /// **'PAUSED'**
-  String get dynamicPaused;
-
-  /// No description provided for @dynamicPausedNothingExpected.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is expected of either of you while this is paused.'**
-  String get dynamicPausedNothingExpected;
-
-  /// No description provided for @dynamicEitherMayPause.
-  ///
-  /// In en, this message translates to:
-  /// **'Either of you may pause. Nothing is lost while paused.'**
-  String get dynamicEitherMayPause;
-
-  /// No description provided for @dynamicNothingWaitingAfterPause.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing from the paused days is waiting for you.'**
-  String get dynamicNothingWaitingAfterPause;
-
-  /// No description provided for @outcomeCloser.
-  ///
-  /// In en, this message translates to:
-  /// **'Closeness-led'**
-  String get outcomeCloser;
-
-  /// No description provided for @outcomeStructure.
-  ///
-  /// In en, this message translates to:
-  /// **'Structure-led'**
-  String get outcomeStructure;
-
-  /// No description provided for @outcomeService.
-  ///
-  /// In en, this message translates to:
-  /// **'Service-led'**
-  String get outcomeService;
-
-  /// No description provided for @outcomeAccountability.
-  ///
-  /// In en, this message translates to:
-  /// **'Accountability-led'**
-  String get outcomeAccountability;
-
-  /// No description provided for @outcomeExplore.
-  ///
-  /// In en, this message translates to:
-  /// **'Exploration-led'**
-  String get outcomeExplore;
-
-  /// No description provided for @levelLight.
-  ///
-  /// In en, this message translates to:
-  /// **'lightly held'**
-  String get levelLight;
-
-  /// No description provided for @levelSteady.
-  ///
-  /// In en, this message translates to:
-  /// **'mutually held'**
-  String get levelSteady;
-
-  /// No description provided for @levelDefined.
-  ///
-  /// In en, this message translates to:
-  /// **'clearly defined'**
-  String get levelDefined;
-
-  /// No description provided for @structureLine.
-  ///
-  /// In en, this message translates to:
-  /// **'{outcome} · {level}'**
-  String structureLine(Object level, Object outcome);
-
-  /// No description provided for @rolePresetDominant.
-  ///
-  /// In en, this message translates to:
-  /// **'Dominant'**
-  String get rolePresetDominant;
-
-  /// No description provided for @rolePresetSubmissive.
-  ///
-  /// In en, this message translates to:
-  /// **'Submissive'**
-  String get rolePresetSubmissive;
-
-  /// No description provided for @rolePresetSwitch.
-  ///
-  /// In en, this message translates to:
-  /// **'Switch'**
-  String get rolePresetSwitch;
-
-  /// No description provided for @rolePresetCustom.
-  ///
-  /// In en, this message translates to:
-  /// **'Their own words'**
-  String get rolePresetCustom;
 
   /// No description provided for @entranceWordmark.
   ///
@@ -1774,7 +1234,7 @@ abstract class L {
   /// No description provided for @joinYouChooseYourRole.
   ///
   /// In en, this message translates to:
-  /// **'You choose your own role.'**
+  /// **'Whoever invited you has set which side each of you is on. You will see it inside.'**
   String get joinYouChooseYourRole;
 
   /// No description provided for @joinNotConsentToExpectations.
@@ -1810,7 +1270,7 @@ abstract class L {
   /// No description provided for @joinAlreadyJoined.
   ///
   /// In en, this message translates to:
-  /// **'You\'ve joined. Open the app to continue.'**
+  /// **'This invitation has brought you in.'**
   String get joinAlreadyJoined;
 
   /// No description provided for @joinBoundaryIntentionLabel.
@@ -1933,270 +1393,6 @@ abstract class L {
   /// **'Revoked'**
   String get inviteLifecycleRevoked;
 
-  /// No description provided for @askTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Set one expectation'**
-  String get askTitle;
-
-  /// No description provided for @askCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get askCancel;
-
-  /// No description provided for @askForWhom.
-  ///
-  /// In en, this message translates to:
-  /// **'For {name}'**
-  String askForWhom(Object name);
-
-  /// No description provided for @askYourPartnerFallback.
-  ///
-  /// In en, this message translates to:
-  /// **'your partner'**
-  String get askYourPartnerFallback;
-
-  /// No description provided for @askWhatStep.
-  ///
-  /// In en, this message translates to:
-  /// **'WHAT YOU ARE ASKING OF THEM'**
-  String get askWhatStep;
-
-  /// No description provided for @askWhatHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Have the room ready before 8:00 PM'**
-  String get askWhatHint;
-
-  /// No description provided for @askWhatMissing.
-  ///
-  /// In en, this message translates to:
-  /// **'Say what you are asking for.'**
-  String get askWhatMissing;
-
-  /// No description provided for @askWhenStep.
-  ///
-  /// In en, this message translates to:
-  /// **'WHEN'**
-  String get askWhenStep;
-
-  /// No description provided for @askWhyStep.
-  ///
-  /// In en, this message translates to:
-  /// **'WHY IT MATTERS (OPTIONAL)'**
-  String get askWhyStep;
-
-  /// No description provided for @askWhyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Create a calm space for our evening ritual'**
-  String get askWhyHint;
-
-  /// No description provided for @askSend.
-  ///
-  /// In en, this message translates to:
-  /// **'Send'**
-  String get askSend;
-
-  /// No description provided for @askSending.
-  ///
-  /// In en, this message translates to:
-  /// **'Sending…'**
-  String get askSending;
-
-  /// No description provided for @askAgencyNote.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} can complete this, ask to discuss it, ask for another time, or say they cannot — always.'**
-  String askAgencyNote(Object name);
-
-  /// No description provided for @askNoOneYet.
-  ///
-  /// In en, this message translates to:
-  /// **'There is no one to ask yet.'**
-  String get askNoOneYet;
-
-  /// No description provided for @askNoOneYetBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Once your invitation is accepted, you can ask them for things here.'**
-  String get askNoOneYetBody;
-
-  /// No description provided for @askFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'That did not reach the server. Nothing was sent — try again.'**
-  String get askFailed;
-
-  /// No description provided for @askCouldNotOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'This could not be opened. Nothing was sent.'**
-  String get askCouldNotOpen;
-
-  /// No description provided for @whenAnytime.
-  ///
-  /// In en, this message translates to:
-  /// **'Anytime'**
-  String get whenAnytime;
-
-  /// No description provided for @whenClear.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear'**
-  String get whenClear;
-
-  /// No description provided for @whenToday.
-  ///
-  /// In en, this message translates to:
-  /// **'Today'**
-  String get whenToday;
-
-  /// No description provided for @detailDue.
-  ///
-  /// In en, this message translates to:
-  /// **'DUE'**
-  String get detailDue;
-
-  /// No description provided for @detailSetBy.
-  ///
-  /// In en, this message translates to:
-  /// **'Set by {name}'**
-  String detailSetBy(Object name);
-
-  /// No description provided for @detailIntention.
-  ///
-  /// In en, this message translates to:
-  /// **'WHY YOU ASKED FOR IT'**
-  String get detailIntention;
-
-  /// No description provided for @detailPrivateNote.
-  ///
-  /// In en, this message translates to:
-  /// **'PRIVATE NOTE · ONLY YOU'**
-  String get detailPrivateNote;
-
-  /// No description provided for @detailCompletionNote.
-  ///
-  /// In en, this message translates to:
-  /// **'COMPLETION NOTE (OPTIONAL)'**
-  String get detailCompletionNote;
-
-  /// No description provided for @detailCompletionHint.
-  ///
-  /// In en, this message translates to:
-  /// **'What did you attend to?'**
-  String get detailCompletionHint;
-
-  /// No description provided for @detailMarkComplete.
-  ///
-  /// In en, this message translates to:
-  /// **'Mark complete'**
-  String get detailMarkComplete;
-
-  /// No description provided for @detailCompleting.
-  ///
-  /// In en, this message translates to:
-  /// **'Completing…'**
-  String get detailCompleting;
-
-  /// No description provided for @detailPartnerWillSee.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} will see this.'**
-  String detailPartnerWillSee(Object name);
-
-  /// No description provided for @detailTakeItBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Never mind, take it back'**
-  String get detailTakeItBack;
-
-  /// No description provided for @detailTakingItBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Taking it back…'**
-  String get detailTakingItBack;
-
-  /// No description provided for @detailTakeItBackNote.
-  ///
-  /// In en, this message translates to:
-  /// **'It goes back to how it was. Nothing is recorded as agreed or refused.'**
-  String get detailTakeItBackNote;
-
-  /// No description provided for @detailTheirWords.
-  ///
-  /// In en, this message translates to:
-  /// **'THEIR WORDS'**
-  String get detailTheirWords;
-
-  /// No description provided for @detailPersonWrote.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} WROTE'**
-  String detailPersonWrote(Object name);
-
-  /// No description provided for @detailConfirming.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirming this with the server.'**
-  String get detailConfirming;
-
-  /// No description provided for @detailSessionEnded.
-  ///
-  /// In en, this message translates to:
-  /// **'Your private session needs to be restored. Nothing about this is shown until it is.'**
-  String get detailSessionEnded;
-
-  /// No description provided for @detailCouldNotLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'This could not be loaded. Nothing was changed.'**
-  String get detailCouldNotLoad;
-
-  /// No description provided for @nothingWaitingAck.
-  ///
-  /// In en, this message translates to:
-  /// **'Done, and waiting for them to respond.'**
-  String get nothingWaitingAck;
-
-  /// No description provided for @nothingAcknowledged.
-  ///
-  /// In en, this message translates to:
-  /// **'Answered. Nothing more is needed here.'**
-  String get nothingAcknowledged;
-
-  /// No description provided for @nothingDiscussing.
-  ///
-  /// In en, this message translates to:
-  /// **'You asked to talk about this.'**
-  String get nothingDiscussing;
-
-  /// No description provided for @nothingRescheduling.
-  ///
-  /// In en, this message translates to:
-  /// **'You asked for another time.'**
-  String get nothingRescheduling;
-
-  /// No description provided for @nothingExcusing.
-  ///
-  /// In en, this message translates to:
-  /// **'You said you could not do this.'**
-  String get nothingExcusing;
-
-  /// No description provided for @nothingCancelled.
-  ///
-  /// In en, this message translates to:
-  /// **'This was cancelled.'**
-  String get nothingCancelled;
-
-  /// No description provided for @nothingDefault.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is waiting on you here.'**
-  String get nothingDefault;
-
   /// No description provided for @recoveryConfirmingContext.
   ///
   /// In en, this message translates to:
@@ -2215,18 +1411,6 @@ abstract class L {
   /// **'Offline'**
   String get recoveryOffline;
 
-  /// No description provided for @recoveryReading.
-  ///
-  /// In en, this message translates to:
-  /// **'Reading'**
-  String get recoveryReading;
-
-  /// No description provided for @recoverySessionEnded.
-  ///
-  /// In en, this message translates to:
-  /// **'PRIVATE SESSION ENDED'**
-  String get recoverySessionEnded;
-
   /// No description provided for @recoverySessionRestore.
   ///
   /// In en, this message translates to:
@@ -2239,12 +1423,6 @@ abstract class L {
   /// **'Sign in again'**
   String get recoverySignInAgain;
 
-  /// No description provided for @recoveryNoProtectedContent.
-  ///
-  /// In en, this message translates to:
-  /// **'No protected content remains on this screen.'**
-  String get recoveryNoProtectedContent;
-
   /// No description provided for @recoveryTryAgain.
   ///
   /// In en, this message translates to:
@@ -2256,18 +1434,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Try to reconnect'**
   String get recoveryTryToReconnect;
-
-  /// No description provided for @todayResolving.
-  ///
-  /// In en, this message translates to:
-  /// **'RESOLVING TODAY'**
-  String get todayResolving;
-
-  /// No description provided for @todayConfirmingPrivate.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirming your private context…'**
-  String get todayConfirmingPrivate;
 
   /// No description provided for @todayPrivateByDefault.
   ///
@@ -2287,12 +1453,6 @@ abstract class L {
   /// **'Today could not be loaded. Nothing was lost.'**
   String get todayCouldNotLoad;
 
-  /// No description provided for @todayOfflineReadOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Read-only until the server reconnects.'**
-  String get todayOfflineReadOnly;
-
   /// No description provided for @todayActionsPaused.
   ///
   /// In en, this message translates to:
@@ -2305,53 +1465,11 @@ abstract class L {
   /// **'Complete, Discuss, New Time and Can\'t Do will return after current truth is confirmed.'**
   String get todayActionsReturn;
 
-  /// No description provided for @todayCachedNeverNew.
-  ///
-  /// In en, this message translates to:
-  /// **'Cached content is never treated as a new state.'**
-  String get todayCachedNeverNew;
-
   /// No description provided for @todayHiddenDetails.
   ///
   /// In en, this message translates to:
   /// **'Partner and Dynamic details have been hidden.\nSign in again to confirm current access.'**
   String get todayHiddenDetails;
-
-  /// No description provided for @todayOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'OFFLINE'**
-  String get todayOffline;
-
-  /// No description provided for @dynamicConfirmingStructure.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing about the two of you is shown until the server confirms it.'**
-  String get dynamicConfirmingStructure;
-
-  /// No description provided for @dynamicCouldNotConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'The current structure could not be confirmed.'**
-  String get dynamicCouldNotConfirm;
-
-  /// No description provided for @dynamicPauseUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Pause and Resume need the server, so they are unavailable until it reconnects. Whatever was already agreed still stands.'**
-  String get dynamicPauseUnavailable;
-
-  /// No description provided for @dynamicCouldNotLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'The Dynamic could not be loaded. Nothing was changed.'**
-  String get dynamicCouldNotLoad;
-
-  /// No description provided for @dynamicHiddenDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Partner, roles and current structure have been hidden.\nSign in again to confirm current access.'**
-  String get dynamicHiddenDetails;
 
   /// No description provided for @settingsTitle.
   ///
@@ -2641,336 +1759,6 @@ abstract class L {
   /// **'That did not reach the server. Nothing has changed.'**
   String get settingsLeaveFailed;
 
-  /// No description provided for @weeklyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'THIS WEEK'**
-  String get weeklyTitle;
-
-  /// No description provided for @weeklyClose.
-  ///
-  /// In en, this message translates to:
-  /// **'Close'**
-  String get weeklyClose;
-
-  /// No description provided for @weeklyLoading.
-  ///
-  /// In en, this message translates to:
-  /// **'Gathering what actually happened this week.'**
-  String get weeklyLoading;
-
-  /// No description provided for @weeklyLoadFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'This week could not be loaded. Nothing was changed.'**
-  String get weeklyLoadFailed;
-
-  /// No description provided for @weeklyTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Try again'**
-  String get weeklyTryAgain;
-
-  /// No description provided for @weeklyTooEarlyHeadline.
-  ///
-  /// In en, this message translates to:
-  /// **'There is not a week to look back on yet.'**
-  String get weeklyTooEarlyHeadline;
-
-  /// No description provided for @weeklyTooEarlySupport.
-  ///
-  /// In en, this message translates to:
-  /// **'This comes back once you have some days behind you. Nothing is missing in the meantime.'**
-  String get weeklyTooEarlySupport;
-
-  /// No description provided for @weeklyHeadlineQuiet.
-  ///
-  /// In en, this message translates to:
-  /// **'A quiet week.'**
-  String get weeklyHeadlineQuiet;
-
-  /// No description provided for @weeklyHeadlineOneDay.
-  ///
-  /// In en, this message translates to:
-  /// **'One day had something on it.'**
-  String get weeklyHeadlineOneDay;
-
-  /// No description provided for @weeklyHeadlineDays.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days had something on them.'**
-  String weeklyHeadlineDays(Object count);
-
-  /// No description provided for @weeklyAnsweredOne.
-  ///
-  /// In en, this message translates to:
-  /// **'One thing was answered by a person'**
-  String get weeklyAnsweredOne;
-
-  /// No description provided for @weeklyAnsweredMany.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} things were answered by a person'**
-  String weeklyAnsweredMany(Object count);
-
-  /// No description provided for @weeklyAdjustedOne.
-  ///
-  /// In en, this message translates to:
-  /// **'one adjustment was worked out together'**
-  String get weeklyAdjustedOne;
-
-  /// No description provided for @weeklyAdjustedMany.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} adjustments were worked out together'**
-  String weeklyAdjustedMany(Object count);
-
-  /// No description provided for @weeklySupportJoin.
-  ///
-  /// In en, this message translates to:
-  /// **'{first}, and {second}.'**
-  String weeklySupportJoin(Object first, Object second);
-
-  /// No description provided for @weeklySupportSingle.
-  ///
-  /// In en, this message translates to:
-  /// **'{only}.'**
-  String weeklySupportSingle(Object only);
-
-  /// No description provided for @weeklySupportNothing.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing was completed or answered. That is a fact about the week, not about either of you.'**
-  String get weeklySupportNothing;
-
-  /// No description provided for @weeklyAnsweredSection.
-  ///
-  /// In en, this message translates to:
-  /// **'WHAT WAS ANSWERED'**
-  String get weeklyAnsweredSection;
-
-  /// No description provided for @weeklyMomentAttribution.
-  ///
-  /// In en, this message translates to:
-  /// **'— {name}'**
-  String weeklyMomentAttribution(Object name);
-
-  /// No description provided for @weeklyNextWeekSection.
-  ///
-  /// In en, this message translates to:
-  /// **'NEXT WEEK'**
-  String get weeklyNextWeekSection;
-
-  /// No description provided for @weeklyKeep.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep the current rhythm'**
-  String get weeklyKeep;
-
-  /// No description provided for @weeklyPauseInstead.
-  ///
-  /// In en, this message translates to:
-  /// **'Pause instead'**
-  String get weeklyPauseInstead;
-
-  /// No description provided for @weeklyKeepSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Keeping is not a commitment. Either of you may pause at any time, from Dynamic.'**
-  String get weeklyKeepSupport;
-
-  /// No description provided for @checkInTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Check in'**
-  String get checkInTitle;
-
-  /// No description provided for @checkInCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get checkInCancel;
-
-  /// No description provided for @checkInHeadline.
-  ///
-  /// In en, this message translates to:
-  /// **'How are you, right now?'**
-  String get checkInHeadline;
-
-  /// No description provided for @checkInSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Answer as much or as little as you want.'**
-  String get checkInSupport;
-
-  /// No description provided for @checkInMoodSection.
-  ///
-  /// In en, this message translates to:
-  /// **'MOOD'**
-  String get checkInMoodSection;
-
-  /// No description provided for @checkInMoodGood.
-  ///
-  /// In en, this message translates to:
-  /// **'Good'**
-  String get checkInMoodGood;
-
-  /// No description provided for @checkInMoodSteady.
-  ///
-  /// In en, this message translates to:
-  /// **'Steady'**
-  String get checkInMoodSteady;
-
-  /// No description provided for @checkInMoodLow.
-  ///
-  /// In en, this message translates to:
-  /// **'Low'**
-  String get checkInMoodLow;
-
-  /// No description provided for @checkInMoodTender.
-  ///
-  /// In en, this message translates to:
-  /// **'Tender'**
-  String get checkInMoodTender;
-
-  /// No description provided for @checkInMoodRaw.
-  ///
-  /// In en, this message translates to:
-  /// **'Raw'**
-  String get checkInMoodRaw;
-
-  /// No description provided for @checkInEnergySection.
-  ///
-  /// In en, this message translates to:
-  /// **'ENERGY'**
-  String get checkInEnergySection;
-
-  /// No description provided for @checkInEnergyHigh.
-  ///
-  /// In en, this message translates to:
-  /// **'High'**
-  String get checkInEnergyHigh;
-
-  /// No description provided for @checkInEnergySteady.
-  ///
-  /// In en, this message translates to:
-  /// **'Steady'**
-  String get checkInEnergySteady;
-
-  /// No description provided for @checkInEnergyLow.
-  ///
-  /// In en, this message translates to:
-  /// **'Running low'**
-  String get checkInEnergyLow;
-
-  /// No description provided for @checkInNeedSection.
-  ///
-  /// In en, this message translates to:
-  /// **'WHAT WOULD HELP'**
-  String get checkInNeedSection;
-
-  /// No description provided for @checkInNeedNothing.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing'**
-  String get checkInNeedNothing;
-
-  /// No description provided for @checkInNeedCloseness.
-  ///
-  /// In en, this message translates to:
-  /// **'Closeness'**
-  String get checkInNeedCloseness;
-
-  /// No description provided for @checkInNeedSpace.
-  ///
-  /// In en, this message translates to:
-  /// **'Space'**
-  String get checkInNeedSpace;
-
-  /// No description provided for @checkInNeedStructure.
-  ///
-  /// In en, this message translates to:
-  /// **'Structure'**
-  String get checkInNeedStructure;
-
-  /// No description provided for @checkInNeedToBeAsked.
-  ///
-  /// In en, this message translates to:
-  /// **'To be asked'**
-  String get checkInNeedToBeAsked;
-
-  /// No description provided for @checkInNoteSection.
-  ///
-  /// In en, this message translates to:
-  /// **'ANYTHING ELSE (OPTIONAL)'**
-  String get checkInNoteSection;
-
-  /// No description provided for @checkInNoteHint.
-  ///
-  /// In en, this message translates to:
-  /// **'In your own words'**
-  String get checkInNoteHint;
-
-  /// No description provided for @checkInVisibilitySection.
-  ///
-  /// In en, this message translates to:
-  /// **'WHO CAN SEE THIS'**
-  String get checkInVisibilitySection;
-
-  /// No description provided for @checkInVisibilityPrivate.
-  ///
-  /// In en, this message translates to:
-  /// **'Only me'**
-  String get checkInVisibilityPrivate;
-
-  /// No description provided for @checkInVisibilityShare.
-  ///
-  /// In en, this message translates to:
-  /// **'Share'**
-  String get checkInVisibilityShare;
-
-  /// No description provided for @checkInVisibilityShareWith.
-  ///
-  /// In en, this message translates to:
-  /// **'Share with {name}'**
-  String checkInVisibilityShareWith(Object name);
-
-  /// No description provided for @checkInVisibilityPrivateSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Kept to yourself. Nothing about it reaches anyone else.'**
-  String get checkInVisibilityPrivateSupport;
-
-  /// No description provided for @checkInVisibilityNoPartnerSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'There is no one to share with yet.'**
-  String get checkInVisibilityNoPartnerSupport;
-
-  /// No description provided for @checkInVisibilitySharedSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} will be able to read this. It cannot be unshared afterwards.'**
-  String checkInVisibilitySharedSupport(Object name);
-
-  /// No description provided for @checkInSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get checkInSave;
-
-  /// No description provided for @checkInSaving.
-  ///
-  /// In en, this message translates to:
-  /// **'Saving…'**
-  String get checkInSaving;
-
-  /// No description provided for @checkInSaveFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'That did not reach the server. Nothing was saved — try again.'**
-  String get checkInSaveFailed;
-
   /// No description provided for @shellOpeningYourSpace.
   ///
   /// In en, this message translates to:
@@ -3043,150 +1831,6 @@ abstract class L {
   /// **'Hide password'**
   String get shellHidePassword;
 
-  /// No description provided for @usConfirmingContext.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirming context'**
-  String get usConfirmingContext;
-
-  /// No description provided for @usNotConfirmed.
-  ///
-  /// In en, this message translates to:
-  /// **'Not confirmed'**
-  String get usNotConfirmed;
-
-  /// No description provided for @usSoFar.
-  ///
-  /// In en, this message translates to:
-  /// **'So far'**
-  String get usSoFar;
-
-  /// No description provided for @usSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get usSettings;
-
-  /// No description provided for @usTryAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Try again'**
-  String get usTryAgain;
-
-  /// No description provided for @usCouldNotBeLoaded.
-  ///
-  /// In en, this message translates to:
-  /// **'This could not be loaded. Nothing is missing from your history.'**
-  String get usCouldNotBeLoaded;
-
-  /// A count of days where both people did something. Stated as a record, never as a rate, a streak or a target — '4 of 7' would turn a record into a report card.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{Nothing has landed on the same day yet.} =1{One day you both showed up.} other{{count} days you both showed up.}}'**
-  String usConnectedDays(int count);
-
-  /// No description provided for @usConnectedDaysSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Days you both did something. Nothing the app did on its own is counted here.'**
-  String get usConnectedDaysSupport;
-
-  /// No description provided for @usThisWeek.
-  ///
-  /// In en, this message translates to:
-  /// **'This week'**
-  String get usThisWeek;
-
-  /// No description provided for @usNothingYet.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing has happened here yet. It fills up as you use it — there is nothing to catch up on.'**
-  String get usNothingYet;
-
-  /// No description provided for @usRecently.
-  ///
-  /// In en, this message translates to:
-  /// **'RECENTLY'**
-  String get usRecently;
-
-  /// Stands in for an actor whose display name the server did not give.
-  ///
-  /// In en, this message translates to:
-  /// **'Someone'**
-  String get usSomeone;
-
-  /// No description provided for @usMomentCompletion.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} did something that was asked'**
-  String usMomentCompletion(String name);
-
-  /// No description provided for @usMomentAcknowledgement.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} answered'**
-  String usMomentAcknowledgement(String name);
-
-  /// No description provided for @usMomentAdjustmentRequested.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} asked to change something'**
-  String usMomentAdjustmentRequested(String name);
-
-  /// No description provided for @usMomentAdjustmentResolved.
-  ///
-  /// In en, this message translates to:
-  /// **'You worked something out'**
-  String get usMomentAdjustmentResolved;
-
-  /// No description provided for @usMomentCheckin.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} shared how they were'**
-  String usMomentCheckin(String name);
-
-  /// No description provided for @usMomentMemberJoined.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} joined'**
-  String usMomentMemberJoined(String name);
-
-  /// An event type this build does not recognise. Never show the raw server enum.
-  ///
-  /// In en, this message translates to:
-  /// **'Something happened'**
-  String get usMomentUnknown;
-
-  /// No description provided for @usPrivateSessionEnded.
-  ///
-  /// In en, this message translates to:
-  /// **'PRIVATE SESSION ENDED'**
-  String get usPrivateSessionEnded;
-
-  /// No description provided for @usSessionNeedsRestoring.
-  ///
-  /// In en, this message translates to:
-  /// **'Your private session\nneeds to be restored.'**
-  String get usSessionNeedsRestoring;
-
-  /// No description provided for @usHistoryHidden.
-  ///
-  /// In en, this message translates to:
-  /// **'Your history together has been hidden.\nSign in again to confirm current access.'**
-  String get usHistoryHidden;
-
-  /// No description provided for @usSignInAgain.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in again'**
-  String get usSignInAgain;
-
-  /// No description provided for @usNoProtectedContent.
-  ///
-  /// In en, this message translates to:
-  /// **'No protected content remains on this screen.'**
-  String get usNoProtectedContent;
-
   /// No description provided for @todayTitle.
   ///
   /// In en, this message translates to:
@@ -3205,161 +1849,11 @@ abstract class L {
   /// **'{name} is present'**
   String todayPresent(Object name);
 
-  /// No description provided for @todayLaterOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'LATER / OPTIONAL'**
-  String get todayLaterOptional;
-
   /// No description provided for @todayDayEndsAt.
   ///
   /// In en, this message translates to:
   /// **'Relationship day ends at {clock}'**
   String todayDayEndsAt(Object clock);
-
-  /// No description provided for @todayFrom.
-  ///
-  /// In en, this message translates to:
-  /// **'From {name}'**
-  String todayFrom(Object name);
-
-  /// No description provided for @todayNothingExpected.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing has been asked of you today.'**
-  String get todayNothingExpected;
-
-  /// No description provided for @todayCheckInOffer.
-  ///
-  /// In en, this message translates to:
-  /// **'A check-in is here if you want one.'**
-  String get todayCheckInOffer;
-
-  /// No description provided for @todayCheckIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Check in'**
-  String get todayCheckIn;
-
-  /// No description provided for @stateOnToday.
-  ///
-  /// In en, this message translates to:
-  /// **'Today'**
-  String get stateOnToday;
-
-  /// No description provided for @stateWaitingForReply.
-  ///
-  /// In en, this message translates to:
-  /// **'Waiting for a reply'**
-  String get stateWaitingForReply;
-
-  /// No description provided for @stateNeedsReview.
-  ///
-  /// In en, this message translates to:
-  /// **'Needs review'**
-  String get stateNeedsReview;
-
-  /// No description provided for @stateBeingDiscussed.
-  ///
-  /// In en, this message translates to:
-  /// **'Being discussed'**
-  String get stateBeingDiscussed;
-
-  /// No description provided for @stateNewTimeRequested.
-  ///
-  /// In en, this message translates to:
-  /// **'New time requested'**
-  String get stateNewTimeRequested;
-
-  /// No description provided for @stateCantDoSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Can\'t do — sent'**
-  String get stateCantDoSent;
-
-  /// No description provided for @stateScheduled.
-  ///
-  /// In en, this message translates to:
-  /// **'Scheduled'**
-  String get stateScheduled;
-
-  /// No description provided for @kindRitual.
-  ///
-  /// In en, this message translates to:
-  /// **'RITUAL'**
-  String get kindRitual;
-
-  /// No description provided for @kindExpectation.
-  ///
-  /// In en, this message translates to:
-  /// **'EXPECTATION'**
-  String get kindExpectation;
-
-  /// No description provided for @kindOnToday.
-  ///
-  /// In en, this message translates to:
-  /// **'ON TODAY'**
-  String get kindOnToday;
-
-  /// No description provided for @ageJustNow.
-  ///
-  /// In en, this message translates to:
-  /// **'JUST NOW'**
-  String get ageJustNow;
-
-  /// No description provided for @ageMinutes.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} MIN AGO'**
-  String ageMinutes(Object count);
-
-  /// No description provided for @ageHours.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} HR AGO'**
-  String ageHours(Object count);
-
-  /// No description provided for @ageDays.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} DAY AGO'**
-  String ageDays(Object count);
-
-  /// No description provided for @actionSending.
-  ///
-  /// In en, this message translates to:
-  /// **'Sending'**
-  String get actionSending;
-
-  /// No description provided for @yourPartner.
-  ///
-  /// In en, this message translates to:
-  /// **'YOUR PARTNER'**
-  String get yourPartner;
-
-  /// No description provided for @todayResponseHeading.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} RESPONDED · {age}'**
-  String todayResponseHeading(Object age, Object name);
-
-  /// No description provided for @todayPriorityHeading.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{ONE THING MATTERS} =2{TWO THINGS MATTER} other{{count} THINGS MATTER}}'**
-  String todayPriorityHeading(int count);
-
-  /// No description provided for @todayPriorityHeadingNone.
-  ///
-  /// In en, this message translates to:
-  /// **'NOTHING ASKED TODAY'**
-  String get todayPriorityHeadingNone;
-
-  /// No description provided for @todayPrimaryEyebrow.
-  ///
-  /// In en, this message translates to:
-  /// **'01 · NOW · {kind}'**
-  String todayPrimaryEyebrow(String kind);
 
   /// No description provided for @settingsLanguageSection.
   ///
@@ -3529,12 +2023,6 @@ abstract class L {
   /// **'That did not reach the server. Still paused — try again.'**
   String get resumeFailed;
 
-  /// No description provided for @dynamicPartnerFallback.
-  ///
-  /// In en, this message translates to:
-  /// **'PARTNER'**
-  String get dynamicPartnerFallback;
-
   /// No description provided for @detailClose.
   ///
   /// In en, this message translates to:
@@ -3547,497 +2035,11 @@ abstract class L {
   /// **'Back'**
   String get shellBack;
 
-  /// No description provided for @activationBoundaryEyebrow.
-  ///
-  /// In en, this message translates to:
-  /// **'WHAT IS NOT ON THE TABLE'**
-  String get activationBoundaryEyebrow;
-
-  /// No description provided for @activationBoundaryQuestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Name anything that is off the table.'**
-  String get activationBoundaryQuestion;
-
-  /// No description provided for @activationBoundarySupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Only you can write or change your own. Your partner sees them and cannot edit them.'**
-  String get activationBoundarySupport;
-
-  /// No description provided for @activationBoundaryFootnote.
-  ///
-  /// In en, this message translates to:
-  /// **'You can skip this and add limits at any time.'**
-  String get activationBoundaryFootnote;
-
-  /// No description provided for @activationBoundaryAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a limit'**
-  String get activationBoundaryAdd;
-
-  /// No description provided for @activationBoundaryHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Anything in front of other people'**
-  String get activationBoundaryHint;
-
-  /// No description provided for @activationBoundaryNoteHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Anything you want them to know (optional)'**
-  String get activationBoundaryNoteHint;
-
-  /// No description provided for @activationBoundaryEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing named yet.'**
-  String get activationBoundaryEmpty;
-
-  /// No description provided for @activationBoundarySave.
-  ///
-  /// In en, this message translates to:
-  /// **'Add'**
-  String get activationBoundarySave;
-
-  /// No description provided for @activationBoundaryRemove.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove {label}'**
-  String activationBoundaryRemove(String label);
-
-  /// No description provided for @activationBoundaryNeedsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Say what it is first.'**
-  String get activationBoundaryNeedsLabel;
-
-  /// No description provided for @activationBoundarySkip.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip for now'**
-  String get activationBoundarySkip;
-
-  /// No description provided for @boundaryStanceOff.
-  ///
-  /// In en, this message translates to:
-  /// **'Not this'**
-  String get boundaryStanceOff;
-
-  /// No description provided for @boundaryStanceAsk.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask me first'**
-  String get boundaryStanceAsk;
-
-  /// No description provided for @boundaryStanceCurious.
-  ///
-  /// In en, this message translates to:
-  /// **'Curious'**
-  String get boundaryStanceCurious;
-
-  /// No description provided for @boundaryStanceOffDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'A no. It does not need a reason.'**
-  String get boundaryStanceOffDetail;
-
-  /// No description provided for @boundaryStanceAskDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'Possible, but talk to me before.'**
-  String get boundaryStanceAskDetail;
-
-  /// No description provided for @boundaryStanceCuriousDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'Open to discussing it. Not a yes.'**
-  String get boundaryStanceCuriousDetail;
-
-  /// No description provided for @boundaryTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Limits'**
-  String get boundaryTitle;
-
-  /// No description provided for @boundaryYours.
-  ///
-  /// In en, this message translates to:
-  /// **'YOURS'**
-  String get boundaryYours;
-
-  /// No description provided for @boundaryTheirs.
-  ///
-  /// In en, this message translates to:
-  /// **'{name}\'s'**
-  String boundaryTheirs(String name);
-
-  /// No description provided for @boundaryTheirsFallback.
-  ///
-  /// In en, this message translates to:
-  /// **'YOUR PARTNER\'S'**
-  String get boundaryTheirsFallback;
-
-  /// No description provided for @boundaryEmptyYours.
-  ///
-  /// In en, this message translates to:
-  /// **'You have not named any limits yet.'**
-  String get boundaryEmptyYours;
-
-  /// No description provided for @boundaryEmptyTheirs.
-  ///
-  /// In en, this message translates to:
-  /// **'They have not named any yet.'**
-  String get boundaryEmptyTheirs;
-
-  /// No description provided for @boundaryTheirsReadOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Only they can change these.'**
-  String get boundaryTheirsReadOnly;
-
-  /// No description provided for @boundaryLoadFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Limits could not be loaded.'**
-  String get boundaryLoadFailed;
-
-  /// No description provided for @settingsBoundariesSection.
-  ///
-  /// In en, this message translates to:
-  /// **'LIMITS'**
-  String get settingsBoundariesSection;
-
-  /// No description provided for @settingsBoundariesOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'Limits'**
-  String get settingsBoundariesOpen;
-
-  /// No description provided for @settingsBoundariesSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Only you can change your own. Your partner sees them and cannot edit them.'**
-  String get settingsBoundariesSupport;
-
   /// No description provided for @pointsTitle.
   ///
   /// In en, this message translates to:
   /// **'Points'**
   String get pointsTitle;
-
-  /// No description provided for @pointsToSpend.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{Nothing to spend yet} =1{1 point to spend} other{{count} points to spend}}'**
-  String pointsToSpend(int count);
-
-  /// No description provided for @pointsNoneYet.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing here yet.'**
-  String get pointsNoneYet;
-
-  /// No description provided for @pointsHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'WHAT HAPPENED'**
-  String get pointsHistory;
-
-  /// No description provided for @pointsEntryNoticed.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} noticed'**
-  String pointsEntryNoticed(String name);
-
-  /// No description provided for @pointsEntryGave.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} gave you {count}'**
-  String pointsEntryGave(String name, int count);
-
-  /// No description provided for @pointsEntryTook.
-  ///
-  /// In en, this message translates to:
-  /// **'You took'**
-  String get pointsEntryTook;
-
-  /// No description provided for @pointsEntryHeld.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} held you to it'**
-  String pointsEntryHeld(String name);
-
-  /// No description provided for @pointsEntryLetGo.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} let it go'**
-  String pointsEntryLetGo(String name);
-
-  /// No description provided for @pointsEntryGift.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} gave you this'**
-  String pointsEntryGift(String name);
-
-  /// No description provided for @pointsGiveTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Give points'**
-  String get pointsGiveTitle;
-
-  /// No description provided for @pointsGiveHint.
-  ///
-  /// In en, this message translates to:
-  /// **'What for? (optional)'**
-  String get pointsGiveHint;
-
-  /// No description provided for @pointsGiveAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Give'**
-  String get pointsGiveAction;
-
-  /// No description provided for @pointsTakeAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Take back'**
-  String get pointsTakeAction;
-
-  /// No description provided for @pointsAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'How many'**
-  String get pointsAmount;
-
-  /// No description provided for @rewardsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Rewards'**
-  String get rewardsTitle;
-
-  /// No description provided for @rewardsIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Things {name} can give, or you can ask for with points.'**
-  String rewardsIntro(String name);
-
-  /// No description provided for @rewardsIntroSub.
-  ///
-  /// In en, this message translates to:
-  /// **'Things you can take with points, or {name} can simply give you.'**
-  String rewardsIntroSub(String name);
-
-  /// No description provided for @rewardsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing on offer yet.'**
-  String get rewardsEmpty;
-
-  /// No description provided for @rewardsCost.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{No points} =1{1 point} other{{count} points}}'**
-  String rewardsCost(int count);
-
-  /// No description provided for @rewardsTake.
-  ///
-  /// In en, this message translates to:
-  /// **'Take it'**
-  String get rewardsTake;
-
-  /// No description provided for @rewardsGive.
-  ///
-  /// In en, this message translates to:
-  /// **'Give it'**
-  String get rewardsGive;
-
-  /// No description provided for @rewardsNotYet.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} more to go'**
-  String rewardsNotYet(int count);
-
-  /// No description provided for @rewardsAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a reward'**
-  String get rewardsAdd;
-
-  /// No description provided for @rewardsAddTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'What is on offer'**
-  String get rewardsAddTitle;
-
-  /// No description provided for @rewardsAddHint.
-  ///
-  /// In en, this message translates to:
-  /// **'A massage'**
-  String get rewardsAddHint;
-
-  /// No description provided for @rewardsAddDetail.
-  ///
-  /// In en, this message translates to:
-  /// **'Anything they should know (optional)'**
-  String get rewardsAddDetail;
-
-  /// No description provided for @rewardsAddCost.
-  ///
-  /// In en, this message translates to:
-  /// **'Points to take it'**
-  String get rewardsAddCost;
-
-  /// No description provided for @rewardsRemove.
-  ///
-  /// In en, this message translates to:
-  /// **'Take {title} off the list'**
-  String rewardsRemove(String title);
-
-  /// No description provided for @rewardsGivenByYou.
-  ///
-  /// In en, this message translates to:
-  /// **'You gave this.'**
-  String get rewardsGivenByYou;
-
-  /// No description provided for @rewardsNeedsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Say what it is first.'**
-  String get rewardsNeedsTitle;
-
-  /// No description provided for @agreementsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'What you agreed'**
-  String get agreementsTitle;
-
-  /// No description provided for @agreementsIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Written by you both, in advance. Nothing here happens on its own — one of you decides, every time.'**
-  String get agreementsIntro;
-
-  /// No description provided for @agreementsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing agreed yet.'**
-  String get agreementsEmpty;
-
-  /// No description provided for @agreementsAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add an agreement'**
-  String get agreementsAdd;
-
-  /// No description provided for @agreementsWhen.
-  ///
-  /// In en, this message translates to:
-  /// **'When this happens'**
-  String get agreementsWhen;
-
-  /// No description provided for @agreementsWhenHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The evening things do not get done'**
-  String get agreementsWhenHint;
-
-  /// No description provided for @agreementsThen.
-  ///
-  /// In en, this message translates to:
-  /// **'Then'**
-  String get agreementsThen;
-
-  /// No description provided for @agreementsThenHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Early bedtime, one hour'**
-  String get agreementsThenHint;
-
-  /// No description provided for @agreementsCost.
-  ///
-  /// In en, this message translates to:
-  /// **'Points it costs (optional)'**
-  String get agreementsCost;
-
-  /// No description provided for @agreementsEnd.
-  ///
-  /// In en, this message translates to:
-  /// **'End {label}'**
-  String agreementsEnd(String label);
-
-  /// No description provided for @agreementsEitherCanEnd.
-  ///
-  /// In en, this message translates to:
-  /// **'Either of you can end any of these, alone.'**
-  String get agreementsEitherCanEnd;
-
-  /// No description provided for @agreementsNeedsBoth.
-  ///
-  /// In en, this message translates to:
-  /// **'Say what happens, and what follows.'**
-  String get agreementsNeedsBoth;
-
-  /// No description provided for @consequenceHeading.
-  ///
-  /// In en, this message translates to:
-  /// **'YOU BOTH AGREED'**
-  String get consequenceHeading;
-
-  /// No description provided for @consequenceHold.
-  ///
-  /// In en, this message translates to:
-  /// **'Hold to it'**
-  String get consequenceHold;
-
-  /// No description provided for @consequenceLetGo.
-  ///
-  /// In en, this message translates to:
-  /// **'Let it go'**
-  String get consequenceLetGo;
-
-  /// No description provided for @consequenceTalk.
-  ///
-  /// In en, this message translates to:
-  /// **'Talk'**
-  String get consequenceTalk;
-
-  /// No description provided for @consequenceNoteHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Anything you want to say (optional)'**
-  String get consequenceNoteHint;
-
-  /// No description provided for @consequenceHeld.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} held you to it.'**
-  String consequenceHeld(String name);
-
-  /// No description provided for @consequenceWaived.
-  ///
-  /// In en, this message translates to:
-  /// **'{name} let this one go.'**
-  String consequenceWaived(String name);
-
-  /// No description provided for @consequenceYouHeld.
-  ///
-  /// In en, this message translates to:
-  /// **'You held {name} to it.'**
-  String consequenceYouHeld(String name);
-
-  /// No description provided for @consequenceYouWaived.
-  ///
-  /// In en, this message translates to:
-  /// **'You let this one go.'**
-  String get consequenceYouWaived;
-
-  /// No description provided for @consequenceNothingHappens.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing happens until you choose.'**
-  String get consequenceNothingHappens;
 
   /// No description provided for @settingsPointsSection.
   ///
@@ -4057,113 +2059,11 @@ abstract class L {
   /// **'Points can be switched off entirely. Nothing else changes if you do.'**
   String get settingsPointsSupport;
 
-  /// No description provided for @settingsPointsEnabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Use points'**
-  String get settingsPointsEnabled;
-
-  /// No description provided for @settingsPointsPerCompletion.
-  ///
-  /// In en, this message translates to:
-  /// **'Points for finishing something'**
-  String get settingsPointsPerCompletion;
-
   /// No description provided for @navPoints.
   ///
   /// In en, this message translates to:
   /// **'Points'**
   String get navPoints;
-
-  /// No description provided for @pointsDaysTogether.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =0{No days yet} =1{1 day together} other{{count} days together}}'**
-  String pointsDaysTogether(int count);
-
-  /// No description provided for @pointsDaysNeverResets.
-  ///
-  /// In en, this message translates to:
-  /// **'This only ever goes up. A quiet day takes nothing away.'**
-  String get pointsDaysNeverResets;
-
-  /// No description provided for @consequenceChance.
-  ///
-  /// In en, this message translates to:
-  /// **'Let chance'**
-  String get consequenceChance;
-
-  /// No description provided for @consequenceChanceNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Chance picks which one. You decided there is one.'**
-  String get consequenceChanceNote;
-
-  /// No description provided for @proofAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add a photo'**
-  String get proofAdd;
-
-  /// No description provided for @proofAdded.
-  ///
-  /// In en, this message translates to:
-  /// **'Photo attached'**
-  String get proofAdded;
-
-  /// No description provided for @proofRemove.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove photo'**
-  String get proofRemove;
-
-  /// No description provided for @proofOptional.
-  ///
-  /// In en, this message translates to:
-  /// **'Only if you want to show them.'**
-  String get proofOptional;
-
-  /// No description provided for @rewardsAddOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'Put something on offer'**
-  String get rewardsAddOpen;
-
-  /// No description provided for @rewardsAddCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Never mind'**
-  String get rewardsAddCancel;
-
-  /// No description provided for @rewardsAddSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Put it on offer'**
-  String get rewardsAddSave;
-
-  /// No description provided for @agreementsAddOpen.
-  ///
-  /// In en, this message translates to:
-  /// **'Write an agreement'**
-  String get agreementsAddOpen;
-
-  /// No description provided for @agreementsAddCancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Never mind'**
-  String get agreementsAddCancel;
-
-  /// No description provided for @agreementsAddSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Agree to this'**
-  String get agreementsAddSave;
-
-  /// No description provided for @pointsSpendable.
-  ///
-  /// In en, this message translates to:
-  /// **'TO SPEND'**
-  String get pointsSpendable;
 
   /// No description provided for @todayDayStartsAt.
   ///
@@ -4218,18 +2118,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'+{count}'**
   String todayPointsEarn(int count);
-
-  /// No description provided for @todayProofPhotoNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Photo'**
-  String get todayProofPhotoNote;
-
-  /// No description provided for @todayRefreshed.
-  ///
-  /// In en, this message translates to:
-  /// **'Reloaded.'**
-  String get todayRefreshed;
 
   /// No description provided for @sTodayEmpty.
   ///
@@ -4392,12 +2280,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Pick a time'**
   String get sTodayPickTime;
-
-  /// No description provided for @sTodayNewTimeAt.
-  ///
-  /// In en, this message translates to:
-  /// **'New time: {time}'**
-  String sTodayNewTimeAt(String time);
 
   /// No description provided for @sTodayConflictPaused.
   ///
@@ -4680,18 +2562,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Only you see these.'**
   String get dTodayNotesPrivate;
-
-  /// No description provided for @pointsEntryRefunded.
-  ///
-  /// In en, this message translates to:
-  /// **'Returned to you'**
-  String get pointsEntryRefunded;
-
-  /// No description provided for @pointsEntryMoved.
-  ///
-  /// In en, this message translates to:
-  /// **'{amount}'**
-  String pointsEntryMoved(int amount);
 
   /// No description provided for @settingsDayStart.
   ///
@@ -5052,12 +2922,6 @@ abstract class L {
   /// In en, this message translates to:
   /// **'Either of you can leave one'**
   String get recordCommentHint;
-
-  /// No description provided for @recordCommentLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Your line'**
-  String get recordCommentLabel;
 
   /// No description provided for @recordDeleteCommentTitle.
   ///
@@ -6415,12 +4279,6 @@ abstract class L {
   /// **'End of day'**
   String get rulesDueEndOfDay;
 
-  /// No description provided for @rulesDuePickTime.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick a time'**
-  String get rulesDuePickTime;
-
   /// No description provided for @rulesDueAtLabel.
   ///
   /// In en, this message translates to:
@@ -6480,6 +4338,72 @@ abstract class L {
   /// In en, this message translates to:
   /// **'More…'**
   String get dTodayQuickMore;
+
+  /// No description provided for @joinAlreadyInHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'You are\nalready in.'**
+  String get joinAlreadyInHeadline;
+
+  /// No description provided for @joinOpenApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Today'**
+  String get joinOpenApp;
+
+  /// No description provided for @joinUsedGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'If you are the one who used it, just go in.'**
+  String get joinUsedGuidance;
+
+  /// No description provided for @inviteAlreadyLiveReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw it and make a new one'**
+  String get inviteAlreadyLiveReplace;
+
+  /// No description provided for @inviteAlreadyLiveReplaceNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Once withdrawn, the old link stops working. The new one is shown only this once.'**
+  String get inviteAlreadyLiveReplaceNote;
+
+  /// No description provided for @todayPausedLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused. Nothing is delivered or disposed while it lasts.'**
+  String get todayPausedLine;
+
+  /// No description provided for @todayPausedOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a look'**
+  String get todayPausedOpen;
+
+  /// No description provided for @todayWaitingPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for them to join.'**
+  String get todayWaitingPartner;
+
+  /// No description provided for @todayWaitingPartnerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is asked here until they are in.'**
+  String get todayWaitingPartnerBody;
+
+  /// No description provided for @todayInviteLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send the invite link'**
+  String get todayInviteLink;
+
+  /// No description provided for @sTodayEmptyRules.
+  ///
+  /// In en, this message translates to:
+  /// **'See the rules'**
+  String get sTodayEmptyRules;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

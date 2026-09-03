@@ -48,7 +48,7 @@ _DynamicDetail _$DynamicDetailFromJson(Map<String, dynamic> json) =>
       desiredOutcome: json['desiredOutcome'] as String,
       structureLevel: json['structureLevel'] as String,
       referenceTimezone: json['referenceTimezone'] as String,
-      dayBoundaryMinutes: (json['dayBoundaryMinutes'] as num?)?.toInt() ?? 0,
+      dayBoundaryMinutes: (json['dayBoundaryMinutes'] as num?)?.toInt() ?? 240,
       pausedAt: json['pausedAt'] == null
           ? null
           : DateTime.parse(json['pausedAt'] as String),

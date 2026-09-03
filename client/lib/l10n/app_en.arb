@@ -2,19 +2,7 @@
   "@@locale": "en",
   "navToday": "Today",
   "navRules": "Rules",
-  "rulesExplore": "Explore",
-  "recordComingSoon": "Not built yet",
-  "recordComingSoonBody": "Each day as a page — what was delivered, what was said, how it was handled. Coming in a later build.",
   "navRecord": "Record",
-  "actionReceived": "Seen",
-  "actionComplete": "Complete",
-  "actionDiscuss": "Discuss",
-  "actionNewTime": "New time",
-  "actionCantDo": "Can't do",
-  "actionTakeItBack": "Take it back",
-  "@actionTakeItBack": {
-    "description": "Withdrawing an adjustment you asked for yourself."
-  },
   "activationContinue": "Continue",
   "activationStepOf": "{step} of 5",
   "@activationStepOf": {
@@ -108,233 +96,6 @@
   "activationZoneUsMountain": "US Mountain",
   "activationZoneUsPacific": "US Pacific",
   "activationZoneEasternAustralia": "Eastern Australia",
-  "responseTypeAcknowledge": "Acknowledge",
-  "responseTypePraise": "Praise",
-  "responseTypeComment": "Comment",
-  "responseTypeReview": "Review",
-  "responseComposerTitle": "Respond to {name}",
-  "@responseComposerTitle": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseYourWords": "YOUR WORDS",
-  "responseWordsHint": "Say what you noticed…",
-  "responseNeedsWords": "A {type} needs your words.",
-  "@responseNeedsWords": {
-    "description": "Shown beside the field when a Comment or Review was sent empty. {type} is the lowercased response type name.",
-    "placeholders": {
-      "type": {
-        "type": "String"
-      }
-    }
-  },
-  "responseSendTo": "Send to {name}",
-  "@responseSendTo": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseSending": "Sending",
-  "responseNotNow": "Not now",
-  "responseAttention": "Attention",
-  "responsePartnerPresent": "{name} is present",
-  "@responsePartnerPresent": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseCompletedAtBy": "{name} completed\nthis at {time}.",
-  "@responseCompletedAtBy": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "responseAlreadyAnsweredTitle": "This has already\nbeen answered.",
-  "responseAlreadyAnsweredDetail": "{name} has your response.",
-  "@responseAlreadyAnsweredDetail": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseClose": "Close",
-  "responseErrorOffline": "You're offline. Connect to the internet, then try again.",
-  "responseErrorGeneric": "We couldn't send that just now. Try again.",
-  "responseAttentionSummaryLabel": "WHAT NEEDS YOUR ANSWER",
-  "responseAttentionMoments": "{count, plural, =1{1 moment} other{{count} moments}}",
-  "@responseAttentionMoments": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "responseAttentionAwaiting": "{count} awaiting your answer",
-  "@responseAttentionAwaiting": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "responseAttentionToRevisit": "{count} to revisit",
-  "@responseAttentionToRevisit": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "responseAttentionSectionWaiting": "{name} IS WAITING",
-  "@responseAttentionSectionWaiting": {
-    "description": "Section heading, rendered in upper case. {name} is the partner's display name, already upper-cased by the caller in English.",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseAttentionSectionCompletions": "COMPLETIONS TO ANSWER",
-  "responseAttentionSectionLookBack": "LOOK BACK TOGETHER",
-  "responseAttentionRespondTo": "RESPOND TO {name}",
-  "@responseAttentionRespondTo": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseAttentionEmptyTitle": "Nothing is waiting\non you.",
-  "responseAttentionEmptyDetail": "You'll find anything that needs\nyour answer here.",
-  "responseStateAskedToDiscuss": "asked to discuss",
-  "responseStateAskedForNewTime": "asked for a new time",
-  "responseStateCantDoThis": "said they can't do this",
-  "responseStateCompleted": "completed",
-  "responseStateStillOpen": "is still open",
-  "responseStateWaiting": "is waiting",
-  "responseAgoMinutes": "{count}m ago",
-  "@responseAgoMinutes": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "responseAgoHours": "{count}h ago",
-  "@responseAgoHours": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "responseAgoYesterday": "yesterday",
-  "responseAgoDays": "{count}d ago",
-  "@responseAgoDays": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "responseWaitingYourPartner": "your partner",
-  "responseWaitingHeaderAnswered": "Acknowledgement",
-  "responseWaitingPresenceWaiting": "Waiting for {name}",
-  "@responseWaitingPresenceWaiting": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseWaitingRecorded": "Your service\nis recorded.",
-  "responseWaitingCompletedAt": "COMPLETED AT {time}",
-  "@responseWaitingCompletedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "responseWaitingNodeCompleted": "COMPLETED",
-  "responseWaitingNodeWaitingFor": "WAITING FOR {name}",
-  "@responseWaitingNodeWaitingFor": {
-    "description": "Progress label under the second node. {name} is the partner's display name, upper-cased by the caller in English.",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseWaitingNotYetAnswered": "Your part is complete.\n{name} has not responded yet.",
-  "@responseWaitingNotYetAnswered": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseWaitingReturnToToday": "Return to Today",
-  "responseWaitingCloseRitual": "Close ritual",
-  "responseAnsweredTitle": "You are seen.",
-  "responseAnsweredWordlessNamed": "{name} acknowledged this.",
-  "@responseAnsweredWordlessNamed": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "responseAnsweredWordlessAnonymous": "This was acknowledged.",
-  "responseReceivedAt": "RECEIVED AT {time}",
-  "@responseReceivedAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "responsePrivateNoteLabel": "PRIVATE NOTE · ONLY YOU",
-  "dynamicTitle": "Dynamic",
-  "dynamicYou": "YOU",
-  "dynamicNoOneYet": "NO ONE YET",
-  "dynamicCurrentStructure": "CURRENT STRUCTURE",
-  "dynamicCurrentRhythm": "CURRENT RHYTHM",
-  "dynamicCurrentRhythms": "CURRENT RHYTHMS",
-  "dynamicAskOneThing": "Set one expectation",
-  "dynamicThisWeek": "This week",
-  "dynamicPauseThis": "Pause this Dynamic",
-  "dynamicComeBack": "Come back",
-  "dynamicPaused": "PAUSED",
-  "dynamicPausedNothingExpected": "Nothing is expected of either of you while this is paused.",
-  "dynamicEitherMayPause": "Either of you may pause. Nothing is lost while paused.",
-  "dynamicNothingWaitingAfterPause": "Nothing from the paused days is waiting for you.",
-  "outcomeCloser": "Closeness-led",
-  "outcomeStructure": "Structure-led",
-  "outcomeService": "Service-led",
-  "outcomeAccountability": "Accountability-led",
-  "outcomeExplore": "Exploration-led",
-  "levelLight": "lightly held",
-  "levelSteady": "mutually held",
-  "levelDefined": "clearly defined",
-  "structureLine": "{outcome} · {level}",
-  "rolePresetDominant": "Dominant",
-  "rolePresetSubmissive": "Submissive",
-  "rolePresetSwitch": "Switch",
-  "rolePresetCustom": "Their own words",
   "entranceWordmark": "Companion",
   "entranceHeadline": "A private space,\non your terms.",
   "entranceTagline": "Private. Considered. Yours.",
@@ -485,13 +246,13 @@
   "joinUnresolvedPrivacyNote": "This link is still here. Trying again is safe.",
   "joinSomeone": "Someone",
   "joinInvitedYou": "invited you to begin\na private dynamic.",
-  "joinYouChooseYourRole": "You choose your own role.",
+  "joinYouChooseYourRole": "Whoever invited you has set which side each of you is on. You will see it inside.",
   "joinNotConsentToExpectations": "Joining is not consent to future expectations.",
   "joinReviewAndJoin": "Review and join",
   "joinBusy": "Joining",
   "joinNotNow": "Not now",
   "joinPrivacyNote": "You can pause or leave this dynamic at any time.",
-  "joinAlreadyJoined": "You've joined. Open the app to continue.",
+  "joinAlreadyJoined": "This invitation has brought you in.",
   "joinBoundaryIntentionLabel": "SHARED INTENTION",
   "joinBoundaryIntention": "More structure and closeness.",
   "joinBoundarySharedLabel": "SHARED TOGETHER",
@@ -512,76 +273,19 @@
   "inviteLifecycleAccepted": "Accepted",
   "inviteLifecycleExpired": "Expired",
   "inviteLifecycleRevoked": "Revoked",
-  "askTitle": "Set one expectation",
-  "askCancel": "Cancel",
-  "askForWhom": "For {name}",
-  "askYourPartnerFallback": "your partner",
-  "askWhatStep": "WHAT YOU ARE ASKING OF THEM",
-  "askWhatHint": "Have the room ready before 8:00 PM",
-  "askWhatMissing": "Say what you are asking for.",
-  "askWhenStep": "WHEN",
-  "askWhyStep": "WHY IT MATTERS (OPTIONAL)",
-  "askWhyHint": "Create a calm space for our evening ritual",
-  "askSend": "Send",
-  "askSending": "Sending…",
-  "askAgencyNote": "{name} can complete this, ask to discuss it, ask for another time, or say they cannot — always.",
-  "askNoOneYet": "There is no one to ask yet.",
-  "askNoOneYetBody": "Once your invitation is accepted, you can ask them for things here.",
-  "askFailed": "That did not reach the server. Nothing was sent — try again.",
-  "askCouldNotOpen": "This could not be opened. Nothing was sent.",
-  "whenAnytime": "Anytime",
-  "whenClear": "Clear",
-  "whenToday": "Today",
-  "detailDue": "DUE",
-  "detailSetBy": "Set by {name}",
-  "detailIntention": "WHY YOU ASKED FOR IT",
-  "detailPrivateNote": "PRIVATE NOTE · ONLY YOU",
-  "detailCompletionNote": "COMPLETION NOTE (OPTIONAL)",
-  "detailCompletionHint": "What did you attend to?",
-  "detailMarkComplete": "Mark complete",
-  "detailCompleting": "Completing…",
-  "detailPartnerWillSee": "{name} will see this.",
-  "detailTakeItBack": "Never mind, take it back",
-  "detailTakingItBack": "Taking it back…",
-  "detailTakeItBackNote": "It goes back to how it was. Nothing is recorded as agreed or refused.",
-  "detailTheirWords": "THEIR WORDS",
-  "detailPersonWrote": "{name} WROTE",
-  "detailConfirming": "Confirming this with the server.",
-  "detailSessionEnded": "Your private session needs to be restored. Nothing about this is shown until it is.",
-  "detailCouldNotLoad": "This could not be loaded. Nothing was changed.",
-  "nothingWaitingAck": "Done, and waiting for them to respond.",
-  "nothingAcknowledged": "Answered. Nothing more is needed here.",
-  "nothingDiscussing": "You asked to talk about this.",
-  "nothingRescheduling": "You asked for another time.",
-  "nothingExcusing": "You said you could not do this.",
-  "nothingCancelled": "This was cancelled.",
-  "nothingDefault": "Nothing is waiting on you here.",
   "recoveryConfirmingContext": "Confirming context",
   "recoveryNotConfirmed": "Not confirmed",
   "recoveryOffline": "Offline",
-  "recoveryReading": "Reading",
-  "recoverySessionEnded": "PRIVATE SESSION ENDED",
   "recoverySessionRestore": "Your private session\nneeds to be restored.",
   "recoverySignInAgain": "Sign in again",
-  "recoveryNoProtectedContent": "No protected content remains on this screen.",
   "recoveryTryAgain": "Try again",
   "recoveryTryToReconnect": "Try to reconnect",
-  "todayResolving": "RESOLVING TODAY",
-  "todayConfirmingPrivate": "Confirming your private context…",
   "todayPrivateByDefault": "PRIVATE BY DEFAULT",
   "todayPrivateByDefaultBody": "Partner details stay hidden until membership and the current relationship day are confirmed.",
   "todayCouldNotLoad": "Today could not be loaded. Nothing was lost.",
-  "todayOfflineReadOnly": "Read-only until the server reconnects.",
   "todayActionsPaused": "Actions are paused offline",
   "todayActionsReturn": "Complete, Discuss, New Time and Can't Do will return after current truth is confirmed.",
-  "todayCachedNeverNew": "Cached content is never treated as a new state.",
   "todayHiddenDetails": "Partner and Dynamic details have been hidden.\nSign in again to confirm current access.",
-  "todayOffline": "OFFLINE",
-  "dynamicConfirmingStructure": "Nothing about the two of you is shown until the server confirms it.",
-  "dynamicCouldNotConfirm": "The current structure could not be confirmed.",
-  "dynamicPauseUnavailable": "Pause and Resume need the server, so they are unavailable until it reconnects. Whatever was already agreed still stands.",
-  "dynamicCouldNotLoad": "The Dynamic could not be loaded. Nothing was changed.",
-  "dynamicHiddenDetails": "Partner, roles and current structure have been hidden.\nSign in again to confirm current access.",
   "settingsTitle": "Settings",
   "settingsClose": "Close",
   "settingsLoading": "Reading your settings.",
@@ -630,61 +334,6 @@
   "settingsGoBack": "Go back",
   "settingsNoOneToBlock": "There is no one here to block.",
   "settingsLeaveFailed": "That did not reach the server. Nothing has changed.",
-  "weeklyTitle": "THIS WEEK",
-  "weeklyClose": "Close",
-  "weeklyLoading": "Gathering what actually happened this week.",
-  "weeklyLoadFailed": "This week could not be loaded. Nothing was changed.",
-  "weeklyTryAgain": "Try again",
-  "weeklyTooEarlyHeadline": "There is not a week to look back on yet.",
-  "weeklyTooEarlySupport": "This comes back once you have some days behind you. Nothing is missing in the meantime.",
-  "weeklyHeadlineQuiet": "A quiet week.",
-  "weeklyHeadlineOneDay": "One day had something on it.",
-  "weeklyHeadlineDays": "{count} days had something on them.",
-  "weeklyAnsweredOne": "One thing was answered by a person",
-  "weeklyAnsweredMany": "{count} things were answered by a person",
-  "weeklyAdjustedOne": "one adjustment was worked out together",
-  "weeklyAdjustedMany": "{count} adjustments were worked out together",
-  "weeklySupportJoin": "{first}, and {second}.",
-  "weeklySupportSingle": "{only}.",
-  "weeklySupportNothing": "Nothing was completed or answered. That is a fact about the week, not about either of you.",
-  "weeklyAnsweredSection": "WHAT WAS ANSWERED",
-  "weeklyMomentAttribution": "— {name}",
-  "weeklyNextWeekSection": "NEXT WEEK",
-  "weeklyKeep": "Keep the current rhythm",
-  "weeklyPauseInstead": "Pause instead",
-  "weeklyKeepSupport": "Keeping is not a commitment. Either of you may pause at any time, from Dynamic.",
-  "checkInTitle": "Check in",
-  "checkInCancel": "Cancel",
-  "checkInHeadline": "How are you, right now?",
-  "checkInSupport": "Answer as much or as little as you want.",
-  "checkInMoodSection": "MOOD",
-  "checkInMoodGood": "Good",
-  "checkInMoodSteady": "Steady",
-  "checkInMoodLow": "Low",
-  "checkInMoodTender": "Tender",
-  "checkInMoodRaw": "Raw",
-  "checkInEnergySection": "ENERGY",
-  "checkInEnergyHigh": "High",
-  "checkInEnergySteady": "Steady",
-  "checkInEnergyLow": "Running low",
-  "checkInNeedSection": "WHAT WOULD HELP",
-  "checkInNeedNothing": "Nothing",
-  "checkInNeedCloseness": "Closeness",
-  "checkInNeedSpace": "Space",
-  "checkInNeedStructure": "Structure",
-  "checkInNeedToBeAsked": "To be asked",
-  "checkInNoteSection": "ANYTHING ELSE (OPTIONAL)",
-  "checkInNoteHint": "In your own words",
-  "checkInVisibilitySection": "WHO CAN SEE THIS",
-  "checkInVisibilityPrivate": "Only me",
-  "checkInVisibilityShare": "Share",
-  "checkInVisibilityShareWith": "Share with {name}",
-  "checkInVisibilityPrivateSupport": "Kept to yourself. Nothing about it reaches anyone else.",
-  "checkInVisibilityNoPartnerSupport": "There is no one to share with yet.",
-  "checkInVisibilitySharedSupport": "{name} will be able to read this. It cannot be unshared afterwards.",
-  "checkInSave": "Save",
-  "checkInSaving": "Saving…",
-  "checkInSaveFailed": "That did not reach the server. Nothing was saved — try again.",
   "shellOpeningYourSpace": "Opening your space…",
   "shellSignInToContinue": "Sign in to continue.",
   "shellCouldNotOpenYourSpace": "We couldn't open\nyour space.",
@@ -705,122 +354,10 @@
   "shellHide": "Hide",
   "shellShowPassword": "Show password",
   "shellHidePassword": "Hide password",
-  "usConfirmingContext": "Confirming context",
-  "usNotConfirmed": "Not confirmed",
-  "usSoFar": "So far",
-  "usSettings": "Settings",
-  "usTryAgain": "Try again",
-  "usCouldNotBeLoaded": "This could not be loaded. Nothing is missing from your history.",
-  "usConnectedDays": "{count, plural, =0{Nothing has landed on the same day yet.} =1{One day you both showed up.} other{{count} days you both showed up.}}",
-  "@usConnectedDays": {
-    "description": "A count of days where both people did something. Stated as a record, never as a rate, a streak or a target — '4 of 7' would turn a record into a report card.",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "usConnectedDaysSupport": "Days you both did something. Nothing the app did on its own is counted here.",
-  "usThisWeek": "This week",
-  "usNothingYet": "Nothing has happened here yet. It fills up as you use it — there is nothing to catch up on.",
-  "usRecently": "RECENTLY",
-  "usSomeone": "Someone",
-  "@usSomeone": {
-    "description": "Stands in for an actor whose display name the server did not give."
-  },
-  "usMomentCompletion": "{name} did something that was asked",
-  "@usMomentCompletion": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "usMomentAcknowledgement": "{name} answered",
-  "@usMomentAcknowledgement": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "usMomentAdjustmentRequested": "{name} asked to change something",
-  "@usMomentAdjustmentRequested": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "usMomentAdjustmentResolved": "You worked something out",
-  "usMomentCheckin": "{name} shared how they were",
-  "@usMomentCheckin": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "usMomentMemberJoined": "{name} joined",
-  "@usMomentMemberJoined": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "usMomentUnknown": "Something happened",
-  "@usMomentUnknown": {
-    "description": "An event type this build does not recognise. Never show the raw server enum."
-  },
-  "usPrivateSessionEnded": "PRIVATE SESSION ENDED",
-  "usSessionNeedsRestoring": "Your private session\nneeds to be restored.",
-  "usHistoryHidden": "Your history together has been hidden.\nSign in again to confirm current access.",
-  "usSignInAgain": "Sign in again",
-  "usNoProtectedContent": "No protected content remains on this screen.",
   "todayTitle": "Today",
   "todayPrivate": "Private",
   "todayPresent": "{name} is present",
-  "todayLaterOptional": "LATER / OPTIONAL",
   "todayDayEndsAt": "Relationship day ends at {clock}",
-  "todayFrom": "From {name}",
-  "todayNothingExpected": "Nothing has been asked of you today.",
-  "todayCheckInOffer": "A check-in is here if you want one.",
-  "todayCheckIn": "Check in",
-  "stateOnToday": "Today",
-  "stateWaitingForReply": "Waiting for a reply",
-  "stateNeedsReview": "Needs review",
-  "stateBeingDiscussed": "Being discussed",
-  "stateNewTimeRequested": "New time requested",
-  "stateCantDoSent": "Can't do — sent",
-  "stateScheduled": "Scheduled",
-  "kindRitual": "RITUAL",
-  "kindExpectation": "EXPECTATION",
-  "kindOnToday": "ON TODAY",
-  "ageJustNow": "JUST NOW",
-  "ageMinutes": "{count} MIN AGO",
-  "ageHours": "{count} HR AGO",
-  "ageDays": "{count} DAY AGO",
-  "actionSending": "Sending",
-  "yourPartner": "YOUR PARTNER",
-  "todayResponseHeading": "{name} RESPONDED · {age}",
-  "todayPriorityHeading": "{count, plural, =1{ONE THING MATTERS} =2{TWO THINGS MATTER} other{{count} THINGS MATTER}}",
-  "@todayPriorityHeading": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "todayPriorityHeadingNone": "NOTHING ASKED TODAY",
-  "todayPrimaryEyebrow": "01 · NOW · {kind}",
-  "@todayPrimaryEyebrow": {
-    "placeholders": {
-      "kind": {
-        "type": "String"
-      }
-    }
-  },
   "settingsLanguageSection": "LANGUAGE",
   "settingsLanguageFollowDevice": "Follow my phone",
   "settingsLanguageFollowDeviceSupport": "Changes with your phone's language setting.",
@@ -849,241 +386,13 @@
   "resumeStayPaused": "Stay paused",
   "pauseFailed": "That did not reach the server. Nothing changed — try again.",
   "resumeFailed": "That did not reach the server. Still paused — try again.",
-  "dynamicPartnerFallback": "PARTNER",
   "detailClose": "Close",
   "shellBack": "Back",
-  "activationBoundaryEyebrow": "WHAT IS NOT ON THE TABLE",
-  "activationBoundaryQuestion": "Name anything that is off the table.",
-  "activationBoundarySupport": "Only you can write or change your own. Your partner sees them and cannot edit them.",
-  "activationBoundaryFootnote": "You can skip this and add limits at any time.",
-  "activationBoundaryAdd": "Add a limit",
-  "activationBoundaryHint": "Anything in front of other people",
-  "activationBoundaryNoteHint": "Anything you want them to know (optional)",
-  "activationBoundaryEmpty": "Nothing named yet.",
-  "activationBoundarySave": "Add",
-  "activationBoundaryRemove": "Remove {label}",
-  "activationBoundaryNeedsLabel": "Say what it is first.",
-  "activationBoundarySkip": "Skip for now",
-  "boundaryStanceOff": "Not this",
-  "boundaryStanceAsk": "Ask me first",
-  "boundaryStanceCurious": "Curious",
-  "boundaryStanceOffDetail": "A no. It does not need a reason.",
-  "boundaryStanceAskDetail": "Possible, but talk to me before.",
-  "boundaryStanceCuriousDetail": "Open to discussing it. Not a yes.",
-  "boundaryTitle": "Limits",
-  "boundaryYours": "YOURS",
-  "boundaryTheirs": "{name}'s",
-  "boundaryTheirsFallback": "YOUR PARTNER'S",
-  "boundaryEmptyYours": "You have not named any limits yet.",
-  "boundaryEmptyTheirs": "They have not named any yet.",
-  "boundaryTheirsReadOnly": "Only they can change these.",
-  "boundaryLoadFailed": "Limits could not be loaded.",
-  "@activationBoundaryRemove": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "@boundaryTheirs": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "settingsBoundariesSection": "LIMITS",
-  "settingsBoundariesOpen": "Limits",
-  "settingsBoundariesSupport": "Only you can change your own. Your partner sees them and cannot edit them.",
   "pointsTitle": "Points",
-  "pointsToSpend": "{count, plural, =0{Nothing to spend yet} =1{1 point to spend} other{{count} points to spend}}",
-  "pointsNoneYet": "Nothing here yet.",
-  "pointsHistory": "WHAT HAPPENED",
-  "pointsEntryNoticed": "{name} noticed",
-  "pointsEntryGave": "{name} gave you {count}",
-  "pointsEntryTook": "You took",
-  "pointsEntryHeld": "{name} held you to it",
-  "pointsEntryLetGo": "{name} let it go",
-  "pointsEntryGift": "{name} gave you this",
-  "pointsGiveTitle": "Give points",
-  "pointsGiveHint": "What for? (optional)",
-  "pointsGiveAction": "Give",
-  "pointsTakeAction": "Take back",
-  "pointsAmount": "How many",
-  "rewardsTitle": "Rewards",
-  "rewardsIntro": "Things {name} can give, or you can ask for with points.",
-  "rewardsIntroSub": "Things you can take with points, or {name} can simply give you.",
-  "rewardsEmpty": "Nothing on offer yet.",
-  "rewardsCost": "{count, plural, =0{No points} =1{1 point} other{{count} points}}",
-  "rewardsTake": "Take it",
-  "rewardsGive": "Give it",
-  "rewardsNotYet": "{count} more to go",
-  "rewardsAdd": "Add a reward",
-  "rewardsAddTitle": "What is on offer",
-  "rewardsAddHint": "A massage",
-  "rewardsAddDetail": "Anything they should know (optional)",
-  "rewardsAddCost": "Points to take it",
-  "rewardsRemove": "Take {title} off the list",
-  "rewardsGivenByYou": "You gave this.",
-  "rewardsNeedsTitle": "Say what it is first.",
-  "agreementsTitle": "What you agreed",
-  "agreementsIntro": "Written by you both, in advance. Nothing here happens on its own — one of you decides, every time.",
-  "agreementsEmpty": "Nothing agreed yet.",
-  "agreementsAdd": "Add an agreement",
-  "agreementsWhen": "When this happens",
-  "agreementsWhenHint": "The evening things do not get done",
-  "agreementsThen": "Then",
-  "agreementsThenHint": "Early bedtime, one hour",
-  "agreementsCost": "Points it costs (optional)",
-  "agreementsEnd": "End {label}",
-  "agreementsEitherCanEnd": "Either of you can end any of these, alone.",
-  "agreementsNeedsBoth": "Say what happens, and what follows.",
-  "consequenceHeading": "YOU BOTH AGREED",
-  "consequenceHold": "Hold to it",
-  "consequenceLetGo": "Let it go",
-  "consequenceTalk": "Talk",
-  "consequenceNoteHint": "Anything you want to say (optional)",
-  "consequenceHeld": "{name} held you to it.",
-  "consequenceWaived": "{name} let this one go.",
-  "consequenceYouHeld": "You held {name} to it.",
-  "consequenceYouWaived": "You let this one go.",
-  "consequenceNothingHappens": "Nothing happens until you choose.",
   "settingsPointsSection": "POINTS",
   "settingsPointsOpen": "Points and rewards",
   "settingsPointsSupport": "Points can be switched off entirely. Nothing else changes if you do.",
-  "settingsPointsEnabled": "Use points",
-  "settingsPointsPerCompletion": "Points for finishing something",
-  "@pointsToSpend": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@pointsEntryNoticed": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@pointsEntryGave": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@pointsEntryHeld": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@pointsEntryLetGo": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@pointsEntryGift": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@rewardsIntro": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@rewardsIntroSub": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@rewardsCost": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@rewardsNotYet": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@rewardsRemove": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  "@agreementsEnd": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      }
-    }
-  },
-  "@consequenceHeld": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@consequenceWaived": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@consequenceYouHeld": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "navPoints": "Points",
-  "pointsDaysTogether": "{count, plural, =0{No days yet} =1{1 day together} other{{count} days together}}",
-  "pointsDaysNeverResets": "This only ever goes up. A quiet day takes nothing away.",
-  "consequenceChance": "Let chance",
-  "consequenceChanceNote": "Chance picks which one. You decided there is one.",
-  "proofAdd": "Add a photo",
-  "proofAdded": "Photo attached",
-  "proofRemove": "Remove photo",
-  "proofOptional": "Only if you want to show them.",
-  "@pointsDaysTogether": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rewardsAddOpen": "Put something on offer",
-  "rewardsAddCancel": "Never mind",
-  "rewardsAddSave": "Put it on offer",
-  "agreementsAddOpen": "Write an agreement",
-  "agreementsAddCancel": "Never mind",
-  "agreementsAddSave": "Agree to this",
-  "pointsSpendable": "TO SPEND",
   "todayDayStartsAt": "Today counts from {clock}",
   "@todayDayStartsAt": {
     "placeholders": {
@@ -1128,8 +437,6 @@
       }
     }
   },
-  "todayProofPhotoNote": "Photo",
-  "todayRefreshed": "Reloaded.",
   "sTodayEmpty": "Nothing is asked of you today.",
   "sTodaySectionCheckin": "Check-in",
   "sTodaySectionList": "Today",
@@ -1246,14 +553,6 @@
   "sTodayPhotoRef": "Photo",
   "sTodayPhotoHint": "Paste a photo reference for now; the camera comes in a later build.",
   "sTodayPickTime": "Pick a time",
-  "sTodayNewTimeAt": "New time: {time}",
-  "@sTodayNewTimeAt": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
   "sTodayConflictPaused": "{name} paused this.",
   "@sTodayConflictPaused": {
     "placeholders": {
@@ -1391,15 +690,6 @@
   "dTodayNoteDelete": "Delete",
   "dTodayNoteAdd": "Keep it",
   "dTodayNotesPrivate": "Only you see these.",
-  "pointsEntryRefunded": "Returned to you",
-  "pointsEntryMoved": "{amount}",
-  "@pointsEntryMoved": {
-    "placeholders": {
-      "amount": {
-        "type": "int"
-      }
-    }
-  },
   "settingsDayStart": "The day starts at {time}",
   "@settingsDayStart": {
     "placeholders": {
@@ -1671,7 +961,6 @@
   "recordActionCantDo": "Explain: can't do",
   "recordComments": "A line on this day",
   "recordCommentHint": "Either of you can leave one",
-  "recordCommentLabel": "Your line",
   "recordDeleteCommentTitle": "Remove this line?",
   "recordDelete": "Remove",
   "recordPrivateNote": "Private note",
@@ -2117,28 +1406,88 @@
   "rulesExplorePrefs": "Preferences",
   "sTodayMeasureLabel": "Value",
   "sTodayMeasureLabelUnit": "Value ({unit})",
-  "@sTodayMeasureLabelUnit": {"placeholders": {"unit": {"type": "String"}}},
+  "@sTodayMeasureLabelUnit": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
   "recordSeriesTitle": "Curve",
   "recordSeriesAction": "Curve",
   "recordSeriesSection": "Curves",
   "recordSeriesEmpty": "No numbers in the last {days} days.",
-  "@recordSeriesEmpty": {"placeholders": {"days": {"type": "int"}}},
+  "@recordSeriesEmpty": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "recordSeriesRange": "{from} – {to}",
-  "@recordSeriesRange": {"placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
+  "@recordSeriesRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
   "recordSeriesLow": "Low {value}",
-  "@recordSeriesLow": {"placeholders": {"value": {"type": "String"}}},
+  "@recordSeriesLow": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "recordSeriesHigh": "High {value}",
-  "@recordSeriesHigh": {"placeholders": {"value": {"type": "String"}}},
+  "@recordSeriesHigh": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "recordSeriesLatest": "{day} · {value}",
-  "@recordSeriesLatest": {"placeholders": {"day": {"type": "String"}, "value": {"type": "String"}}},
+  "@recordSeriesLatest": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
   "recordSeriesCount": "{count} days recorded",
-  "@recordSeriesCount": {"placeholders": {"count": {"type": "int"}}},
+  "@recordSeriesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "recordExport": "Export record",
   "recordExportLastDays": "Last {days} days",
-  "@recordExportLastDays": {"placeholders": {"days": {"type": "int"}}},
+  "@recordExportLastDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "recordExportCustom": "Pick dates…",
   "recordExported": "Exported {filename}",
-  "@recordExported": {"placeholders": {"filename": {"type": "String"}}},
+  "@recordExported": {
+    "placeholders": {
+      "filename": {
+        "type": "String"
+      }
+    }
+  },
   "recordExportFailed": "The export did not go through. Try again.",
   "rulesEditTask": "Edit",
   "rulesTaskKindLabel": "Kind",
@@ -2153,13 +1502,24 @@
   "rulesScheduleLabel": "When",
   "rulesWeekdaysRequired": "Pick at least one day",
   "rulesEveryNFrom": "from {date}",
-  "@rulesEveryNFrom": {"placeholders": {"date": {"type": "String"}}},
+  "@rulesEveryNFrom": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "rulesEveryNInvalid": "2 to 365",
   "rulesTimesPerDayLabel": "Times a day",
   "rulesDueTimeLabel": "Due ({zone})",
-  "@rulesDueTimeLabel": {"placeholders": {"zone": {"type": "String"}}},
+  "@rulesDueTimeLabel": {
+    "placeholders": {
+      "zone": {
+        "type": "String"
+      }
+    }
+  },
   "rulesDueEndOfDay": "End of day",
-  "rulesDuePickTime": "Pick a time",
   "rulesDueAtLabel": "Which day, what time",
   "rulesDuePickDate": "Pick a day",
   "rulesDueAtRequired": "A one-off needs a day",
@@ -2169,5 +1529,16 @@
   "rulesPointsHint": "Basics earn 0; they only cost when missed",
   "rulesUnitLabel": "Unit (kg, ml…)",
   "rulesUnitRequired": "A measure needs a unit",
-  "dTodayQuickMore": "More…"
+  "dTodayQuickMore": "More…",
+  "joinAlreadyInHeadline": "You are\nalready in.",
+  "joinOpenApp": "Go to Today",
+  "joinUsedGuidance": "If you are the one who used it, just go in.",
+  "inviteAlreadyLiveReplace": "Withdraw it and make a new one",
+  "inviteAlreadyLiveReplaceNote": "Once withdrawn, the old link stops working. The new one is shown only this once.",
+  "todayPausedLine": "Paused. Nothing is delivered or disposed while it lasts.",
+  "todayPausedOpen": "Have a look",
+  "todayWaitingPartner": "Waiting for them to join.",
+  "todayWaitingPartnerBody": "Nothing is asked here until they are in.",
+  "todayInviteLink": "Send the invite link",
+  "sTodayEmptyRules": "See the rules"
 }

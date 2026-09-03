@@ -15,35 +15,7 @@ class LEn extends L {
   String get navRules => 'Rules';
 
   @override
-  String get rulesExplore => 'Explore';
-
-  @override
-  String get recordComingSoon => 'Not built yet';
-
-  @override
-  String get recordComingSoonBody =>
-      'Each day as a page — what was delivered, what was said, how it was handled. Coming in a later build.';
-
-  @override
   String get navRecord => 'Record';
-
-  @override
-  String get actionReceived => 'Seen';
-
-  @override
-  String get actionComplete => 'Complete';
-
-  @override
-  String get actionDiscuss => 'Discuss';
-
-  @override
-  String get actionNewTime => 'New time';
-
-  @override
-  String get actionCantDo => 'Can\'t do';
-
-  @override
-  String get actionTakeItBack => 'Take it back';
 
   @override
   String get activationContinue => 'Continue';
@@ -305,303 +277,6 @@ class LEn extends L {
 
   @override
   String get activationZoneEasternAustralia => 'Eastern Australia';
-
-  @override
-  String get responseTypeAcknowledge => 'Acknowledge';
-
-  @override
-  String get responseTypePraise => 'Praise';
-
-  @override
-  String get responseTypeComment => 'Comment';
-
-  @override
-  String get responseTypeReview => 'Review';
-
-  @override
-  String responseComposerTitle(String name) {
-    return 'Respond to $name';
-  }
-
-  @override
-  String get responseYourWords => 'YOUR WORDS';
-
-  @override
-  String get responseWordsHint => 'Say what you noticed…';
-
-  @override
-  String responseNeedsWords(String type) {
-    return 'A $type needs your words.';
-  }
-
-  @override
-  String responseSendTo(String name) {
-    return 'Send to $name';
-  }
-
-  @override
-  String get responseSending => 'Sending';
-
-  @override
-  String get responseNotNow => 'Not now';
-
-  @override
-  String get responseAttention => 'Attention';
-
-  @override
-  String responsePartnerPresent(String name) {
-    return '$name is present';
-  }
-
-  @override
-  String responseCompletedAtBy(String name, String time) {
-    return '$name completed\nthis at $time.';
-  }
-
-  @override
-  String get responseAlreadyAnsweredTitle => 'This has already\nbeen answered.';
-
-  @override
-  String responseAlreadyAnsweredDetail(String name) {
-    return '$name has your response.';
-  }
-
-  @override
-  String get responseClose => 'Close';
-
-  @override
-  String get responseErrorOffline =>
-      'You\'re offline. Connect to the internet, then try again.';
-
-  @override
-  String get responseErrorGeneric =>
-      'We couldn\'t send that just now. Try again.';
-
-  @override
-  String get responseAttentionSummaryLabel => 'WHAT NEEDS YOUR ANSWER';
-
-  @override
-  String responseAttentionMoments(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count moments',
-      one: '1 moment',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String responseAttentionAwaiting(int count) {
-    return '$count awaiting your answer';
-  }
-
-  @override
-  String responseAttentionToRevisit(int count) {
-    return '$count to revisit';
-  }
-
-  @override
-  String responseAttentionSectionWaiting(String name) {
-    return '$name IS WAITING';
-  }
-
-  @override
-  String get responseAttentionSectionCompletions => 'COMPLETIONS TO ANSWER';
-
-  @override
-  String get responseAttentionSectionLookBack => 'LOOK BACK TOGETHER';
-
-  @override
-  String responseAttentionRespondTo(String name) {
-    return 'RESPOND TO $name';
-  }
-
-  @override
-  String get responseAttentionEmptyTitle => 'Nothing is waiting\non you.';
-
-  @override
-  String get responseAttentionEmptyDetail =>
-      'You\'ll find anything that needs\nyour answer here.';
-
-  @override
-  String get responseStateAskedToDiscuss => 'asked to discuss';
-
-  @override
-  String get responseStateAskedForNewTime => 'asked for a new time';
-
-  @override
-  String get responseStateCantDoThis => 'said they can\'t do this';
-
-  @override
-  String get responseStateCompleted => 'completed';
-
-  @override
-  String get responseStateStillOpen => 'is still open';
-
-  @override
-  String get responseStateWaiting => 'is waiting';
-
-  @override
-  String responseAgoMinutes(int count) {
-    return '${count}m ago';
-  }
-
-  @override
-  String responseAgoHours(int count) {
-    return '${count}h ago';
-  }
-
-  @override
-  String get responseAgoYesterday => 'yesterday';
-
-  @override
-  String responseAgoDays(int count) {
-    return '${count}d ago';
-  }
-
-  @override
-  String get responseWaitingYourPartner => 'your partner';
-
-  @override
-  String get responseWaitingHeaderAnswered => 'Acknowledgement';
-
-  @override
-  String responseWaitingPresenceWaiting(String name) {
-    return 'Waiting for $name';
-  }
-
-  @override
-  String get responseWaitingRecorded => 'Your service\nis recorded.';
-
-  @override
-  String responseWaitingCompletedAt(String time) {
-    return 'COMPLETED AT $time';
-  }
-
-  @override
-  String get responseWaitingNodeCompleted => 'COMPLETED';
-
-  @override
-  String responseWaitingNodeWaitingFor(String name) {
-    return 'WAITING FOR $name';
-  }
-
-  @override
-  String responseWaitingNotYetAnswered(String name) {
-    return 'Your part is complete.\n$name has not responded yet.';
-  }
-
-  @override
-  String get responseWaitingReturnToToday => 'Return to Today';
-
-  @override
-  String get responseWaitingCloseRitual => 'Close ritual';
-
-  @override
-  String get responseAnsweredTitle => 'You are seen.';
-
-  @override
-  String responseAnsweredWordlessNamed(String name) {
-    return '$name acknowledged this.';
-  }
-
-  @override
-  String get responseAnsweredWordlessAnonymous => 'This was acknowledged.';
-
-  @override
-  String responseReceivedAt(String time) {
-    return 'RECEIVED AT $time';
-  }
-
-  @override
-  String get responsePrivateNoteLabel => 'PRIVATE NOTE · ONLY YOU';
-
-  @override
-  String get dynamicTitle => 'Dynamic';
-
-  @override
-  String get dynamicYou => 'YOU';
-
-  @override
-  String get dynamicNoOneYet => 'NO ONE YET';
-
-  @override
-  String get dynamicCurrentStructure => 'CURRENT STRUCTURE';
-
-  @override
-  String get dynamicCurrentRhythm => 'CURRENT RHYTHM';
-
-  @override
-  String get dynamicCurrentRhythms => 'CURRENT RHYTHMS';
-
-  @override
-  String get dynamicAskOneThing => 'Set one expectation';
-
-  @override
-  String get dynamicThisWeek => 'This week';
-
-  @override
-  String get dynamicPauseThis => 'Pause this Dynamic';
-
-  @override
-  String get dynamicComeBack => 'Come back';
-
-  @override
-  String get dynamicPaused => 'PAUSED';
-
-  @override
-  String get dynamicPausedNothingExpected =>
-      'Nothing is expected of either of you while this is paused.';
-
-  @override
-  String get dynamicEitherMayPause =>
-      'Either of you may pause. Nothing is lost while paused.';
-
-  @override
-  String get dynamicNothingWaitingAfterPause =>
-      'Nothing from the paused days is waiting for you.';
-
-  @override
-  String get outcomeCloser => 'Closeness-led';
-
-  @override
-  String get outcomeStructure => 'Structure-led';
-
-  @override
-  String get outcomeService => 'Service-led';
-
-  @override
-  String get outcomeAccountability => 'Accountability-led';
-
-  @override
-  String get outcomeExplore => 'Exploration-led';
-
-  @override
-  String get levelLight => 'lightly held';
-
-  @override
-  String get levelSteady => 'mutually held';
-
-  @override
-  String get levelDefined => 'clearly defined';
-
-  @override
-  String structureLine(Object level, Object outcome) {
-    return '$outcome · $level';
-  }
-
-  @override
-  String get rolePresetDominant => 'Dominant';
-
-  @override
-  String get rolePresetSubmissive => 'Submissive';
-
-  @override
-  String get rolePresetSwitch => 'Switch';
-
-  @override
-  String get rolePresetCustom => 'Their own words';
 
   @override
   String get entranceWordmark => 'Companion';
@@ -970,7 +645,8 @@ class LEn extends L {
   String get joinInvitedYou => 'invited you to begin\na private dynamic.';
 
   @override
-  String get joinYouChooseYourRole => 'You choose your own role.';
+  String get joinYouChooseYourRole =>
+      'Whoever invited you has set which side each of you is on. You will see it inside.';
 
   @override
   String get joinNotConsentToExpectations =>
@@ -990,7 +666,7 @@ class LEn extends L {
       'You can pause or leave this dynamic at any time.';
 
   @override
-  String get joinAlreadyJoined => 'You\'ve joined. Open the app to continue.';
+  String get joinAlreadyJoined => 'This invitation has brought you in.';
 
   @override
   String get joinBoundaryIntentionLabel => 'SHARED INTENTION';
@@ -1060,153 +736,6 @@ class LEn extends L {
   String get inviteLifecycleRevoked => 'Revoked';
 
   @override
-  String get askTitle => 'Set one expectation';
-
-  @override
-  String get askCancel => 'Cancel';
-
-  @override
-  String askForWhom(Object name) {
-    return 'For $name';
-  }
-
-  @override
-  String get askYourPartnerFallback => 'your partner';
-
-  @override
-  String get askWhatStep => 'WHAT YOU ARE ASKING OF THEM';
-
-  @override
-  String get askWhatHint => 'Have the room ready before 8:00 PM';
-
-  @override
-  String get askWhatMissing => 'Say what you are asking for.';
-
-  @override
-  String get askWhenStep => 'WHEN';
-
-  @override
-  String get askWhyStep => 'WHY IT MATTERS (OPTIONAL)';
-
-  @override
-  String get askWhyHint => 'Create a calm space for our evening ritual';
-
-  @override
-  String get askSend => 'Send';
-
-  @override
-  String get askSending => 'Sending…';
-
-  @override
-  String askAgencyNote(Object name) {
-    return '$name can complete this, ask to discuss it, ask for another time, or say they cannot — always.';
-  }
-
-  @override
-  String get askNoOneYet => 'There is no one to ask yet.';
-
-  @override
-  String get askNoOneYetBody =>
-      'Once your invitation is accepted, you can ask them for things here.';
-
-  @override
-  String get askFailed =>
-      'That did not reach the server. Nothing was sent — try again.';
-
-  @override
-  String get askCouldNotOpen => 'This could not be opened. Nothing was sent.';
-
-  @override
-  String get whenAnytime => 'Anytime';
-
-  @override
-  String get whenClear => 'Clear';
-
-  @override
-  String get whenToday => 'Today';
-
-  @override
-  String get detailDue => 'DUE';
-
-  @override
-  String detailSetBy(Object name) {
-    return 'Set by $name';
-  }
-
-  @override
-  String get detailIntention => 'WHY YOU ASKED FOR IT';
-
-  @override
-  String get detailPrivateNote => 'PRIVATE NOTE · ONLY YOU';
-
-  @override
-  String get detailCompletionNote => 'COMPLETION NOTE (OPTIONAL)';
-
-  @override
-  String get detailCompletionHint => 'What did you attend to?';
-
-  @override
-  String get detailMarkComplete => 'Mark complete';
-
-  @override
-  String get detailCompleting => 'Completing…';
-
-  @override
-  String detailPartnerWillSee(Object name) {
-    return '$name will see this.';
-  }
-
-  @override
-  String get detailTakeItBack => 'Never mind, take it back';
-
-  @override
-  String get detailTakingItBack => 'Taking it back…';
-
-  @override
-  String get detailTakeItBackNote =>
-      'It goes back to how it was. Nothing is recorded as agreed or refused.';
-
-  @override
-  String get detailTheirWords => 'THEIR WORDS';
-
-  @override
-  String detailPersonWrote(Object name) {
-    return '$name WROTE';
-  }
-
-  @override
-  String get detailConfirming => 'Confirming this with the server.';
-
-  @override
-  String get detailSessionEnded =>
-      'Your private session needs to be restored. Nothing about this is shown until it is.';
-
-  @override
-  String get detailCouldNotLoad =>
-      'This could not be loaded. Nothing was changed.';
-
-  @override
-  String get nothingWaitingAck => 'Done, and waiting for them to respond.';
-
-  @override
-  String get nothingAcknowledged => 'Answered. Nothing more is needed here.';
-
-  @override
-  String get nothingDiscussing => 'You asked to talk about this.';
-
-  @override
-  String get nothingRescheduling => 'You asked for another time.';
-
-  @override
-  String get nothingExcusing => 'You said you could not do this.';
-
-  @override
-  String get nothingCancelled => 'This was cancelled.';
-
-  @override
-  String get nothingDefault => 'Nothing is waiting on you here.';
-
-  @override
   String get recoveryConfirmingContext => 'Confirming context';
 
   @override
@@ -1216,12 +745,6 @@ class LEn extends L {
   String get recoveryOffline => 'Offline';
 
   @override
-  String get recoveryReading => 'Reading';
-
-  @override
-  String get recoverySessionEnded => 'PRIVATE SESSION ENDED';
-
-  @override
   String get recoverySessionRestore =>
       'Your private session\nneeds to be restored.';
 
@@ -1229,20 +752,10 @@ class LEn extends L {
   String get recoverySignInAgain => 'Sign in again';
 
   @override
-  String get recoveryNoProtectedContent =>
-      'No protected content remains on this screen.';
-
-  @override
   String get recoveryTryAgain => 'Try again';
 
   @override
   String get recoveryTryToReconnect => 'Try to reconnect';
-
-  @override
-  String get todayResolving => 'RESOLVING TODAY';
-
-  @override
-  String get todayConfirmingPrivate => 'Confirming your private context…';
 
   @override
   String get todayPrivateByDefault => 'PRIVATE BY DEFAULT';
@@ -1256,9 +769,6 @@ class LEn extends L {
       'Today could not be loaded. Nothing was lost.';
 
   @override
-  String get todayOfflineReadOnly => 'Read-only until the server reconnects.';
-
-  @override
   String get todayActionsPaused => 'Actions are paused offline';
 
   @override
@@ -1266,35 +776,8 @@ class LEn extends L {
       'Complete, Discuss, New Time and Can\'t Do will return after current truth is confirmed.';
 
   @override
-  String get todayCachedNeverNew =>
-      'Cached content is never treated as a new state.';
-
-  @override
   String get todayHiddenDetails =>
       'Partner and Dynamic details have been hidden.\nSign in again to confirm current access.';
-
-  @override
-  String get todayOffline => 'OFFLINE';
-
-  @override
-  String get dynamicConfirmingStructure =>
-      'Nothing about the two of you is shown until the server confirms it.';
-
-  @override
-  String get dynamicCouldNotConfirm =>
-      'The current structure could not be confirmed.';
-
-  @override
-  String get dynamicPauseUnavailable =>
-      'Pause and Resume need the server, so they are unavailable until it reconnects. Whatever was already agreed still stands.';
-
-  @override
-  String get dynamicCouldNotLoad =>
-      'The Dynamic could not be loaded. Nothing was changed.';
-
-  @override
-  String get dynamicHiddenDetails =>
-      'Partner, roles and current structure have been hidden.\nSign in again to confirm current access.';
 
   @override
   String get settingsTitle => 'Settings';
@@ -1465,195 +948,6 @@ class LEn extends L {
       'That did not reach the server. Nothing has changed.';
 
   @override
-  String get weeklyTitle => 'THIS WEEK';
-
-  @override
-  String get weeklyClose => 'Close';
-
-  @override
-  String get weeklyLoading => 'Gathering what actually happened this week.';
-
-  @override
-  String get weeklyLoadFailed =>
-      'This week could not be loaded. Nothing was changed.';
-
-  @override
-  String get weeklyTryAgain => 'Try again';
-
-  @override
-  String get weeklyTooEarlyHeadline =>
-      'There is not a week to look back on yet.';
-
-  @override
-  String get weeklyTooEarlySupport =>
-      'This comes back once you have some days behind you. Nothing is missing in the meantime.';
-
-  @override
-  String get weeklyHeadlineQuiet => 'A quiet week.';
-
-  @override
-  String get weeklyHeadlineOneDay => 'One day had something on it.';
-
-  @override
-  String weeklyHeadlineDays(Object count) {
-    return '$count days had something on them.';
-  }
-
-  @override
-  String get weeklyAnsweredOne => 'One thing was answered by a person';
-
-  @override
-  String weeklyAnsweredMany(Object count) {
-    return '$count things were answered by a person';
-  }
-
-  @override
-  String get weeklyAdjustedOne => 'one adjustment was worked out together';
-
-  @override
-  String weeklyAdjustedMany(Object count) {
-    return '$count adjustments were worked out together';
-  }
-
-  @override
-  String weeklySupportJoin(Object first, Object second) {
-    return '$first, and $second.';
-  }
-
-  @override
-  String weeklySupportSingle(Object only) {
-    return '$only.';
-  }
-
-  @override
-  String get weeklySupportNothing =>
-      'Nothing was completed or answered. That is a fact about the week, not about either of you.';
-
-  @override
-  String get weeklyAnsweredSection => 'WHAT WAS ANSWERED';
-
-  @override
-  String weeklyMomentAttribution(Object name) {
-    return '— $name';
-  }
-
-  @override
-  String get weeklyNextWeekSection => 'NEXT WEEK';
-
-  @override
-  String get weeklyKeep => 'Keep the current rhythm';
-
-  @override
-  String get weeklyPauseInstead => 'Pause instead';
-
-  @override
-  String get weeklyKeepSupport =>
-      'Keeping is not a commitment. Either of you may pause at any time, from Dynamic.';
-
-  @override
-  String get checkInTitle => 'Check in';
-
-  @override
-  String get checkInCancel => 'Cancel';
-
-  @override
-  String get checkInHeadline => 'How are you, right now?';
-
-  @override
-  String get checkInSupport => 'Answer as much or as little as you want.';
-
-  @override
-  String get checkInMoodSection => 'MOOD';
-
-  @override
-  String get checkInMoodGood => 'Good';
-
-  @override
-  String get checkInMoodSteady => 'Steady';
-
-  @override
-  String get checkInMoodLow => 'Low';
-
-  @override
-  String get checkInMoodTender => 'Tender';
-
-  @override
-  String get checkInMoodRaw => 'Raw';
-
-  @override
-  String get checkInEnergySection => 'ENERGY';
-
-  @override
-  String get checkInEnergyHigh => 'High';
-
-  @override
-  String get checkInEnergySteady => 'Steady';
-
-  @override
-  String get checkInEnergyLow => 'Running low';
-
-  @override
-  String get checkInNeedSection => 'WHAT WOULD HELP';
-
-  @override
-  String get checkInNeedNothing => 'Nothing';
-
-  @override
-  String get checkInNeedCloseness => 'Closeness';
-
-  @override
-  String get checkInNeedSpace => 'Space';
-
-  @override
-  String get checkInNeedStructure => 'Structure';
-
-  @override
-  String get checkInNeedToBeAsked => 'To be asked';
-
-  @override
-  String get checkInNoteSection => 'ANYTHING ELSE (OPTIONAL)';
-
-  @override
-  String get checkInNoteHint => 'In your own words';
-
-  @override
-  String get checkInVisibilitySection => 'WHO CAN SEE THIS';
-
-  @override
-  String get checkInVisibilityPrivate => 'Only me';
-
-  @override
-  String get checkInVisibilityShare => 'Share';
-
-  @override
-  String checkInVisibilityShareWith(Object name) {
-    return 'Share with $name';
-  }
-
-  @override
-  String get checkInVisibilityPrivateSupport =>
-      'Kept to yourself. Nothing about it reaches anyone else.';
-
-  @override
-  String get checkInVisibilityNoPartnerSupport =>
-      'There is no one to share with yet.';
-
-  @override
-  String checkInVisibilitySharedSupport(Object name) {
-    return '$name will be able to read this. It cannot be unshared afterwards.';
-  }
-
-  @override
-  String get checkInSave => 'Save';
-
-  @override
-  String get checkInSaving => 'Saving…';
-
-  @override
-  String get checkInSaveFailed =>
-      'That did not reach the server. Nothing was saved — try again.';
-
-  @override
   String get shellOpeningYourSpace => 'Opening your space…';
 
   @override
@@ -1694,103 +988,6 @@ class LEn extends L {
   String get shellHidePassword => 'Hide password';
 
   @override
-  String get usConfirmingContext => 'Confirming context';
-
-  @override
-  String get usNotConfirmed => 'Not confirmed';
-
-  @override
-  String get usSoFar => 'So far';
-
-  @override
-  String get usSettings => 'Settings';
-
-  @override
-  String get usTryAgain => 'Try again';
-
-  @override
-  String get usCouldNotBeLoaded =>
-      'This could not be loaded. Nothing is missing from your history.';
-
-  @override
-  String usConnectedDays(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count days you both showed up.',
-      one: 'One day you both showed up.',
-      zero: 'Nothing has landed on the same day yet.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get usConnectedDaysSupport =>
-      'Days you both did something. Nothing the app did on its own is counted here.';
-
-  @override
-  String get usThisWeek => 'This week';
-
-  @override
-  String get usNothingYet =>
-      'Nothing has happened here yet. It fills up as you use it — there is nothing to catch up on.';
-
-  @override
-  String get usRecently => 'RECENTLY';
-
-  @override
-  String get usSomeone => 'Someone';
-
-  @override
-  String usMomentCompletion(String name) {
-    return '$name did something that was asked';
-  }
-
-  @override
-  String usMomentAcknowledgement(String name) {
-    return '$name answered';
-  }
-
-  @override
-  String usMomentAdjustmentRequested(String name) {
-    return '$name asked to change something';
-  }
-
-  @override
-  String get usMomentAdjustmentResolved => 'You worked something out';
-
-  @override
-  String usMomentCheckin(String name) {
-    return '$name shared how they were';
-  }
-
-  @override
-  String usMomentMemberJoined(String name) {
-    return '$name joined';
-  }
-
-  @override
-  String get usMomentUnknown => 'Something happened';
-
-  @override
-  String get usPrivateSessionEnded => 'PRIVATE SESSION ENDED';
-
-  @override
-  String get usSessionNeedsRestoring =>
-      'Your private session\nneeds to be restored.';
-
-  @override
-  String get usHistoryHidden =>
-      'Your history together has been hidden.\nSign in again to confirm current access.';
-
-  @override
-  String get usSignInAgain => 'Sign in again';
-
-  @override
-  String get usNoProtectedContent =>
-      'No protected content remains on this screen.';
-
-  @override
   String get todayTitle => 'Today';
 
   @override
@@ -1802,104 +999,8 @@ class LEn extends L {
   }
 
   @override
-  String get todayLaterOptional => 'LATER / OPTIONAL';
-
-  @override
   String todayDayEndsAt(Object clock) {
     return 'Relationship day ends at $clock';
-  }
-
-  @override
-  String todayFrom(Object name) {
-    return 'From $name';
-  }
-
-  @override
-  String get todayNothingExpected => 'Nothing has been asked of you today.';
-
-  @override
-  String get todayCheckInOffer => 'A check-in is here if you want one.';
-
-  @override
-  String get todayCheckIn => 'Check in';
-
-  @override
-  String get stateOnToday => 'Today';
-
-  @override
-  String get stateWaitingForReply => 'Waiting for a reply';
-
-  @override
-  String get stateNeedsReview => 'Needs review';
-
-  @override
-  String get stateBeingDiscussed => 'Being discussed';
-
-  @override
-  String get stateNewTimeRequested => 'New time requested';
-
-  @override
-  String get stateCantDoSent => 'Can\'t do — sent';
-
-  @override
-  String get stateScheduled => 'Scheduled';
-
-  @override
-  String get kindRitual => 'RITUAL';
-
-  @override
-  String get kindExpectation => 'EXPECTATION';
-
-  @override
-  String get kindOnToday => 'ON TODAY';
-
-  @override
-  String get ageJustNow => 'JUST NOW';
-
-  @override
-  String ageMinutes(Object count) {
-    return '$count MIN AGO';
-  }
-
-  @override
-  String ageHours(Object count) {
-    return '$count HR AGO';
-  }
-
-  @override
-  String ageDays(Object count) {
-    return '$count DAY AGO';
-  }
-
-  @override
-  String get actionSending => 'Sending';
-
-  @override
-  String get yourPartner => 'YOUR PARTNER';
-
-  @override
-  String todayResponseHeading(Object age, Object name) {
-    return '$name RESPONDED · $age';
-  }
-
-  @override
-  String todayPriorityHeading(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count THINGS MATTER',
-      two: 'TWO THINGS MATTER',
-      one: 'ONE THING MATTERS',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get todayPriorityHeadingNone => 'NOTHING ASKED TODAY';
-
-  @override
-  String todayPrimaryEyebrow(String kind) {
-    return '01 · NOW · $kind';
   }
 
   @override
@@ -1997,314 +1098,13 @@ class LEn extends L {
       'That did not reach the server. Still paused — try again.';
 
   @override
-  String get dynamicPartnerFallback => 'PARTNER';
-
-  @override
   String get detailClose => 'Close';
 
   @override
   String get shellBack => 'Back';
 
   @override
-  String get activationBoundaryEyebrow => 'WHAT IS NOT ON THE TABLE';
-
-  @override
-  String get activationBoundaryQuestion =>
-      'Name anything that is off the table.';
-
-  @override
-  String get activationBoundarySupport =>
-      'Only you can write or change your own. Your partner sees them and cannot edit them.';
-
-  @override
-  String get activationBoundaryFootnote =>
-      'You can skip this and add limits at any time.';
-
-  @override
-  String get activationBoundaryAdd => 'Add a limit';
-
-  @override
-  String get activationBoundaryHint => 'Anything in front of other people';
-
-  @override
-  String get activationBoundaryNoteHint =>
-      'Anything you want them to know (optional)';
-
-  @override
-  String get activationBoundaryEmpty => 'Nothing named yet.';
-
-  @override
-  String get activationBoundarySave => 'Add';
-
-  @override
-  String activationBoundaryRemove(String label) {
-    return 'Remove $label';
-  }
-
-  @override
-  String get activationBoundaryNeedsLabel => 'Say what it is first.';
-
-  @override
-  String get activationBoundarySkip => 'Skip for now';
-
-  @override
-  String get boundaryStanceOff => 'Not this';
-
-  @override
-  String get boundaryStanceAsk => 'Ask me first';
-
-  @override
-  String get boundaryStanceCurious => 'Curious';
-
-  @override
-  String get boundaryStanceOffDetail => 'A no. It does not need a reason.';
-
-  @override
-  String get boundaryStanceAskDetail => 'Possible, but talk to me before.';
-
-  @override
-  String get boundaryStanceCuriousDetail => 'Open to discussing it. Not a yes.';
-
-  @override
-  String get boundaryTitle => 'Limits';
-
-  @override
-  String get boundaryYours => 'YOURS';
-
-  @override
-  String boundaryTheirs(String name) {
-    return '$name\'s';
-  }
-
-  @override
-  String get boundaryTheirsFallback => 'YOUR PARTNER\'S';
-
-  @override
-  String get boundaryEmptyYours => 'You have not named any limits yet.';
-
-  @override
-  String get boundaryEmptyTheirs => 'They have not named any yet.';
-
-  @override
-  String get boundaryTheirsReadOnly => 'Only they can change these.';
-
-  @override
-  String get boundaryLoadFailed => 'Limits could not be loaded.';
-
-  @override
-  String get settingsBoundariesSection => 'LIMITS';
-
-  @override
-  String get settingsBoundariesOpen => 'Limits';
-
-  @override
-  String get settingsBoundariesSupport =>
-      'Only you can change your own. Your partner sees them and cannot edit them.';
-
-  @override
   String get pointsTitle => 'Points';
-
-  @override
-  String pointsToSpend(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count points to spend',
-      one: '1 point to spend',
-      zero: 'Nothing to spend yet',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get pointsNoneYet => 'Nothing here yet.';
-
-  @override
-  String get pointsHistory => 'WHAT HAPPENED';
-
-  @override
-  String pointsEntryNoticed(String name) {
-    return '$name noticed';
-  }
-
-  @override
-  String pointsEntryGave(String name, int count) {
-    return '$name gave you $count';
-  }
-
-  @override
-  String get pointsEntryTook => 'You took';
-
-  @override
-  String pointsEntryHeld(String name) {
-    return '$name held you to it';
-  }
-
-  @override
-  String pointsEntryLetGo(String name) {
-    return '$name let it go';
-  }
-
-  @override
-  String pointsEntryGift(String name) {
-    return '$name gave you this';
-  }
-
-  @override
-  String get pointsGiveTitle => 'Give points';
-
-  @override
-  String get pointsGiveHint => 'What for? (optional)';
-
-  @override
-  String get pointsGiveAction => 'Give';
-
-  @override
-  String get pointsTakeAction => 'Take back';
-
-  @override
-  String get pointsAmount => 'How many';
-
-  @override
-  String get rewardsTitle => 'Rewards';
-
-  @override
-  String rewardsIntro(String name) {
-    return 'Things $name can give, or you can ask for with points.';
-  }
-
-  @override
-  String rewardsIntroSub(String name) {
-    return 'Things you can take with points, or $name can simply give you.';
-  }
-
-  @override
-  String get rewardsEmpty => 'Nothing on offer yet.';
-
-  @override
-  String rewardsCost(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count points',
-      one: '1 point',
-      zero: 'No points',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rewardsTake => 'Take it';
-
-  @override
-  String get rewardsGive => 'Give it';
-
-  @override
-  String rewardsNotYet(int count) {
-    return '$count more to go';
-  }
-
-  @override
-  String get rewardsAdd => 'Add a reward';
-
-  @override
-  String get rewardsAddTitle => 'What is on offer';
-
-  @override
-  String get rewardsAddHint => 'A massage';
-
-  @override
-  String get rewardsAddDetail => 'Anything they should know (optional)';
-
-  @override
-  String get rewardsAddCost => 'Points to take it';
-
-  @override
-  String rewardsRemove(String title) {
-    return 'Take $title off the list';
-  }
-
-  @override
-  String get rewardsGivenByYou => 'You gave this.';
-
-  @override
-  String get rewardsNeedsTitle => 'Say what it is first.';
-
-  @override
-  String get agreementsTitle => 'What you agreed';
-
-  @override
-  String get agreementsIntro =>
-      'Written by you both, in advance. Nothing here happens on its own — one of you decides, every time.';
-
-  @override
-  String get agreementsEmpty => 'Nothing agreed yet.';
-
-  @override
-  String get agreementsAdd => 'Add an agreement';
-
-  @override
-  String get agreementsWhen => 'When this happens';
-
-  @override
-  String get agreementsWhenHint => 'The evening things do not get done';
-
-  @override
-  String get agreementsThen => 'Then';
-
-  @override
-  String get agreementsThenHint => 'Early bedtime, one hour';
-
-  @override
-  String get agreementsCost => 'Points it costs (optional)';
-
-  @override
-  String agreementsEnd(String label) {
-    return 'End $label';
-  }
-
-  @override
-  String get agreementsEitherCanEnd =>
-      'Either of you can end any of these, alone.';
-
-  @override
-  String get agreementsNeedsBoth => 'Say what happens, and what follows.';
-
-  @override
-  String get consequenceHeading => 'YOU BOTH AGREED';
-
-  @override
-  String get consequenceHold => 'Hold to it';
-
-  @override
-  String get consequenceLetGo => 'Let it go';
-
-  @override
-  String get consequenceTalk => 'Talk';
-
-  @override
-  String get consequenceNoteHint => 'Anything you want to say (optional)';
-
-  @override
-  String consequenceHeld(String name) {
-    return '$name held you to it.';
-  }
-
-  @override
-  String consequenceWaived(String name) {
-    return '$name let this one go.';
-  }
-
-  @override
-  String consequenceYouHeld(String name) {
-    return 'You held $name to it.';
-  }
-
-  @override
-  String get consequenceYouWaived => 'You let this one go.';
-
-  @override
-  String get consequenceNothingHappens => 'Nothing happens until you choose.';
 
   @override
   String get settingsPointsSection => 'POINTS';
@@ -2317,69 +1117,7 @@ class LEn extends L {
       'Points can be switched off entirely. Nothing else changes if you do.';
 
   @override
-  String get settingsPointsEnabled => 'Use points';
-
-  @override
-  String get settingsPointsPerCompletion => 'Points for finishing something';
-
-  @override
   String get navPoints => 'Points';
-
-  @override
-  String pointsDaysTogether(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count days together',
-      one: '1 day together',
-      zero: 'No days yet',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get pointsDaysNeverResets =>
-      'This only ever goes up. A quiet day takes nothing away.';
-
-  @override
-  String get consequenceChance => 'Let chance';
-
-  @override
-  String get consequenceChanceNote =>
-      'Chance picks which one. You decided there is one.';
-
-  @override
-  String get proofAdd => 'Add a photo';
-
-  @override
-  String get proofAdded => 'Photo attached';
-
-  @override
-  String get proofRemove => 'Remove photo';
-
-  @override
-  String get proofOptional => 'Only if you want to show them.';
-
-  @override
-  String get rewardsAddOpen => 'Put something on offer';
-
-  @override
-  String get rewardsAddCancel => 'Never mind';
-
-  @override
-  String get rewardsAddSave => 'Put it on offer';
-
-  @override
-  String get agreementsAddOpen => 'Write an agreement';
-
-  @override
-  String get agreementsAddCancel => 'Never mind';
-
-  @override
-  String get agreementsAddSave => 'Agree to this';
-
-  @override
-  String get pointsSpendable => 'TO SPEND';
 
   @override
   String todayDayStartsAt(String clock) {
@@ -2417,12 +1155,6 @@ class LEn extends L {
   String todayPointsEarn(int count) {
     return '+$count';
   }
-
-  @override
-  String get todayProofPhotoNote => 'Photo';
-
-  @override
-  String get todayRefreshed => 'Reloaded.';
 
   @override
   String get sTodayEmpty => 'Nothing is asked of you today.';
@@ -2527,11 +1259,6 @@ class LEn extends L {
 
   @override
   String get sTodayPickTime => 'Pick a time';
-
-  @override
-  String sTodayNewTimeAt(String time) {
-    return 'New time: $time';
-  }
 
   @override
   String sTodayConflictPaused(String name) {
@@ -2697,14 +1424,6 @@ class LEn extends L {
 
   @override
   String get dTodayNotesPrivate => 'Only you see these.';
-
-  @override
-  String get pointsEntryRefunded => 'Returned to you';
-
-  @override
-  String pointsEntryMoved(int amount) {
-    return '$amount';
-  }
 
   @override
   String settingsDayStart(String time) {
@@ -2931,9 +1650,6 @@ class LEn extends L {
 
   @override
   String get recordCommentHint => 'Either of you can leave one';
-
-  @override
-  String get recordCommentLabel => 'Your line';
 
   @override
   String get recordDeleteCommentTitle => 'Remove this line?';
@@ -3709,9 +2425,6 @@ class LEn extends L {
   String get rulesDueEndOfDay => 'End of day';
 
   @override
-  String get rulesDuePickTime => 'Pick a time';
-
-  @override
   String get rulesDueAtLabel => 'Which day, what time';
 
   @override
@@ -3740,4 +2453,40 @@ class LEn extends L {
 
   @override
   String get dTodayQuickMore => 'More…';
+
+  @override
+  String get joinAlreadyInHeadline => 'You are\nalready in.';
+
+  @override
+  String get joinOpenApp => 'Go to Today';
+
+  @override
+  String get joinUsedGuidance => 'If you are the one who used it, just go in.';
+
+  @override
+  String get inviteAlreadyLiveReplace => 'Withdraw it and make a new one';
+
+  @override
+  String get inviteAlreadyLiveReplaceNote =>
+      'Once withdrawn, the old link stops working. The new one is shown only this once.';
+
+  @override
+  String get todayPausedLine =>
+      'Paused. Nothing is delivered or disposed while it lasts.';
+
+  @override
+  String get todayPausedOpen => 'Have a look';
+
+  @override
+  String get todayWaitingPartner => 'Waiting for them to join.';
+
+  @override
+  String get todayWaitingPartnerBody =>
+      'Nothing is asked here until they are in.';
+
+  @override
+  String get todayInviteLink => 'Send the invite link';
+
+  @override
+  String get sTodayEmptyRules => 'See the rules';
 }

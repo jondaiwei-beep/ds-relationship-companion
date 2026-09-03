@@ -7,12 +7,14 @@ import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../dynamic/application/dynamic_providers.dart';
 import '../application/today_providers.dart';
 import 'd_today_screen.dart';
 import 's_today_screen.dart';
 import 'widgets/recovery_scaffold.dart';
 import 'widgets/secondary_button.dart';
 import 'widgets/today_layout.dart';
+import 'widgets/today_notice.dart';
 
 /// Tab 1 · 今天 (product/02-surfaces.md).
 ///
@@ -27,6 +29,8 @@ class TodayScreen extends ConsumerWidget {
     this.onSignIn,
     this.onSelectTab,
     this.onSettings,
+    this.onInvite,
+    this.onPause,
   });
 
   final String dynamicId;
@@ -34,14 +38,29 @@ class TodayScreen extends ConsumerWidget {
   final void Function(NavSurface surface)? onSelectTab;
   final VoidCallback? onSettings;
 
+  /// Where the invitation link is made again, for a day spent waiting.
+  final VoidCallback? onInvite;
+
+  /// The pause/return screen, offered from a paused day.
+  final VoidCallback? onPause;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final today = ref.watch(todayProvider(dynamicId));
-    void reload() => ref.invalidate(todayProvider(dynamicId));
+    // Paused, D away, or still alone: facts about the Dynamic, not the day.
+    // Read alongside rather than awaited — a day must not wait on its frame.
+    final detail = ref.watch(dynamicDetailProvider(dynamicId)).value;
+    void reload() {
+      ref.invalidate(todayProvider(dynamicId));
+      ref.invalidate(dynamicDetailProvider(dynamicId));
+    }
 
     Future<void> refresh() async {
       final view = today.value;
-      final futures = <Future<void>>[ref.refresh(todayProvider(dynamicId).future)];
+      final futures = <Future<void>>[
+        ref.refresh(todayProvider(dynamicId).future),
+        ref.refresh(dynamicDetailProvider(dynamicId).future),
+      ];
       if (view?.isD ?? false) {
         futures.add(ref.refresh(needsMeProvider(dynamicId).future));
         futures.add(ref.refresh(dNotesProvider(dynamicId).future));
@@ -69,17 +88,28 @@ class TodayScreen extends ConsumerWidget {
                       TodayFailure.offline => _Offline(onRetry: reload),
                       TodayFailure.unknown => _Unavailable(onRetry: reload),
                     },
-                    data: (view) => view.isD
-                        ? DTodayScreen(
-                            view: view,
-                            dynamicId: dynamicId,
-                            onSettings: onSettings,
-                          )
-                        : STodayScreen(
-                            view: view,
-                            dynamicId: dynamicId,
-                            onSettings: onSettings,
-                          ),
+                    data: (view) {
+                      final notice = TodayNotice(
+                        view: view,
+                        detail: detail,
+                        onInvite: onInvite,
+                        onPause: onPause,
+                      );
+                      return view.isD
+                          ? DTodayScreen(
+                              view: view,
+                              dynamicId: dynamicId,
+                              onSettings: onSettings,
+                              notice: notice,
+                            )
+                          : STodayScreen(
+                              view: view,
+                              dynamicId: dynamicId,
+                              onSettings: onSettings,
+                              notice: notice,
+                              onRules: onSelectTab == null ? null : () => onSelectTab!(NavSurface.rules),
+                            );
+                    },
                   ),
                 ),
               ),

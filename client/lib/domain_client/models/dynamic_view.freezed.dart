@@ -776,7 +776,7 @@ return $default(_that.dynamicId,_that.state,_that.desiredOutcome,_that.structure
 @JsonSerializable()
 
 class _DynamicDetail implements DynamicDetail {
-  const _DynamicDetail({required this.dynamicId, required this.state, required this.desiredOutcome, required this.structureLevel, required this.referenceTimezone, this.dayBoundaryMinutes = 0, this.pausedAt, this.dAwayUntil, final  List<MemberView> members = const <MemberView>[], final  List<StructureItem> structure = const <StructureItem>[], final  List<String> alwaysAvailable = const <String>[]}): _members = members,_structure = structure,_alwaysAvailable = alwaysAvailable;
+  const _DynamicDetail({required this.dynamicId, required this.state, required this.desiredOutcome, required this.structureLevel, required this.referenceTimezone, this.dayBoundaryMinutes = 240, this.pausedAt, this.dAwayUntil, final  List<MemberView> members = const <MemberView>[], final  List<StructureItem> structure = const <StructureItem>[], final  List<String> alwaysAvailable = const <String>[]}): _members = members,_structure = structure,_alwaysAvailable = alwaysAvailable;
   factory _DynamicDetail.fromJson(Map<String, dynamic> json) => _$DynamicDetailFromJson(json);
 
 @override final  String dynamicId;

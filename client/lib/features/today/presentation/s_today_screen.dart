@@ -16,7 +16,9 @@ import 'widgets/quiet_line.dart';
 import 'widgets/s_occurrence_row.dart';
 import 'widgets/section_label.dart';
 import 'widgets/today_header.dart';
+import 'widgets/today_layout.dart';
 import 'widgets/today_meta.dart';
+import 'widgets/word_button.dart';
 
 /// The s face of 今天 (product/02-surfaces.md §Tab 1, s).
 ///
@@ -29,11 +31,21 @@ class STodayScreen extends ConsumerStatefulWidget {
     required this.view,
     required this.dynamicId,
     this.onSettings,
+    this.notice,
+    this.onRules,
   });
 
   final TodayView view;
   final String dynamicId;
   final VoidCallback? onSettings;
+
+  /// The Dynamic's own state — paused, D away, partner not joined — shown
+  /// between the day's meta and its list. Built by the frame, which is the
+  /// only place that watches the Dynamic detail.
+  final Widget? notice;
+
+  /// An empty day offers the rules as the one place to look.
+  final VoidCallback? onRules;
 
   @override
   ConsumerState<STodayScreen> createState() => _STodayScreenState();
@@ -361,7 +373,18 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
         const SizedBox(height: DsSpacing.space4),
         TodayMeta(view: view),
         const SizedBox(height: DsSpacing.space8),
-        if (empty) QuietLine(l.sTodayEmpty),
+        ?widget.notice,
+        if (empty) ...[
+          QuietLine(l.sTodayEmpty),
+          if (widget.onRules case final rules?)
+            Padding(
+              padding: todayInset,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: WordButton(label: l.sTodayEmptyRules, onTap: rules),
+              ),
+            ),
+        ],
         if (checkins.isNotEmpty) ...[
           SectionLabel(l.sTodaySectionCheckin),
           for (final o in checkins) _row(o, l),

@@ -27,7 +27,8 @@ class _FakeDynamics implements DynamicRepository {
     required String desiredOutcome,
     required String structureLevel,
     required String referenceTimezone,
-    int dayBoundaryMinutes = 0,
+    int dayBoundaryMinutes = 240,
+    String? side,
     String? rolePreset,
     bool longDistance = false,
     required String idempotencyKey,
@@ -37,6 +38,8 @@ class _FakeDynamics implements DynamicRepository {
       'desiredOutcome': desiredOutcome,
       'structureLevel': structureLevel,
       'referenceTimezone': referenceTimezone,
+      'dayBoundaryMinutes': dayBoundaryMinutes,
+      'side': side,
       'rolePreset': rolePreset,
       'longDistance': longDistance,
     });
@@ -85,11 +88,14 @@ void main() {
     addTearDown(container.dispose);
   });
 
+  final needsPartner = <String>[];
+
   Future<List<String>> pump(
     WidgetTester tester, {
     String timezone = 'America/Los_Angeles',
   }) async {
     final started = <String>[];
+    needsPartner.clear();
     await tester.binding.setSurfaceSize(const Size(390, 844));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
@@ -101,6 +107,7 @@ void main() {
           home: ActivationWizard(
             timezone: timezone,
             onStarted: started.add,
+            onStartedNeedsPartner: needsPartner.add,
             onLeave: () {},
           ),
         ),
@@ -146,7 +153,7 @@ void main() {
 
       expect(dynamics.created, hasLength(1));
       expect(rhythm.started, [_me]);
-      expect(started, ['dyn-1']);
+      expect([...started, ...needsPartner], ['dyn-1']);
     });
   });
 
@@ -255,6 +262,20 @@ void main() {
     await tester.tap(find.text('Start this rhythm'));
     await tester.pumpAndSettle();
     expect(dynamics.created.single['mode'], 'SOLO');
+    // Nobody to invite.
+    expect(needsPartner, isEmpty);
+  });
+
+  testWidgets('a couple is sent to invite the partner, not to an empty day', (tester) async {
+    final started = await pump(tester);
+    await walkToLastStep(tester);
+    await tester.tap(find.text('Start this rhythm'));
+    await tester.pumpAndSettle();
+
+    expect(dynamics.created.single['mode'], 'COUPLE');
+    expect(dynamics.created.single['dayBoundaryMinutes'], 240);
+    expect(needsPartner, ['dyn-1']);
+    expect(started, isEmpty);
   });
 
   testWidgets('saying you are apart reaches the server', (tester) async {

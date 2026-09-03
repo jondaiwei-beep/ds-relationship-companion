@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/shell/ds_primary_button.dart';
+import '../../../app/shell/ds_skeleton.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../dynamic/application/dynamic_providers.dart';
+import '../../today/application/today_providers.dart';
 import '../../../domain_client/models/invite_view.dart';
 import '../application/invite_actions.dart';
 
@@ -30,6 +33,7 @@ class JoinScreen extends ConsumerStatefulWidget {
     required this.onJoined,
     required this.onDecline,
     required this.onSignIn,
+    this.onAlreadyIn,
   });
 
   final String token;
@@ -42,6 +46,12 @@ class JoinScreen extends ConsumerStatefulWidget {
   /// Joining needs an account. The invite travels with them so they land back
   /// here rather than in an empty Today.
   final VoidCallback onSignIn;
+
+  /// The person is already inside — the join succeeded but the resolve had no
+  /// Dynamic id, or they reopened a link they have used. Where to send them is
+  /// wherever they now belong, which only the app root can work out. Falls
+  /// back to [onDecline] when absent.
+  final VoidCallback? onAlreadyIn;
 
   @override
   ConsumerState<JoinScreen> createState() => _JoinScreenState();
@@ -116,6 +126,10 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
           setState(() => _joinedWithoutDynamic = true);
           return;
         }
+        // Anything read about this Dynamic before joining — the inviter's own
+        // cached day on a shared device, a preview — is from the outside.
+        ref.invalidate(todayProvider(dynamicId));
+        ref.invalidate(dynamicDetailProvider(dynamicId));
         widget.onJoined(dynamicId);
       case JoinRefused(:final key):
         // The invitation changed under them while the page was open. Re-ask
@@ -156,21 +170,31 @@ class _JoinScreenState extends ConsumerState<JoinScreen> {
     if (invite == null) return _Unresolved(onRetry: _resolve);
 
     return switch (invite.state) {
+      // Joined, but without a Dynamic to go to by id. Not a failure — the
+      // membership exists — so the offer is the app itself, not a red line
+      // next to a Join button that would now answer 409.
+      InviteState.pending when _joinedWithoutDynamic => _Closed(
+        headline: l.joinAlreadyInHeadline,
+        detail: l.joinAlreadyJoined,
+        onLeave: widget.onAlreadyIn ?? widget.onDecline,
+        leaveLabel: l.joinOpenApp,
+      ),
       InviteState.pending => _Review(
         inviter: invite.inviterDisplayName,
         busy: _joining,
-        failure: _joinedWithoutDynamic
-            ? l.joinAlreadyJoined
-            : (_failure == null ? null : inviteMessage(l, _failure!)),
+        failure: _failure == null ? null : inviteMessage(l, _failure!),
         onJoin: _join,
         onDecline: widget.onDecline,
       ),
-      // Accepted by this person already, or by someone else. Either way there
-      // is nothing to do here and no detail to show.
+      // Accepted by this person already, or by someone else. No detail is
+      // shown either way; but someone signed in may well be the one who used
+      // it, so the way out leads into the app rather than back to the door.
       InviteState.accepted => _Closed(
         headline: l.joinUsedHeadline,
         detail: l.joinClosedPrivacyDetail,
-        onLeave: widget.onDecline,
+        guidance: l.joinUsedGuidance,
+        onLeave: widget.onAlreadyIn ?? widget.onDecline,
+        leaveLabel: widget.onAlreadyIn == null ? null : l.joinOpenApp,
       ),
       InviteState.expired => _Closed(
         headline: l.joinExpiredHeadline,
@@ -205,6 +229,8 @@ class _Resolving extends StatelessWidget {
       children: [
         const _Wordmark(),
         const SizedBox(height: 120),
+        const DsSkeletonBar(width: 200, height: 20, emphasis: true),
+        const SizedBox(height: DsSpacing.space6),
         Text(
           l.joinResolving,
           style: DsTextStyles.bodyPrimary.copyWith(
@@ -509,6 +535,7 @@ class _Closed extends StatelessWidget {
     required this.onLeave,
     this.assurance,
     this.guidance,
+    this.leaveLabel,
   });
 
   final String headline;
@@ -516,6 +543,9 @@ class _Closed extends StatelessWidget {
   final String? assurance;
   final String? guidance;
   final VoidCallback onLeave;
+
+  /// What the one text link says. Defaults to returning to the entrance.
+  final String? leaveLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -581,7 +611,7 @@ class _Closed extends StatelessWidget {
           child: TextButton(
             onPressed: onLeave,
             child: Text(
-              L.of(context).joinReturnToEntrance,
+              leaveLabel ?? L.of(context).joinReturnToEntrance,
               style: DsTextStyles.bodySecondary.copyWith(
                 color: DsColors.textOnRitualSecondary,
                 fontWeight: FontWeight.w500,

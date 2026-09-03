@@ -8,6 +8,7 @@ import 'package:dsapp/features/today/application/today_providers.dart';
 import 'package:dsapp/features/today/presentation/today_screen.dart';
 import 'package:dsapp/l10n/app_localizations.dart';
 
+import '../support/phase3_fakes.dart';
 import '../support/today_fakes.dart';
 
 /// Counts how many times the server was actually asked.
@@ -24,7 +25,10 @@ Future<(ProviderContainer, FakeTodayRepository)> _pump(
 
   final repo = _countingRepository();
   final container = ProviderContainer(
-    overrides: [todayRepositoryProvider.overrideWithValue(repo)],
+    overrides: [
+      todayRepositoryProvider.overrideWithValue(repo),
+      dynamicRepositoryProvider.overrideWithValue(FakeDynamicRepository()),
+    ],
   );
   addTearDown(container.dispose);
 

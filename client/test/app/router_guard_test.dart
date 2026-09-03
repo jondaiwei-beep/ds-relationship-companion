@@ -14,6 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:dsapp/l10n/app_localizations.dart';
 
+import '../support/phase3_fakes.dart';
 import '../support/today_fakes.dart';
 
 /// The guard is the only thing standing between an unauthenticated visitor
@@ -38,6 +39,7 @@ void main() {
         todayRepositoryProvider.overrideWithValue(
           FakeTodayRepository(view: sView()),
         ),
+        dynamicRepositoryProvider.overrideWithValue(FakeDynamicRepository()),
       ],
     );
     addTearDown(container.dispose);

@@ -15,34 +15,7 @@ class LZh extends L {
   String get navRules => '规矩';
 
   @override
-  String get rulesExplore => '探索';
-
-  @override
-  String get recordComingSoon => '还没做';
-
-  @override
-  String get recordComingSoonBody => '每一天一页：交了什么、说了什么、怎么处置的。下一阶段。';
-
-  @override
   String get navRecord => '记录';
-
-  @override
-  String get actionReceived => '看到了';
-
-  @override
-  String get actionComplete => '做好了';
-
-  @override
-  String get actionDiscuss => '想聊聊';
-
-  @override
-  String get actionNewTime => '换个时间';
-
-  @override
-  String get actionCantDo => '这次做不到';
-
-  @override
-  String get actionTakeItBack => '算了，收回';
 
   @override
   String get activationContinue => '继续';
@@ -284,296 +257,6 @@ class LZh extends L {
 
   @override
   String get activationZoneEasternAustralia => '澳大利亚东部';
-
-  @override
-  String get responseTypeAcknowledge => '我看到了';
-
-  @override
-  String get responseTypePraise => '夸夸你';
-
-  @override
-  String get responseTypeComment => '说两句';
-
-  @override
-  String get responseTypeReview => '回头看看';
-
-  @override
-  String responseComposerTitle(String name) {
-    return '回应 $name';
-  }
-
-  @override
-  String get responseYourWords => '你想说的话';
-
-  @override
-  String get responseWordsHint => '写下你看到的……';
-
-  @override
-  String responseNeedsWords(String type) {
-    return '「$type」要写下你自己的话。';
-  }
-
-  @override
-  String responseSendTo(String name) {
-    return '发给 $name';
-  }
-
-  @override
-  String get responseSending => '正在发送';
-
-  @override
-  String get responseNotNow => '现在先不';
-
-  @override
-  String get responseAttention => '等你的';
-
-  @override
-  String responsePartnerPresent(String name) {
-    return '$name 在';
-  }
-
-  @override
-  String responseCompletedAtBy(String name, String time) {
-    return '$name 在 $time\n把这件事做好了。';
-  }
-
-  @override
-  String get responseAlreadyAnsweredTitle => '这件事\n已经回应过了。';
-
-  @override
-  String responseAlreadyAnsweredDetail(String name) {
-    return '$name 已经收到你的回应了。';
-  }
-
-  @override
-  String get responseClose => '关掉';
-
-  @override
-  String get responseErrorOffline => '你现在没联网。连上网络，然后再试一次。';
-
-  @override
-  String get responseErrorGeneric => '刚才没发出去。再试一次。';
-
-  @override
-  String get responseAttentionSummaryLabel => '在等你回应的';
-
-  @override
-  String responseAttentionMoments(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count 件',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String responseAttentionAwaiting(int count) {
-    return '$count 件在等你回应';
-  }
-
-  @override
-  String responseAttentionToRevisit(int count) {
-    return '$count 件可以回头看看';
-  }
-
-  @override
-  String responseAttentionSectionWaiting(String name) {
-    return '$name 在等你';
-  }
-
-  @override
-  String get responseAttentionSectionCompletions => '做好了，等你回应';
-
-  @override
-  String get responseAttentionSectionLookBack => '一起回头看看';
-
-  @override
-  String responseAttentionRespondTo(String name) {
-    return '回应 $name';
-  }
-
-  @override
-  String get responseAttentionEmptyTitle => '现在没有\n在等你的事。';
-
-  @override
-  String get responseAttentionEmptyDetail => '需要你回应的事，\n以后都会出现在这里。';
-
-  @override
-  String get responseStateAskedToDiscuss => '想聊聊';
-
-  @override
-  String get responseStateAskedForNewTime => '想换个时间';
-
-  @override
-  String get responseStateCantDoThis => '说这次做不到';
-
-  @override
-  String get responseStateCompleted => '做好了';
-
-  @override
-  String get responseStateStillOpen => '还没做完';
-
-  @override
-  String get responseStateWaiting => '在等你';
-
-  @override
-  String responseAgoMinutes(int count) {
-    return '$count 分钟前';
-  }
-
-  @override
-  String responseAgoHours(int count) {
-    return '$count 小时前';
-  }
-
-  @override
-  String get responseAgoYesterday => '昨天';
-
-  @override
-  String responseAgoDays(int count) {
-    return '$count 天前';
-  }
-
-  @override
-  String get responseWaitingYourPartner => '对方';
-
-  @override
-  String get responseWaitingHeaderAnswered => '回应';
-
-  @override
-  String responseWaitingPresenceWaiting(String name) {
-    return '在等 $name';
-  }
-
-  @override
-  String get responseWaitingRecorded => '你做的\n已经记下了。';
-
-  @override
-  String responseWaitingCompletedAt(String time) {
-    return '$time 做好的';
-  }
-
-  @override
-  String get responseWaitingNodeCompleted => '已经做好';
-
-  @override
-  String responseWaitingNodeWaitingFor(String name) {
-    return '在等 $name';
-  }
-
-  @override
-  String responseWaitingNotYetAnswered(String name) {
-    return '你这边做好了。\n$name 还没有回应。';
-  }
-
-  @override
-  String get responseWaitingReturnToToday => '回到今天';
-
-  @override
-  String get responseWaitingCloseRitual => '收起这件日常';
-
-  @override
-  String get responseAnsweredTitle => '有人看见你了。';
-
-  @override
-  String responseAnsweredWordlessNamed(String name) {
-    return '$name 回应了这件事。';
-  }
-
-  @override
-  String get responseAnsweredWordlessAnonymous => '这件事被回应了。';
-
-  @override
-  String responseReceivedAt(String time) {
-    return '$time 收到';
-  }
-
-  @override
-  String get responsePrivateNoteLabel => '私人笔记 · 只有你看得到';
-
-  @override
-  String get dynamicTitle => '关系';
-
-  @override
-  String get dynamicYou => '你';
-
-  @override
-  String get dynamicNoOneYet => '还没有人';
-
-  @override
-  String get dynamicCurrentStructure => '现在的相处方式';
-
-  @override
-  String get dynamicCurrentRhythm => '现在的日常';
-
-  @override
-  String get dynamicCurrentRhythms => '现在的日常';
-
-  @override
-  String get dynamicAskOneThing => '交代一件事';
-
-  @override
-  String get dynamicThisWeek => '这一周';
-
-  @override
-  String get dynamicPauseThis => '暂停这段关系';
-
-  @override
-  String get dynamicComeBack => '回来';
-
-  @override
-  String get dynamicPaused => '暂停中';
-
-  @override
-  String get dynamicPausedNothingExpected => '暂停期间，你们谁都不需要做什么。';
-
-  @override
-  String get dynamicEitherMayPause => '你们任何一个人都可以暂停。暂停期间什么都不会丢。';
-
-  @override
-  String get dynamicNothingWaitingAfterPause => '暂停这几天的事不会堆着等你。';
-
-  @override
-  String get outcomeCloser => '想更亲近';
-
-  @override
-  String get outcomeStructure => '想要有秩序';
-
-  @override
-  String get outcomeService => '以照顾对方为主';
-
-  @override
-  String get outcomeAccountability => '想互相督促';
-
-  @override
-  String get outcomeExplore => '想一起探索';
-
-  @override
-  String get levelLight => '松一点';
-
-  @override
-  String get levelSteady => '两个人一起把着';
-
-  @override
-  String get levelDefined => '说得比较清楚';
-
-  @override
-  String structureLine(Object level, Object outcome) {
-    return '$outcome · $level';
-  }
-
-  @override
-  String get rolePresetDominant => '主导的一方';
-
-  @override
-  String get rolePresetSubmissive => '顺从的一方';
-
-  @override
-  String get rolePresetSwitch => '两边都可以';
-
-  @override
-  String get rolePresetCustom => '他们自己的说法';
 
   @override
   String get entranceWordmark => 'Companion';
@@ -912,7 +595,7 @@ class LZh extends L {
   String get joinInvitedYou => '邀请你开始\n一段私密的关系。';
 
   @override
-  String get joinYouChooseYourRole => '你自己选择你的角色。';
+  String get joinYouChooseYourRole => '邀请你的人已经定好了你们各自的位置，进去就看得到。';
 
   @override
   String get joinNotConsentToExpectations => '加入，不等于答应了以后的任何心意。';
@@ -930,7 +613,7 @@ class LZh extends L {
   String get joinPrivacyNote => '你随时可以暂停，也随时可以离开这段关系。';
 
   @override
-  String get joinAlreadyJoined => '你已经加入了。打开 app 继续。';
+  String get joinAlreadyJoined => '这条邀请已经把你带进来了。';
 
   @override
   String get joinBoundaryIntentionLabel => '共同的心意';
@@ -993,148 +676,6 @@ class LZh extends L {
   String get inviteLifecycleRevoked => '已收回';
 
   @override
-  String get askTitle => '交代一件事';
-
-  @override
-  String get askCancel => '取消';
-
-  @override
-  String askForWhom(Object name) {
-    return '想请 $name';
-  }
-
-  @override
-  String get askYourPartnerFallback => '对方';
-
-  @override
-  String get askWhatStep => '你要对方做什么';
-
-  @override
-  String get askWhatHint => '八点前把房间准备好';
-
-  @override
-  String get askWhatMissing => '说说你想请对方做什么。';
-
-  @override
-  String get askWhenStep => '什么时候';
-
-  @override
-  String get askWhyStep => '为什么这件事重要（可不填）';
-
-  @override
-  String get askWhyHint => '想让我们晚上待着的地方安静一点';
-
-  @override
-  String get askSend => '发送';
-
-  @override
-  String get askSending => '正在发送…';
-
-  @override
-  String askAgencyNote(Object name) {
-    return '$name 可以做好、可以说想聊聊、可以换个时间、也可以说这次做不到 —— 什么时候都可以。';
-  }
-
-  @override
-  String get askNoOneYet => '现在还没有人可以请。';
-
-  @override
-  String get askNoOneYetBody => '等对方接受你的邀请之后，就可以在这里跟他说了。';
-
-  @override
-  String get askFailed => '没能发到服务端。什么都没有发出去 —— 再试一次。';
-
-  @override
-  String get askCouldNotOpen => '这个页面没能打开。什么都没有发出去。';
-
-  @override
-  String get whenAnytime => '什么时候都行';
-
-  @override
-  String get whenClear => '清除';
-
-  @override
-  String get whenToday => '今天';
-
-  @override
-  String get detailDue => '希望在';
-
-  @override
-  String detailSetBy(Object name) {
-    return '$name 说的';
-  }
-
-  @override
-  String get detailIntention => '为什么交代这件事';
-
-  @override
-  String get detailPrivateNote => '私密笔记 · 只有你看得到';
-
-  @override
-  String get detailCompletionNote => '想说点什么（可不填）';
-
-  @override
-  String get detailCompletionHint => '你做了什么？';
-
-  @override
-  String get detailMarkComplete => '我做好了';
-
-  @override
-  String get detailCompleting => '正在提交…';
-
-  @override
-  String detailPartnerWillSee(Object name) {
-    return '$name 会看到。';
-  }
-
-  @override
-  String get detailTakeItBack => '算了，收回';
-
-  @override
-  String get detailTakingItBack => '正在收回…';
-
-  @override
-  String get detailTakeItBackNote => '会回到原来的样子。不会记成同意了，也不会记成拒绝了。';
-
-  @override
-  String get detailTheirWords => '对方写的';
-
-  @override
-  String detailPersonWrote(Object name) {
-    return '$name 写的';
-  }
-
-  @override
-  String get detailConfirming => '正在和服务端确认…';
-
-  @override
-  String get detailSessionEnded => '需要重新登录才能继续。在那之前这里的内容都不会显示。';
-
-  @override
-  String get detailCouldNotLoad => '这个页面没能加载出来。什么都没有改动。';
-
-  @override
-  String get nothingWaitingAck => '做好了，在等对方回应。';
-
-  @override
-  String get nothingAcknowledged => '对方回应过了，这件事到这儿就好了。';
-
-  @override
-  String get nothingDiscussing => '你说想聊聊这件事。';
-
-  @override
-  String get nothingRescheduling => '你说想换个时间。';
-
-  @override
-  String get nothingExcusing => '你说这次做不到。';
-
-  @override
-  String get nothingCancelled => '已经取消了。';
-
-  @override
-  String get nothingDefault => '这里没有等着你的事。';
-
-  @override
   String get recoveryConfirmingContext => '正在确认';
 
   @override
@@ -1144,31 +685,16 @@ class LZh extends L {
   String get recoveryOffline => '离线';
 
   @override
-  String get recoveryReading => '正在读取';
-
-  @override
-  String get recoverySessionEnded => '私密会话已结束';
-
-  @override
   String get recoverySessionRestore => '需要重新登录\n才能继续。';
 
   @override
   String get recoverySignInAgain => '重新登录';
 
   @override
-  String get recoveryNoProtectedContent => '这个页面上没有留下任何私密内容。';
-
-  @override
   String get recoveryTryAgain => '再试一次';
 
   @override
   String get recoveryTryToReconnect => '尝试重新连接';
-
-  @override
-  String get todayResolving => '正在确认今天';
-
-  @override
-  String get todayConfirmingPrivate => '正在确认你的私密内容…';
 
   @override
   String get todayPrivateByDefault => '默认私密';
@@ -1180,38 +706,13 @@ class LZh extends L {
   String get todayCouldNotLoad => '今天的内容没能加载出来。什么都没丢。';
 
   @override
-  String get todayOfflineReadOnly => '重新连上之前只能看，不能操作。';
-
-  @override
   String get todayActionsPaused => '离线时暂时不能操作';
 
   @override
   String get todayActionsReturn => '确认到最新内容之后，做好了、想聊聊、换个时间、这次做不到都会回来。';
 
   @override
-  String get todayCachedNeverNew => '缓存的内容不会被当成最新状态。';
-
-  @override
   String get todayHiddenDetails => '和对方、和这段关系有关的内容都已隐藏。\n重新登录后才会显示。';
-
-  @override
-  String get todayOffline => '离线';
-
-  @override
-  String get dynamicConfirmingStructure => '在服务端确认之前，不会显示你们两个人的任何信息。';
-
-  @override
-  String get dynamicCouldNotConfirm => '没能确认现在的相处方式。';
-
-  @override
-  String get dynamicPauseUnavailable =>
-      '暂停和回来都需要连上服务端，重新连上之前用不了。你们已经约定好的事不受影响。';
-
-  @override
-  String get dynamicCouldNotLoad => '这段关系的内容没能加载出来。什么都没有改动。';
-
-  @override
-  String get dynamicHiddenDetails => '对方、角色和现在的相处方式都已隐藏。\n重新登录后才会显示。';
 
   @override
   String get settingsTitle => '设置';
@@ -1363,187 +864,6 @@ class LZh extends L {
   String get settingsLeaveFailed => '没能送到服务器，什么都没有改。';
 
   @override
-  String get weeklyTitle => '这一周';
-
-  @override
-  String get weeklyClose => '关闭';
-
-  @override
-  String get weeklyLoading => '正在把这一周真的发生过的事找出来。';
-
-  @override
-  String get weeklyLoadFailed => '这一周没能读出来。什么都没有改动。';
-
-  @override
-  String get weeklyTryAgain => '再试一次';
-
-  @override
-  String get weeklyTooEarlyHeadline => '还没有攒够一周可以回头看。';
-
-  @override
-  String get weeklyTooEarlySupport => '等你们走过几天，它会自己回来。这期间不缺什么。';
-
-  @override
-  String get weeklyHeadlineQuiet => '安静的一周。';
-
-  @override
-  String get weeklyHeadlineOneDay => '有一天，上面有点事。';
-
-  @override
-  String weeklyHeadlineDays(Object count) {
-    return '有 $count 天，上面有点事。';
-  }
-
-  @override
-  String get weeklyAnsweredOne => '有一件事，是人回应的';
-
-  @override
-  String weeklyAnsweredMany(Object count) {
-    return '有 $count 件事，是人回应的';
-  }
-
-  @override
-  String get weeklyAdjustedOne => '有一件事你们商量好了';
-
-  @override
-  String weeklyAdjustedMany(Object count) {
-    return '有 $count 件事你们商量好了';
-  }
-
-  @override
-  String weeklySupportJoin(Object first, Object second) {
-    return '$first；$second。';
-  }
-
-  @override
-  String weeklySupportSingle(Object only) {
-    return '$only。';
-  }
-
-  @override
-  String get weeklySupportNothing => '这一周没有做好的事，也没有回应。这是这一周的事实，不是关于你们任何一个人的。';
-
-  @override
-  String get weeklyAnsweredSection => '被回应的';
-
-  @override
-  String weeklyMomentAttribution(Object name) {
-    return '—— $name';
-  }
-
-  @override
-  String get weeklyNextWeekSection => '下一周';
-
-  @override
-  String get weeklyKeep => '就照现在这样';
-
-  @override
-  String get weeklyPauseInstead => '先暂停一下';
-
-  @override
-  String get weeklyKeepSupport => '照现在这样也不是许下什么承诺。你们任何一个人，随时都可以在「关系」里暂停。';
-
-  @override
-  String get checkInTitle => '说说今天';
-
-  @override
-  String get checkInCancel => '取消';
-
-  @override
-  String get checkInHeadline => '你现在怎么样？';
-
-  @override
-  String get checkInSupport => '想说多少说多少，不想说也没关系。';
-
-  @override
-  String get checkInMoodSection => '心情';
-
-  @override
-  String get checkInMoodGood => '挺好';
-
-  @override
-  String get checkInMoodSteady => '还平稳';
-
-  @override
-  String get checkInMoodLow => '有点低';
-
-  @override
-  String get checkInMoodTender => '有点脆弱';
-
-  @override
-  String get checkInMoodRaw => '很难受';
-
-  @override
-  String get checkInEnergySection => '精力';
-
-  @override
-  String get checkInEnergyHigh => '很足';
-
-  @override
-  String get checkInEnergySteady => '还平稳';
-
-  @override
-  String get checkInEnergyLow => '快没电了';
-
-  @override
-  String get checkInNeedSection => '什么会让你好受一点';
-
-  @override
-  String get checkInNeedNothing => '不用什么';
-
-  @override
-  String get checkInNeedCloseness => '想靠近一点';
-
-  @override
-  String get checkInNeedSpace => '想有点空间';
-
-  @override
-  String get checkInNeedStructure => '想有个相处方式';
-
-  @override
-  String get checkInNeedToBeAsked => '想被问一句';
-
-  @override
-  String get checkInNoteSection => '还想说点什么（可以不写）';
-
-  @override
-  String get checkInNoteHint => '用你自己的话';
-
-  @override
-  String get checkInVisibilitySection => '谁能看到';
-
-  @override
-  String get checkInVisibilityPrivate => '只有我';
-
-  @override
-  String get checkInVisibilityShare => '给对方看';
-
-  @override
-  String checkInVisibilityShareWith(Object name) {
-    return '给 $name 看';
-  }
-
-  @override
-  String get checkInVisibilityPrivateSupport => '留给你自己。这件事不会传到任何人那里。';
-
-  @override
-  String get checkInVisibilityNoPartnerSupport => '现在还没有人可以一起看。';
-
-  @override
-  String checkInVisibilitySharedSupport(Object name) {
-    return '$name 可以读到这段话。写出去之后就收不回来了。';
-  }
-
-  @override
-  String get checkInSave => '存下来';
-
-  @override
-  String get checkInSaving => '正在存…';
-
-  @override
-  String get checkInSaveFailed => '没能送到服务器，什么都没存下来 —— 再试一次。';
-
-  @override
   String get shellOpeningYourSpace => '正在打开你们的空间…';
 
   @override
@@ -1582,95 +902,6 @@ class LZh extends L {
   String get shellHidePassword => '隐藏密码';
 
   @override
-  String get usConfirmingContext => '正在核对访问权限';
-
-  @override
-  String get usNotConfirmed => '访问权限还没核对上';
-
-  @override
-  String get usSoFar => '到目前为止';
-
-  @override
-  String get usSettings => '设置';
-
-  @override
-  String get usTryAgain => '再试一次';
-
-  @override
-  String get usCouldNotBeLoaded => '这些没能加载出来。你们的过往一件都没少。';
-
-  @override
-  String usConnectedDays(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '你们都在的日子，到现在是 $count 天。',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get usConnectedDaysSupport => '你们都做了点什么的那些天。app 自己做的事不算在里面。';
-
-  @override
-  String get usThisWeek => '这一周';
-
-  @override
-  String get usNothingYet => '这里还没有发生过什么。你们用起来它就会慢慢长出来 —— 没有什么落下的需要补。';
-
-  @override
-  String get usRecently => '最近';
-
-  @override
-  String get usSomeone => '有人';
-
-  @override
-  String usMomentCompletion(String name) {
-    return '$name 做好了一件对方想请他做的事';
-  }
-
-  @override
-  String usMomentAcknowledgement(String name) {
-    return '$name 回应了';
-  }
-
-  @override
-  String usMomentAdjustmentRequested(String name) {
-    return '$name 想商量换个做法';
-  }
-
-  @override
-  String get usMomentAdjustmentResolved => '你们把这件事商量好了';
-
-  @override
-  String usMomentCheckin(String name) {
-    return '$name 说了说自己那天怎么样';
-  }
-
-  @override
-  String usMomentMemberJoined(String name) {
-    return '$name 来了';
-  }
-
-  @override
-  String get usMomentUnknown => '发生了一件事';
-
-  @override
-  String get usPrivateSessionEnded => '私密会话已结束';
-
-  @override
-  String get usSessionNeedsRestoring => '你的私密会话\n需要重新打开。';
-
-  @override
-  String get usHistoryHidden => '你们一起走过的记录先藏起来了。\n重新登录一下，让我们知道还是你。';
-
-  @override
-  String get usSignInAgain => '重新登录';
-
-  @override
-  String get usNoProtectedContent => '这个页面上没有留下任何受保护的内容。';
-
-  @override
   String get todayTitle => '今天';
 
   @override
@@ -1682,102 +913,8 @@ class LZh extends L {
   }
 
   @override
-  String get todayLaterOptional => '稍后 / 可选';
-
-  @override
   String todayDayEndsAt(Object clock) {
     return '你们的一天在 $clock 结束';
-  }
-
-  @override
-  String todayFrom(Object name) {
-    return '来自 $name';
-  }
-
-  @override
-  String get todayNothingExpected => '今天没有交代你的事。';
-
-  @override
-  String get todayCheckInOffer => '想说说今天的话，随时可以。';
-
-  @override
-  String get todayCheckIn => '说说今天';
-
-  @override
-  String get stateOnToday => '今天';
-
-  @override
-  String get stateWaitingForReply => '等对方回应';
-
-  @override
-  String get stateNeedsReview => '过时间了，看一眼';
-
-  @override
-  String get stateBeingDiscussed => '在聊这件事';
-
-  @override
-  String get stateNewTimeRequested => '想换个时间';
-
-  @override
-  String get stateCantDoSent => '说了这次做不到';
-
-  @override
-  String get stateScheduled => '还没开始';
-
-  @override
-  String get kindRitual => '日常';
-
-  @override
-  String get kindExpectation => '约定';
-
-  @override
-  String get kindOnToday => '今天';
-
-  @override
-  String get ageJustNow => '刚刚';
-
-  @override
-  String ageMinutes(Object count) {
-    return '$count 分钟前';
-  }
-
-  @override
-  String ageHours(Object count) {
-    return '$count 小时前';
-  }
-
-  @override
-  String ageDays(Object count) {
-    return '$count 天前';
-  }
-
-  @override
-  String get actionSending => '正在发送';
-
-  @override
-  String get yourPartner => '对方';
-
-  @override
-  String todayResponseHeading(Object age, Object name) {
-    return '$name 回应了 · $age';
-  }
-
-  @override
-  String todayPriorityHeading(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '今天有 $count 件事',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get todayPriorityHeadingNone => '今天没有交代的事';
-
-  @override
-  String todayPrimaryEyebrow(String kind) {
-    return '01 · 现在 · $kind';
   }
 
   @override
@@ -1866,307 +1003,13 @@ class LZh extends L {
   String get resumeFailed => '没能发到服务端。还是暂停中 —— 再试一次。';
 
   @override
-  String get dynamicPartnerFallback => '对方';
-
-  @override
   String get detailClose => '关闭';
 
   @override
   String get shellBack => '返回';
 
   @override
-  String get activationBoundaryEyebrow => '哪些事不做';
-
-  @override
-  String get activationBoundaryQuestion => '有哪些事是不做的？';
-
-  @override
-  String get activationBoundarySupport => '只有你能写、能改自己这一份。对方看得到，但改不了。';
-
-  @override
-  String get activationBoundaryFootnote => '现在可以跳过，之后随时能加。';
-
-  @override
-  String get activationBoundaryAdd => '加一条';
-
-  @override
-  String get activationBoundaryHint => '当着别人的面做任何事';
-
-  @override
-  String get activationBoundaryNoteHint => '想让对方知道的话（可不填）';
-
-  @override
-  String get activationBoundaryEmpty => '还没写。';
-
-  @override
-  String get activationBoundarySave => '加上';
-
-  @override
-  String activationBoundaryRemove(String label) {
-    return '删掉 $label';
-  }
-
-  @override
-  String get activationBoundaryNeedsLabel => '先写清楚是哪件事。';
-
-  @override
-  String get activationBoundarySkip => '先跳过';
-
-  @override
-  String get boundaryStanceOff => '不做';
-
-  @override
-  String get boundaryStanceAsk => '先问我';
-
-  @override
-  String get boundaryStanceCurious => '可以聊聊';
-
-  @override
-  String get boundaryStanceOffDetail => '就是不做，不需要给理由。';
-
-  @override
-  String get boundaryStanceAskDetail => '可以，但要先跟我说。';
-
-  @override
-  String get boundaryStanceCuriousDetail => '愿意聊聊，但不等于答应。';
-
-  @override
-  String get boundaryTitle => '界限';
-
-  @override
-  String get boundaryYours => '你写的';
-
-  @override
-  String boundaryTheirs(String name) {
-    return '$name 写的';
-  }
-
-  @override
-  String get boundaryTheirsFallback => '对方写的';
-
-  @override
-  String get boundaryEmptyYours => '你还没写过。';
-
-  @override
-  String get boundaryEmptyTheirs => '对方还没写过。';
-
-  @override
-  String get boundaryTheirsReadOnly => '这些只有对方能改。';
-
-  @override
-  String get boundaryLoadFailed => '界限没加载出来。';
-
-  @override
-  String get settingsBoundariesSection => '界限';
-
-  @override
-  String get settingsBoundariesOpen => '界限';
-
-  @override
-  String get settingsBoundariesSupport => '只有你能改自己写的。对方看得到，但改不了。';
-
-  @override
   String get pointsTitle => '积分';
-
-  @override
-  String pointsToSpend(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '可用 $count 分',
-      one: '可用 1 分',
-      zero: '还没有可用的',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get pointsNoneYet => '还没有记录。';
-
-  @override
-  String get pointsHistory => '发生了什么';
-
-  @override
-  String pointsEntryNoticed(String name) {
-    return '$name 看到了';
-  }
-
-  @override
-  String pointsEntryGave(String name, int count) {
-    return '$name 给了你 $count 分';
-  }
-
-  @override
-  String get pointsEntryTook => '你换了';
-
-  @override
-  String pointsEntryHeld(String name) {
-    return '$name 让你照约定来';
-  }
-
-  @override
-  String pointsEntryLetGo(String name) {
-    return '$name 免了这一次';
-  }
-
-  @override
-  String pointsEntryGift(String name) {
-    return '$name 送给你的';
-  }
-
-  @override
-  String get pointsGiveTitle => '给分';
-
-  @override
-  String get pointsGiveHint => '为什么？（可不填）';
-
-  @override
-  String get pointsGiveAction => '给';
-
-  @override
-  String get pointsTakeAction => '收回';
-
-  @override
-  String get pointsAmount => '多少';
-
-  @override
-  String get rewardsTitle => '奖励';
-
-  @override
-  String rewardsIntro(String name) {
-    return '$name 可以送你的，你也可以用分换。';
-  }
-
-  @override
-  String rewardsIntroSub(String name) {
-    return '你可以用分换，$name 也可以直接送你。';
-  }
-
-  @override
-  String get rewardsEmpty => '还没有放东西上来。';
-
-  @override
-  String rewardsCost(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count 分',
-      one: '1 分',
-      zero: '不用分',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rewardsTake => '换这个';
-
-  @override
-  String get rewardsGive => '送给他';
-
-  @override
-  String rewardsNotYet(int count) {
-    return '还差 $count 分';
-  }
-
-  @override
-  String get rewardsAdd => '加一个奖励';
-
-  @override
-  String get rewardsAddTitle => '是什么';
-
-  @override
-  String get rewardsAddHint => '一次按摩';
-
-  @override
-  String get rewardsAddDetail => '想让对方知道的（可不填）';
-
-  @override
-  String get rewardsAddCost => '换它要多少分';
-
-  @override
-  String rewardsRemove(String title) {
-    return '把 $title 撤下来';
-  }
-
-  @override
-  String get rewardsGivenByYou => '你送的。';
-
-  @override
-  String get rewardsNeedsTitle => '先写清楚是什么。';
-
-  @override
-  String get agreementsTitle => '你们的约定';
-
-  @override
-  String get agreementsIntro => '你们两个人事先一起写的。这里没有任何事会自动发生 —— 每一次都由你们其中一个人来决定。';
-
-  @override
-  String get agreementsEmpty => '还没有约定。';
-
-  @override
-  String get agreementsAdd => '加一条约定';
-
-  @override
-  String get agreementsWhen => '如果出现这种情况';
-
-  @override
-  String get agreementsWhenHint => '晚上的事没做';
-
-  @override
-  String get agreementsThen => '那么';
-
-  @override
-  String get agreementsThenHint => '第二天早睡一小时';
-
-  @override
-  String get agreementsCost => '要扣的分（可不填）';
-
-  @override
-  String agreementsEnd(String label) {
-    return '结束「$label」';
-  }
-
-  @override
-  String get agreementsEitherCanEnd => '你们任何一个人都可以单方面结束其中任何一条。';
-
-  @override
-  String get agreementsNeedsBoth => '把情况和后果都写上。';
-
-  @override
-  String get consequenceHeading => '你们约定过';
-
-  @override
-  String get consequenceHold => '就这么办';
-
-  @override
-  String get consequenceLetGo => '这次算了';
-
-  @override
-  String get consequenceTalk => '聊聊';
-
-  @override
-  String get consequenceNoteHint => '想说的话（可不填）';
-
-  @override
-  String consequenceHeld(String name) {
-    return '$name 让你照约定来。';
-  }
-
-  @override
-  String consequenceWaived(String name) {
-    return '$name 免了这一次。';
-  }
-
-  @override
-  String consequenceYouHeld(String name) {
-    return '你让 $name 照约定来。';
-  }
-
-  @override
-  String get consequenceYouWaived => '你免了这一次。';
-
-  @override
-  String get consequenceNothingHappens => '你不选，就什么都不会发生。';
 
   @override
   String get settingsPointsSection => '积分';
@@ -2178,67 +1021,7 @@ class LZh extends L {
   String get settingsPointsSupport => '积分可以整个关掉。关了之后其他一切照旧。';
 
   @override
-  String get settingsPointsEnabled => '使用积分';
-
-  @override
-  String get settingsPointsPerCompletion => '做好一件事得几分';
-
-  @override
   String get navPoints => '分';
-
-  @override
-  String pointsDaysTogether(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '一起 $count 天',
-      one: '一起 1 天',
-      zero: '还没有开始',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get pointsDaysNeverResets => '这个数字只会往上走。安静的一天不会拿走任何东西。';
-
-  @override
-  String get consequenceChance => '交给运气';
-
-  @override
-  String get consequenceChanceNote => '运气决定是哪一条。是不是要罚，是你定的。';
-
-  @override
-  String get proofAdd => '加一张照片';
-
-  @override
-  String get proofAdded => '照片已附上';
-
-  @override
-  String get proofRemove => '去掉照片';
-
-  @override
-  String get proofOptional => '只有你想让对方看到时才加。';
-
-  @override
-  String get rewardsAddOpen => '放一个上来';
-
-  @override
-  String get rewardsAddCancel => '算了';
-
-  @override
-  String get rewardsAddSave => '放上去';
-
-  @override
-  String get agreementsAddOpen => '写一条约定';
-
-  @override
-  String get agreementsAddCancel => '算了';
-
-  @override
-  String get agreementsAddSave => '就这么定';
-
-  @override
-  String get pointsSpendable => '可用';
 
   @override
   String todayDayStartsAt(String clock) {
@@ -2276,12 +1059,6 @@ class LZh extends L {
   String todayPointsEarn(int count) {
     return '+$count 分';
   }
-
-  @override
-  String get todayProofPhotoNote => '照片';
-
-  @override
-  String get todayRefreshed => '已刷新。';
 
   @override
   String get sTodayEmpty => '今天没有要求你什么。';
@@ -2385,11 +1162,6 @@ class LZh extends L {
 
   @override
   String get sTodayPickTime => '选时间';
-
-  @override
-  String sTodayNewTimeAt(String time) {
-    return '新时间：$time';
-  }
 
   @override
   String sTodayConflictPaused(String name) {
@@ -2555,14 +1327,6 @@ class LZh extends L {
 
   @override
   String get dTodayNotesPrivate => '只有你看得到。';
-
-  @override
-  String get pointsEntryRefunded => '退回给你';
-
-  @override
-  String pointsEntryMoved(int amount) {
-    return '$amount';
-  }
 
   @override
   String settingsDayStart(String time) {
@@ -2787,9 +1551,6 @@ class LZh extends L {
 
   @override
   String get recordCommentHint => '两个人都可以写';
-
-  @override
-  String get recordCommentLabel => '你的一句';
 
   @override
   String get recordDeleteCommentTitle => '删掉这句？';
@@ -3560,9 +2321,6 @@ class LZh extends L {
   String get rulesDueEndOfDay => '日终';
 
   @override
-  String get rulesDuePickTime => '选个时间';
-
-  @override
   String get rulesDueAtLabel => '哪天、几点';
 
   @override
@@ -3591,4 +2349,37 @@ class LZh extends L {
 
   @override
   String get dTodayQuickMore => '更多设置…';
+
+  @override
+  String get joinAlreadyInHeadline => '你已经\n在里面了。';
+
+  @override
+  String get joinOpenApp => '去今天';
+
+  @override
+  String get joinUsedGuidance => '如果用它的人是你，直接进去就行。';
+
+  @override
+  String get inviteAlreadyLiveReplace => '收回旧的，重新做一条';
+
+  @override
+  String get inviteAlreadyLiveReplaceNote => '收回后，原来那条链接就打不开了；新链接只显示这一次。';
+
+  @override
+  String get todayPausedLine => '暂停中。这段时间没有交付，也没有处置。';
+
+  @override
+  String get todayPausedOpen => '去看看';
+
+  @override
+  String get todayWaitingPartner => '等 TA 加入。';
+
+  @override
+  String get todayWaitingPartnerBody => 'TA 进来之前，这里不会有任何要求。';
+
+  @override
+  String get todayInviteLink => '发邀请链接';
+
+  @override
+  String get sTodayEmptyRules => '去看规矩';
 }

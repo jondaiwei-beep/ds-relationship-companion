@@ -19,7 +19,13 @@ class DynamicRepository {
     required String desiredOutcome,
     required String structureLevel,
     required String referenceTimezone,
-    int dayBoundaryMinutes = 0,
+    /// Minutes after midnight where the relationship day turns over. 04:00
+    /// (product/03-domain.md): a late night still belongs to the day it
+    /// started in. Matches the server's own default.
+    int dayBoundaryMinutes = 240,
+    /// `D` or `S` — which side the creator takes. The partner who joins gets
+    /// the other one. Null lets the server derive it from [rolePreset].
+    String? side,
     /// Optional self-description (Notion 03 §2). Grants nothing.
     String? rolePreset,
     /// Couple is apart. Changes what is seeded, never what is permitted.
@@ -34,6 +40,7 @@ class DynamicRepository {
         'structureLevel': structureLevel,
         'referenceTimezone': referenceTimezone,
         'dayBoundaryMinutes': dayBoundaryMinutes,
+        'side': ?side,
         'rolePreset': rolePreset,
         'longDistance': longDistance,
       },

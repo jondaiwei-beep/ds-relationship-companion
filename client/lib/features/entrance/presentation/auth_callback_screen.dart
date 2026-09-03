@@ -56,6 +56,7 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
   }
 
   Future<void> _complete() async {
+    if (_failure != null) setState(() => _failure = null);
     final params = widget.params ?? CallbackParams.current();
     if (params == null) {
       // A callback with no token is a link that was truncated, rewritten by a
@@ -146,10 +147,26 @@ class _AuthCallbackScreenState extends ConsumerState<AuthCallbackScreen> {
                     ),
                   ),
                   const SizedBox(height: DsSpacing.space8),
-                  DsPrimaryButton(
-                    label: l.entranceRequestNewLink,
-                    onPressed: widget.onRequestNewLink,
-                  ),
+                  // Offline is the one failure the same link survives: the
+                  // token was never seen by the server, so trying again is
+                  // the honest offer. Every other ending needs a new link.
+                  if (_failure == AuthMessage.offline) ...[
+                    DsPrimaryButton(label: l.recoveryTryAgain, onPressed: _complete),
+                    const SizedBox(height: DsSpacing.space3),
+                    Center(
+                      child: TextButton(
+                        onPressed: widget.onRequestNewLink,
+                        child: Text(
+                          l.entranceRequestNewLink,
+                          style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+                        ),
+                      ),
+                    ),
+                  ] else
+                    DsPrimaryButton(
+                      label: l.entranceRequestNewLink,
+                      onPressed: widget.onRequestNewLink,
+                    ),
                 ],
 
                 const Spacer(),

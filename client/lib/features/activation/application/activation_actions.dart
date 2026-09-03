@@ -85,6 +85,11 @@ class ActivationDraft {
 
   bool get isComplete => outcome != null && timezone != null;
 
+  /// Which side the creator takes: whoever names themselves submissive
+  /// delivers; everyone else — dominant, switch, custom, or undeclared —
+  /// disposes. The partner who joins is given the other side.
+  String get side => rolePreset == RolePreset.submissive ? 'S' : 'D';
+
   ActivationDraft copyWith({
     DesiredOutcome? outcome,
     bool? solo,
@@ -194,6 +199,8 @@ class ActivationActions {
             desiredOutcome: outcome.wire,
             structureLevel: draft.structure.wire,
             referenceTimezone: timezone,
+            dayBoundaryMinutes: 240,
+            side: draft.side,
             rolePreset: draft.rolePreset?.wire,
             longDistance: draft.longDistance,
             idempotencyKey: key,

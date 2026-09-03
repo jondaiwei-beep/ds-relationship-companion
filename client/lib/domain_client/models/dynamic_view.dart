@@ -40,7 +40,7 @@ abstract class DynamicDetail with _$DynamicDetail {
     required String desiredOutcome,
     required String structureLevel,
     required String referenceTimezone,
-    @Default(0) int dayBoundaryMinutes,
+    @Default(240) int dayBoundaryMinutes,
     DateTime? pausedAt,
     /// D-26: the D is away until this instant; tasks needing them are paused.
     DateTime? dAwayUntil,
