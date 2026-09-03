@@ -146,6 +146,7 @@ class DispositionService(
             """.trimIndent(),
             id, dynamicId, issuedBy, fromTemplate?.let { c.templateId }, title, detail,
         ).execute()
+        events.enqueueOutbox("consequence", id, "consequence_issued", "consequence_issued:$id")
         return id
     }
 

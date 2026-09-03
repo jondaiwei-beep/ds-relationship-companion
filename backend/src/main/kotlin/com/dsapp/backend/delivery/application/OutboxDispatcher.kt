@@ -155,6 +155,9 @@ class OutboxDispatcher(
             },
             deepLink = deepLinkFor(record),
             dedupeKey = record.dedupeKey,
+            dynamicId = recipient.dynamicId,
+            eventType = record.eventType,
+            outboxId = record.id,
         )
         require(request.body in NeutralCopy.all) { "non-neutral notification copy" }
 
@@ -230,8 +233,8 @@ class OutboxDispatcher(
                 """.trimIndent(),
                 record.aggregateId, record.eventType,
             )
-            // s requested a redemption -> D. D decided -> s.
-            "redemption_requested", "redemption_decided" -> dsl.fetchOne(
+            // s requested a redemption -> D. D decided or fulfilled -> s.
+            "redemption_requested", "redemption_decided", "redemption_fulfilled" -> dsl.fetchOne(
                 """
                 SELECT r.dynamic_id, m.user_id AS recipient
                   FROM reward_redemptions r
@@ -243,8 +246,8 @@ class OutboxDispatcher(
                 """.trimIndent(),
                 record.aggregateId, record.eventType,
             )
-            // s marked a consequence done -> D. D confirmed/waived -> s.
-            "consequence_done", "consequence_decided" -> dsl.fetchOne(
+            // D issued a consequence -> s. s marked it done -> D. D confirmed/waived -> s.
+            "consequence_done", "consequence_decided", "consequence_issued" -> dsl.fetchOne(
                 """
                 SELECT c.dynamic_id, m.user_id AS recipient
                   FROM consequences c
@@ -255,6 +258,18 @@ class OutboxDispatcher(
                  LIMIT 1
                 """.trimIndent(),
                 record.aggregateId, record.eventType,
+            )
+            // D awarded points -> the s who received them.
+            "d_award" -> dsl.fetchOne(
+                """
+                SELECT p.dynamic_id, m.user_id AS recipient
+                  FROM point_entries p
+                  JOIN memberships m ON m.dynamic_id = p.dynamic_id
+                   AND m.user_id = p.subject_user_id AND m.access_state = 'ACTIVE'
+                 WHERE p.id = {0}
+                 LIMIT 1
+                """.trimIndent(),
+                record.aggregateId,
             )
             else -> null
         } ?: return null
@@ -338,8 +353,9 @@ class OutboxDispatcher(
     private fun neutralBodyFor(eventType: String): String = when (eventType) {
         "occurrence_delivered", "occurrence_flagged", "day_comment",
         "rule_proposed", "rule_accepted", "task_proposed", "task_accepted",
-        "redemption_requested", "redemption_decided",
-        "consequence_done", "consequence_decided",
+        "redemption_requested", "redemption_decided", "redemption_fulfilled",
+        "consequence_done", "consequence_decided", "consequence_issued",
+        "disposition_set", "d_award",
         -> NeutralCopy.NEEDS_ATTENTION
         else -> NeutralCopy.GENERIC
     }
@@ -354,8 +370,9 @@ class OutboxDispatcher(
         }
         "rule_proposed", "rule_accepted" -> "/rules"
         "task_proposed", "task_accepted" -> "/rules"
-        "redemption_requested", "redemption_decided" -> "/points"
-        "consequence_done", "consequence_decided" -> "/points"
+        "redemption_requested", "redemption_decided", "redemption_fulfilled" -> "/points"
+        "consequence_done", "consequence_decided", "consequence_issued" -> "/points"
+        "d_award" -> "/points"
         else -> "/occurrences/${record.aggregateId}"
     }
 

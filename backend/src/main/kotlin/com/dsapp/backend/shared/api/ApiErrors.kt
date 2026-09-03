@@ -23,6 +23,7 @@ import com.dsapp.backend.media.application.MediaAccessDenied
 import com.dsapp.backend.media.application.MediaTooLarge
 import com.dsapp.backend.media.application.NoSuchMedia
 import com.dsapp.backend.media.application.UnsupportedMediaType
+import com.dsapp.backend.notifications.application.NotificationMuteSettingsService
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.multipart.MaxUploadSizeExceededException
@@ -127,6 +128,12 @@ class ApiErrorHandler {
         e: NotificationSettingsService.InvalidSettings,
     ): ResponseEntity<ApiError> =
         ResponseEntity.badRequest().body(ApiError("INVALID_NOTIFICATION_SETTINGS"))
+
+    @ExceptionHandler(NotificationMuteSettingsService.InvalidSettings::class)
+    fun onInvalidMuteSettings(
+        e: NotificationMuteSettingsService.InvalidSettings,
+    ): ResponseEntity<ApiError> =
+        ResponseEntity.badRequest().body(ApiError("INVALID_NOTIFICATION_SETTINGS", e.message?.take(80)))
 
     @ExceptionHandler(UnsupportedMediaType::class)
     fun onUnsupportedMediaType(e: UnsupportedMediaType): ResponseEntity<ApiError> =

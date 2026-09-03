@@ -230,6 +230,10 @@ class PointsService(
             if (effective > 0) "d_award" else "d_deduct",
             actorUserId, note?.trim()?.takeIf { it.isNotEmpty() },
         ).execute()
+        if (effective > 0) {
+            events.append(dynamicId, actorUserId, "d_award", """{"entry_id":"$id","subject_user_id":"$subjectUserId"}""")
+            events.enqueueOutbox("point_entry", id, "d_award", "d_award:$id")
+        }
         return id
     }
 
@@ -492,6 +496,8 @@ class PointsService(
             redemptionId, dynamicId,
         ).execute()
         if (n == 0) throw NoSuchRedemption(redemptionId)
+        events.append(dynamicId, actorUserId, "redemption_fulfilled", """{"redemption_id":"$redemptionId"}""")
+        events.enqueueOutbox("redemption", redemptionId, "redemption_fulfilled", "redemption_fulfilled:$redemptionId")
     }
 
     /** Visible to both sides; optionally filtered by status. */

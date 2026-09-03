@@ -31,6 +31,16 @@ data class NotificationRequest(
     val deepLink: String,
     /** Provider-side idempotency. Same key must never send twice. */
     val dedupeKey: String,
+    /**
+     * Locating information only, same discipline as everything else here —
+     * lets a channel that stores its own record (an in-app inbox, never a
+     * push/email provider) resolve richer copy without touching the event
+     * payload itself.
+     */
+    val dynamicId: UUID,
+    val eventType: String,
+    /** The outbox record this delivery came from, for traceability. */
+    val outboxId: UUID,
 )
 
 /**
@@ -64,4 +74,47 @@ interface NotificationChannel {
 
     /** Must throw on failure so the dispatcher can retry. */
     fun send(request: NotificationRequest)
+}
+
+/**
+ * Real, richer copy for the in-app notification list — never for a push
+ * provider or a lockscreen (that is [NeutralCopy]'s job exclusively).
+ *
+ * Still deliberately generic: it names what kind of thing happened
+ * ("delivered", "an answer", "a reward") but never the content of a task,
+ * rule, proof or note. That keeps it safe to show on the *other* side's
+ * device too (Notion 04 §5/§6) — nothing here is one partner speaking as the
+ * system, and nothing here is a private note leaking across sides.
+ *
+ * Closed by event type, same discipline as [NeutralCopy]: a new event type
+ * must add an entry here rather than have a caller invent a string.
+ */
+object EventCopy {
+    data class Copy(val title: String, val body: String)
+
+    private val entries: Map<String, Copy> = mapOf(
+        "occurrence_delivered" to Copy("Delivered", "Something was marked delivered."),
+        "occurrence_flagged" to Copy("An update", "There is an update on something today."),
+        "disposition_set" to Copy("An answer", "There is an answer waiting for you."),
+        "day_comment" to Copy("A note", "A note was left on a day."),
+        "rule_proposed" to Copy("A proposal", "Something was proposed for you to decide."),
+        "rule_accepted" to Copy("Accepted", "Your proposal was accepted."),
+        "task_proposed" to Copy("A proposal", "Something was proposed for you to decide."),
+        "task_accepted" to Copy("Accepted", "Your proposal was accepted."),
+        "redemption_requested" to Copy("A request", "A reward was requested."),
+        "redemption_decided" to Copy("Decided", "There is a decision on a request."),
+        "redemption_fulfilled" to Copy("Fulfilled", "A reward was marked fulfilled."),
+        "consequence_issued" to Copy("Something new", "Something was issued for you."),
+        "consequence_done" to Copy("Marked done", "Something was marked done."),
+        "consequence_decided" to Copy("Decided", "There is a decision waiting."),
+        "d_award" to Copy("Points", "Points were awarded to you."),
+        "d_note_reminder" to Copy("A reminder", "A reminder is due."),
+    )
+
+    /** Title/body for a known event type, or a generic fallback for anything not yet in [entries]. */
+    fun forEventType(eventType: String): Copy =
+        entries[eventType] ?: Copy("Update", NeutralCopy.GENERIC)
+
+    /** Every event type this closed set currently has copy for. */
+    val knownEventTypes: Set<String> = entries.keys
 }

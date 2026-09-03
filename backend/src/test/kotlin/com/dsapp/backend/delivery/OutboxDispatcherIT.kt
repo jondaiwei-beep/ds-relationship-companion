@@ -54,6 +54,9 @@ class OutboxDispatcherIT {
         channel.sent.clear()
         // dispatchOnce() is global and the test database persists across runs,
         // so leftover records from other tests would be claimed here too.
+        // notifications.outbox_id FKs to outbox_records — StoredNotificationChannel
+        // writes one row per dispatch, so it must be cleared first.
+        dsl.query("DELETE FROM notifications").execute()
         dsl.query("DELETE FROM outbox_records").execute()
         creator = UUID.randomUUID(); partner = UUID.randomUUID()
         dynamicId = UUID.randomUUID(); occurrenceId = UUID.randomUUID()
