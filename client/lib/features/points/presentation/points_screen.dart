@@ -302,15 +302,14 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
           eyebrow: v.isD ? l.ptsHeroEyebrowD(sName) : l.ptsHeroEyebrowMine,
           hero: l.ptsBalanceMine(balance),
           heroKey: const ValueKey('points-balance'),
-          support: _support(l, points, dName),
+          // Alone, one sentence says it all; three lines about a zero did not.
+          support: alone ? l.todayStartsWhenJoined : _support(l, points, dName),
         ),
         const SizedBox(height: DsSpacing.space6),
 
         // ── give / deduct — the D's, and only once there is someone to give to
-        if (v.isD)
-          alone
-              ? QuietLine(l.todayStartsWhenJoined)
-              : Padding(
+        if (v.isD && !alone)
+          Padding(
                   padding: todayInset,
                   child: Row(
                     children: [

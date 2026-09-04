@@ -182,13 +182,17 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: todayCells.when(
-            skipLoadingOnReload: true,
-            skipLoadingOnRefresh: true,
-            loading: () => const DsSkeletonBar(width: 160, height: 16),
-            error: (_, _) => Text(l.recordTodayNothing, style: quiet),
-            data: (list) => Text(_todayLine(list, view.day, l), key: const ValueKey('record-today-line'), style: quiet),
-          ),
+          // Expected-of-whom? Alone there is nobody, so the day is not counted.
+          child: alone
+              ? Text(l.todayStartsWhenJoined, key: const ValueKey('record-today-line'), style: quiet)
+              : todayCells.when(
+                  skipLoadingOnReload: true,
+                  skipLoadingOnRefresh: true,
+                  loading: () => const DsSkeletonBar(width: 160, height: 16),
+                  error: (_, _) => Text(l.recordTodayNothing, style: quiet),
+                  data: (list) =>
+                      Text(_todayLine(list, view.day, l), key: const ValueKey('record-today-line'), style: quiet),
+                ),
         ),
         Padding(
           padding: todayInset,
