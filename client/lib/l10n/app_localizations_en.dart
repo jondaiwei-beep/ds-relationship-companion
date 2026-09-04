@@ -1516,21 +1516,46 @@ class LEn extends L {
   String get lockReason => 'Unlock to continue';
 
   @override
-  String recordTogether(int days, int streak) {
+  String recordTogether(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
       other: 'Together $days days',
       one: 'Together 1 day',
     );
-    String _temp1 = intl.Intl.pluralLogic(
-      streak,
+    return '$_temp0';
+  }
+
+  @override
+  String recordHeroEyebrow(String weekday) {
+    return 'Record · $weekday';
+  }
+
+  @override
+  String recordTodayLine(int expected, int answered) {
+    String _temp0 = intl.Intl.pluralLogic(
+      expected,
       locale: localeName,
-      other: '$streak in a row',
-      one: '1 in a row',
+      other: '$expected expected',
+      one: '1 expected',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      answered,
+      locale: localeName,
+      other: '$answered answered',
+      one: '1 answered',
     );
     return '$_temp0 · $_temp1';
   }
+
+  @override
+  String get recordTodayNothing => 'Nothing expected today.';
+
+  @override
+  String get recordOpenDay => 'Open this day';
+
+  @override
+  String get recordFactsNone => 'Nothing recorded this week yet.';
 
   @override
   String get recordPrevMonth => 'Previous month';
@@ -1751,6 +1776,31 @@ class LEn extends L {
   String get rulesTitle => 'Rules';
 
   @override
+  String get rulesStandingEmptyS =>
+      'No rules yet. You can propose the first one.';
+
+  @override
+  String get rulesTasksEmptyS => 'No recurring tasks yet. You can propose one.';
+
+  @override
+  String rulesRewardsEmptyS(String name) {
+    return 'No rewards yet. They appear here once $name adds one.';
+  }
+
+  @override
+  String rulesConsequencesEmptyS(String name) {
+    return 'No consequences yet. They appear here once $name adds one.';
+  }
+
+  @override
+  String get rulesConsequencesIntroYou =>
+      'Only you use these, when you answer a delivery. Nothing here runs on its own.';
+
+  @override
+  String get rulesLimitsEmpty =>
+      'Nothing marked yet. It fills in from the compare.';
+
+  @override
   String get rulesAwayToggle => 'I\'m away';
 
   @override
@@ -1770,7 +1820,8 @@ class LEn extends L {
   String get rulesStandingTitle => 'STANDING RULES';
 
   @override
-  String get rulesStandingEmpty => 'No rules yet.';
+  String get rulesStandingEmpty =>
+      'No rules yet. Start from a pack, or write the first one.';
 
   @override
   String get ruleGroupProtocol => 'Protocol';
@@ -1821,7 +1872,8 @@ class LEn extends L {
   String get rulesTasksTitle => 'RECURRING TASKS';
 
   @override
-  String get rulesTasksEmpty => 'No tasks yet.';
+  String get rulesTasksEmpty =>
+      'No recurring tasks yet. Add one and it appears on Today.';
 
   @override
   String get rulesAddTask => 'Add a task';
@@ -1945,7 +1997,8 @@ class LEn extends L {
   String get rulesRewardsTitle => 'REWARDS';
 
   @override
-  String get rulesRewardsEmpty => 'No rewards yet.';
+  String get rulesRewardsEmpty =>
+      'No rewards yet. Add one and it can be redeemed with points.';
 
   @override
   String get rulesAddReward => 'Add a reward';
@@ -1975,11 +2028,12 @@ class LEn extends L {
 
   @override
   String rulesConsequencesIntro(String name) {
-    return 'Used only by $name, when disposing. They are kept here; nothing runs from here.';
+    return 'Only $name uses these, when answering a delivery. Nothing here runs on its own.';
   }
 
   @override
-  String get rulesConsequencesEmpty => 'None yet.';
+  String get rulesConsequencesEmpty =>
+      'No consequences yet. Add one and it is offered when you answer a delivery.';
 
   @override
   String get rulesAddConsequence => 'Add one';
@@ -1998,10 +2052,10 @@ class LEn extends L {
 
   @override
   String get rulesLimitsLine =>
-      'What either of you marked \"no\" in the compare lands here.';
+      'What either of you marked “no”. Your safeword is also in Settings.';
 
   @override
-  String get rulesLimitsGo => 'Compare';
+  String get rulesLimitsGo => 'Compare preferences';
 
   @override
   String get rulesExploreTitle => 'EXPLORE';
@@ -2016,7 +2070,7 @@ class LEn extends L {
   String get rulesExploreStarter => 'Starter pack';
 
   @override
-  String get rulesPauseDynamic => 'Pause for a while';
+  String get rulesPauseDynamic => 'Pause the dynamic…';
 
   @override
   String get rulesCouldNotLoad => 'Rules could not be loaded.';
@@ -2030,7 +2084,7 @@ class LEn extends L {
   }
 
   @override
-  String get rulesTheD => 'the D';
+  String get rulesTheD => 'your partner';
 
   @override
   String get rulesTheS => 'your partner';
@@ -2053,6 +2107,25 @@ class LEn extends L {
   String ptsBalanceMine(int n) {
     return '$n';
   }
+
+  @override
+  String ptsHeroEyebrowD(String name) {
+    return '$name has';
+  }
+
+  @override
+  String get ptsHeroEyebrowMine => 'You have';
+
+  @override
+  String ptsHeroEmpty(String name) {
+    return 'No points yet. They come from tasks that carry points, or from $name.';
+  }
+
+  @override
+  String get ptsRedeemableSetInRules => 'Set one in Rules';
+
+  @override
+  String get ptsLedgerAll => 'All entries';
 
   @override
   String get ptsGive => 'Give';
@@ -2080,7 +2153,7 @@ class LEn extends L {
   String get ptsRedeemableTitle => 'REDEEMABLE';
 
   @override
-  String get ptsRedeemableEmpty => 'No rewards set yet.';
+  String get ptsRedeemableEmpty => 'No rewards yet.';
 
   @override
   String ptsShort(int n) {
@@ -2141,7 +2214,7 @@ class LEn extends L {
   String get ptsLedgerTitle => 'LEDGER';
 
   @override
-  String get ptsLedgerEmpty => 'Nothing yet.';
+  String get ptsLedgerEmpty => 'Nothing in the ledger yet.';
 
   @override
   String get ptsReasonTaskEarn => 'Task';
@@ -2376,7 +2449,7 @@ class LEn extends L {
   String get explorePackEmptyDraft => 'Nothing left to create.';
 
   @override
-  String get rulesStartFromPack => 'Start from a set';
+  String get rulesStartFromPack => 'Start from a pack';
 
   @override
   String get rulesExplorePrefs => 'Preferences';

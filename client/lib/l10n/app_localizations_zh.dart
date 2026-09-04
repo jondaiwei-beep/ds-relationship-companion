@@ -1403,9 +1403,28 @@ class LZh extends L {
   String get lockReason => '解锁后继续';
 
   @override
-  String recordTogether(int days, int streak) {
-    return '在一起 $days 天 · 连续 $streak 天';
+  String recordTogether(int days) {
+    return '在一起 $days 天';
   }
+
+  @override
+  String recordHeroEyebrow(String weekday) {
+    return '记录 · $weekday';
+  }
+
+  @override
+  String recordTodayLine(int expected, int answered) {
+    return '要做 $expected 项 · 已回应 $answered 项';
+  }
+
+  @override
+  String get recordTodayNothing => '今天没有要做的事。';
+
+  @override
+  String get recordOpenDay => '看这一天';
+
+  @override
+  String get recordFactsNone => '这周还没有记录。';
 
   @override
   String get recordPrevMonth => '上个月';
@@ -1625,6 +1644,28 @@ class LZh extends L {
   String get rulesTitle => '规矩';
 
   @override
+  String get rulesStandingEmptyS => '还没有规矩。你可以先提议一条。';
+
+  @override
+  String get rulesTasksEmptyS => '还没有循环任务。你可以提议一条。';
+
+  @override
+  String rulesRewardsEmptyS(String name) {
+    return '还没有奖励。$name 加了就会出现在这里。';
+  }
+
+  @override
+  String rulesConsequencesEmptyS(String name) {
+    return '还没有惩罚。$name 加了就会出现在这里。';
+  }
+
+  @override
+  String get rulesConsequencesIntroYou => '只有你在处置交付时会用到。这里的东西不会自己执行。';
+
+  @override
+  String get rulesLimitsEmpty => '还没有标记。比对之后会列在这里。';
+
+  @override
   String get rulesAwayToggle => '我不在';
 
   @override
@@ -1644,7 +1685,7 @@ class LZh extends L {
   String get rulesStandingTitle => '常设规矩';
 
   @override
-  String get rulesStandingEmpty => '还没有规矩。';
+  String get rulesStandingEmpty => '还没有规矩。从起步包开始，或者先写一条。';
 
   @override
   String get ruleGroupProtocol => '礼节';
@@ -1695,7 +1736,7 @@ class LZh extends L {
   String get rulesTasksTitle => '循环任务';
 
   @override
-  String get rulesTasksEmpty => '还没有任务。';
+  String get rulesTasksEmpty => '还没有循环任务。加一条，就会出现在「今天」里。';
 
   @override
   String get rulesAddTask => '加一条任务';
@@ -1819,7 +1860,7 @@ class LZh extends L {
   String get rulesRewardsTitle => '奖励目录';
 
   @override
-  String get rulesRewardsEmpty => '还没有奖励。';
+  String get rulesRewardsEmpty => '还没有奖励。加一条，就能用分兑换。';
 
   @override
   String get rulesAddReward => '加一条奖励';
@@ -1849,11 +1890,11 @@ class LZh extends L {
 
   @override
   String rulesConsequencesIntro(String name) {
-    return '只有 $name 处置的时候用得上；放在这里，不从这里执行。';
+    return '只有 $name 在处置交付时会用到。这里的东西不会自己执行。';
   }
 
   @override
-  String get rulesConsequencesEmpty => '还没有。';
+  String get rulesConsequencesEmpty => '还没有惩罚。加一条，处置交付时就能选。';
 
   @override
   String get rulesAddConsequence => '加一条';
@@ -1871,7 +1912,7 @@ class LZh extends L {
   String get rulesLimitsTitle => '底线与安全词';
 
   @override
-  String get rulesLimitsLine => '两人在比对里标「不要」的项，会列在这里。';
+  String get rulesLimitsLine => '两人在比对里标了“不要”的项。安全词在设置里也看得到。';
 
   @override
   String get rulesLimitsGo => '去比对';
@@ -1889,7 +1930,7 @@ class LZh extends L {
   String get rulesExploreStarter => '起步包';
 
   @override
-  String get rulesPauseDynamic => '暂停一下';
+  String get rulesPauseDynamic => '暂停一阵子…';
 
   @override
   String get rulesCouldNotLoad => '规矩没能读到。';
@@ -1903,7 +1944,7 @@ class LZh extends L {
   }
 
   @override
-  String get rulesTheD => 'D';
+  String get rulesTheD => '对方';
 
   @override
   String get rulesTheS => '对方';
@@ -1920,6 +1961,25 @@ class LZh extends L {
   String ptsBalanceMine(int n) {
     return '$n';
   }
+
+  @override
+  String ptsHeroEyebrowD(String name) {
+    return '$name 有';
+  }
+
+  @override
+  String get ptsHeroEyebrowMine => '你有';
+
+  @override
+  String ptsHeroEmpty(String name) {
+    return '还没有分。分来自带分的任务，或者 $name 给。';
+  }
+
+  @override
+  String get ptsRedeemableSetInRules => '去规矩里定一个';
+
+  @override
+  String get ptsLedgerAll => '全部流水';
 
   @override
   String get ptsGive => '给分';
@@ -1947,7 +2007,7 @@ class LZh extends L {
   String get ptsRedeemableTitle => '可兑换';
 
   @override
-  String get ptsRedeemableEmpty => '还没定奖励。';
+  String get ptsRedeemableEmpty => '还没有奖励。';
 
   @override
   String ptsShort(int n) {
@@ -2008,7 +2068,7 @@ class LZh extends L {
   String get ptsLedgerTitle => '流水';
 
   @override
-  String get ptsLedgerEmpty => '还没有流水。';
+  String get ptsLedgerEmpty => '流水还是空的。';
 
   @override
   String get ptsReasonTaskEarn => '任务';
@@ -2240,7 +2300,7 @@ class LZh extends L {
   String get explorePackEmptyDraft => '没有要建的了。';
 
   @override
-  String get rulesStartFromPack => '从一套开始';
+  String get rulesStartFromPack => '从起步包开始';
 
   @override
   String get rulesExplorePrefs => '偏好';

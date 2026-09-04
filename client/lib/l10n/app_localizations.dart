@@ -2710,8 +2710,38 @@ abstract class L {
   /// No description provided for @recordTogether.
   ///
   /// In en, this message translates to:
-  /// **'{days, plural, =1{Together 1 day} other{Together {days} days}} · {streak, plural, =1{1 in a row} other{{streak} in a row}}'**
-  String recordTogether(int days, int streak);
+  /// **'{days, plural, =1{Together 1 day} other{Together {days} days}}'**
+  String recordTogether(int days);
+
+  /// No description provided for @recordHeroEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Record · {weekday}'**
+  String recordHeroEyebrow(String weekday);
+
+  /// No description provided for @recordTodayLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{expected, plural, =1{1 expected} other{{expected} expected}} · {answered, plural, =1{1 answered} other{{answered} answered}}'**
+  String recordTodayLine(int expected, int answered);
+
+  /// No description provided for @recordTodayNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing expected today.'**
+  String get recordTodayNothing;
+
+  /// No description provided for @recordOpenDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Open this day'**
+  String get recordOpenDay;
+
+  /// No description provided for @recordFactsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded this week yet.'**
+  String get recordFactsNone;
 
   /// No description provided for @recordPrevMonth.
   ///
@@ -3067,6 +3097,42 @@ abstract class L {
   /// **'Rules'**
   String get rulesTitle;
 
+  /// No description provided for @rulesStandingEmptyS.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet. You can propose the first one.'**
+  String get rulesStandingEmptyS;
+
+  /// No description provided for @rulesTasksEmptyS.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring tasks yet. You can propose one.'**
+  String get rulesTasksEmptyS;
+
+  /// No description provided for @rulesRewardsEmptyS.
+  ///
+  /// In en, this message translates to:
+  /// **'No rewards yet. They appear here once {name} adds one.'**
+  String rulesRewardsEmptyS(String name);
+
+  /// No description provided for @rulesConsequencesEmptyS.
+  ///
+  /// In en, this message translates to:
+  /// **'No consequences yet. They appear here once {name} adds one.'**
+  String rulesConsequencesEmptyS(String name);
+
+  /// No description provided for @rulesConsequencesIntroYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Only you use these, when you answer a delivery. Nothing here runs on its own.'**
+  String get rulesConsequencesIntroYou;
+
+  /// No description provided for @rulesLimitsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing marked yet. It fills in from the compare.'**
+  String get rulesLimitsEmpty;
+
   /// No description provided for @rulesAwayToggle.
   ///
   /// In en, this message translates to:
@@ -3100,7 +3166,7 @@ abstract class L {
   /// No description provided for @rulesStandingEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No rules yet.'**
+  /// **'No rules yet. Start from a pack, or write the first one.'**
   String get rulesStandingEmpty;
 
   /// No description provided for @ruleGroupProtocol.
@@ -3202,7 +3268,7 @@ abstract class L {
   /// No description provided for @rulesTasksEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No tasks yet.'**
+  /// **'No recurring tasks yet. Add one and it appears on Today.'**
   String get rulesTasksEmpty;
 
   /// No description provided for @rulesAddTask.
@@ -3418,7 +3484,7 @@ abstract class L {
   /// No description provided for @rulesRewardsEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No rewards yet.'**
+  /// **'No rewards yet. Add one and it can be redeemed with points.'**
   String get rulesRewardsEmpty;
 
   /// No description provided for @rulesAddReward.
@@ -3472,13 +3538,13 @@ abstract class L {
   /// No description provided for @rulesConsequencesIntro.
   ///
   /// In en, this message translates to:
-  /// **'Used only by {name}, when disposing. They are kept here; nothing runs from here.'**
+  /// **'Only {name} uses these, when answering a delivery. Nothing here runs on its own.'**
   String rulesConsequencesIntro(String name);
 
   /// No description provided for @rulesConsequencesEmpty.
   ///
   /// In en, this message translates to:
-  /// **'None yet.'**
+  /// **'No consequences yet. Add one and it is offered when you answer a delivery.'**
   String get rulesConsequencesEmpty;
 
   /// No description provided for @rulesAddConsequence.
@@ -3514,13 +3580,13 @@ abstract class L {
   /// No description provided for @rulesLimitsLine.
   ///
   /// In en, this message translates to:
-  /// **'What either of you marked \"no\" in the compare lands here.'**
+  /// **'What either of you marked “no”. Your safeword is also in Settings.'**
   String get rulesLimitsLine;
 
   /// No description provided for @rulesLimitsGo.
   ///
   /// In en, this message translates to:
-  /// **'Compare'**
+  /// **'Compare preferences'**
   String get rulesLimitsGo;
 
   /// No description provided for @rulesExploreTitle.
@@ -3550,7 +3616,7 @@ abstract class L {
   /// No description provided for @rulesPauseDynamic.
   ///
   /// In en, this message translates to:
-  /// **'Pause for a while'**
+  /// **'Pause the dynamic…'**
   String get rulesPauseDynamic;
 
   /// No description provided for @rulesCouldNotLoad.
@@ -3574,7 +3640,7 @@ abstract class L {
   /// No description provided for @rulesTheD.
   ///
   /// In en, this message translates to:
-  /// **'the D'**
+  /// **'your partner'**
   String get rulesTheD;
 
   /// No description provided for @rulesTheS.
@@ -3600,6 +3666,36 @@ abstract class L {
   /// In en, this message translates to:
   /// **'{n}'**
   String ptsBalanceMine(int n);
+
+  /// No description provided for @ptsHeroEyebrowD.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} has'**
+  String ptsHeroEyebrowD(String name);
+
+  /// No description provided for @ptsHeroEyebrowMine.
+  ///
+  /// In en, this message translates to:
+  /// **'You have'**
+  String get ptsHeroEyebrowMine;
+
+  /// No description provided for @ptsHeroEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No points yet. They come from tasks that carry points, or from {name}.'**
+  String ptsHeroEmpty(String name);
+
+  /// No description provided for @ptsRedeemableSetInRules.
+  ///
+  /// In en, this message translates to:
+  /// **'Set one in Rules'**
+  String get ptsRedeemableSetInRules;
+
+  /// No description provided for @ptsLedgerAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All entries'**
+  String get ptsLedgerAll;
 
   /// No description provided for @ptsGive.
   ///
@@ -3646,7 +3742,7 @@ abstract class L {
   /// No description provided for @ptsRedeemableEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No rewards set yet.'**
+  /// **'No rewards yet.'**
   String get ptsRedeemableEmpty;
 
   /// No description provided for @ptsShort.
@@ -3748,7 +3844,7 @@ abstract class L {
   /// No description provided for @ptsLedgerEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Nothing yet.'**
+  /// **'Nothing in the ledger yet.'**
   String get ptsLedgerEmpty;
 
   /// No description provided for @ptsReasonTaskEarn.
@@ -4168,7 +4264,7 @@ abstract class L {
   /// No description provided for @rulesStartFromPack.
   ///
   /// In en, this message translates to:
-  /// **'Start from a set'**
+  /// **'Start from a pack'**
   String get rulesStartFromPack;
 
   /// No description provided for @rulesExplorePrefs.
