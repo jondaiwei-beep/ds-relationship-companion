@@ -979,6 +979,26 @@
   "recordPrivateNoteFailed": "Not saved. Try again.",
   "recordCommentFailed": "Not sent. Try again.",
   "rulesTitle": "Rules",
+  "rulesStandingEmptyS": "No rules yet. You can propose the first one.",
+  "rulesTasksEmptyS": "No recurring tasks yet. You can propose one.",
+  "rulesRewardsEmptyS": "No rewards yet. They appear here once {name} adds one.",
+  "@rulesRewardsEmptyS": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesConsequencesEmptyS": "No consequences yet. They appear here once {name} adds one.",
+  "@rulesConsequencesEmptyS": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesConsequencesIntroYou": "Only you use these, when you answer a delivery. Nothing here runs on its own.",
+  "rulesLimitsEmpty": "Nothing marked yet. It fills in from the compare.",
   "rulesAwayToggle": "I'm away",
   "rulesAwayUntil": "Away until {date}",
   "@rulesAwayUntil": {
@@ -1001,7 +1021,7 @@
   },
   "rulesBack": "I'm back",
   "rulesStandingTitle": "STANDING RULES",
-  "rulesStandingEmpty": "No rules yet.",
+  "rulesStandingEmpty": "No rules yet. Start from a pack, or write the first one.",
   "ruleGroupProtocol": "Protocol",
   "ruleGroupRitual": "Ritual",
   "ruleGroupRestriction": "Restrictions",
@@ -1018,7 +1038,7 @@
   "rulesArchive": "Archive",
   "rulesNeverMind": "Never mind",
   "rulesTasksTitle": "RECURRING TASKS",
-  "rulesTasksEmpty": "No tasks yet.",
+  "rulesTasksEmpty": "No recurring tasks yet. Add one and it appears on Today.",
   "rulesAddTask": "Add a task",
   "rulesProposeTask": "Propose a task",
   "rulesTaskTitleLabel": "What to do",
@@ -1110,7 +1130,7 @@
   "rulesKindRule": "Rule",
   "rulesWithdraw": "Withdraw",
   "rulesRewardsTitle": "REWARDS",
-  "rulesRewardsEmpty": "No rewards yet.",
+  "rulesRewardsEmpty": "No rewards yet. Add one and it can be redeemed with points.",
   "rulesAddReward": "Add a reward",
   "rulesRewardTitleLabel": "Reward",
   "rulesRewardCostLabel": "Cost in points",
@@ -1126,7 +1146,7 @@
   "rulesRewardRetire": "Retire",
   "rulesGoRedeem": "Redeem",
   "rulesConsequencesTitle": "CONSEQUENCES",
-  "rulesConsequencesIntro": "Used only by {name}, when disposing. They are kept here; nothing runs from here.",
+  "rulesConsequencesIntro": "Only {name} uses these, when answering a delivery. Nothing here runs on its own.",
   "@rulesConsequencesIntro": {
     "placeholders": {
       "name": {
@@ -1134,19 +1154,19 @@
       }
     }
   },
-  "rulesConsequencesEmpty": "None yet.",
+  "rulesConsequencesEmpty": "No consequences yet. Add one and it is offered when you answer a delivery.",
   "rulesAddConsequence": "Add one",
   "rulesConsequenceWhen": "When",
   "rulesConsequenceThen": "Then",
   "rulesEndConsequence": "End",
   "rulesLimitsTitle": "LIMITS & SAFEWORD",
-  "rulesLimitsLine": "What either of you marked \"no\" in the compare lands here.",
-  "rulesLimitsGo": "Compare",
+  "rulesLimitsLine": "What either of you marked “no”. Your safeword is also in Settings.",
+  "rulesLimitsGo": "Compare preferences",
   "rulesExploreTitle": "EXPLORE",
   "rulesExploreCompare": "Compare",
   "rulesExploreInspiration": "Inspiration",
   "rulesExploreStarter": "Starter pack",
-  "rulesPauseDynamic": "Pause for a while",
+  "rulesPauseDynamic": "Pause the dynamic…",
   "rulesCouldNotLoad": "Rules could not be loaded.",
   "rulesActionFailed": "Not saved. Try again.",
   "rulesProposedSent": "Sent to {name}.",
@@ -1157,7 +1177,7 @@
       }
     }
   },
-  "rulesTheD": "the D",
+  "rulesTheD": "your partner",
   "rulesTheS": "your partner",
   "rulesYou": "you",
   "ptsBalanceOf": "{name} · {n, plural, =1{1 point} other{{n} points}}",
@@ -1405,7 +1425,7 @@
     }
   },
   "explorePackEmptyDraft": "Nothing left to create.",
-  "rulesStartFromPack": "Start from a set",
+  "rulesStartFromPack": "Start from a pack",
   "rulesExplorePrefs": "Preferences",
   "sTodayMeasureLabel": "Value",
   "sTodayMeasureLabelUnit": "Value ({unit})",
