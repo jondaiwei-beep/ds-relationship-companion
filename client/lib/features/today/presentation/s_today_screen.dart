@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/shell/page_hero.dart';
 import '../../../app/providers.dart';
 import '../../../platform/media/proof_picker.dart';
 import '../../../domain_client/api_client.dart';
@@ -18,7 +19,6 @@ import 'widgets/s_occurrence_row.dart';
 import 'widgets/section_label.dart';
 import 'widgets/today_header.dart';
 import 'widgets/today_layout.dart';
-import 'widgets/today_meta.dart';
 import 'widgets/word_button.dart';
 
 /// The s face of 今天 (product/02-surfaces.md §Tab 1, s).
@@ -405,14 +405,20 @@ class _STodayScreenState extends ConsumerState<STodayScreen> {
       padding: EdgeInsets.zero,
       children: [
         TodayHeader(
-          title: l.todayTitle,
           partnerName: view.partnerDisplayName,
           onSettings: widget.onSettings,
           onNotifications: widget.onNotifications,
           unread: widget.unread,
         ),
-        const SizedBox(height: DsSpacing.space4),
-        TodayMeta(view: view),
+        PageHero(
+          eyebrow: l.todayHeroEyebrow(
+            TodayFormat.weekday(view.day, _locale),
+            TodayFormat.minutesClock(view.dayBoundaryMinutes, _locale),
+          ),
+          hero: TodayFormat.dayHero(view.day, _locale),
+          heroKey: const ValueKey('today-hero'),
+          support: '${l.todayBalance(view.balance)} · ${l.todayDaysTogether(view.daysTogether)}',
+        ),
         const SizedBox(height: DsSpacing.space8),
         ?widget.notice,
         if (empty) ...[

@@ -11,7 +11,7 @@ import '../../l10n/app_localizations.dart';
 /// not from here.
 enum NavSurface {
   today(DsAssets.navToday, null),
-  rules(DsAssets.navDynamic, null),
+  rules(null, DsGlyph.rules),
   record(null, DsGlyph.record),
   points(null, DsGlyph.points);
 

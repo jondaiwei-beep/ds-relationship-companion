@@ -124,6 +124,7 @@ class TodayScreen extends ConsumerWidget {
                               onNotifications: onNotifications,
                               unread: unread,
                               notice: notice,
+                              alone: TodayNotice.isAlone(detail),
                             )
                           : STodayScreen(
                               view: view,

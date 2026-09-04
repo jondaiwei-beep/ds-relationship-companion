@@ -421,6 +421,10 @@
   "todaySend": "Send",
   "todayCancel": "Cancel",
   "todayPartnerFallback": "your partner",
+  "todayStartsWhenJoined": "Starts when they join.",
+  "todayHeroEyebrow": "{weekday} · from {clock}",
+  "@todayHeroEyebrow": {"placeholders": {"weekday": {"type": "String"}, "clock": {"type": "String"}}},
+  "dTodayItemOpen": "Not yet",
   "todayDueBy": "by {time}",
   "@todayDueBy": {
     "placeholders": {
@@ -574,9 +578,9 @@
   },
   "sTodayConflictChanged": "This changed elsewhere.",
   "sTodayConflictOther": "Not sent. Try again.",
-  "dTodayEmpty": "Nothing waiting for you.",
-  "dTodaySectionNeedsMe": "Waiting on me",
-  "dTodaySectionOverview": "Today for {name}",
+  "dTodayEmpty": "Nothing to answer right now.",
+  "dTodaySectionNeedsMe": "For you to answer",
+  "dTodaySectionOverview": "{name}'s day",
   "@dTodaySectionOverview": {
     "placeholders": {
       "name": {
@@ -670,16 +674,16 @@
   "dTodayConflictPaused": "This one is paused.",
   "dTodayConflictChanged": "This changed elsewhere.",
   "dTodayConflictOther": "Not sent. Try again.",
-  "dTodaySectionQuickAdd": "Add one",
-  "dTodayQuickTitle": "What",
+  "dTodaySectionQuickAdd": "Add for today",
+  "dTodayQuickTitle": "One thing, in a line",
   "dTodayQuickToday": "Just today",
   "dTodayQuickDaily": "Every day",
   "dTodayQuickPoints": "Points (optional)",
   "dTodayQuickAdd": "Add",
   "dTodayQuickAdded": "Added.",
   "dTodayQuickFailed": "Not added. Try again.",
-  "dTodaySectionNotes": "To remember",
-  "dTodayNoteBody": "Note to self",
+  "dTodaySectionNotes": "Only you",
+  "dTodayNoteBody": "A note only you see",
   "dTodayNoteRemind": "Remind me",
   "dTodayNoteRemindAt": "Remind · {time}",
   "@dTodayNoteRemindAt": {
@@ -1154,7 +1158,7 @@
     }
   },
   "rulesTheD": "the D",
-  "rulesTheS": "the s",
+  "rulesTheS": "your partner",
   "rulesYou": "you",
   "ptsBalanceOf": "{name} · {n, plural, =1{1 point} other{{n} points}}",
   "@ptsBalanceOf": {
@@ -1373,7 +1377,7 @@
   "exploreActTriedAgain": "Tried it · again",
   "exploreActTriedNever": "Not again",
   "exploreActDone": "Done.",
-  "exploreDrawTonight": "What about tonight?",
+  "exploreDrawTonight": "Draw an idea for tonight",
   "exploreDrawAgain": "Draw another",
   "exploreDrawFailed": "No card came. Try again.",
   "explorePacksTitle": "Starter packs",

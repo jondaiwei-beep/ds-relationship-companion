@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/shell/ds_skeleton.dart';
+import '../../../app/shell/page_hero.dart';
 import '../../../domain/relationship_day.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/d_note.dart';
@@ -12,6 +13,7 @@ import '../../../domain_client/models/today_view.dart';
 import '../../../domain_client/repositories/today_repository.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../domain_client/models/explore.dart';
+import '../../dynamic/application/dynamic_providers.dart';
 import '../../explore/application/explore_providers.dart';
 import '../../explore/presentation/widgets/idea_card_sheet.dart';
 import '../../rules/application/rules_providers.dart';
@@ -28,7 +30,6 @@ import 'widgets/quiet_line.dart';
 import 'widgets/section_label.dart';
 import 'widgets/today_header.dart';
 import 'widgets/today_layout.dart';
-import 'widgets/today_meta.dart';
 
 /// The D face of 今天 (product/02-surfaces.md §Tab 1, D).
 ///
@@ -44,6 +45,7 @@ class DTodayScreen extends ConsumerStatefulWidget {
     this.onNotifications,
     this.unread = 0,
     this.notice,
+    this.alone = false,
   });
 
   final TodayView view;
@@ -56,6 +58,10 @@ class DTodayScreen extends ConsumerStatefulWidget {
   /// between the day's meta and its list. Built by the frame, which is the
   /// only place that watches the Dynamic detail.
   final Widget? notice;
+
+  /// The partner has not joined. Nothing that needs two people is shown as a
+  /// zero; it is named as not started (redesign-2026-09 §3).
+  final bool alone;
 
   @override
   ConsumerState<DTodayScreen> createState() => _DTodayScreenState();
@@ -243,30 +249,38 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
     );
   }
 
+  String _stateWord(OccurrenceView occ, L l) =>
+      occ.outcome == Outcome.open || occ.outcome == Outcome.paused ? l.dTodayItemOpen : _saidOf(occ, l);
+
+  /// The shape of the s's day: every item by name with one word of state, and
+  /// the count under it. A count alone ("0/2 delivered") told the D nothing
+  /// about what the two were.
   Widget _overview(L l) {
     final items = widget.view.items;
     if (items.isEmpty) return const SizedBox.shrink();
     final delivered = items.where((o) => o.outcome.isDelivered).length;
-    final flagged = items
-        .where((o) =>
-            o.outcome == Outcome.cantDo ||
-            o.outcome == Outcome.newTimeRequested ||
-            o.outcome == Outcome.discussRequested)
-        .length;
-    final style = DsTextStyles.bodyPrimary.copyWith(color: DsColors.textOnRitualSecondary);
+    final title = DsTextStyles.bodyPrimary.copyWith(color: DsColors.textOnRitualPrimary);
+    final state = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionLabel(l.dTodaySectionOverview(_partner)),
-        Padding(
-          padding: todayInset,
-          child: Text(l.dTodayOverviewDelivered(delivered, items.length), style: style),
-        ),
-        if (flagged > 0)
+        for (final o in items)
           Padding(
-            padding: todayInset.add(const EdgeInsets.only(top: DsSpacing.space1)),
-            child: Text(l.dTodayOverviewFlagged(flagged), style: style),
+            padding: todayInset.add(const EdgeInsets.symmetric(vertical: DsSpacing.space2)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: Text(o.title, style: title)),
+                const SizedBox(width: DsSpacing.space3),
+                Text(_stateWord(o, l), style: state),
+              ],
+            ),
           ),
+        Padding(
+          padding: todayInset.add(const EdgeInsets.only(top: DsSpacing.space2)),
+          child: Text(l.dTodayOverviewDelivered(delivered, items.length), style: state),
+        ),
         const SizedBox(height: DsSpacing.space8),
       ],
     );
@@ -324,6 +338,48 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
     }
   }
 
+  // ── away (D-26) ──────────────────────────────────────────────────────────
+  // Moved here from 规矩: it is the state of the day, not a rule.
+
+  Future<void> _away() async {
+    final v = widget.view;
+    final now = DateTime.now();
+    final first = DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: first,
+      firstDate: first,
+      lastDate: first.add(const Duration(days: 365)),
+    );
+    if (picked == null || !mounted) return;
+    final iso = RelationshipDay.isoDay(picked);
+    final until = TodayFormat.instantOf(
+      iso,
+      v.dayBoundaryMinutes ~/ 60,
+      v.dayBoundaryMinutes % 60,
+      v.timezone,
+    );
+    await _dynamicChange(() => ref.read(dynamicRepositoryProvider).away(
+          widget.dynamicId,
+          until: until,
+          idempotencyKey: ApiClient.newIdempotencyKey(),
+        ));
+  }
+
+  Future<void> _back() => _dynamicChange(
+        () => ref.read(dynamicRepositoryProvider).back(widget.dynamicId, idempotencyKey: ApiClient.newIdempotencyKey()),
+      );
+
+  Future<void> _dynamicChange(Future<void> Function() call) async {
+    try {
+      await call();
+      ref.invalidate(todayProvider(widget.dynamicId));
+      ref.invalidate(dynamicDetailProvider(widget.dynamicId));
+    } on Object {
+      if (mounted) setState(() => _drawNotice = L.of(context).dTodayConflictOther);
+    }
+  }
+
   Future<void> _drawTonight() async {
     if (_drawing) return;
     final l = L.of(context);
@@ -367,58 +423,78 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
   Widget build(BuildContext context) {
     final l = L.of(context);
     final view = widget.view;
+    final locale = _locale;
     final needsMe = ref.watch(needsMeProvider(widget.dynamicId));
     final notes = ref.watch(dNotesProvider(widget.dynamicId));
+    final away = view.dAwayUntil != null && view.dAwayUntil!.isAfter(DateTime.now());
+    final quiet = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted);
 
     return ListView(
       padding: EdgeInsets.zero,
       children: [
         TodayHeader(
-          title: l.todayTitle,
           partnerName: view.partnerDisplayName,
           onSettings: widget.onSettings,
           onNotifications: widget.onNotifications,
           unread: widget.unread,
         ),
-        const SizedBox(height: DsSpacing.space4),
-        TodayMeta(view: view),
-        const SizedBox(height: DsSpacing.space4),
+        PageHero(
+          eyebrow: l.todayHeroEyebrow(
+            TodayFormat.weekday(view.day, locale),
+            TodayFormat.minutesClock(view.dayBoundaryMinutes, locale),
+          ),
+          hero: TodayFormat.dayHero(view.day, locale),
+          heroKey: const ValueKey('today-hero'),
+          // Balance and days are facts about two people; alone there are none.
+          support: widget.alone
+              ? null
+              : '${l.todayBalance(view.balance)} · ${l.todayDaysTogether(view.daysTogether)}',
+        ),
+        const SizedBox(height: DsSpacing.space6),
         ?widget.notice,
         Padding(
           padding: todayInset,
-          child: Row(
+          child: Wrap(
+            spacing: DsSpacing.space6,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              WordButton(label: l.exploreDrawTonight, onTap: _drawTonight),
-              if (_drawNotice != null) ...[
-                const SizedBox(width: DsSpacing.space3),
-                Expanded(
-                  child: Text(
-                    _drawNotice!,
-                    style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
-                  ),
-                ),
-              ],
+              WordButton(label: l.exploreDrawTonight, quiet: true, onTap: _drawTonight),
+              // D-26: the state of the day, so it lives with the day.
+              WordButton(
+                key: const ValueKey('today-away'),
+                label: away ? l.rulesBack : l.rulesAwayToggle,
+                quiet: true,
+                onTap: away ? _back : _away,
+              ),
             ],
           ),
         ),
-        const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.dTodaySectionNeedsMe),
-        needsMe.when(
-          skipLoadingOnReload: true,
-          skipLoadingOnRefresh: true,
-          loading: () => const Padding(
-            padding: todayInset,
-            child: DsSkeletonCard(lines: [0.7, 0.4]),
+        if (_drawNotice != null)
+          Padding(
+            padding: todayInset.add(const EdgeInsets.only(top: DsSpacing.space2)),
+            child: Text(_drawNotice!, style: quiet),
           ),
-          error: (_, _) => QuietLine(l.dTodayConflictOther),
-          data: (rows) {
-            final visible = rows.where((o) => !_disposed.contains(o.id)).toList();
-            if (visible.isEmpty) return QuietLine(l.dTodayEmpty);
-            return Column(children: [for (final o in visible) _needsMeRow(o, l)]);
-          },
-        ),
+        const SizedBox(height: DsSpacing.space10),
+        SectionLabel(l.dTodaySectionNeedsMe),
+        if (widget.alone)
+          QuietLine(l.todayStartsWhenJoined)
+        else
+          needsMe.when(
+            skipLoadingOnReload: true,
+            skipLoadingOnRefresh: true,
+            loading: () => const Padding(
+              padding: todayInset,
+              child: DsSkeletonCard(lines: [0.7, 0.4]),
+            ),
+            error: (_, _) => QuietLine(l.dTodayConflictOther),
+            data: (rows) {
+              final visible = rows.where((o) => !_disposed.contains(o.id)).toList();
+              if (visible.isEmpty) return QuietLine(l.dTodayEmpty);
+              return Column(children: [for (final o in visible) _needsMeRow(o, l)]);
+            },
+          ),
         const SizedBox(height: DsSpacing.space8),
-        _overview(l),
+        if (!widget.alone) _overview(l),
         SectionLabel(l.dTodaySectionQuickAdd),
         DQuickAdd(onAdd: _addTask, onMore: (draft) => _addTaskFully(view, draft)),
         const SizedBox(height: DsSpacing.space8),

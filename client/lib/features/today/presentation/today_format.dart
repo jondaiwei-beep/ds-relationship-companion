@@ -42,6 +42,15 @@ abstract final class TodayFormat {
   }
 
   /// A relationship day with weekday, for the header.
+  /// The surface anchor: the day without its year, in the locale's order
+  /// ("4 September", "9月4日").
+  static String dayHero(String isoDay, String locale) {
+    final d = DateTime.parse(isoDay);
+    return locale.startsWith('zh') ? DateFormat.MMMMd(locale).format(d) : DateFormat('d MMMM', locale).format(d);
+  }
+
+  static String weekday(String isoDay, String locale) => DateFormat.EEEE(locale).format(DateTime.parse(isoDay));
+
   static String dayLong(String isoDay, String locale) {
     final parts = isoDay.split('-').map(int.parse).toList(growable: false);
     return DateFormat.MMMEd(locale).format(DateTime(parts[0], parts[1], parts[2]));

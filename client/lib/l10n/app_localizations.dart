@@ -2107,6 +2107,24 @@ abstract class L {
   /// **'your partner'**
   String get todayPartnerFallback;
 
+  /// No description provided for @todayStartsWhenJoined.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts when they join.'**
+  String get todayStartsWhenJoined;
+
+  /// No description provided for @todayHeroEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday} · from {clock}'**
+  String todayHeroEyebrow(String weekday, String clock);
+
+  /// No description provided for @dTodayItemOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get dTodayItemOpen;
+
   /// No description provided for @todayDueBy.
   ///
   /// In en, this message translates to:
@@ -2326,19 +2344,19 @@ abstract class L {
   /// No description provided for @dTodayEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Nothing waiting for you.'**
+  /// **'Nothing to answer right now.'**
   String get dTodayEmpty;
 
   /// No description provided for @dTodaySectionNeedsMe.
   ///
   /// In en, this message translates to:
-  /// **'Waiting on me'**
+  /// **'For you to answer'**
   String get dTodaySectionNeedsMe;
 
   /// No description provided for @dTodaySectionOverview.
   ///
   /// In en, this message translates to:
-  /// **'Today for {name}'**
+  /// **'{name}\'s day'**
   String dTodaySectionOverview(String name);
 
   /// No description provided for @dTodayOverviewDelivered.
@@ -2488,13 +2506,13 @@ abstract class L {
   /// No description provided for @dTodaySectionQuickAdd.
   ///
   /// In en, this message translates to:
-  /// **'Add one'**
+  /// **'Add for today'**
   String get dTodaySectionQuickAdd;
 
   /// No description provided for @dTodayQuickTitle.
   ///
   /// In en, this message translates to:
-  /// **'What'**
+  /// **'One thing, in a line'**
   String get dTodayQuickTitle;
 
   /// No description provided for @dTodayQuickToday.
@@ -2536,13 +2554,13 @@ abstract class L {
   /// No description provided for @dTodaySectionNotes.
   ///
   /// In en, this message translates to:
-  /// **'To remember'**
+  /// **'Only you'**
   String get dTodaySectionNotes;
 
   /// No description provided for @dTodayNoteBody.
   ///
   /// In en, this message translates to:
-  /// **'Note to self'**
+  /// **'A note only you see'**
   String get dTodayNoteBody;
 
   /// No description provided for @dTodayNoteRemind.
@@ -3562,7 +3580,7 @@ abstract class L {
   /// No description provided for @rulesTheS.
   ///
   /// In en, this message translates to:
-  /// **'the s'**
+  /// **'your partner'**
   String get rulesTheS;
 
   /// No description provided for @rulesYou.
@@ -4060,7 +4078,7 @@ abstract class L {
   /// No description provided for @exploreDrawTonight.
   ///
   /// In en, this message translates to:
-  /// **'What about tonight?'**
+  /// **'Draw an idea for tonight'**
   String get exploreDrawTonight;
 
   /// No description provided for @exploreDrawAgain.

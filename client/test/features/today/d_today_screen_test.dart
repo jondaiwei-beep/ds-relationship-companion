@@ -48,6 +48,14 @@ Future<void> _pump(
 }
 
 /// The TextField under a DsTextField label.
+/// The page is long now (hero, lists); a field below the fold is not built
+/// until scrolled to. Scroll until its label exists, then find its TextField.
+Future<Finder> _reveal(WidgetTester tester, String label) async {
+  await tester.scrollUntilVisible(find.text(label), 200, scrollable: find.byType(Scrollable).first);
+  await tester.pumpAndSettle();
+  return _field(tester, label);
+}
+
 Finder _field(WidgetTester tester, String label) => find.descendant(
       of: find.ancestor(of: find.text(label), matching: find.byType(DsTextField)),
       matching: find.byType(TextField),
@@ -59,10 +67,10 @@ void main() {
   group('D 今天', () {
     testWidgets('nothing waiting says so', (tester) async {
       await _pump(tester, today: FakeTodayRepository(view: dView()));
-      expect(find.text('等我处置的'), findsOneWidget);
-      expect(find.text('没有等你的。'), findsOneWidget);
-      expect(find.text('快速加一条'), findsOneWidget);
-      expect(find.text('我要记得的'), findsOneWidget);
+      expect(find.text('等你处置'), findsOneWidget);
+      expect(find.text('现在没有等你处置的。'), findsOneWidget);
+      expect(find.text('给今天加一条'), findsOneWidget);
+      expect(find.text('只给自己'), findsOneWidget);
       expect(find.text('只有你看得到。'), findsOneWidget);
     });
 
@@ -86,7 +94,7 @@ void main() {
       expect(find.text('1/1 已交付'), findsOneWidget);
       expect(repo.seen, isEmpty, reason: 'seeing the list is not seeing the item');
 
-      await tester.tap(find.text('整理床铺'));
+      await tester.tap(find.text('整理床铺').first);
       await tester.pumpAndSettle();
       expect(repo.seen, ['o1']);
 
@@ -95,7 +103,7 @@ void main() {
 
       expect(repo.dispositions.single.$1, 'o1');
       expect(repo.dispositions.single.$2.disposition, Disposition.seen);
-      expect(find.text('没有等你的。'), findsOneWidget);
+      expect(find.text('现在没有等你处置的。'), findsOneWidget);
     });
 
     testWidgets('很好 carries an optional line; 算了 posts at once', (tester) async {
@@ -108,7 +116,7 @@ void main() {
       );
       await _pump(tester, today: repo);
 
-      await tester.tap(find.text('晚间日记'));
+      await tester.tap(find.text('晚间日记').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('很好'));
       await tester.pumpAndSettle();
@@ -116,7 +124,7 @@ void main() {
       await tester.tap(find.text('送出'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('喝水'));
+      await tester.tap(find.text('喝水').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('算了'));
       await tester.pumpAndSettle();
@@ -134,12 +142,12 @@ void main() {
       )..nextError = conflict('OCCURRENCE_CHANGED');
       await _pump(tester, today: repo);
 
-      await tester.tap(find.text('晚间日记'));
+      await tester.tap(find.text('晚间日记').first);
       await tester.pumpAndSettle();
       await tester.tap(find.text('看到了'));
       await tester.pumpAndSettle();
 
-      expect(find.text('晚间日记'), findsOneWidget);
+      expect(find.text('晚间日记'), findsWidgets);
       expect(find.text('这条在别处改过了。'), findsOneWidget);
       expect(repo.dispositions, isEmpty);
     });
@@ -148,12 +156,12 @@ void main() {
       final tasks = FakeTaskRepository();
       await _pump(tester, today: FakeTodayRepository(view: dView()), tasks: tasks);
 
-      await tester.enterText(_field(tester, '做什么'), '倒垃圾');
+      await tester.enterText(await _reveal(tester, '一件事，一句话'), '倒垃圾');
       await tester.tap(find.text('加上'));
       await tester.pumpAndSettle();
       expect(find.text('加上了。'), findsOneWidget);
 
-      await tester.enterText(_field(tester, '做什么'), '早安问候');
+      await tester.enterText(await _reveal(tester, '一件事，一句话'), '早安问候');
       await tester.tap(find.text('每天'));
       await tester.pump();
       await tester.tap(find.text('加上'));
@@ -172,7 +180,7 @@ void main() {
       await _pump(tester, today: FakeTodayRepository(view: dView()), notes: notes);
       expect(find.text('问她周末想去哪'), findsOneWidget);
 
-      await tester.enterText(_field(tester, '记一句'), '买她要的茶');
+      await tester.enterText(await _reveal(tester, '只有你看得到的一句'), '买她要的茶');
       await tester.tap(find.text('记下'));
       await tester.pumpAndSettle();
       expect(find.text('买她要的茶'), findsOneWidget);
@@ -192,8 +200,8 @@ void main() {
       final explore = FakeExploreRepository();
       await _pump(tester, today: FakeTodayRepository(view: dView()), explore: explore);
 
-      expect(find.text('今晚要什么？'), findsOneWidget);
-      await tester.tap(find.text('今晚要什么？'));
+      expect(find.text('抽一张今晚的灵感'), findsOneWidget);
+      await tester.tap(find.text('抽一张今晚的灵感'));
       await tester.pumpAndSettle();
 
       expect(explore.draws, 1);

@@ -105,7 +105,8 @@ void main() {
         ),
       );
 
-      expect(find.text('今天从 04:00 算'), findsOneWidget);
+      expect(find.textContaining('从 04:00 算'), findsOneWidget, reason: 'the eyebrow names the day boundary');
+      expect(find.byKey(const ValueKey('today-hero')), findsOneWidget);
       expect(find.text('12 分 · 在一起 40 天'), findsOneWidget);
 
       double y(String text) => tester.getTopLeft(find.text(text)).dy;

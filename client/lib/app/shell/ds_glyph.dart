@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 /// recognisable as Google's — which is the kind of detail that quietly tells
 /// someone this screen was assembled rather than drawn. These match the frozen
 /// navigation geometry instead: a 1.25–1.5 stroke on a 32×32 box, round caps.
-enum DsGlyph { close, back, forward, settings, check, points, record }
+enum DsGlyph { close, back, forward, settings, check, points, record, rules }
 
 class DsGlyphIcon extends StatelessWidget {
   const DsGlyphIcon(
@@ -126,6 +126,13 @@ class _GlyphPainter extends CustomPainter {
         for (final x in [11.0, 16.0, 21.0]) {
           canvas.drawCircle(p(x, 19.5), 1.3 * s, Paint()..color = color);
         }
+
+      // The rules tab's mark: two standing rules and a shorter third — a
+      // list that is written down, not a waveform (redesign-2026-09 §6).
+      case DsGlyph.rules:
+        canvas.drawLine(p(7, 10), p(25, 10), paint);
+        canvas.drawLine(p(7, 16), p(25, 16), paint);
+        canvas.drawLine(p(7, 22), p(18, 22), paint);
 
       case DsGlyph.settings:
         for (final (y, x) in [(10.0, 20.0), (16.0, 12.0), (22.0, 18.0)]) {

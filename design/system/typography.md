@@ -17,6 +17,7 @@ Both families are distributed under the SIL Open Font License 1.1; their license
 
 | Token | Family | Weight | Size / line height | Tracking |
 |---|---|---:|---:|---:|
+| display.hero | Cormorant Garamond | 400 | 44 / 48 | 0 | one anchor per surface (redesign-2026-09 §1) |
 | display.ritual | Cormorant Garamond | 400 | 34 / 42 | 0 |
 | display.partner | Cormorant Garamond | 400 | 28 / 36 | 0 |
 | title.page | Inter | 600 | 22 / 28 | -0.2 |

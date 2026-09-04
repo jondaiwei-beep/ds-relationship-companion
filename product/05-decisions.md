@@ -46,3 +46,14 @@
 - 导出不含私密笔记（连本人的也不含），若要"只导本人私密笔记"需 owner 确认。
 - 推送通知（2026-09-03）：无 FCM/APNs 凭证，先用轮询 + 本地通知。要即时推送需 owner 建 Firebase 项目并提供 `google-services.json` / APNs key。
 - 任务改动权（推断）：只有 D 能直接改任务；s 改 = 提议一条新的。依据 competitors.md「limits can be established of who can edit what. It gives it yet another D/s feel.」
+
+## D-31 · 不再显示连续天数（streak）· 2026-09-04 ·「推断」
+Codex 评审与业主反馈都指出「0 in a row」是习惯打卡话术，与「不做游戏化喧闹」冲突；
+服务端仍计算 streak（03-domain 不变），客户端任何页面都不展示。在一起的天数只在伴侣加入后显示。
+详见 design/system/redesign-2026-09.md §3。
+
+## D-32 · 每页一个 Cormorant 锚点，字级 44 · 2026-09-04 ·「推断」
+业主：「不高级」；Codex：四页字级层级比 1.5–2×，命中 5–6 条模板特征。
+决定每个 tab 只有一个 44px 的展示体锚点（Today/Record 是日期，Rules 是页名，Points 是分数），
+其余全部 Inter 小字。覆盖 typography.md 早先「Today 用小号 Inter 标题」的做法。
+

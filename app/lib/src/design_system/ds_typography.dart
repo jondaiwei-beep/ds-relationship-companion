@@ -1,3 +1,5 @@
+import 'dart:ui' show FontFeature;
+
 import 'package:flutter/material.dart';
 
 /// The eight roles frozen in design/system/typography.md.
@@ -13,6 +15,19 @@ abstract final class DsTextStyles {
 
   /// Resolves the bundled fonts from this package rather than the host.
   static const String _package = 'ds_relationship_companion';
+
+  /// The one anchor a surface is allowed: the day, the page name, or the
+  /// balance. 44px against 12px labels is what gives a page a hierarchy at
+  /// all (design/system/redesign-2026-09.md §1). Lining figures, because the
+  /// family's default old-style zero reads as an "o" at this size.
+  static const TextStyle displayHero = TextStyle(
+    fontFamily: displayFamily,
+    package: _package,
+    fontSize: 44,
+    fontWeight: FontWeight.w400,
+    height: 48 / 44,
+    fontFeatures: [FontFeature.liningFigures()],
+  );
 
   static const TextStyle displayRitual = TextStyle(
     fontFamily: displayFamily,

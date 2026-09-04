@@ -1160,6 +1160,17 @@ class LEn extends L {
   String get todayPartnerFallback => 'your partner';
 
   @override
+  String get todayStartsWhenJoined => 'Starts when they join.';
+
+  @override
+  String todayHeroEyebrow(String weekday, String clock) {
+    return '$weekday · from $clock';
+  }
+
+  @override
+  String get dTodayItemOpen => 'Not yet';
+
+  @override
   String todayDueBy(String time) {
     return 'by $time';
   }
@@ -1299,14 +1310,14 @@ class LEn extends L {
   String get sTodayConflictOther => 'Not sent. Try again.';
 
   @override
-  String get dTodayEmpty => 'Nothing waiting for you.';
+  String get dTodayEmpty => 'Nothing to answer right now.';
 
   @override
-  String get dTodaySectionNeedsMe => 'Waiting on me';
+  String get dTodaySectionNeedsMe => 'For you to answer';
 
   @override
   String dTodaySectionOverview(String name) {
-    return 'Today for $name';
+    return '$name\'s day';
   }
 
   @override
@@ -1398,10 +1409,10 @@ class LEn extends L {
   String get dTodayConflictOther => 'Not sent. Try again.';
 
   @override
-  String get dTodaySectionQuickAdd => 'Add one';
+  String get dTodaySectionQuickAdd => 'Add for today';
 
   @override
-  String get dTodayQuickTitle => 'What';
+  String get dTodayQuickTitle => 'One thing, in a line';
 
   @override
   String get dTodayQuickToday => 'Just today';
@@ -1422,10 +1433,10 @@ class LEn extends L {
   String get dTodayQuickFailed => 'Not added. Try again.';
 
   @override
-  String get dTodaySectionNotes => 'To remember';
+  String get dTodaySectionNotes => 'Only you';
 
   @override
-  String get dTodayNoteBody => 'Note to self';
+  String get dTodayNoteBody => 'A note only you see';
 
   @override
   String get dTodayNoteRemind => 'Remind me';
@@ -2022,7 +2033,7 @@ class LEn extends L {
   String get rulesTheD => 'the D';
 
   @override
-  String get rulesTheS => 'the s';
+  String get rulesTheS => 'your partner';
 
   @override
   String get rulesYou => 'you';
@@ -2317,7 +2328,7 @@ class LEn extends L {
   String get exploreActDone => 'Done.';
 
   @override
-  String get exploreDrawTonight => 'What about tonight?';
+  String get exploreDrawTonight => 'Draw an idea for tonight';
 
   @override
   String get exploreDrawAgain => 'Draw another';

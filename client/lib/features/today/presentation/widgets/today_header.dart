@@ -15,7 +15,7 @@ import 'today_layout.dart';
 class TodayHeader extends StatelessWidget {
   const TodayHeader({
     super.key,
-    required this.title,
+    this.title,
     this.partnerName,
     this.context_,
     this.editorialTitle = false,
@@ -24,8 +24,9 @@ class TodayHeader extends StatelessWidget {
     this.unread = 0,
   });
 
-  /// The surface name shown at the left.
-  final String title;
+  /// The surface name shown at the left. Null on a surface whose anchor is
+  /// its own name in [PageHero]; the row then carries presence and actions only.
+  final String? title;
 
   /// Sets the surface name in Cormorant at display size instead of the
   /// operational Inter title.
@@ -71,8 +72,8 @@ class TodayHeader extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            title,
+          if (title != null) Text(
+            title!,
             style: editorialTitle
                 ? DsTextStyles.displayRitual.copyWith(
                     color: DsColors.textOnRitualPrimary,
@@ -83,7 +84,7 @@ class TodayHeader extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
           ),
-          const SizedBox(width: DsSpacing.space4),
+          if (title != null) const SizedBox(width: DsSpacing.space4),
           // Presence is a mark plus neutral copy. Terracotta carries the mark
           // only when a partner is actually present; the label stays Stone
           // because it sits below the Terracotta text size floor. A long

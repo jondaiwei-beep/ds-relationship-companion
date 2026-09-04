@@ -1051,6 +1051,17 @@ class LZh extends L {
   String get todayPartnerFallback => '对方';
 
   @override
+  String get todayStartsWhenJoined => '对方加入后开始。';
+
+  @override
+  String todayHeroEyebrow(String weekday, String clock) {
+    return '$weekday · 从 $clock 算';
+  }
+
+  @override
+  String get dTodayItemOpen => '还没';
+
+  @override
   String todayDueBy(String time) {
     return '$time 前';
   }
@@ -1189,14 +1200,14 @@ class LZh extends L {
   String get sTodayConflictOther => '没送出去，再试一次。';
 
   @override
-  String get dTodayEmpty => '没有等你的。';
+  String get dTodayEmpty => '现在没有等你处置的。';
 
   @override
-  String get dTodaySectionNeedsMe => '等我处置的';
+  String get dTodaySectionNeedsMe => '等你处置';
 
   @override
   String dTodaySectionOverview(String name) {
-    return '今天 $name 的概况';
+    return '$name 的今天';
   }
 
   @override
@@ -1288,10 +1299,10 @@ class LZh extends L {
   String get dTodayConflictOther => '没送出去，再试一次。';
 
   @override
-  String get dTodaySectionQuickAdd => '快速加一条';
+  String get dTodaySectionQuickAdd => '给今天加一条';
 
   @override
-  String get dTodayQuickTitle => '做什么';
+  String get dTodayQuickTitle => '一件事，一句话';
 
   @override
   String get dTodayQuickToday => '只今天';
@@ -1312,10 +1323,10 @@ class LZh extends L {
   String get dTodayQuickFailed => '没加上，再试一次。';
 
   @override
-  String get dTodaySectionNotes => '我要记得的';
+  String get dTodaySectionNotes => '只给自己';
 
   @override
-  String get dTodayNoteBody => '记一句';
+  String get dTodayNoteBody => '只有你看得到的一句';
 
   @override
   String get dTodayNoteRemind => '提醒我';
@@ -1895,7 +1906,7 @@ class LZh extends L {
   String get rulesTheD => 'D';
 
   @override
-  String get rulesTheS => 's';
+  String get rulesTheS => '对方';
 
   @override
   String get rulesYou => '你';
@@ -2182,7 +2193,7 @@ class LZh extends L {
   String get exploreActDone => '记上了。';
 
   @override
-  String get exploreDrawTonight => '今晚要什么？';
+  String get exploreDrawTonight => '抽一张今晚的灵感';
 
   @override
   String get exploreDrawAgain => '再抽一张';
