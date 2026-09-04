@@ -1421,7 +1421,9 @@ class LZh extends L {
   String get recordTodayNothing => '今天没有要做的事。';
 
   @override
-  String get recordOpenDay => '看这一天';
+  String recordOpenDay(String day) {
+    return '看 $day';
+  }
 
   @override
   String get recordFactsNone => '这周还没有记录。';
@@ -1644,6 +1646,12 @@ class LZh extends L {
   String get rulesTitle => '规矩';
 
   @override
+  String get rulesTasksAloneNote => '对方加入后才开始。';
+
+  @override
+  String get ptsTitle => '分';
+
+  @override
   String get rulesStandingEmptyS => '还没有规矩。你可以先提议一条。';
 
   @override
@@ -1685,7 +1693,7 @@ class LZh extends L {
   String get rulesStandingTitle => '常设规矩';
 
   @override
-  String get rulesStandingEmpty => '还没有规矩。从起步包开始，或者先写一条。';
+  String get rulesStandingEmpty => '还没有规矩。先写一条，或从下面的起步包开始。';
 
   @override
   String get ruleGroupProtocol => '礼节';

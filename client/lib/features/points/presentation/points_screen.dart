@@ -297,18 +297,24 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
         // No small title: the number below is the page's name.
         TodayHeader(partnerName: v.partnerDisplayName),
 
+        // Alone there is no balance to be the name — "your partner has 0" was a
+        // number about someone who is not here. The page says its name and why.
+        if (alone) ...[
+          PageHero(hero: l.ptsTitle, heroKey: const ValueKey('points-balance'), support: l.todayStartsWhenJoined),
+          const SizedBox(height: DsSpacing.space10),
+        ] else ...[
+
         // ── the anchor
         PageHero(
           eyebrow: v.isD ? l.ptsHeroEyebrowD(sName) : l.ptsHeroEyebrowMine,
           hero: l.ptsBalanceMine(balance),
           heroKey: const ValueKey('points-balance'),
-          // Alone, one sentence says it all; three lines about a zero did not.
-          support: alone ? l.todayStartsWhenJoined : _support(l, points, dName),
+          support: _support(l, points, dName),
         ),
         const SizedBox(height: DsSpacing.space6),
 
         // ── give / deduct — the D's, and only once there is someone to give to
-        if (v.isD && !alone)
+        if (v.isD)
           Padding(
                   padding: todayInset,
                   child: Row(
@@ -436,6 +442,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
           QuietLine(l.ptsRulesBase),
         ],
         const SizedBox(height: DsSpacing.space10),
+        ],
       ],
     );
   }

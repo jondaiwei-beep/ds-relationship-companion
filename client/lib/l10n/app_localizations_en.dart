@@ -1552,7 +1552,9 @@ class LEn extends L {
   String get recordTodayNothing => 'Nothing expected today.';
 
   @override
-  String get recordOpenDay => 'Open this day';
+  String recordOpenDay(String day) {
+    return 'Open $day';
+  }
 
   @override
   String get recordFactsNone => 'Nothing recorded this week yet.';
@@ -1776,6 +1778,12 @@ class LEn extends L {
   String get rulesTitle => 'Rules';
 
   @override
+  String get rulesTasksAloneNote => 'These start when they join.';
+
+  @override
+  String get ptsTitle => 'Points';
+
+  @override
   String get rulesStandingEmptyS =>
       'No rules yet. You can propose the first one.';
 
@@ -1821,7 +1829,7 @@ class LEn extends L {
 
   @override
   String get rulesStandingEmpty =>
-      'No rules yet. Start from a pack, or write the first one.';
+      'No rules yet. Write the first one, or start from a pack below.';
 
   @override
   String get ruleGroupProtocol => 'Protocol';

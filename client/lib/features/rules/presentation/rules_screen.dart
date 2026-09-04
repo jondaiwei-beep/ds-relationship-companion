@@ -442,6 +442,8 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
           AsyncError() => QuietLine(l.rulesCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
+        // Tasks can be written before the partner joins; they are drafts until then.
+        if (alone && (tasks.value?.any((t) => t.status == 'active') ?? false)) QuietLine(l.rulesTasksAloneNote),
         _Doors(children: [WordButton(label: isD ? l.rulesAddTask : l.rulesProposeTask, onTap: () => _addTask(v))]),
 
         // ── 提议中 — only when there is one (§4: empty and optional → omit).

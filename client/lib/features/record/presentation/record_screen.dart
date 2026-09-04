@@ -200,7 +200,7 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
             alignment: Alignment.centerLeft,
             child: WordButton(
               key: const ValueKey('open-today'),
-              label: l.recordOpenDay,
+              label: l.recordOpenDay(TodayFormat.dayHero(view.day, locale)),
               quiet: true,
               onTap: () => (widget.onOpenDay ?? (_) {})(view.day),
             ),
@@ -220,23 +220,26 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           onOpenDay: widget.onOpenDay ?? (_) {},
           onSwipe: (d) => _step(view, d),
         ),
-        const SizedBox(height: DsSpacing.space10),
-        SectionLabel(l.recordFactsTitle),
-        FactsTable(week: weekFacts.value, month: monthFacts.value),
-        ..._measureSection(measureTasks.value ?? const [], l),
-        const SizedBox(height: DsSpacing.space10),
-        Padding(
-          padding: todayInset,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: WordButton(
-              key: const ValueKey('export-record'),
-              label: l.recordExport,
-              quiet: true,
-              onTap: () => showExportSheet(context, ref, dynamicId: id, today: view.day),
+        // Facts and export are about a shared record; alone there is none yet.
+        if (!alone) ...[
+          const SizedBox(height: DsSpacing.space10),
+          SectionLabel(l.recordFactsTitle),
+          FactsTable(week: weekFacts.value, month: monthFacts.value),
+          ..._measureSection(measureTasks.value ?? const [], l),
+          const SizedBox(height: DsSpacing.space10),
+          Padding(
+            padding: todayInset,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: WordButton(
+                key: const ValueKey('export-record'),
+                label: l.recordExport,
+                quiet: true,
+                onTap: () => showExportSheet(context, ref, dynamicId: id, today: view.day),
+              ),
             ),
           ),
-        ),
+        ],
         const SizedBox(height: DsSpacing.space10),
       ],
     );

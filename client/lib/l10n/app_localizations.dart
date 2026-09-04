@@ -2734,8 +2734,8 @@ abstract class L {
   /// No description provided for @recordOpenDay.
   ///
   /// In en, this message translates to:
-  /// **'Open this day'**
-  String get recordOpenDay;
+  /// **'Open {day}'**
+  String recordOpenDay(String day);
 
   /// No description provided for @recordFactsNone.
   ///
@@ -3097,6 +3097,18 @@ abstract class L {
   /// **'Rules'**
   String get rulesTitle;
 
+  /// No description provided for @rulesTasksAloneNote.
+  ///
+  /// In en, this message translates to:
+  /// **'These start when they join.'**
+  String get rulesTasksAloneNote;
+
+  /// No description provided for @ptsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get ptsTitle;
+
   /// No description provided for @rulesStandingEmptyS.
   ///
   /// In en, this message translates to:
@@ -3166,7 +3178,7 @@ abstract class L {
   /// No description provided for @rulesStandingEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No rules yet. Start from a pack, or write the first one.'**
+  /// **'No rules yet. Write the first one, or start from a pack below.'**
   String get rulesStandingEmpty;
 
   /// No description provided for @ruleGroupProtocol.

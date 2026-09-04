@@ -232,7 +232,7 @@ void main() {
       rewards: const [],
       onStarterPacks: () => packs++,
     );
-    expect(find.text('还没有规矩。从起步包开始，或者先写一条。'), findsOneWidget);
+    expect(find.text('还没有规矩。先写一条，或从下面的起步包开始。'), findsOneWidget);
     expect(find.text('还没有循环任务。加一条，就会出现在「今天」里。'), findsOneWidget);
     expect(find.text('还没有奖励。加一条，就能用分兑换。'), findsOneWidget);
     expect(find.text('还没有惩罚。加一条，处置交付时就能选。'), findsOneWidget);

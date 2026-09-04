@@ -73,7 +73,7 @@ void main() {
     // One line on today from the month data: 2 due, both delivered, one still
     // waiting on the D → one answered.
     expect(find.text('要做 2 项 · 已回应 1 项'), findsOneWidget);
-    expect(find.text('看这一天'), findsOneWidget);
+    expect(find.byKey(const ValueKey('open-today')), findsOneWidget);
 
     // Monday first: 1 Sep 2026 is a Tuesday, so the 1st sits in the second column.
     final x1 = tester.getCenter(find.byKey(const ValueKey('cell-2026-09-01'))).dx;
@@ -130,7 +130,7 @@ void main() {
 
     expect(find.text('9月15日'), findsOneWidget);
     expect(find.textContaining('在一起'), findsNothing);
-    expect(find.text('看这一天'), findsOneWidget);
+    expect(find.byKey(const ValueKey('open-today')), findsOneWidget);
   });
 
   testWidgets('tapping a day or "open this day" opens it; arrows move by month and stop at today',

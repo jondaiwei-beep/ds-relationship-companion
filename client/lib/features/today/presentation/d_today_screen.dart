@@ -454,11 +454,12 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
         ?widget.notice,
         Padding(
           padding: todayInset,
-          child: Wrap(
-            spacing: DsSpacing.space6,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          // Two different things: an idea (left) and the state of the day
+          // (right), so they do not read as one pair.
+          child: Row(
             children: [
               WordButton(label: l.exploreDrawTonight, quiet: true, onTap: _drawTonight),
+              const Spacer(),
               // D-26: the state of the day, so it lives with the day.
               WordButton(
                 key: const ValueKey('today-away'),
@@ -475,10 +476,10 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
             child: Text(_drawNotice!, style: quiet),
           ),
         const SizedBox(height: DsSpacing.space10),
-        SectionLabel(l.dTodaySectionNeedsMe),
-        if (widget.alone)
-          QuietLine(l.todayStartsWhenJoined)
-        else
+        // Alone nothing can be answered; the section waits rather than
+        // announcing its own absence.
+        if (!widget.alone) SectionLabel(l.dTodaySectionNeedsMe),
+        if (!widget.alone)
           needsMe.when(
             skipLoadingOnReload: true,
             skipLoadingOnRefresh: true,
@@ -493,7 +494,7 @@ class _DTodayScreenState extends ConsumerState<DTodayScreen> {
               return Column(children: [for (final o in visible) _needsMeRow(o, l)]);
             },
           ),
-        const SizedBox(height: DsSpacing.space8),
+        if (!widget.alone) const SizedBox(height: DsSpacing.space8),
         if (!widget.alone) _overview(l),
         SectionLabel(l.dTodaySectionQuickAdd),
         DQuickAdd(onAdd: _addTask, onMore: (draft) => _addTaskFully(view, draft)),
