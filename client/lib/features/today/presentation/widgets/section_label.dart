@@ -10,9 +10,11 @@ class SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space4)),
+      padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space3)),
       child: Text(
-        text,
+        // Rules already wrote its labels in capitals; the other surfaces did
+        // not, so the same style read two ways.
+        text.toUpperCase(),
         style: DsTextStyles.labelRitual.copyWith(
           color: DsColors.textOnRitualMuted,
         ),

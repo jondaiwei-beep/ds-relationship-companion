@@ -401,7 +401,7 @@
       }
     }
   },
-  "todayBalance": "{count} points",
+  "todayBalance": "{count, plural, =1{1 point} other{{count} points}}",
   "@todayBalance": {
     "placeholders": {
       "count": {
@@ -409,7 +409,7 @@
       }
     }
   },
-  "todayDaysTogether": "{count} days together",
+  "todayDaysTogether": "{count, plural, =1{1 day together} other{{count} days together}}",
   "@todayDaysTogether": {
     "placeholders": {
       "count": {
@@ -711,7 +711,7 @@
   "lockTitle": "Locked",
   "lockUnlock": "Unlock",
   "lockReason": "Unlock to continue",
-  "recordTogether": "Together {days} days · {streak} in a row",
+  "recordTogether": "{days, plural, =1{Together 1 day} other{Together {days} days}} · {streak, plural, =1{1 in a row} other{{streak} in a row}}",
   "@recordTogether": {
     "placeholders": {
       "days": {
@@ -1122,7 +1122,7 @@
   "rulesRewardRetire": "Retire",
   "rulesGoRedeem": "Redeem",
   "rulesConsequencesTitle": "CONSEQUENCES",
-  "rulesConsequencesIntro": "Only {name} uses these, when disposing. They are kept here; nothing runs from here.",
+  "rulesConsequencesIntro": "Used only by {name}, when disposing. They are kept here; nothing runs from here.",
   "@rulesConsequencesIntro": {
     "placeholders": {
       "name": {
@@ -1156,7 +1156,7 @@
   "rulesTheD": "the D",
   "rulesTheS": "the s",
   "rulesYou": "you",
-  "ptsBalanceOf": "{name} has {n}",
+  "ptsBalanceOf": "{name} · {n, plural, =1{1 point} other{{n} points}}",
   "@ptsBalanceOf": {
     "placeholders": {
       "name": {
@@ -1196,14 +1196,7 @@
     }
   },
   "ptsRedeemableTitle": "REDEEMABLE",
-  "ptsRedeemableEmpty": "{name} has not set any rewards.",
-  "@ptsRedeemableEmpty": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
+  "ptsRedeemableEmpty": "No rewards set yet.",
   "ptsShort": "{n} more",
   "@ptsShort": {
     "placeholders": {

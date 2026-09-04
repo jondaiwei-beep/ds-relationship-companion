@@ -1127,12 +1127,24 @@ class LEn extends L {
 
   @override
   String todayBalance(int count) {
-    return '$count points';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count points',
+      one: '1 point',
+    );
+    return '$_temp0';
   }
 
   @override
   String todayDaysTogether(int count) {
-    return '$count days together';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days together',
+      one: '1 day together',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1494,7 +1506,19 @@ class LEn extends L {
 
   @override
   String recordTogether(int days, int streak) {
-    return 'Together $days days · $streak in a row';
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Together $days days',
+      one: 'Together 1 day',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      streak,
+      locale: localeName,
+      other: '$streak in a row',
+      one: '1 in a row',
+    );
+    return '$_temp0 · $_temp1';
   }
 
   @override
@@ -1940,7 +1964,7 @@ class LEn extends L {
 
   @override
   String rulesConsequencesIntro(String name) {
-    return 'Only $name uses these, when disposing. They are kept here; nothing runs from here.';
+    return 'Used only by $name, when disposing. They are kept here; nothing runs from here.';
   }
 
   @override
@@ -2005,7 +2029,13 @@ class LEn extends L {
 
   @override
   String ptsBalanceOf(String name, int n) {
-    return '$name has $n';
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n points',
+      one: '1 point',
+    );
+    return '$name · $_temp0';
   }
 
   @override
@@ -2039,9 +2069,7 @@ class LEn extends L {
   String get ptsRedeemableTitle => 'REDEEMABLE';
 
   @override
-  String ptsRedeemableEmpty(String name) {
-    return '$name has not set any rewards.';
-  }
+  String get ptsRedeemableEmpty => 'No rewards set yet.';
 
   @override
   String ptsShort(int n) {

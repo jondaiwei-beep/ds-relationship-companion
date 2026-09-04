@@ -36,7 +36,10 @@ def emblem(size_px, height_frac, background):
     k = s * height_frac / 80
     ox, oy = s / 2 - 32 * k, s / 2 - 44 * k
     P = lambda x, y: (ox + x * k, oy + y * k)
-    w = max(1, round(1.6 * k))
+    # Launcher icons are seen at 48dp: the SVG's 1.6-unit hairline vanishes,
+    # so main strokes are 2.6 units and the two soft arcs thinner, never under 2px.
+    w = max(2, round(2.6 * k))
+    ws = max(1, round(1.6 * k))
     d.line([P(32, 4), P(32, 84)], fill=INK, width=w)
     d.ellipse([P(13, 15), P(51, 73)], outline=INK, width=w)
     # M32 15 c-13 13 -13 45 0 58  (relative cubic) and its mirror
@@ -44,8 +47,8 @@ def emblem(size_px, height_frac, background):
         d.line(cubic(P(32, 15), P(32 + sgn * -13, 28), P(32 + sgn * -13, 60), P(32, 73)), fill=INK, width=w, joint="curve")
     # M24 18 c-7 15 -7 37 0 52 / M40 18 c7 15 7 37 0 52  at .7 opacity
     soft = tuple(round(c * 0.7 + b * 0.3) for c, b in zip(INK, background or CANVAS))
-    d.line(cubic(P(24, 18), P(17, 33), P(17, 55), P(24, 70)), fill=soft, width=w, joint="curve")
-    d.line(cubic(P(40, 18), P(47, 33), P(47, 55), P(40, 70)), fill=soft, width=w, joint="curve")
+    d.line(cubic(P(24, 18), P(17, 33), P(17, 55), P(24, 70)), fill=soft, width=ws, joint="curve")
+    d.line(cubic(P(40, 18), P(47, 33), P(47, 55), P(40, 70)), fill=soft, width=ws, joint="curve")
     return img.resize((size_px, size_px), Image.LANCZOS)
 
 
@@ -53,10 +56,10 @@ def main():
     # Legacy launcher icons: full-bleed canvas, emblem at 58% (the OS masks
     # the square, so the emblem must sit well inside).
     for dpi, px in {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}.items():
-        emblem(px, 0.58, CANVAS).save(RES / f"mipmap-{dpi}/ic_launcher.png")
+        emblem(px, 0.64, CANVAS).save(RES / f"mipmap-{dpi}/ic_launcher.png")
     # Adaptive foreground: 108dp canvas, safe zone is the inner 66dp.
     for dpi, px in {"mdpi": 108, "hdpi": 162, "xhdpi": 216, "xxhdpi": 324, "xxxhdpi": 432}.items():
-        emblem(px, 0.50, None).save(RES / f"mipmap-{dpi}/ic_launcher_foreground.png")
+        emblem(px, 0.56, None).save(RES / f"mipmap-{dpi}/ic_launcher_foreground.png")
     (RES / "mipmap-anydpi-v26").mkdir(exist_ok=True)
     (RES / "mipmap-anydpi-v26/ic_launcher.xml").write_text(
         '<?xml version="1.0" encoding="utf-8"?>\n'

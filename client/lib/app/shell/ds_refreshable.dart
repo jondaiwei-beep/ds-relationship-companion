@@ -47,10 +47,14 @@ class DsRefreshable extends StatelessWidget {
   );
 }
 
-class _AlwaysScrollable extends ScrollBehavior {
+/// Extends the Material behaviour rather than the bare one so the platform
+/// keeps its own overscroll: the Android stretch that snaps back after a pull,
+/// the iOS bounce. Dropping the parent physics lost that, and a pull that
+/// never sprang back read as a hang.
+class _AlwaysScrollable extends MaterialScrollBehavior {
   const _AlwaysScrollable();
 
   @override
   ScrollPhysics getScrollPhysics(BuildContext context) =>
-      const AlwaysScrollableScrollPhysics();
+      AlwaysScrollableScrollPhysics(parent: super.getScrollPhysics(context));
 }

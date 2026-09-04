@@ -1,15 +1,14 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../app/shell/ds_primary_button.dart';
 import '../../../../app/shell/ds_text_field.dart';
 import '../../../../domain_client/models/task.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'secondary_button.dart';
+import 'word_button.dart';
 import 'today_layout.dart';
 
-/// 快速加一条: a title, today or every day, points if any. Everything else a
-/// task can carry is one door away — [onMore] opens the full editor seeded
+/// 快速加一条: a title, today or every day. Points and everything else a
+/// task can carry are one door away — [onMore] opens the full editor seeded
 /// with what was typed here.
 class DQuickAdd extends StatefulWidget {
   const DQuickAdd({super.key, required this.onAdd, this.onMore});
@@ -27,7 +26,6 @@ class DQuickAdd extends StatefulWidget {
 
 class _DQuickAddState extends State<DQuickAdd> {
   final _title = TextEditingController();
-  final _points = TextEditingController();
   bool _daily = false;
   bool _busy = false;
   String? _message;
@@ -35,13 +33,12 @@ class _DQuickAddState extends State<DQuickAdd> {
   @override
   void dispose() {
     _title.dispose();
-    _points.dispose();
     super.dispose();
   }
 
   NewTask _draft() {
     final title = _title.text.trim();
-    final points = (int.tryParse(_points.text.trim()) ?? 0).clamp(0, 1000);
+    const points = 0;
     return _daily
         ? NewTask(
             title: title,
@@ -58,7 +55,6 @@ class _DQuickAddState extends State<DQuickAdd> {
       final made = await widget.onMore!(_draft());
       if (!mounted || !made) return;
       _title.clear();
-      _points.clear();
       setState(() => _message = l.dTodayQuickAdded);
     } on Object {
       if (mounted) setState(() => _message = l.dTodayQuickFailed);
@@ -78,7 +74,6 @@ class _DQuickAddState extends State<DQuickAdd> {
       await widget.onAdd(task);
       if (!mounted) return;
       _title.clear();
-      _points.clear();
       setState(() => _message = l.dTodayQuickAdded);
     } on Object {
       if (!mounted) return;
@@ -91,49 +86,42 @@ class _DQuickAddState extends State<DQuickAdd> {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
+    // Two rows: what, then when. Points and everything else live behind
+    // "More…" — a five-row form sitting inside Today read as a page inside a
+    // page.
     return Padding(
       padding: todayInset,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DsTextField(
-            label: l.dTodayQuickTitle,
-            controller: _title,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => _submit(),
-          ),
-          const SizedBox(height: DsSpacing.space3),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
-                child: SecondaryButton(
-                  label: l.dTodayQuickToday,
-                  filled: !_daily,
-                  onTap: () => setState(() => _daily = false),
+                child: DsTextField(
+                  label: l.dTodayQuickTitle,
+                  controller: _title,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _submit(),
                 ),
               ),
               const SizedBox(width: DsSpacing.space3),
-              Expanded(
-                child: SecondaryButton(
-                  label: l.dTodayQuickDaily,
-                  filled: _daily,
-                  onTap: () => setState(() => _daily = true),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: DsSpacing.space1),
+                child: WordButton(label: l.dTodayQuickAdd, filled: true, onTap: _busy ? () {} : _submit),
               ),
             ],
           ),
           const SizedBox(height: DsSpacing.space3),
-          DsTextField(
-            label: l.dTodayQuickPoints,
-            controller: _points,
-            keyboardType: TextInputType.number,
+          Row(
+            children: [
+              WordButton(label: l.dTodayQuickToday, filled: !_daily, onTap: () => setState(() => _daily = false)),
+              const SizedBox(width: DsSpacing.space2),
+              WordButton(label: l.dTodayQuickDaily, filled: _daily, onTap: () => setState(() => _daily = true)),
+              const Spacer(),
+              if (widget.onMore != null) WordButton(label: l.dTodayQuickMore, onTap: _busy ? () {} : _more),
+            ],
           ),
-          const SizedBox(height: DsSpacing.space4),
-          DsPrimaryButton(label: l.dTodayQuickAdd, onPressed: _submit, busy: _busy),
-          if (widget.onMore != null) ...[
-            const SizedBox(height: DsSpacing.space3),
-            SecondaryButton(label: l.dTodayQuickMore, onTap: _busy ? () {} : _more),
-          ],
           if (_message != null) ...[
             const SizedBox(height: DsSpacing.space3),
             Text(

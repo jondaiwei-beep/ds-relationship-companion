@@ -11,10 +11,14 @@ class QuietLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: todayInset.add(const EdgeInsets.symmetric(vertical: DsSpacing.space6)),
-      child: Text(
-        text,
-        style: DsTextStyles.bodyPrimary.copyWith(color: DsColors.textOnRitualSecondary),
+      padding: todayInset.add(const EdgeInsets.symmetric(vertical: DsSpacing.space2)),
+      // Full width, so a centring Column cannot float it to the middle.
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          text,
+          style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+        ),
       ),
     );
   }

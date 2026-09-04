@@ -266,12 +266,25 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // The figure alone in the display face; whose it is goes in the
+              // caption. "the s has 0" set in Cormorant read as "the s has o".
               Text(
-                v.isD ? l.ptsBalanceOf(sName, balance) : l.ptsBalanceMine(balance),
+                l.ptsBalanceMine(balance),
                 key: const ValueKey('points-balance'),
-                style: DsTextStyles.displayRitual.copyWith(color: DsColors.textOnRitualPrimary),
+                // Cormorant's default figures are old-style: its 0 sits at
+                // x-height and reads as an o. Lining figures for a number.
+                style: DsTextStyles.displayRitual.copyWith(
+                  color: DsColors.textOnRitualPrimary,
+                  fontSize: 44,
+                  fontFeatures: const [FontFeature.liningFigures(), FontFeature.tabularFigures()],
+                ),
               ),
-              const SizedBox(height: DsSpacing.space2),
+              const SizedBox(height: DsSpacing.space1),
+              Text(
+                v.isD ? l.ptsBalanceOf(sName, balance) : l.todayBalance(balance),
+                style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+              ),
+              const SizedBox(height: DsSpacing.space1),
               switch (summary) {
                 AsyncData(:final value) => Text(
                     l.recordTogether(value.daysTogether, value.currentStreak),
@@ -305,7 +318,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
         SectionLabel(l.ptsRedeemableTitle),
         switch (rewards) {
           AsyncData(:final value) => value.isEmpty
-              ? QuietLine(l.ptsRedeemableEmpty(dName))
+              ? QuietLine(l.ptsRedeemableEmpty)
               : Column(
                   children: [
                     for (final r in value)

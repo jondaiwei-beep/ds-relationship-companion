@@ -25,11 +25,16 @@ class WordButton extends StatelessWidget {
             border: filled ? null : Border.all(color: DsColors.actionSecondaryBorder),
             borderRadius: BorderRadius.circular(DsRadii.control),
           ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: DsTextStyles.labelAction.copyWith(
-              color: filled ? DsColors.actionPrimaryForeground : DsColors.textOnRitualPrimary,
+          // Not `alignment:` — a Container with an alignment fills whatever
+          // width it is given, which turned a word into a full-width bar
+          // inside any Wrap or Align.
+          child: Center(
+            widthFactor: 1,
+            child: Text(
+              label,
+              style: DsTextStyles.labelAction.copyWith(
+                color: filled ? DsColors.actionPrimaryForeground : DsColors.textOnRitualPrimary,
+              ),
             ),
           ),
         ),

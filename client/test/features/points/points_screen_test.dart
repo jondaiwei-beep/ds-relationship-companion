@@ -98,7 +98,8 @@ void main() {
   testWidgets('D sees the s balance by name and can give points', (tester) async {
     final f = await _pump(tester, view: dView());
 
-    expect(find.text('Nia 有 12 分'), findsOneWidget);
+    expect(find.text('12'), findsOneWidget);
+    expect(find.text('Nia · 12 分'), findsOneWidget);
     await tester.tap(find.text('给分'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, '5');

@@ -1902,12 +1902,12 @@ class LZh extends L {
 
   @override
   String ptsBalanceOf(String name, int n) {
-    return '$name 有 $n 分';
+    return '$name · $n 分';
   }
 
   @override
   String ptsBalanceMine(int n) {
-    return '$n 分';
+    return '$n';
   }
 
   @override
@@ -1936,9 +1936,7 @@ class LZh extends L {
   String get ptsRedeemableTitle => '可兑换';
 
   @override
-  String ptsRedeemableEmpty(String name) {
-    return '$name 还没定奖励。';
-  }
+  String get ptsRedeemableEmpty => '还没定奖励。';
 
   @override
   String ptsShort(int n) {

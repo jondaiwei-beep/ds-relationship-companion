@@ -1,13 +1,11 @@
 import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../app/shell/ds_primary_button.dart';
 import '../../../../app/shell/ds_text_field.dart';
 import '../../../../domain/relationship_day.dart';
 import '../../../../domain_client/models/d_note.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../today_format.dart';
-import 'secondary_button.dart';
 import 'word_button.dart';
 import 'today_layout.dart';
 
@@ -138,17 +136,23 @@ class _DNotesSectionState extends State<DNotesSection> {
                 onSubmitted: (_) => _submit(),
               ),
               const SizedBox(height: DsSpacing.space3),
-              SecondaryButton(
-                label: _remindAt == null
-                    ? l.dTodayNoteRemind
-                    : l.dTodayNoteRemindAt(
-                        TodayFormat.dayClock(_remindAt!, widget.timezone, locale),
-                      ),
-                filled: _remindAt != null,
-                onTap: _pickRemind,
+              Row(
+                children: [
+                  Flexible(
+                    child: WordButton(
+                      label: _remindAt == null
+                          ? l.dTodayNoteRemind
+                          : l.dTodayNoteRemindAt(
+                              TodayFormat.dayClock(_remindAt!, widget.timezone, locale),
+                            ),
+                      filled: _remindAt != null,
+                      onTap: _pickRemind,
+                    ),
+                  ),
+                  const Spacer(),
+                  WordButton(label: l.dTodayNoteAdd, filled: true, onTap: _busy ? () {} : _submit),
+                ],
               ),
-              const SizedBox(height: DsSpacing.space4),
-              DsPrimaryButton(label: l.dTodayNoteAdd, onPressed: _submit, busy: _busy),
               const SizedBox(height: DsSpacing.space3),
               Text(l.dTodayNotesPrivate, style: secondary),
             ],

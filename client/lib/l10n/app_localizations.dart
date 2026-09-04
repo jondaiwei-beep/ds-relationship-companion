@@ -2074,13 +2074,13 @@ abstract class L {
   /// No description provided for @todayBalance.
   ///
   /// In en, this message translates to:
-  /// **'{count} points'**
+  /// **'{count, plural, =1{1 point} other{{count} points}}'**
   String todayBalance(int count);
 
   /// No description provided for @todayDaysTogether.
   ///
   /// In en, this message translates to:
-  /// **'{count} days together'**
+  /// **'{count, plural, =1{1 day together} other{{count} days together}}'**
   String todayDaysTogether(int count);
 
   /// No description provided for @todayNoteOptional.
@@ -2692,7 +2692,7 @@ abstract class L {
   /// No description provided for @recordTogether.
   ///
   /// In en, this message translates to:
-  /// **'Together {days} days · {streak} in a row'**
+  /// **'{days, plural, =1{Together 1 day} other{Together {days} days}} · {streak, plural, =1{1 in a row} other{{streak} in a row}}'**
   String recordTogether(int days, int streak);
 
   /// No description provided for @recordPrevMonth.
@@ -3454,7 +3454,7 @@ abstract class L {
   /// No description provided for @rulesConsequencesIntro.
   ///
   /// In en, this message translates to:
-  /// **'Only {name} uses these, when disposing. They are kept here; nothing runs from here.'**
+  /// **'Used only by {name}, when disposing. They are kept here; nothing runs from here.'**
   String rulesConsequencesIntro(String name);
 
   /// No description provided for @rulesConsequencesEmpty.
@@ -3574,7 +3574,7 @@ abstract class L {
   /// No description provided for @ptsBalanceOf.
   ///
   /// In en, this message translates to:
-  /// **'{name} has {n}'**
+  /// **'{name} · {n, plural, =1{1 point} other{{n} points}}'**
   String ptsBalanceOf(String name, int n);
 
   /// No description provided for @ptsBalanceMine.
@@ -3628,8 +3628,8 @@ abstract class L {
   /// No description provided for @ptsRedeemableEmpty.
   ///
   /// In en, this message translates to:
-  /// **'{name} has not set any rewards.'**
-  String ptsRedeemableEmpty(String name);
+  /// **'No rewards set yet.'**
+  String get ptsRedeemableEmpty;
 
   /// No description provided for @ptsShort.
   ///

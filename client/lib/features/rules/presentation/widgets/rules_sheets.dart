@@ -18,6 +18,10 @@ Future<T?> _sheet<T>(BuildContext context, Widget child) => showModalBottomSheet
       context: context,
       backgroundColor: DsColors.canvasRitual,
       isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(DsRadii.control)),
+      ),
       builder: (_) => child,
     );
 
@@ -40,18 +44,23 @@ class _Frame extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
+    // The keyboard covers the gesture bar, so whichever is showing is the
+    // one to clear; the sheet used to clear only the keyboard and put its
+    // last row under the bar.
+    final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+    final bar = keyboard > 0 ? 0.0 : MediaQuery.viewPaddingOf(context).bottom;
     return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: DsSpacing.space5,
         right: DsSpacing.space5,
         top: DsSpacing.space6,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + DsSpacing.space6,
+        bottom: keyboard + bar + DsSpacing.space6,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(title, style: DsTextStyles.bodyPrimary.copyWith(color: DsColors.textOnRitualPrimary)),
+          Text(title, style: DsTextStyles.titlePage.copyWith(color: DsColors.textOnRitualPrimary)),
           const SizedBox(height: DsSpacing.space5),
           for (final c in children) ...[c, const SizedBox(height: DsSpacing.space4)],
           const SizedBox(height: DsSpacing.space1),
