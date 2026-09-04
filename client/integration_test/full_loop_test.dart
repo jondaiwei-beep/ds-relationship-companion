@@ -1,4 +1,5 @@
 import 'package:dsapp/app/shell/ds_primary_button.dart';
+import 'package:dsapp/features/today/presentation/widgets/d_needs_me_row.dart';
 import 'package:dsapp/features/today/presentation/widgets/word_button.dart';
 import 'package:dsapp/l10n/app_localizations.dart';
 import 'package:dsapp/main.dart' as app;
@@ -110,8 +111,11 @@ void main() {
     // ── 5. D: dispose, points, record, comment ─────────────────────────────
     await t.signIn(dEmail, password);
     await t.waitForText(t.l.todayTitle, timeout: const Duration(seconds: 30));
-    expect(await t.reveal(find.text(checkTask)), isTrue, reason: 'the delivery waits for D');
-    await t.tapText(checkTask); // expand
+    // The title is also listed under "{name}'s day"; the row that expands is
+    // the one waiting for an answer.
+    final waiting = find.descendant(of: find.byType(DNeedsMeRow), matching: find.text(checkTask));
+    expect(await t.reveal(waiting), isTrue, reason: 'the delivery waits for D');
+    await t.tap(waiting); // expand
     await t.tapText(t.l.dTodayActionPraise);
     await t.waitForKey('line-send');
     await t.tapKey('line-send'); // note is optional
