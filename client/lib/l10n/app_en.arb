@@ -1179,6 +1179,25 @@
       }
     }
   },
+  "ptsHeroEyebrowD": "{name} has",
+  "@ptsHeroEyebrowD": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsHeroEyebrowMine": "You have",
+  "ptsHeroEmpty": "No points yet. They come from tasks that carry points, or from {name}.",
+  "@ptsHeroEmpty": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ptsRedeemableSetInRules": "Set one in Rules",
+  "ptsLedgerAll": "All entries",
   "ptsGive": "Give",
   "ptsDeduct": "Deduct",
   "ptsAmountLabel": "How many",
@@ -1200,7 +1219,7 @@
     }
   },
   "ptsRedeemableTitle": "REDEEMABLE",
-  "ptsRedeemableEmpty": "No rewards set yet.",
+  "ptsRedeemableEmpty": "No rewards yet.",
   "ptsShort": "{n} more",
   "@ptsShort": {
     "placeholders": {
@@ -1252,7 +1271,7 @@
   "ptsDecideNote": "A word (optional)",
   "ptsDecideCost": "Set the cost",
   "ptsLedgerTitle": "LEDGER",
-  "ptsLedgerEmpty": "Nothing yet.",
+  "ptsLedgerEmpty": "Nothing in the ledger yet.",
   "ptsReasonTaskEarn": "Task",
   "ptsReasonAward": "{name} gave",
   "@ptsReasonAward": {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_refreshable.dart';
+import '../../../app/shell/page_hero.dart';
 import '../../../domain_client/api_client.dart';
 import '../../../domain_client/models/consequence.dart';
 import '../../../domain_client/models/points.dart';
@@ -12,7 +13,6 @@ import '../../../domain_client/models/redemption.dart';
 import '../../../domain_client/models/today_view.dart' show TodayView;
 import '../../../l10n/app_localizations.dart';
 import '../../dynamic/application/dynamic_providers.dart';
-import '../../record/application/record_providers.dart';
 import '../../rules/presentation/widgets/rules_sheets.dart';
 import '../../today/application/today_providers.dart';
 import '../../today/presentation/today_screen.dart';
@@ -23,24 +23,32 @@ import '../../today/presentation/widgets/section_label.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
+import '../../today/presentation/widgets/today_notice.dart';
 import '../../today/presentation/widgets/word_button.dart';
 import '../application/points_providers.dart';
 
-/// Tab 4 · 分 (product/02-surfaces.md): the s's balance, what it can buy,
-/// the asks in flight, the ledger, which tasks pay, and the consequences the
-/// D issued. The number is the s's on both faces; the D gives and takes by
-/// hand. Nothing here is automatic, nothing is on a clock.
+/// Tab 4 · 分 (product/02-surfaces.md; design/system/redesign-2026-09.md §7).
+///
+/// The balance is the page's one anchor. Under it: the last movement or why
+/// there is none, Give/Deduct for the D, what the s can redeem, the asks and
+/// consequences in flight (only when there are any), and the ledger. The
+/// number is the s's on both faces; the D gives and takes by hand. Nothing
+/// here is automatic, nothing is on a clock.
 class PointsScreen extends ConsumerStatefulWidget {
   const PointsScreen({
     super.key,
     required this.dynamicId,
     this.onSignIn,
     this.onSelectTab,
+    this.onRules,
   });
 
   final String dynamicId;
   final VoidCallback? onSignIn;
   final void Function(NavSurface surface)? onSelectTab;
+
+  /// Opens 规矩, where rewards are set. Null hides the way there.
+  final VoidCallback? onRules;
 
   @override
   ConsumerState<PointsScreen> createState() => _PointsScreenState();
@@ -50,6 +58,12 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
   String? _notice;
   bool _busy = false;
 
+  /// The ledger opens on its last three lines; this shows the rest in place.
+  bool _ledgerExpanded = false;
+
+  /// How many ledger lines show before "All entries".
+  static const _ledgerPreview = 3;
+
   String get _id => widget.dynamicId;
 
   void _reloadAll() {
@@ -58,12 +72,10 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
     ref.invalidate(rewardsProvider(_id));
     ref.invalidate(redemptionsProvider(_id));
     ref.invalidate(consequencesProvider(_id));
-    ref.invalidate(recordSummaryProvider(_id));
   }
 
   Future<void> _refresh() async {
     _reloadAll();
-    ref.invalidate(pointsRulesProvider(_id));
     await ref.read(todayProvider(_id).future);
   }
 
@@ -83,8 +95,29 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
     }
   }
 
-  String _dName(L l, TodayView v) => v.isD ? l.rulesYou : (v.partnerDisplayName ?? l.rulesTheD);
-  String _sName(L l, TodayView v) => v.isD ? (v.partnerDisplayName ?? l.rulesTheS) : l.rulesYou;
+  String _dName(L l, TodayView v) => v.isD ? l.rulesYou : (v.partnerDisplayName ?? l.todayPartnerFallback);
+  String _sName(L l, TodayView v) => v.isD ? (v.partnerDisplayName ?? l.todayPartnerFallback) : l.rulesYou;
+
+  /// The line under the number: the most recent movement, written the way a
+  /// ledger row reads ("+3 · {D} gave · washed the car"), or — when there is
+  /// none — where points come from. Never a zero dressed up as news.
+  String? _support(L l, AsyncValue<PointsSummary> points, String dName) {
+    return switch (points) {
+      AsyncData(:final value) when value.entries.isNotEmpty => _ledgerLine(l, value.entries.first, dName),
+      AsyncData() => l.ptsHeroEmpty(dName),
+      // Still loading or failed: the ledger section below says which.
+      _ => null,
+    };
+  }
+
+  String _ledgerLine(L l, PointEntry e, String dName) {
+    final sign = e.amount > 0 ? '+' : '';
+    return [
+      '$sign${e.amount}',
+      ledgerReason(l, e.reason, dName),
+      if (e.note case final note? when note.isNotEmpty) note,
+    ].join(' · ');
+  }
 
   // ── writes ───────────────────────────────────────────────────────────────
 
@@ -246,9 +279,10 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
     final points = ref.watch(pointsProvider(_id));
     final rewards = ref.watch(rewardsProvider(_id));
     final redemptions = ref.watch(redemptionsProvider(_id));
-    final rules = ref.watch(pointsRulesProvider(_id));
     final consequences = ref.watch(consequencesProvider(_id));
-    final summary = ref.watch(recordSummaryProvider(_id));
+    // Stage before data (redesign §3): a partner who has not joined cannot be
+    // given to. Null detail (still loading) is treated as joined, as Today does.
+    final alone = TodayNotice.isAlone(ref.watch(dynamicDetailProvider(_id)).value);
     final dName = _dName(l, v);
     final sName = _sName(l, v);
     final balance = points.asData?.value.balance ?? v.balance;
@@ -257,154 +291,125 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: l.pointsTitle, partnerName: v.partnerDisplayName),
+        // No small title: the number below is the page's name.
+        TodayHeader(partnerName: v.partnerDisplayName),
+
+        // ── the anchor
+        PageHero(
+          eyebrow: v.isD ? l.ptsHeroEyebrowD(sName) : l.ptsHeroEyebrowMine,
+          hero: l.ptsBalanceMine(balance),
+          heroKey: const ValueKey('points-balance'),
+          support: _support(l, points, dName),
+        ),
         const SizedBox(height: DsSpacing.space6),
 
-        // ── balance
-        Padding(
-          padding: todayInset,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // The figure alone in the display face; whose it is goes in the
-              // caption. "the s has 0" set in Cormorant read as "the s has o".
-              Text(
-                l.ptsBalanceMine(balance),
-                key: const ValueKey('points-balance'),
-                // Cormorant's default figures are old-style: its 0 sits at
-                // x-height and reads as an o. Lining figures for a number.
-                style: DsTextStyles.displayRitual.copyWith(
-                  color: DsColors.textOnRitualPrimary,
-                  fontSize: 44,
-                  fontFeatures: const [FontFeature.liningFigures(), FontFeature.tabularFigures()],
-                ),
-              ),
-              const SizedBox(height: DsSpacing.space1),
-              Text(
-                v.isD ? l.ptsBalanceOf(sName, balance) : l.todayBalance(balance),
-                style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
-              ),
-              const SizedBox(height: DsSpacing.space1),
-              switch (summary) {
-                AsyncData(:final value) => Text(
-                    l.recordTogether(value.daysTogether, value.currentStreak),
-                    style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+        // ── give / deduct — the D's, and only once there is someone to give to
+        if (v.isD)
+          alone
+              ? QuietLine(l.todayStartsWhenJoined)
+              : Padding(
+                  padding: todayInset,
+                  child: Row(
+                    children: [
+                      WordButton(label: l.ptsGive, onTap: () => _adjust(v, give: true), filled: true),
+                      const SizedBox(width: DsSpacing.space3),
+                      WordButton(label: l.ptsDeduct, onTap: () => _adjust(v, give: false)),
+                    ],
                   ),
-                _ => const SizedBox(height: 18),
-              },
-            ],
-          ),
-        ),
-        if (v.isD) ...[
-          const SizedBox(height: DsSpacing.space4),
-          Padding(
-            padding: todayInset,
-            child: Row(
-              children: [
-                WordButton(label: l.ptsGive, onTap: () => _adjust(v, give: true), filled: true),
-                const SizedBox(width: DsSpacing.space3),
-                WordButton(label: l.ptsDeduct, onTap: () => _adjust(v, give: false)),
-              ],
-            ),
-          ),
-        ],
+                ),
         if (_notice != null) ...[
           const SizedBox(height: DsSpacing.space3),
           Padding(padding: todayInset, child: RecoveryMessage(_notice!)),
         ],
 
         // ── 可兑换
-        const SizedBox(height: DsSpacing.space8),
+        const SizedBox(height: DsSpacing.space10),
         SectionLabel(l.ptsRedeemableTitle),
         switch (rewards) {
-          AsyncData(:final value) => value.isEmpty
-              ? QuietLine(l.ptsRedeemableEmpty)
-              : Column(
-                  children: [
-                    for (final r in value)
-                      _RewardRow(
-                        reward: r,
-                        balance: balance,
-                        dName: dName,
-                        canRedeem: !v.isD && !_busy && r.affordable,
-                        onRedeem: () => _redeem(r),
-                      ),
-                  ],
-                ),
+          AsyncData(:final value) when value.isEmpty => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                QuietLine(l.ptsRedeemableEmpty),
+                if (widget.onRules case final rules?)
+                  Padding(
+                    padding: todayInset,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: WordButton(label: l.ptsRedeemableSetInRules, quiet: true, onTap: rules),
+                    ),
+                  ),
+              ],
+            ),
+          AsyncData(:final value) => Column(
+              children: [
+                for (final r in value)
+                  _RewardRow(
+                    reward: r,
+                    balance: balance,
+                    dName: dName,
+                    canRedeem: !v.isD && !_busy && r.affordable,
+                    onRedeem: () => _redeem(r),
+                  ),
+              ],
+            ),
           AsyncError() => QuietLine(l.ptsCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
 
-        // ── 兑换申请
-        const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.ptsRequestsTitle),
-        switch (redemptions) {
-          AsyncData(:final value) => value.isEmpty
-              ? QuietLine(l.ptsRequestsEmpty)
-              : Column(
-                  children: [
-                    for (final r in value)
-                      _RedemptionRow(
-                        redemption: r,
-                        isD: v.isD,
-                        dName: dName,
-                        busy: _busy,
-                        onApprove: () => _decide(r, rewardList, approve: true),
-                        onDeny: () => _decide(r, rewardList, approve: false),
-                        onFulfill: () => _fulfill(r),
-                      ),
-                  ],
-                ),
-          AsyncError() => QuietLine(l.ptsCouldNotLoad),
-          _ => const SizedBox(height: 40),
-        },
+        // ── 兑换申请 — only when there are any (redesign §4)
+        if (redemptions case AsyncData(:final value) when value.isNotEmpty) ...[
+          const SizedBox(height: DsSpacing.space8),
+          SectionLabel(l.ptsRequestsTitle),
+          for (final r in value)
+            _RedemptionRow(
+              redemption: r,
+              isD: v.isD,
+              dName: dName,
+              busy: _busy,
+              onApprove: () => _decide(r, rewardList, approve: true),
+              onDeny: () => _decide(r, rewardList, approve: false),
+              onFulfill: () => _fulfill(r),
+            ),
+        ],
 
-        // ── 罚
-        const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.ptsConsequencesTitle),
-        switch (consequences) {
-          AsyncData(:final value) => value.isEmpty
-              ? QuietLine(l.ptsConsequencesEmpty)
-              : Column(
-                  children: [
-                    for (final c in value)
-                      _ConsequenceRow(
-                        consequence: c,
-                        isD: v.isD,
-                        dName: dName,
-                        busy: _busy,
-                        onDone: () => _consequence(c, ref.read(consequenceRepositoryProvider).done),
-                        onConfirm: () => _consequence(c, ref.read(consequenceRepositoryProvider).confirm),
-                        onWaive: () => _consequence(c, ref.read(consequenceRepositoryProvider).waive),
-                      ),
-                  ],
-                ),
-          AsyncError() => QuietLine(l.ptsCouldNotLoad),
-          _ => const SizedBox(height: 40),
-        },
+        // ── 罚 — only when there are any
+        if (consequences case AsyncData(:final value) when value.isNotEmpty) ...[
+          const SizedBox(height: DsSpacing.space8),
+          SectionLabel(l.ptsConsequencesTitle),
+          for (final c in value)
+            _ConsequenceRow(
+              consequence: c,
+              isD: v.isD,
+              dName: dName,
+              busy: _busy,
+              onDone: () => _consequence(c, ref.read(consequenceRepositoryProvider).done),
+              onConfirm: () => _consequence(c, ref.read(consequenceRepositoryProvider).confirm),
+              onWaive: () => _consequence(c, ref.read(consequenceRepositoryProvider).waive),
+            ),
+        ],
 
-        // ── 流水
+        // ── 流水 — the last three, the rest on request
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.ptsLedgerTitle),
         switch (points) {
-          AsyncData(:final value) => value.entries.isEmpty
-              ? QuietLine(l.ptsLedgerEmpty)
-              : Column(
-                  children: [for (final e in value.entries) _LedgerRow(entry: e, dName: dName)],
-                ),
-          AsyncError() => QuietLine(l.ptsCouldNotLoad),
-          _ => const SizedBox(height: 40),
-        },
-
-        // ── 规则可见
-        const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.ptsRulesTitle),
-        switch (rules) {
+          AsyncData(:final value) when value.entries.isEmpty => QuietLine(l.ptsLedgerEmpty),
           AsyncData(:final value) => Column(
               children: [
-                if (value.isEmpty) QuietLine(l.ptsRulesEmpty),
-                for (final r in value) _Line(left: r.title, right: l.rulesPoints(r.pointsEarn)),
-                QuietLine(l.ptsRulesBase),
+                for (final e in _ledgerExpanded ? value.entries : value.entries.take(_ledgerPreview))
+                  _LedgerRow(entry: e, dName: dName),
+                if (!_ledgerExpanded && value.entries.length > _ledgerPreview)
+                  Padding(
+                    padding: todayInset,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: WordButton(
+                        key: const ValueKey('points-ledger-all'),
+                        label: l.ptsLedgerAll,
+                        quiet: true,
+                        onTap: () => setState(() => _ledgerExpanded = true),
+                      ),
+                    ),
+                  ),
               ],
             ),
           AsyncError() => QuietLine(l.ptsCouldNotLoad),

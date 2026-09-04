@@ -2,6 +2,7 @@ import 'package:ds_relationship_companion/ds_design_system.dart';
 import 'package:dsapp/app/providers.dart';
 import 'package:dsapp/app/shell/ds_primary_button.dart';
 import 'package:dsapp/domain_client/models/consequence.dart';
+import 'package:dsapp/domain_client/models/dynamic_view.dart';
 import 'package:dsapp/domain_client/models/points.dart';
 import 'package:dsapp/domain_client/models/redemption.dart';
 import 'package:dsapp/domain_client/models/today_view.dart' show TodayView;
@@ -40,29 +41,37 @@ const _consequences = [
   ConsequenceView(id: 'c-2', issuedBy: 'u-d', title: '写反省', status: 'done_by_s'),
 ];
 
+const _balance = ValueKey('points-balance');
+
 Future<({FakePointsRepository points, FakeConsequenceRepository cons})> _pump(
   WidgetTester tester, {
   required TodayView view,
+  int balance = 12,
+  List<PointEntry> entries = _entries,
+  List<Reward> rewards = _rewards,
   List<RedemptionView> redemptions = _redemptions,
+  List<ConsequenceView> consequences = _consequences,
+  DynamicDetail? detail,
+  VoidCallback? onRules,
 }) async {
   tester.view.physicalSize = const Size(390, 1800);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
   final points = FakePointsRepository(
-    balance: 12,
-    entries: _entries,
-    rewardList: _rewards,
+    balance: balance,
+    entries: entries,
+    rewardList: rewards,
     redemptionList: redemptions,
     rules: const [PointsRule(taskId: 't-1', title: '早安汇报', pointsEarn: 2)],
   );
-  final cons = FakeConsequenceRepository(items: _consequences);
+  final cons = FakeConsequenceRepository(items: consequences);
 
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
         todayRepositoryProvider.overrideWithValue(FakeTodayRepository(view: view)),
-        dynamicRepositoryProvider.overrideWithValue(FakeDynamicRepository()),
+        dynamicRepositoryProvider.overrideWithValue(FakeDynamicRepository(detail: detail)),
         pointsRepositoryProvider.overrideWithValue(points),
         consequenceRepositoryProvider.overrideWithValue(cons),
         recordRepositoryProvider.overrideWithValue(FakeRecordRepository()),
@@ -72,7 +81,7 @@ Future<({FakePointsRepository points, FakeConsequenceRepository cons})> _pump(
         locale: const Locale('zh'),
         localizationsDelegates: L.localizationsDelegates,
         supportedLocales: L.supportedLocales,
-        home: const PointsScreen(dynamicId: 'dyn-1'),
+        home: PointsScreen(dynamicId: 'dyn-1', onRules: onRules),
       ),
     ),
   );
@@ -81,11 +90,18 @@ Future<({FakePointsRepository points, FakeConsequenceRepository cons})> _pump(
 }
 
 void main() {
-  testWidgets('s sees its balance, the streak line, and affordability words', (tester) async {
+  testWidgets('s sees its balance as the anchor, the last movement under it, and affordability words',
+      (tester) async {
     final f = await _pump(tester, view: sView());
 
-    expect(find.text('12 分'), findsOneWidget);
-    expect(find.text('在一起 40 天 · 连续 6 天'), findsOneWidget);
+    expect(find.text('你有'), findsOneWidget);
+    expect(find.byKey(_balance), findsOneWidget);
+    expect(tester.widget<Text>(find.byKey(_balance)).data, '12');
+    // The support line reads like a ledger row: newest entry first.
+    expect(find.text('+2 · 任务'), findsOneWidget);
+    // No days-together / streak line (D-31).
+    expect(find.textContaining('在一起'), findsNothing);
+    expect(find.textContaining('连续'), findsNothing);
     expect(find.text('还差 18 分'), findsOneWidget); // 30 - 12
     expect(find.text('Mara 定'), findsOneWidget); // null-cost reward
     // Balance was asked for the s, resolved from the pair.
@@ -95,11 +111,13 @@ void main() {
     expect(find.text('扣分'), findsNothing);
   });
 
-  testWidgets('D sees the s balance by name and can give points', (tester) async {
+  testWidgets('D sees the s balance under their name and can give points', (tester) async {
     final f = await _pump(tester, view: dView());
 
+    expect(find.text('NIA 有'), findsOneWidget); // eyebrow, tracked caps
+    expect(tester.widget<Text>(find.byKey(_balance)).data, '12');
     expect(find.text('12'), findsOneWidget);
-    expect(find.text('Nia · 12 分'), findsOneWidget);
+    expect(find.textContaining('Nia · '), findsNothing);
     await tester.tap(find.text('给分'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, '5');
@@ -160,21 +178,76 @@ void main() {
     expect(f.points.fulfilled, ['rd-2']);
   });
 
-  testWidgets('ledger reasons are words, never codes', (tester) async {
+  testWidgets('ledger shows the last three, opens fully on request; reasons are words, never codes',
+      (tester) async {
     await _pump(tester, view: sView());
 
+    // The newest three.
     expect(find.text('任务'), findsOneWidget);
     expect(find.text('Mara 给'), findsOneWidget);
     expect(find.text('Mara 扣'), findsOneWidget);
-    expect(find.text('兑换'), findsOneWidget);
-    expect(find.text('退回'), findsOneWidget);
     expect(find.text('+5'), findsOneWidget);
     expect(find.text('-3'), findsOneWidget);
+    // The rest wait behind one quiet word.
+    expect(find.text('兑换'), findsNothing);
+    expect(find.text('退回'), findsNothing);
+    await tester.tap(find.text('全部流水'));
+    await tester.pumpAndSettle();
+    expect(find.text('兑换'), findsOneWidget);
+    expect(find.text('退回'), findsOneWidget);
+    expect(find.text('全部流水'), findsNothing);
     expect(find.textContaining('task_earn'), findsNothing);
+  });
 
-    // 规则可见: which tasks pay, then the base line.
-    expect(find.text('早安汇报'), findsOneWidget);
-    expect(find.text('其余基础项 0 分。'), findsOneWidget);
+  testWidgets('three or fewer entries need no "all entries"', (tester) async {
+    await _pump(tester, view: sView(), entries: _entries.take(3).toList());
+    expect(find.text('全部流水'), findsNothing);
+    expect(find.text('Mara 扣'), findsOneWidget);
+  });
+
+  testWidgets('alone D: no give/deduct, one line saying it starts when they join', (tester) async {
+    final alone = pairDetail().copyWith(members: [pairDetail().members.first]);
+    await _pump(tester, view: dView(), detail: alone);
+
+    expect(find.text('给分'), findsNothing);
+    expect(find.text('扣分'), findsNothing);
+    expect(find.text('对方加入后开始。'), findsOneWidget);
+    expect(find.byKey(_balance), findsOneWidget);
+  });
+
+  testWidgets('empty: the hero says why it is 0, rewards point to Rules, optional sections vanish',
+      (tester) async {
+    var toRules = 0;
+    await _pump(
+      tester,
+      view: sView(),
+      balance: 0,
+      entries: const [],
+      rewards: const [],
+      redemptions: const [],
+      consequences: const [],
+      onRules: () => toRules++,
+    );
+
+    expect(tester.widget<Text>(find.byKey(_balance)).data, '0');
+    expect(find.text('还没有分。分来自带分的任务，或者 Mara 给。'), findsOneWidget);
+    expect(find.text('还没有奖励。'), findsOneWidget);
+    expect(find.text('流水还是空的。'), findsOneWidget);
+    // Requests and consequences are optional: empty means no section at all.
+    expect(find.text('兑换申请'), findsNothing);
+    expect(find.text('罚'), findsNothing);
+    expect(find.text('没有申请。'), findsNothing);
+    expect(find.text('没有。'), findsNothing);
+    expect(find.text('全部流水'), findsNothing);
+
+    await tester.tap(find.text('去规矩里定一个'));
+    expect(toRules, 1);
+  });
+
+  testWidgets('without a way to Rules, the empty rewards line stands alone', (tester) async {
+    await _pump(tester, view: dView(), rewards: const []);
+    expect(find.text('还没有奖励。'), findsOneWidget);
+    expect(find.text('去规矩里定一个'), findsNothing);
   });
 
   testWidgets('s marks a consequence done; D confirms or lets one go', (tester) async {

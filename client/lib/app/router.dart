@@ -359,6 +359,8 @@ GoRouter createRouter(Ref ref) {
                     onSignIn: () => context.go(Routes.signIn),
                     onSelectTab: (surface) =>
                         context.go(_navPath(dynamicId, surface)),
+                    onRules: () =>
+                        context.go(_navPath(dynamicId, NavSurface.rules)),
                   );
                 },
               ),
