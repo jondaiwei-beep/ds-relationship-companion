@@ -158,6 +158,8 @@ void main() {
       ],
     );
 
+    // Export is the last thing on the page (redesign-2026-09 §7).
+    await tester.scrollUntilVisible(find.byKey(const ValueKey('export-record')), 200);
     await tester.tap(find.byKey(const ValueKey('export-record')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('最近 90 天'));

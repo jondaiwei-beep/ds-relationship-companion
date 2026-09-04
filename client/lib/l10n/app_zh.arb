@@ -435,17 +435,19 @@
   "lockTitle": "已锁定",
   "lockUnlock": "解锁",
   "lockReason": "解锁后继续",
-  "recordTogether": "在一起 {days} 天 · 连续 {streak} 天",
+  "recordTogether": "在一起 {days} 天",
   "@recordTogether": {
     "placeholders": {
       "days": {
         "type": "int"
-      },
-      "streak": {
-        "type": "int"
       }
     }
   },
+  "recordHeroEyebrow": "记录 · {weekday}",
+  "recordTodayLine": "要做 {expected} 项 · 已回应 {answered} 项",
+  "recordTodayNothing": "今天没有要做的事。",
+  "recordOpenDay": "看这一天",
+  "recordFactsNone": "这周还没有记录。",
   "recordPrevMonth": "上个月",
   "recordNextMonth": "下个月",
   "recordFactsTitle": "这周 · 这月",

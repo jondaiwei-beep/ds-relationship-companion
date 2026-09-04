@@ -5,16 +5,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_refreshable.dart';
 import '../../../app/shell/ds_skeleton.dart';
+import '../../../app/shell/page_hero.dart';
+import '../../../domain_client/models/record.dart';
 import '../../../domain_client/models/task.dart';
 import '../../../domain_client/models/today_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../dynamic/application/dynamic_providers.dart';
 import '../../today/application/today_providers.dart';
+import '../../today/presentation/today_format.dart';
 import '../../today/presentation/today_screen.dart';
 import '../../today/presentation/widgets/recovery_scaffold.dart';
 import '../../today/presentation/widgets/section_label.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
+import '../../today/presentation/widgets/today_notice.dart';
 import '../application/calendar_math.dart';
 import '../application/record_providers.dart';
 import '../../today/presentation/widgets/word_button.dart';
@@ -22,8 +27,11 @@ import 'export_sheet.dart';
 import 'widgets/facts_table.dart';
 import 'widgets/month_grid.dart';
 
-/// Tab 3 · 记录 (product/02-surfaces.md): the month, one cell a day; the two
-/// numbers of D-27; and the week's and month's counts beneath.
+/// Tab 3 · 记录 (product/02-surfaces.md; redesign-2026-09 §7): the day as the
+/// anchor, one line on it and a way in; the month as navigation, one cell a
+/// day; the week's and month's counts beneath; export at the very bottom.
+///
+/// Streak is not shown (D-31). Days together only once there are two people.
 ///
 /// "Today" is the relationship day the server names in `TodayView.day`, in
 /// the Dynamic's zone and boundary — never the device clock (invariant 7).
@@ -144,46 +152,57 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
 
   Widget _body(TodayView view, L l) {
     final id = widget.dynamicId;
+    final locale = Localizations.localeOf(context).toString();
     final month = _visible(view);
+    final thisMonth = YearMonth.ofIsoDay(view.day);
     final week = weekAround(view.day);
-    final summary = ref.watch(recordSummaryProvider(id));
+    // Read alongside, never awaited: the record must not wait on its frame.
+    final alone = TodayNotice.isAlone(ref.watch(dynamicDetailProvider(id)).value);
+    final summary = ref.watch(recordSummaryProvider(id)).value;
     final cells = ref.watch(monthCellsProvider((id, month.wire)));
+    // Today's own cell lives in its own month, whichever month is being looked at.
+    final todayCells = ref.watch(monthCellsProvider((id, thisMonth.wire)));
     final weekFacts = ref.watch(factsProvider((id, week.from, week.to)));
     final monthFacts = ref.watch(factsProvider((id, month.firstIsoDay, month.lastIsoDay)));
     final measureTasks = ref.watch(measureTasksProvider(id));
     final canGoForward = compareIsoDays(month.next.firstIsoDay, view.day) <= 0;
+    final quiet = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary);
 
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: l.navRecord, partnerName: view.partnerDisplayName),
-        Padding(
-          padding: todayInset,
-          child: Row(
-            children: [
-              WordButton(
-                key: const ValueKey('export-record'),
-                label: l.recordExport,
-                onTap: () => showExportSheet(context, ref, dynamicId: id, today: view.day),
-              ),
-            ],
-          ),
+        TodayHeader(partnerName: view.partnerDisplayName),
+        PageHero(
+          eyebrow: l.recordHeroEyebrow(TodayFormat.weekday(view.day, locale)),
+          hero: TodayFormat.dayHero(view.day, locale),
+          heroKey: const ValueKey('record-hero'),
+          // Days together are a fact about two people; alone there is none.
+          support: alone || summary == null ? null : l.recordTogether(summary.daysTogether),
         ),
-        const SizedBox(height: DsSpacing.space2),
+        const SizedBox(height: DsSpacing.space6),
         Padding(
           padding: todayInset,
-          child: summary.when(
+          child: todayCells.when(
             skipLoadingOnReload: true,
             skipLoadingOnRefresh: true,
             loading: () => const DsSkeletonBar(width: 160, height: 16),
-            error: (_, _) => const SizedBox(height: 16),
-            data: (s) => Text(
-              l.recordTogether(s.daysTogether, s.currentStreak),
-              style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
+            error: (_, _) => Text(l.recordTodayNothing, style: quiet),
+            data: (list) => Text(_todayLine(list, view.day, l), key: const ValueKey('record-today-line'), style: quiet),
+          ),
+        ),
+        Padding(
+          padding: todayInset,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: WordButton(
+              key: const ValueKey('open-today'),
+              label: l.recordOpenDay,
+              quiet: true,
+              onTap: () => (widget.onOpenDay ?? (_) {})(view.day),
             ),
           ),
         ),
-        const SizedBox(height: DsSpacing.space6),
+        const SizedBox(height: DsSpacing.space8),
         MonthNav(
           month: month,
           onPrevious: () => _step(view, -1),
@@ -197,20 +216,45 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
           onOpenDay: widget.onOpenDay ?? (_) {},
           onSwipe: (d) => _step(view, d),
         ),
-        const SizedBox(height: DsSpacing.space8),
+        const SizedBox(height: DsSpacing.space10),
         SectionLabel(l.recordFactsTitle),
         FactsTable(week: weekFacts.value, month: monthFacts.value),
         ..._measureSection(measureTasks.value ?? const [], l),
         const SizedBox(height: DsSpacing.space10),
+        Padding(
+          padding: todayInset,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: WordButton(
+              key: const ValueKey('export-record'),
+              label: l.recordExport,
+              quiet: true,
+              onTap: () => showExportSheet(context, ref, dynamicId: id, today: view.day),
+            ),
+          ),
+        ),
+        const SizedBox(height: DsSpacing.space10),
       ],
     );
+  }
+
+  /// One line on today from what the month already carries: how many were
+  /// expected, and how many of those the D has answered. `undisposed` counts
+  /// deliveries (and misses) still waiting on the D, so the D's answers are
+  /// everything the s has closed less those.
+  String _todayLine(List<MonthCell> cells, String day, L l) {
+    final c = cells.where((c) => c.day == day).firstOrNull;
+    if (c == null || c.due == 0) return l.recordTodayNothing;
+    final closed = c.delivered + c.flagged + c.missed;
+    final answered = (closed - c.undisposed).clamp(0, c.due);
+    return l.recordTodayLine(c.due, answered);
   }
 
   /// The measure tasks, each a way into its curve. Nothing when there are none.
   List<Widget> _measureSection(List<TaskView> tasks, L l) {
     if (tasks.isEmpty) return const [];
     return [
-      const SizedBox(height: DsSpacing.space8),
+      const SizedBox(height: DsSpacing.space10),
       SectionLabel(l.recordSeriesSection),
       for (final t in tasks)
         InkWell(

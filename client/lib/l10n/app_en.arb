@@ -715,17 +715,36 @@
   "lockTitle": "Locked",
   "lockUnlock": "Unlock",
   "lockReason": "Unlock to continue",
-  "recordTogether": "{days, plural, =1{Together 1 day} other{Together {days} days}} · {streak, plural, =1{1 in a row} other{{streak} in a row}}",
+  "recordTogether": "{days, plural, =1{Together 1 day} other{Together {days} days}}",
   "@recordTogether": {
     "placeholders": {
       "days": {
         "type": "int"
+      }
+    }
+  },
+  "recordHeroEyebrow": "Record · {weekday}",
+  "@recordHeroEyebrow": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "recordTodayLine": "{expected, plural, =1{1 expected} other{{expected} expected}} · {answered, plural, =1{1 answered} other{{answered} answered}}",
+  "@recordTodayLine": {
+    "placeholders": {
+      "expected": {
+        "type": "int"
       },
-      "streak": {
+      "answered": {
         "type": "int"
       }
     }
   },
+  "recordTodayNothing": "Nothing expected today.",
+  "recordOpenDay": "Open this day",
+  "recordFactsNone": "Nothing recorded this week yet.",
   "recordPrevMonth": "Previous month",
   "recordNextMonth": "Next month",
   "recordFactsTitle": "This week · this month",
