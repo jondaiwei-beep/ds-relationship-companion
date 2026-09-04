@@ -175,21 +175,26 @@ class _PauseScreenState extends ConsumerState<PauseScreen> {
       ),
       const SizedBox(height: DsSpacing.space5),
     ],
+    // The destructive word wears the destructive border (redesign §2);
+    // the way out is quiet beside it.
     Padding(
       padding: todayInset,
-      child: DsPrimaryButton(
-        label: l.pauseAction,
-        busy: _busy,
-        busyLabel: l.pauseBusy,
-        onPressed: _busy ? null : () => _run(DynamicAction.pause),
-      ),
-    ),
-    const SizedBox(height: DsSpacing.space4),
-    Padding(
-      padding: todayInset,
-      child: SecondaryButton(
-        label: l.pauseNotNow,
-        onTap: _busy ? () {} : (widget.onDone ?? () {}),
+      child: Wrap(
+        spacing: DsSpacing.space6,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          WordButton(
+            key: const ValueKey('pause-confirm'),
+            label: _busy ? l.pauseBusy : l.pauseAction,
+            danger: true,
+            onTap: _busy ? () {} : () => _run(DynamicAction.pause),
+          ),
+          WordButton(
+            label: l.pauseNotNow,
+            quiet: true,
+            onTap: _busy ? () {} : (widget.onDone ?? () {}),
+          ),
+        ],
       ),
     ),
     const SizedBox(height: DsSpacing.space10),

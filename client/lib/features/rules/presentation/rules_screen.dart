@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/providers.dart';
 import '../../../app/shell/bottom_navigation.dart';
 import '../../../app/shell/ds_refreshable.dart';
+import '../../../app/shell/page_hero.dart';
 import '../../../domain_client/api_client.dart';
+import '../../../domain_client/models/explore.dart';
 import '../../../domain_client/models/points.dart';
 import '../../../domain_client/models/rule.dart';
 import '../../../domain_client/models/task.dart';
@@ -23,6 +25,7 @@ import '../../today/presentation/widgets/section_label.dart';
 import '../../today/presentation/widgets/secondary_button.dart';
 import '../../today/presentation/widgets/today_header.dart';
 import '../../today/presentation/widgets/today_layout.dart';
+import '../../today/presentation/widgets/today_notice.dart';
 import '../../today/presentation/widgets/word_button.dart';
 import '../application/rules_providers.dart';
 import 'rules_format.dart';
@@ -30,8 +33,14 @@ import 'widgets/rules_sheets.dart';
 
 /// Tab 2 · 规矩 (product/02-surfaces.md): the long-lived things, visited when
 /// something changes. Standing rules, task definitions, what the s proposed,
-/// the reward catalogue, the consequence templates, limits, and the way into
+/// limits, the reward catalogue, the consequence templates, and the way into
 /// explore.
+///
+/// Skeleton per design/system/redesign-2026-09.md §7: header row · "Rules" as
+/// the one large thing · STANDING RULES · RECURRING TASKS · PROPOSED (only when
+/// there is one) · LIMITS & SAFEWORD as the one bordered block · REWARDS ·
+/// CONSEQUENCES · a quiet row of doors · quiet "Pause the dynamic…" last.
+/// "I'm away" is the state of the day and lives on Today now (D-26).
 ///
 /// The D writes; the s reads and proposes (权限 table, D-24). Nothing here
 /// runs anything: a template is a template, a rule generates no occurrence.
@@ -105,12 +114,14 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
 
   // ── names ────────────────────────────────────────────────────────────────
 
+  /// The D by name: "you" on the D's own face, the partner's name on the s's,
+  /// and never a role word as the fallback (§5).
   String _dName(L l, TodayView v) => v.isD ? l.rulesYou : (v.partnerDisplayName ?? l.rulesTheD);
 
-  // ── away ─────────────────────────────────────────────────────────────────
+  // ── dates ────────────────────────────────────────────────────────────────
 
   /// The chosen calendar day at the Dynamic's day boundary, in its zone —
-  /// "back when that day begins" (invariant 7: never the device date).
+  /// "until that day begins" (invariant 7: never the device date).
   DateTime _dayStartInstant(DateTime picked, TodayView v) {
     final iso = '${picked.year.toString().padLeft(4, '0')}-'
         '${picked.month.toString().padLeft(2, '0')}-'
@@ -130,21 +141,6 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
       lastDate: first.add(const Duration(days: 365)),
     );
   }
-
-  Future<void> _away(TodayView v) async {
-    final picked = await _pickDay(v);
-    if (picked == null || !mounted) return;
-    final until = _dayStartInstant(picked, v);
-    await _run(() => ref.read(dynamicRepositoryProvider).away(
-          _id,
-          until: until,
-          idempotencyKey: ApiClient.newIdempotencyKey(),
-        ));
-  }
-
-  Future<void> _back() => _run(
-        () => ref.read(dynamicRepositoryProvider).back(_id, idempotencyKey: ApiClient.newIdempotencyKey()),
-      );
 
   // ── rules ────────────────────────────────────────────────────────────────
 
@@ -216,7 +212,7 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
     final t = await showTaskSheet(
       context,
       title: v.isD ? l.rulesAddTask : l.rulesProposeTask,
-      dName: v.isD ? l.rulesTheD : _dName(l, v),
+      dName: _dName(l, v),
       timezone: v.timezone,
       today: v.day,
       dayBoundaryMinutes: v.dayBoundaryMinutes,
@@ -251,7 +247,7 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
         final edited = await showTaskSheet(
           context,
           title: t.title,
-          dName: l.rulesTheD,
+          dName: _dName(l, v),
           timezone: v.timezone,
           today: v.day,
           dayBoundaryMinutes: v.dayBoundaryMinutes,
@@ -381,50 +377,56 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
     final rewards = ref.watch(rewardsProvider(_id));
     final agreements = ref.watch(agreementsProvider(_id));
     final compare = ref.watch(compareProvider(_id));
+    final detail = ref.watch(dynamicDetailProvider(_id)).value;
+    // Not loaded yet reads as not alone: the page must not flash "starts
+    // when they join" at a pair (§3).
+    final alone = TodayNotice.isAlone(detail);
     final dName = _dName(l, v);
+    final isD = v.isD;
+
+    final proposedRules = rules.value?.where((r) => r.isProposed).toList() ?? const <RuleView>[];
+    final proposedTasks = tasks.value?.where((t) => t.status == 'proposed').toList() ?? const <TaskView>[];
     final nothingYet = (rules.value?.where((r) => r.isActive).isEmpty ?? false) &&
         (tasks.value?.where((t) => t.status == 'active').isEmpty ?? false);
+    // 起步包 is the section's primary only while the page is empty; the rest
+    // of the time the Add words are outlined and nothing on the page is filled.
+    final packFirst = isD && nothingYet && widget.onStarterPacks != null;
 
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        TodayHeader(title: l.rulesTitle, partnerName: v.partnerDisplayName),
-        _AwayLine(
-          view: v,
-          locale: locale,
-          dName: dName,
-          busy: _busy,
-          onAway: () => _away(v),
-          onBack: _back,
-        ),
+        TodayHeader(partnerName: v.partnerDisplayName),
+        PageHero(hero: l.rulesTitle, heroKey: const ValueKey('rules-hero')),
         if (_notice != null) ...[
-          const SizedBox(height: DsSpacing.space3),
+          const SizedBox(height: DsSpacing.space4),
           Padding(padding: todayInset, child: RecoveryMessage(_notice!)),
         ],
 
-        // ── 起步包: an empty 规矩 offers a set to change, not a blank page.
-        if (nothingYet && widget.onStarterPacks != null) ...[
-          const SizedBox(height: DsSpacing.space6),
-          Padding(
-            padding: todayInset,
-            child: SecondaryButton(label: l.rulesStartFromPack, onTap: widget.onStarterPacks!, filled: true),
-          ),
-        ],
-
         // ── 常设规矩
-        const SizedBox(height: DsSpacing.space8),
+        const SizedBox(height: DsSpacing.space10),
         SectionLabel(l.rulesStandingTitle),
         switch (rules) {
           AsyncData(:final value) => _StandingRules(
               rules: value.where((r) => r.isActive).toList(),
-              isD: v.isD,
-              onTap: v.isD ? _editRule : null,
-              onLongPress: v.isD ? null : (r) => _proposeChange(r, v),
+              isD: isD,
+              onTap: isD ? _editRule : null,
+              onLongPress: isD ? null : (r) => _proposeChange(r, v),
             ),
           AsyncError() => QuietLine(l.rulesCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
-        _Door(label: v.isD ? l.rulesAddRule : l.rulesProposeRule, onTap: () => _addRule(v)),
+        _Doors(
+          children: [
+            if (packFirst)
+              WordButton(
+                key: const ValueKey('rules-start-pack'),
+                label: l.rulesStartFromPack,
+                filled: true,
+                onTap: widget.onStarterPacks!,
+              ),
+            WordButton(label: isD ? l.rulesAddRule : l.rulesProposeRule, onTap: () => _addRule(v)),
+          ],
+        ),
 
         // ── 循环任务定义
         const SizedBox(height: DsSpacing.space8),
@@ -434,33 +436,49 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
               tasks: value.where((t) => t.status == 'active').toList(),
               view: v,
               locale: locale,
-              dName: v.isD ? l.rulesTheD : dName,
-              onTap: v.isD ? (t) => _taskMenu(t, v) : null,
+              dName: dName,
+              onTap: isD ? (t) => _taskMenu(t, v) : null,
             ),
           AsyncError() => QuietLine(l.rulesCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
-        _Door(label: v.isD ? l.rulesAddTask : l.rulesProposeTask, onTap: () => _addTask(v)),
+        _Doors(children: [WordButton(label: isD ? l.rulesAddTask : l.rulesProposeTask, onTap: () => _addTask(v))]),
 
-        // ── 提议中
+        // ── 提议中 — only when there is one (§4: empty and optional → omit).
+        if (proposedRules.isNotEmpty || proposedTasks.isNotEmpty) ...[
+          const SizedBox(height: DsSpacing.space8),
+          SectionLabel(l.rulesProposedTitle),
+          _Proposed(
+            rules: proposedRules,
+            tasks: proposedTasks,
+            isD: isD,
+            dName: dName,
+            onAcceptRule: _acceptRule,
+            onDeclineRule: _archiveRule,
+            onAcceptTask: _acceptTask,
+            onDeclineTask: _declineTask,
+          ),
+        ],
+
+        // ── 底线与安全词 — the one bordered block on the page.
         const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.rulesProposedTitle),
-        _Proposed(
-          rules: rules.value?.where((r) => r.isProposed).toList() ?? const [],
-          tasks: tasks.value?.where((t) => t.status == 'proposed').toList() ?? const [],
-          isD: v.isD,
-          dName: dName,
-          onAcceptRule: _acceptRule,
-          onDeclineRule: _archiveRule,
-          onAcceptTask: _acceptTask,
-          onDeclineTask: _declineTask,
+        _LimitsBlock(
+          key: const ValueKey('rules-limits'),
+          notDoing: switch (compare) {
+            AsyncData(:final value) => value.notDoing,
+            _ => const [],
+          },
+          safeword: detail?.safeword,
+          alone: alone,
+          onCompare: widget.onExplore == null ? null : () => widget.onExplore!(ExploreSection.compare),
         ),
 
         // ── 奖励目录
         const SizedBox(height: DsSpacing.space8),
         SectionLabel(l.rulesRewardsTitle),
         switch (rewards) {
-          AsyncData(:final value) when value.isEmpty => QuietLine(l.rulesRewardsEmpty),
+          AsyncData(:final value) when value.isEmpty =>
+            QuietLine(isD ? l.rulesRewardsEmpty : l.rulesRewardsEmptyS(dName)),
           AsyncData(:final value) => Column(
               children: [
                 for (final r in value)
@@ -468,17 +486,22 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
                     key: ValueKey('reward-${r.id}'),
                     title: r.title,
                     meta: r.cost == null ? l.rulesRewardDDecidesName(dName) : l.rulesPoints(r.cost!),
-                    onLongPress: v.isD ? () => _retireReward(r) : null,
+                    onLongPress: isD ? () => _retireReward(r) : null,
                   ),
               ],
             ),
           AsyncError() => QuietLine(l.rulesCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
-        if (v.isD)
-          _Door(label: l.rulesAddReward, onTap: _addReward)
+        if (isD)
+          _Doors(children: [WordButton(label: l.rulesAddReward, onTap: _addReward)])
         else
-          _Door(label: l.rulesGoRedeem, onTap: () => widget.onSelectTab?.call(NavSurface.points)),
+          // Going to 积分 is navigation, so the word is quiet.
+          _Doors(
+            children: [
+              WordButton(label: l.rulesGoRedeem, quiet: true, onTap: () => widget.onSelectTab?.call(NavSurface.points)),
+            ],
+          ),
 
         // ── 惩罚库
         const SizedBox(height: DsSpacing.space8),
@@ -486,12 +509,13 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
         Padding(
           padding: todayInset.add(const EdgeInsets.only(bottom: DsSpacing.space4)),
           child: Text(
-            l.rulesConsequencesIntro(dName),
+            isD ? l.rulesConsequencesIntroYou : l.rulesConsequencesIntro(dName),
             style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
           ),
         ),
         switch (agreements) {
-          AsyncData(:final value) when value.isEmpty => QuietLine(l.rulesConsequencesEmpty),
+          AsyncData(:final value) when value.isEmpty =>
+            QuietLine(isD ? l.rulesConsequencesEmpty : l.rulesConsequencesEmptyS(dName)),
           AsyncData(:final value) => Column(
               children: [
                 for (final a in value)
@@ -499,63 +523,56 @@ class _RulesScreenState extends ConsumerState<RulesScreen> {
                     key: ValueKey('template-${a.id}'),
                     title: a.label,
                     meta: a.consequence,
-                    onLongPress: v.isD ? () => _endTemplate(a) : null,
+                    onLongPress: isD ? () => _endTemplate(a) : null,
                   ),
               ],
             ),
           AsyncError() => QuietLine(l.rulesCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
-        if (v.isD) _Door(label: l.rulesAddConsequence, onTap: _addTemplate),
+        if (isD) _Doors(children: [WordButton(label: l.rulesAddConsequence, onTap: _addTemplate)]),
 
-        // ── 底线与安全词 — fed by the compare's 「不要」. A title each, no one
-        // attached: the server never says who said no, and neither do we.
-        const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.rulesLimitsTitle),
-        switch (compare) {
-          AsyncData(:final value) when value.notDoing.isNotEmpty => Column(
-              children: [
-                for (final c in value.notDoing)
-                  _Row(key: ValueKey('limit-${c.itemId}'), title: c.title, meta: l.exploreCompareNotDoing),
-              ],
-            ),
-          _ => Padding(
-              padding: todayInset,
-              child: Text(
-                l.rulesLimitsLine,
-                style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted),
-              ),
-            ),
-        },
-        // The safeword itself, when the pair has one. Set in 设置 by either.
-        if (ref.watch(dynamicDetailProvider(_id)).value?.safeword case final String word when word.isNotEmpty)
-          _Row(key: const ValueKey('safeword'), title: word, meta: l.rulesSafewordMeta),
-        if (widget.onExplore != null)
-          _Door(label: l.rulesLimitsGo, onTap: () => widget.onExplore!(ExploreSection.compare)),
-
-        // ── 探索入口
-        const SizedBox(height: DsSpacing.space8),
-        SectionLabel(l.rulesExploreTitle),
+        // ── the doors out: all navigation, all quiet. Compare is not repeated
+        // here; it lives in the limits block.
+        const SizedBox(height: DsSpacing.space10),
         Padding(
           padding: todayInset,
           child: Wrap(
-            spacing: DsSpacing.space2,
+            spacing: DsSpacing.space6,
             runSpacing: DsSpacing.space2,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              WordButton(label: l.rulesExplorePrefs, onTap: () => widget.onExplore?.call(ExploreSection.prefs)),
-              WordButton(label: l.rulesExploreCompare, onTap: () => widget.onExplore?.call(ExploreSection.compare)),
-              WordButton(label: l.rulesExploreInspiration, onTap: () => widget.onExplore?.call(ExploreSection.cards)),
-              WordButton(label: l.rulesExploreStarter, onTap: () => widget.onStarterPacks?.call()),
+              WordButton(
+                label: l.rulesExplorePrefs,
+                quiet: true,
+                onTap: () => widget.onExplore?.call(ExploreSection.prefs),
+              ),
+              WordButton(
+                label: l.rulesExploreInspiration,
+                quiet: true,
+                onTap: () => widget.onExplore?.call(ExploreSection.cards),
+              ),
+              if (widget.onStarterPacks != null)
+                WordButton(label: l.rulesExploreStarter, quiet: true, onTap: widget.onStarterPacks!),
             ],
           ),
         ),
 
-        // Pause is agency either member keeps (权限 table).
+        // Pause is agency either member keeps (权限 table). Quiet here; the
+        // destructive word is inside the screen it opens.
         if (widget.onPause != null) ...[
-          const SizedBox(height: DsSpacing.space10),
+          const SizedBox(height: DsSpacing.space8),
           Padding(
             padding: todayInset,
-            child: SecondaryButton(label: l.rulesPauseDynamic, onTap: widget.onPause!),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: WordButton(
+                key: const ValueKey('rules-pause'),
+                label: l.rulesPauseDynamic,
+                quiet: true,
+                onTap: widget.onPause!,
+              ),
+            ),
           ),
         ],
         const SizedBox(height: DsSpacing.space12),
@@ -604,49 +621,61 @@ Future<String?> showChoiceSheetWords(
 
 // ── pieces ─────────────────────────────────────────────────────────────────
 
-/// D-26. The D says「我不在」and names a day; every task needing them is
-/// paused until then. The s only reads it.
-class _AwayLine extends StatelessWidget {
-  const _AwayLine({
-    required this.view,
-    required this.locale,
-    required this.dName,
-    required this.busy,
-    required this.onAway,
-    required this.onBack,
+/// 底线与安全词. Fed by the compare's 「不要」: a title each, no one attached —
+/// the server never says who said no, and neither do we. The safeword sits
+/// with them when the pair has one (set in 设置 by either). A hairline above
+/// and below makes this the one visually distinct block on the page.
+class _LimitsBlock extends StatelessWidget {
+  const _LimitsBlock({
+    super.key,
+    required this.notDoing,
+    required this.safeword,
+    required this.alone,
+    required this.onCompare,
   });
 
-  final TodayView view;
-  final String locale;
-  final String dName;
-  final bool busy;
-  final VoidCallback onAway;
-  final VoidCallback onBack;
+  final List<CompareItem> notDoing;
+  final String? safeword;
+  final bool alone;
+  final VoidCallback? onCompare;
 
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    final until = view.dAwayUntil;
-    final muted = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary);
-    if (until == null) {
-      if (!view.isD) return const SizedBox.shrink();
-      return Padding(
-        padding: todayInset,
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: WordButton(label: l.rulesAwayToggle, onTap: busy ? () {} : onAway),
+    final muted = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted);
+    final hasSafeword = safeword != null && safeword!.isNotEmpty;
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: DsSpacing.space6),
+      decoration: const BoxDecoration(
+        border: Border(
+          top: BorderSide(color: DsColors.borderOnRitualHairline),
+          bottom: BorderSide(color: DsColors.borderOnRitualHairline),
         ),
-      );
-    }
-    final date = TodayFormat.dayOfInstant(until, view.timezone, locale);
-    return Padding(
-      padding: todayInset,
-      child: Row(
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(view.isD ? l.rulesAwayUntil(date) : l.rulesAwayPartner(dName, date), style: muted),
-          ),
-          if (view.isD) WordButton(label: l.rulesBack, filled: true, onTap: busy ? () {} : onBack),
+          SectionLabel(l.rulesLimitsTitle),
+          Padding(padding: todayInset, child: Text(l.rulesLimitsLine, style: muted)),
+          const SizedBox(height: DsSpacing.space2),
+          // Two people mark limits; alone there is no "either of you" yet, so
+          // the list is named as not started rather than shown (§3).
+          if (alone)
+            QuietLine(l.todayStartsWhenJoined)
+          else if (notDoing.isNotEmpty)
+            for (final c in notDoing)
+              _Row(key: ValueKey('limit-${c.itemId}'), title: c.title, meta: l.exploreCompareNotDoing)
+          else if (!hasSafeword)
+            QuietLine(l.rulesLimitsEmpty),
+          if (hasSafeword) _Row(key: const ValueKey('safeword'), title: safeword!, meta: l.rulesSafewordMeta),
+          if (onCompare != null && !alone)
+            Padding(
+              padding: todayInset.add(const EdgeInsets.only(top: DsSpacing.space3)),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: WordButton(label: l.rulesLimitsGo, quiet: true, onTap: onCompare!),
+              ),
+            ),
         ],
       ),
     );
@@ -664,7 +693,7 @@ class _StandingRules extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    if (rules.isEmpty) return QuietLine(l.rulesStandingEmpty);
+    if (rules.isEmpty) return QuietLine(isD ? l.rulesStandingEmpty : l.rulesStandingEmptyS);
     final byGroup = <String, List<RuleView>>{};
     for (final r in rules) {
       (byGroup[r.group] ??= []).add(r);
@@ -715,7 +744,7 @@ class _TaskDefinitions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    if (tasks.isEmpty) return QuietLine(l.rulesTasksEmpty);
+    if (tasks.isEmpty) return QuietLine(view.isD ? l.rulesTasksEmpty : l.rulesTasksEmptyS);
     return Column(
       children: [
         for (final t in tasks..sort((a, b) => a.position.compareTo(b.position)))
@@ -745,6 +774,8 @@ class _TaskDefinitions extends StatelessWidget {
   }
 }
 
+/// The s's proposals waiting on the D. Accept and decline are both outlined:
+/// a filled word per row would put several primaries in one section (§2).
 class _Proposed extends StatelessWidget {
   const _Proposed({
     required this.rules,
@@ -769,7 +800,6 @@ class _Proposed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = L.of(context);
-    if (rules.isEmpty && tasks.isEmpty) return QuietLine(l.rulesProposedEmpty);
     return Column(
       children: [
         for (final t in tasks)
@@ -780,7 +810,7 @@ class _Proposed extends StatelessWidget {
             trailing: isD ? null : l.rulesWaitingFor(dName),
             actions: isD
                 ? [
-                    WordButton(label: l.rulesAccept, filled: true, onTap: () => onAcceptTask(t.id)),
+                    WordButton(label: l.rulesAccept, onTap: () => onAcceptTask(t.id)),
                     WordButton(label: l.rulesDecline, onTap: () => onDeclineTask(t.id)),
                   ]
                 : const [],
@@ -793,7 +823,7 @@ class _Proposed extends StatelessWidget {
             trailing: isD ? null : l.rulesWaitingFor(dName),
             actions: isD
                 ? [
-                    WordButton(label: l.rulesAccept, filled: true, onTap: () => onAcceptRule(r.id)),
+                    WordButton(label: l.rulesAccept, onTap: () => onAcceptRule(r.id)),
                     WordButton(label: l.rulesDecline, onTap: () => onDeclineRule(r.id)),
                   ]
                 : [WordButton(label: l.rulesWithdraw, onTap: () => onDeclineRule(r.id))],
@@ -869,17 +899,16 @@ class _Row extends StatelessWidget {
   }
 }
 
-/// A way in, sized to its word, left-aligned under a section.
-class _Door extends StatelessWidget {
-  const _Door({required this.label, required this.onTap});
-  final String label;
-  final VoidCallback onTap;
+/// The ways in under a section, each sized to its word, left-aligned.
+class _Doors extends StatelessWidget {
+  const _Doors({required this.children});
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: todayInset.add(const EdgeInsets.only(top: DsSpacing.space3)),
-      child: Align(alignment: Alignment.centerLeft, child: WordButton(label: label, onTap: onTap)),
+      child: Wrap(spacing: DsSpacing.space3, runSpacing: DsSpacing.space2, children: children),
     );
   }
 }
