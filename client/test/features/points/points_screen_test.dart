@@ -197,6 +197,11 @@ void main() {
     expect(find.text('退回'), findsOneWidget);
     expect(find.text('全部流水'), findsNothing);
     expect(find.textContaining('task_earn'), findsNothing);
+
+    // 哪些任务给分: which tasks pay, then the base line.
+    expect(find.text('哪些任务给分'), findsOneWidget);
+    expect(find.text('早安汇报'), findsOneWidget);
+    expect(find.text('其余基础项 0 分。'), findsOneWidget);
   });
 
   testWidgets('three or fewer entries need no "all entries"', (tester) async {

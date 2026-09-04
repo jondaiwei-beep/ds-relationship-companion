@@ -76,6 +76,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
 
   Future<void> _refresh() async {
     _reloadAll();
+    ref.invalidate(pointsRulesProvider(_id));
     await ref.read(todayProvider(_id).future);
   }
 
@@ -280,6 +281,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
     final rewards = ref.watch(rewardsProvider(_id));
     final redemptions = ref.watch(redemptionsProvider(_id));
     final consequences = ref.watch(consequencesProvider(_id));
+    final rules = ref.watch(pointsRulesProvider(_id));
     // Stage before data (redesign §3): a partner who has not joined cannot be
     // given to. Null detail (still loading) is treated as joined, as Today does.
     final alone = TodayNotice.isAlone(ref.watch(dynamicDetailProvider(_id)).value);
@@ -287,6 +289,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
     final sName = _sName(l, v);
     final balance = points.asData?.value.balance ?? v.balance;
     final rewardList = rewards.asData?.value ?? const <Reward>[];
+    final muted = DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualMuted);
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -415,6 +418,24 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
           AsyncError() => QuietLine(l.ptsCouldNotLoad),
           _ => const SizedBox(height: 40),
         },
+
+        // ── 哪些任务给分 — which tasks pay (D-05); only when any do
+        if (rules case AsyncData(:final value) when value.isNotEmpty) ...[
+          const SizedBox(height: DsSpacing.space8),
+          SectionLabel(l.ptsRulesTitle),
+          for (final r in value)
+            Padding(
+              padding: todayInset.add(const EdgeInsets.symmetric(vertical: DsSpacing.space2)),
+              child: Row(
+                children: [
+                  Expanded(child: Text(r.title, style: muted)),
+                  const SizedBox(width: DsSpacing.space3),
+                  Text(l.rulesPoints(r.pointsEarn), style: muted),
+                ],
+              ),
+            ),
+          QuietLine(l.ptsRulesBase),
+        ],
         const SizedBox(height: DsSpacing.space10),
       ],
     );
