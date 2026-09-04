@@ -287,7 +287,7 @@ class _PointsScreenState extends ConsumerState<PointsScreen> {
               const SizedBox(height: DsSpacing.space1),
               switch (summary) {
                 AsyncData(:final value) => Text(
-                    l.recordTogether(value.daysTogether, value.currentStreak),
+                    l.recordTogether(value.daysTogether),
                     style: DsTextStyles.bodySecondary.copyWith(color: DsColors.textOnRitualSecondary),
                   ),
                 _ => const SizedBox(height: 18),

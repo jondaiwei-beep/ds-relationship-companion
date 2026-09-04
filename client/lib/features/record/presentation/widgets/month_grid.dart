@@ -79,9 +79,10 @@ class _Step extends StatelessWidget {
   }
 }
 
-/// The month, Monday first. A cell says how many were delivered of how many
-/// were due, whether something still waits for the D, and whether a line was
-/// left. It says nothing about whether any of that was good.
+/// The month, Monday first. The grid is navigation (redesign-2026-09 §7):
+/// a cell is the day's number, a little brighter when something happened on
+/// it, with a 4px dot underneath. Today is outlined. No counts — the day
+/// itself says what the two of them did.
 class MonthGrid extends StatelessWidget {
   const MonthGrid({
     super.key,
@@ -152,7 +153,9 @@ class MonthGrid extends StatelessWidget {
                     Expanded(
                       child: () {
                         final i = r * 7 + c - blanks;
-                        if (i < 0 || i >= month.length) return const SizedBox(height: 56);
+                        if (i < 0 || i >= month.length) {
+                          return const SizedBox(height: MonthCellTile.height);
+                        }
                         final iso = month.isoDayOf(i + 1);
                         final future = compareIsoDays(iso, today) > 0;
                         return MonthCellTile(
@@ -173,6 +176,8 @@ class MonthGrid extends StatelessWidget {
   }
 }
 
+/// One day. What it carries is said to a screen reader in words; to the eye
+/// it is a number, a dot, and — for today — an outline.
 class MonthCellTile extends StatelessWidget {
   const MonthCellTile({
     super.key,
@@ -183,21 +188,36 @@ class MonthCellTile extends StatelessWidget {
     required this.onTap,
   });
 
+  static const double height = 48;
+
   final int dayOfMonth;
   final String isoDay;
   final MonthCell? cell;
   final bool isToday;
   final VoidCallback? onTap;
 
+  /// Something was due, delivered, said or left on this day.
+  static bool hasMarks(MonthCell? c) =>
+      c != null && (c.due > 0 || c.delivered > 0 || c.flagged > 0 || c.missed > 0 || c.comments > 0);
+
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
     final c = cell;
-    final muted = onTap == null;
-    final numberColor = muted ? DsColors.textOnRitualMuted : DsColors.textOnRitualPrimary;
+    final future = onTap == null;
+    final marked = hasMarks(c);
     final undisposed = (c?.undisposed ?? 0) > 0;
     final commented = (c?.comments ?? 0) > 0;
     final ratio = c != null && c.due > 0 ? '${c.delivered}/${c.due}' : null;
+
+    // Three brightnesses: not yet (muted), nothing on it, something on it.
+    final numberColor = future
+        ? DsColors.textOnRitualMuted
+        : marked
+            ? DsColors.textOnRitualPrimary
+            : DsColors.textOnRitualSecondary;
+    // The dot warms up while a delivery still waits for the D's answer.
+    final dotColor = undisposed ? DsColors.relationshipPresence : DsColors.textOnRitualSecondary;
 
     return Semantics(
       button: onTap != null,
@@ -212,13 +232,13 @@ class MonthCellTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(DsRadii.control),
         child: Container(
-          height: 56,
+          height: height,
           margin: const EdgeInsets.all(1),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DsRadii.control),
             border: isToday ? Border.all(color: DsColors.borderOnRitualStrong) : null,
           ),
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 6),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -226,35 +246,14 @@ class MonthCellTile extends StatelessWidget {
                 '$dayOfMonth',
                 style: DsTextStyles.bodyPrimary.copyWith(color: numberColor, height: 1.1),
               ),
-              const SizedBox(height: 2),
-              Text(
-                ratio ?? '',
-                style: DsTextStyles.labelRitual.copyWith(
-                  color: DsColors.textOnRitualSecondary,
-                  fontSize: todaySupportSize,
-                  height: 1.1,
+              const SizedBox(height: 4),
+              if (marked)
+                Container(
+                  key: ValueKey('dot-$isoDay'),
+                  width: 4,
+                  height: 4,
+                  decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
                 ),
-              ),
-              const SizedBox(height: 3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (undisposed)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2),
-                      child: Icon(Icons.circle, size: 6, color: DsColors.relationshipPresence),
-                    ),
-                  if (commented)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2),
-                      child: Icon(
-                        Icons.mode_comment_outlined,
-                        size: 9,
-                        color: DsColors.textOnRitualSecondary,
-                      ),
-                    ),
-                ],
-              ),
             ],
           ),
         ),

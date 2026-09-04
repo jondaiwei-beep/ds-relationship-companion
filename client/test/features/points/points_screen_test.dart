@@ -85,7 +85,7 @@ void main() {
     final f = await _pump(tester, view: sView());
 
     expect(find.text('12 分'), findsOneWidget);
-    expect(find.text('在一起 40 天 · 连续 6 天'), findsOneWidget);
+    expect(find.text('在一起 40 天'), findsOneWidget);
     expect(find.text('还差 18 分'), findsOneWidget); // 30 - 12
     expect(find.text('Mara 定'), findsOneWidget); // null-cost reward
     // Balance was asked for the s, resolved from the pair.
