@@ -245,8 +245,13 @@ class _Driver {
     fail('$finder is still on screen${reason == null ? '' : ' ($reason)'}; on screen: ${onScreen()}');
   }
 
-  Future<void> waitForText(String text, {Duration? timeout, String? reason}) =>
-      waitFor(find.text(text), timeout: timeout ?? const Duration(seconds: 20), reason: reason);
+  // Section labels render uppercased (SectionLabel), so a lookup by the ARB
+  // string must accept either casing.
+  Future<void> waitForText(String text, {Duration? timeout, String? reason}) => waitFor(
+        find.byWidgetPredicate((w) => w is Text && (w.data == text || w.data == text.toUpperCase())),
+        timeout: timeout ?? const Duration(seconds: 20),
+        reason: reason,
+      );
 
   Future<void> waitForTemplate(String template, {bool optional = false, String? reason}) =>
       waitFor(findTemplate(template), optional: optional, reason: reason);
